@@ -1,0 +1,268 @@
+/*!
+ * bsStepper v1.7.0 (https://github.com/Johann-S/bs-stepper)
+ * Copyright 2018 - 2019 Johann-S <johann.servoire@gmail.com>
+ * Licensed under MIT (https://github.com/Johann-S/bs-stepper/blob/master/LICENSE)
+ */
+.bs-stepper .step-trigger {
+	/* display: -ms-inline-flexbox; */
+	display: inline;
+	-ms-flex-wrap: wrap;
+	flex-wrap: wrap;
+	padding: 20px;
+	font-size: 1rem;
+	line-height: 1.5;
+	color: #6c757d;
+	text-align: left;
+	text-decoration: none;
+	white-space: nowrap;
+	vertical-align: middle;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	background-color: transparent;
+	border: none;
+	border-radius: .25rem;
+	transition: background-color .15s ease-out, color .15s ease-out
+}
+
+.bs-stepper .step-trigger:not (:disabled ):not (.disabled ) {
+	cursor: pointer
+}
+
+.bs-stepper .step-trigger.disabled, .bs-stepper .step-trigger:disabled {
+	pointer-events: none;
+	opacity: .65
+}
+
+.bs-stepper .step-trigger:focus {
+	color: #007bff;
+	outline: 0
+}
+
+.bs-stepper .step-trigger:hover {
+	text-decoration: none;
+	color: var(--primary);
+}
+
+.bs-stepper .step-trigger:hover .bs-stepper-circle {
+	background-color: var(--primary);
+}
+
+@media ( max-width :520px) {
+	.bs-stepper .step-trigger {
+		-ms-flex-direction: column;
+		flex-direction: column;
+		padding: 10px
+	}
+}
+
+.bs-stepper-label {
+	display: inline-block;
+	margin: .25rem
+}
+
+.bs-stepper-header {
+	display: -ms-flexbox;
+	display: flex;
+	-ms-flex-align: center;
+	align-items: center
+}
+
+@media ( max-width :520px) {
+	.bs-stepper-header {
+		margin: 0 -10px;
+		text-align: center
+	}
+}
+
+.bs-stepper .line, .bs-stepper-line {
+	-ms-flex: 1 0 32px;
+	flex: 1 0 32px;
+	min-width: 2px;
+	min-height: 1px;
+	margin: auto;
+	margin-left: 43px;
+	background-color: rgba(0, 0, 0, .12)
+}
+
+@media ( max-width :400px) {
+	.bs-stepper .line, .bs-stepper-line {
+		-ms-flex-preferred-size: 20px;
+		flex-basis: 20px
+	}
+}
+
+.bs-stepper-circle {
+	display: -ms-inline-flexbox;
+	display: inline-flex;
+	-ms-flex-line-pack: center;
+	align-content: center;
+	-ms-flex-pack: center;
+	justify-content: center;
+	width: 2.5em;
+	height: 2.5em;
+	padding: .75em 0;
+	margin: .25rem;
+	line-height: 1em;
+	font-weight: 700;
+	color: #fff;
+	background-color: lightgray;
+	border-radius: 2em
+}
+
+.active .bs-stepper-circle {
+	background-color: var(--primary);
+}
+
+.bs-stepper-form {
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+}
+
+.bs-stepper-content {
+	padding: 0 20px 20px;
+	position: relative;
+}
+
+.bs-stepper-content .stepper-image {
+    position: absolute;
+    right: 60px;
+    top: 60px;
+    width: 140px;
+}
+
+.bs-stepper-content .content-stepper {
+    max-width: 75%;
+    width: 100%;
+    padding: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.bs-stepper-content .stepper-buttons {
+	position: absolute;
+    bottom: 40px;
+    right: 40px;
+}
+
+.bs-stepper-content .stepper-buttons #previous {
+	color: var(--secondary);
+	    border-right: 1px solid rgba(0, 0, 0, .12);
+}
+
+.bs-stepper-content .stepper-buttons #next {
+	color: var(--primary);
+}
+
+
+@media (max-width: 1199.98px) {
+	.bs-stepper-header {
+		display: none;
+	}
+	
+	.bs-stepper-content {
+		padding: 0;
+		padding-bottom: 25px;
+	}
+	
+	.bs-stepper-content .content-stepper {
+	    max-width: 100%;
+	    position: initial;
+	    top: initial;
+	    left: initial;
+	    transform: initial;
+	}
+	
+	.bs-stepper .line, .bs-stepper-line {
+		margin-left: 34px;
+	}
+	
+	.stepper-image {
+		display: none;
+	}
+	
+	.bs-stepper-content .stepper-buttons {
+		position: initial;
+	    float: right;
+	    margin: 85px 10px 0 10px;
+	}
+}
+
+.bs-stepper.vertical {
+	display: -ms-flexbox;
+	display: flex
+}
+
+.bs-stepper.vertical .bs-stepper-header {
+	-ms-flex-direction: column;
+	flex-direction: column;
+	-ms-flex-align: stretch;
+	align-items: stretch;
+	margin: 0;
+	padding: 40px;
+}
+
+.bs-stepper.vertical .bs-stepper-pane, .bs-stepper.vertical .content-stepper {
+	display: block
+}
+
+.bs-stepper.vertical .bs-stepper-pane:not (.fade ), .bs-stepper.vertical .content-stepper:not
+	(.fade ) {
+	display: block;
+	visibility: hidden
+}
+
+.bs-stepper .content-stepper:not (.fade ), .bs-stepper-pane:not (.fade ) {
+	display: none
+}
+
+.bs-stepper .content-stepper.fade, .bs-stepper-pane.fade {
+	visibility: hidden;
+	transition-duration: .3s;
+	transition-property: opacity
+}
+
+.bs-stepper .content-stepper.fade.active, .bs-stepper-pane.fade.active {
+	visibility: visible;
+	opacity: 1;
+}
+
+.bs-stepper .content-stepper.active:not (.fade ), .bs-stepper-pane.active:not (.fade
+	) {
+	display: block;
+	visibility: visible
+}
+
+.bs-stepper .content-stepper.dstepper-block, .bs-stepper-pane.dstepper-block {
+	display: block
+}
+
+.bs-stepper:not (.vertical ) .bs-stepper-pane.dstepper-none, .bs-stepper:not
+	(.vertical ) .content-stepper.dstepper-none {
+	display: none
+}
+
+.vertical .bs-stepper-pane.fade.dstepper-none, .vertical .content-stepper.fade.dstepper-none
+	{
+	visibility: hidden;
+	height: 0 !important;
+}
+
+/* Custom CSS */
+
+@media (min-width: 1200px) and (max-width: 1350px) {
+	
+	.bs-stepper.vertical .bs-stepper-header {
+		padding: 10px;
+	}
+	
+	.bs-stepper-content .content-stepper {
+		max-width: 90%;
+	}
+}
+
+/*# sourceMappingURL=bs-stepper.min.css.map */

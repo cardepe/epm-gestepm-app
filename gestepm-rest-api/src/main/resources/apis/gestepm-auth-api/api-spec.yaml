@@ -1,0 +1,75 @@
+openapi: 3.0.3
+info:
+  title: GestEPM Auth API
+  version: 0.1.0
+  description: GestEPM Auth API
+  contact:
+    name: Carlos Devesa Pérez
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /v1/authenticate:
+    post:
+      summary: V1 - Authenticate
+      operationId: post-authenticate-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResAuthenticate'
+        '401':
+          description: '**Unauthorized**: authentication-bad-credentials, jwt-expired-token, jwt-invalid-token'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqAuthenticate'
+      description: post-authenticate-v1
+      tags:
+        - authenticate-v1
+    parameters: []
+components:
+  schemas:
+    Authenticate:
+      title: Authenticate
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+        - token
+    ReqAuthenticate:
+      title: ReqAuthenticate
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+          format: password
+      required:
+        - login
+        - password
+    ResAuthenticate:
+      title: ResAuthenticate
+      type: object
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          $ref: '#/components/schemas/Authenticate'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags:
+  - name: authenticate-v1
+    description: V1 - Authenticate
+security:
+  - basicAuth: []

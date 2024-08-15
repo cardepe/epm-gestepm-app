@@ -1,0 +1,361 @@
+body {
+	background-color: #f1f2f7;
+}
+
+:root {
+	--primary: #006264;
+	--phover: #008083;
+	--accent: #F6AF00;
+	--ahover: #F3C041;
+}
+
+[data-notify="progressbar"] {
+	margin-bottom: 0px;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	width: 100%;
+	height: 5px;
+}
+
+.btn-standard {
+	color: #fff;
+	background-color: var(--primary);
+}
+
+.btn-standard:hover {
+	color: #fff;
+	background-color: var(--phover);
+}
+
+.btn-accent {
+	color: #fff;
+	background-color: var(--accent);
+}
+
+.btn-accent:hover {
+	color: #fff;
+	background-color: var(--ahover);
+}
+
+.page-title {
+	color: var(--primary);
+}
+
+.page-sub-title {
+	font-size: 12px;
+	color: var(--primary);	
+}
+
+.title {
+	font-size: 20px;
+	color: var(--primary);
+	margin-bottom: 10px;
+}
+
+.header-name {
+	font-size: 14px;
+	color: gray;
+	text-transform: uppercase;
+}
+
+img.idioma {
+	margin-top: 8px;
+	margin-right: 10px;
+}
+
+.img-profile-circle {
+	border-radius: 50%;
+	border: 1px solid lightblue;
+	padding: 2px;
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.infoSpanText {
+	font-size: 11px;
+	font-style: italic;
+}
+
+.errorSpanText {
+	color: red;
+	font-size: 11px;
+	font-style: italic;
+}
+
+.card-body span.title {
+	font-size: 12px;
+}
+
+/* Diferent Input Texts */
+
+.input {
+	height: 30px;
+	background-color: #fff !important;
+	text-align: center;
+	font-size: 12px;
+}
+
+.input.input-date {
+	background: url('/ui/static/images/fa-calendar.png') no-repeat scroll 9px;
+}
+
+.form-control.input.input-date:focus {
+	border-color: #ced4da;
+	box-shadow: none;
+}
+
+/* End Diferent Input Texts */
+
+/* Color Boxes */
+
+.listSignings {
+	list-style: none;
+}
+
+.listSignings span {
+	font-size: 12px;
+}
+
+.box {
+	margin-top: 7px;
+	margin-right: 5px;
+	width: 14px;
+	height: 14px;
+	float: left;
+}
+
+
+/* End Color Boxes */
+
+/* Calendar io */
+
+.calendarBtns,
+.holidayBtns {
+	line-height: 51px;	
+}
+
+.fc-head,
+.fc-body {
+	background-color: #fff;	
+}
+
+.fc-day-header span,
+.fc-axis span {
+	font-size: 12px;
+}
+
+/* End Calendar io */
+
+/* Select 2 */
+
+.selectStyle {
+	font-size: 12px;
+}
+
+.selectControlStyle {
+	display: block !important;
+    width: 100%;
+    height: calc(1.5em + .75rem + 2px) !important;
+    padding: .25rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da !important;
+    border-radius: .25rem !important;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.select2 {
+	width: 100% !important;
+}
+
+#projectDropdown + span > span > span,
+#displacementProjectDropdown + span > span > span,
+#manualSigningTypeDropdown + span > span > span,
+#createShareManualTypeDropdown + span > span > span,
+#projectFilterDropdown + span > span > span,
+#projectCopyDropdown + span > span > span,
+#projectId + span > span > span,
+#createShareProjectDropdown + span > span > span {
+	font-size: 12px;
+	height: 30px !important;
+	border-color: #ced4da !important;
+	text-align: center;
+	background: url('/ui/static/images/fa-project-diagram.png') no-repeat scroll 9px;
+}
+
+#sharesTypeDropdown + span > span > span {
+	font-size: 12px;
+	height: 30px !important;
+	border-color: #ced4da !important;
+	text-align: center;
+	background: url('/ui/static/images/fa-file.png') no-repeat scroll 9px;
+}
+
+#shareIdInput {
+	background: url('/ui/static/images/fa-id-card.png') no-repeat scroll 9px;
+}
+
+#stateFilterDropdown + span > span > span {
+	font-size: 12px;
+	height: 30px !important;
+	border-color: #ced4da !important;
+	text-align: center;
+	background: url('/ui/static/images/fa-calendar-check.png') no-repeat scroll 9px;
+}
+
+.userSelectPicker,
+#memberDropdown + span > span > span,
+#bossDropdown + span > span > span {
+	font-size: 12px;
+	height: 30px !important;
+	border-color: #ced4da !important;
+	text-align: center !important;
+	background: url('/ui/static/images/fa-project-diagram.png') no-repeat scroll 9px;
+}
+
+#usersDropdown + span > span > span,
+#responsableDropdown + span > span > span {
+	font-size: 12px;
+	height: 30px !important;
+	border-color: #ced4da !important;
+	text-align: center;
+	background: url('/ui/static/images/fa-users.png') no-repeat scroll 9px;
+}
+
+.defaultUserSelectPicker {
+	border-color: #ced4da !important;
+	text-align-last: left;
+	opacity: 1 !important;
+}
+
+.defaultUserSelectPicker:disabled {
+	color: red
+}
+
+/* End Select 2 */
+
+/* SelectPicker */
+
+.bootstrap-select .dropdown-toggle .filter-option {
+	text-align: center;
+}
+
+.bootstrap-select .dropdown-menu.show {
+	top: 29px !important;
+}
+
+.bootstrap-select.show-tick .dropdown-menu li a span.text {
+	font-size: 12px;
+}
+
+.bs-searchbox .form-control {
+	height: 30px;
+	font-size: 12px;
+}
+
+.bootstrap-select.show-tick .dropdown-menu .selected span.check-mark {
+	top: 7px;
+	font-size: 14px;
+}
+
+/* End SelectPicker */
+
+/* Pills */
+
+.nav-pills .nav-link.active {
+	color: #fff;
+	background-color: var(--primary);
+}
+
+.nav-pills .nav-link {
+	color: var(--primary);
+}
+
+.tab-content {
+	padding: 20px 10px;
+}
+
+/* End Pills */
+
+/* Describers */
+
+.describers span {
+	font-size: 12px;
+}
+
+/* End Describers */
+
+/* Calendar */
+
+.fc-time-grid-event .fc-title {
+	font-size: 11px;	
+}
+
+#v-pills-signing .fc-time-grid-event,
+.personalCalendar .fc-time-grid-event {
+	cursor: pointer;
+}
+
+/* End Calendar */
+
+/* Loading Wheel */
+
+.loading {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0,0,0,.5);
+    z-index: 1000;
+}
+
+.loading-wheel {
+	position: absolute;
+    top: 50%;
+    left: 50%;
+	
+    border: 7px solid #f3f3f3; /* Light grey */
+  	border-top: 7px solid #006264; /* Blue */
+  	border-radius: 50%;
+  	width: 75px;
+  	height: 75px;
+  	margin-top: -45px;
+    margin-left: -45px;
+  	animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* End Loading Wheel */
+
+/* Media Types */
+
+@media (max-width: 767.98px) { 
+	
+	.right-panel .page-header {
+		padding: 0;
+	}
+	
+/* 	.calendarBtns { */
+/* 		line-height: 93px;	 */
+/* 	} */
+}
+
+@media (max-width: 991.98px) { 
+	#calendar {
+		margin-bottom: 20px;
+	}
+}
+
+/* End Media Types */

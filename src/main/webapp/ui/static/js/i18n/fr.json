@@ -1,0 +1,26 @@
+{
+    "activitycenters": {
+        "create": {
+            "success": "Centre d'activités créé avec succès."
+        },
+        "update": {
+            "success": "Les paramètres du centre d'activités ont été mis à jour avec succès."
+        },
+        "delete": {
+            "alert": "Voulez-vous vraiment supprimer ce centre d'activités?",
+            "success": "Centre d'activités supprimé avec succès"
+        }
+    },
+    "countries": {
+        "create": {
+            "success": "Pays créé avec succès."
+        },
+        "update": {
+            "success": "Les paramètres du pays ont été mis à jour avec succès."
+        },
+        "delete": {
+            "alert": "Voulez-vous vraiment supprimer ce pays?",
+            "success": "Pays supprimé avec succès"
+        }
+    }
+}

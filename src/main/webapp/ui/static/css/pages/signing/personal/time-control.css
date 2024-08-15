@@ -1,0 +1,23 @@
+.gray-circle {
+	background: gray;
+   	border-radius: 0.8em;
+  	-moz-border-radius: 0.8em;
+  	-webkit-border-radius: 0.8em;
+  	display: inline-block;
+  	height: 0.6em;
+  	width: 0.6em;
+  	margin-right: 10px;
+  	margin-bottom: 1px;
+}
+
+.green-circle {
+	background: green;
+   	border-radius: 0.8em;
+  	-moz-border-radius: 0.8em;
+  	-webkit-border-radius: 0.8em;
+  	display: inline-block;
+  	height: 0.6em;
+  	width: 0.56em;
+  	margin-right: 10px;
+  	margin-bottom: 1px;
+}

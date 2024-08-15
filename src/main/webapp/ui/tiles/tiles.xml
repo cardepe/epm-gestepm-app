@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE tiles-definitions PUBLIC  
+       "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"  
+       "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">  
+<tiles-definitions>
+
+	<!-- Plantillas -->
+	
+	<!-- Plantilla Layout -->
+    <definition name="fullFrameLayaout" template="/ui/jsp/layout/main.jsp">
+        <put-attribute name="header" value="/ui/jsp/layout/header.jsp" />
+        <put-attribute name="sidebar" value="/ui/jsp/layout/sidebar.jsp" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="/ui/jsp/layout/footer.jsp" />
+    </definition>
+    
+    <!-- Login Layout -->
+    <definition name="loginLayout" template="/ui/jsp/layout/login/main.jsp">
+        <put-attribute name="body" value="/ui/jsp/view/login.jsp" />
+    </definition>
+    
+    <!-- Unauthorized Layout -->
+    <definition name="unauthorizedLayout" template="/ui/jsp/layout/unauthorized/main.jsp">
+        <put-attribute name="body" value="/ui/jsp/view/unauthorized.jsp" />
+    </definition>
+    
+    <!-- /End Plantillas -->
+   
+    <!-- Frontal Publico -->
+    <definition name="index" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/index.jsp" />
+    </definition>
+    
+    <!-- Signing -->
+    <definition name="signing-page" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/signing/signing.jsp" />
+    </definition>
+    
+    <definition name="signing-detail" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/signing/crud/detail.jsp" />
+    </definition>
+
+    <definition name="manual-signing" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/signing/manual.jsp" />
+    </definition>
+
+    <definition name="personal-signing" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/signing/personal.jsp" />
+    </definition>
+    
+    <definition name="time-control-view" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/signing/time_control/view.jsp" />
+    </definition>
+    
+    <definition name="time-control-detail" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/signing/time_control/detail.jsp" />
+    </definition>
+
+    <definition name="modified-list" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/signing/modified_list.jsp" />
+    </definition>
+    
+    <!-- Expenses -->
+    <definition name="personal-expenses" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/expenses/personal.jsp" />
+    </definition>
+    
+    <definition name="personal-expenses-create" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/expenses/crud/create.jsp" />
+    </definition>
+    
+    <definition name="personal-expenses-view" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/expenses/crud/view.jsp" />
+    </definition>
+    
+    <definition name="corrective-expenses" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/expenses/correctives.jsp" />
+    </definition>
+    
+    <!-- Holidays -->
+    <definition name="holidays" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/holidays/holidays.jsp" />
+    </definition>
+
+    <definition name="holidays-admin" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/holidays/holidays-admin.jsp" />
+    </definition>
+    
+    <!-- Shares -->
+    <definition name="intervention-share" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/intervention.jsp" />
+    </definition>
+    
+    <definition name="intervention-share-create" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/crud/create.jsp" />
+    </definition>
+    
+    <definition name="intervention-share-detail" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/intervention/no-programmed/detail.jsp" />
+    </definition>
+    
+    <definition name="displacement-share" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/displacement.jsp" />
+    </definition>
+    
+    <definition name="work-share" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/work.jsp" />
+    </definition>
+    
+    <!-- Projects -->
+    <definition name="projects" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/projects/projects.jsp" />
+    </definition>
+    
+    <definition name="project-detail" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/projects/crud/detail.jsp" />
+    </definition>
+    
+    <definition name="project-view" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/projects/view.jsp" />
+    </definition>
+    
+    <!-- Users -->
+    <definition name="users" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/users/users.jsp" />
+    </definition>
+    
+    <definition name="user-detail" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/users/crud/detail.jsp" />
+    </definition>
+    
+    <!-- Roles -->
+    <definition name="roles" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/roles/roles.jsp" />
+    </definition>
+    
+    <!-- Displacements -->
+    <definition name="admin-displacements" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/admin/displacements/displacements.jsp" />
+    </definition>
+    
+    <!-- Countries -->
+    <definition name="admin-countries" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/admin/countries/view.jsp" />
+    </definition>
+    
+    <!-- Activity Centers -->
+    <definition name="admin-activity-centers" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/admin/activitycenters/view.jsp" />
+    </definition>
+    
+    <!-- Holidays -->
+    <definition name="admin-holidays" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/admin/holidays/holidays.jsp" />
+    </definition>
+    
+    <!-- Admin Families -->
+    <definition name="admin-families" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/admin/families/families.jsp" />
+    </definition>
+    
+    <definition name="admin-families-create" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/admin/families/crud/create.jsp" />
+    </definition>
+    
+    <definition name="admin-families-edit" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/admin/families/crud/edit.jsp" />
+    </definition>
+    
+    <!-- Scripts -->
+    <definition name="script-login-forum" template="/ui/jsp/layout/script/forum/login.jsp"></definition>
+    
+    <!-- Login -->
+    <definition name="login" extends="loginLayout">
+        <put-attribute name="body" value="/ui/jsp/view/login.jsp" />     
+    </definition>
+    
+     <!-- Unauthorized -->
+    <definition name="unauthorized" extends="unauthorizedLayout">
+        <put-attribute name="body" value="/ui/jsp/view/unauthorized.jsp" />     
+    </definition>
+
+	<!-- Vista Error -->   
+    <definition name="simple-error" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/errors/simpleError.jsp" />
+    </definition>
+
+</tiles-definitions>

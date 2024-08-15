@@ -1,0 +1,67 @@
+sql:
+
+  qry-list-of-al: |
+
+    SELECT app_locale.*
+    FROM (
+      SELECT DISTINCT
+        l.locale_id AS id_pagination,
+        l.locale_id AS app_locale_id,
+        l.locale_iso AS app_locale_iso,
+        l.description AS app_locale_name,
+        CASE WHEN l.locale_iso = ${lib-java.app-locale.default-locale}
+             THEN 1
+             ELSE 0
+        END AS app_locale_is_default
+
+      FROM ${lib-java.schemas.maestros}.locale l
+
+      WHERE l.locale_iso IN (${lib-java.app-locale.supported-locales-iso})
+
+    ) AS app_locale
+
+    #whereToken #filter
+
+  qry-page-of-al: |
+
+    SELECT res_.* FROM ( SELECT DENSE_RANK() OVER(ORDER BY id_pagination DESC) AS rownumber_, temp_.* FROM (
+
+    ${sql.qry-list-of-al}
+
+     ) temp_ ) res_
+    WHERE rownumber_ BETWEEN :qry_prm_offset + 1 AND :qry_prm_limit + :qry_prm_offset
+
+  qry-count-of-al: |
+
+    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    FROM (${sql.qry-list-of-al}) final
+
+  filter-al-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-al-ids}
+      -- ${sql.predicate-for-al-locales}
+      -- ${sql.predicate-for-al-is-default}
+    -- AND]
+
+  filter-al-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-al-id}
+    -- AND]
+
+  predicate-for-al-id: |
+
+    app_locale.app_locale_id = :attr_al_id
+
+  predicate-for-al-ids: |
+
+    app_locale.app_locale_id IN (:attr_al_ids)
+
+  predicate-for-al-locales: |
+
+    app_locale.app_locale_iso IN (:attr_al_locales)
+
+  predicate-for-al-is-default: |
+
+    ((:app_locale_is_default = 1 AND app_locale.app_locale_is_default = 1) OR (:attr_al_is_default = 0 AND app_locale.attr_al_is_default = 0))

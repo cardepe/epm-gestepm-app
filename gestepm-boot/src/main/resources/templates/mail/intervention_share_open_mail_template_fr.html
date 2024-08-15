@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		
+		<style>
+			.normalText,
+			.normalText ul li {
+				font-size: 14px;
+				color: #000;
+			}
+			
+			.normalA {
+				font-weight: bold;
+				text-decoration: none;
+			}
+			
+			.smallInfoText {
+				font-size: 12px;
+				color: #016163;
+				font-style: italic;
+			}
+			
+			.smallInfoA {
+				color: #016163;
+				font-weight: bold;
+				text-decoration: none;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body style="margin: 0; padding: 0;">
+	
+		<p class="normalText">L'opérateur {{username}} a démarré el rapport d'intervention non planifiée {{id}} ({{forumTitle}}). Cela a commencé à {{startDate}} sur le projet "{{projectName}}".</p>
+		<p>Description de l'incident: {{description}}</p>
+		<p>Vous pouvez voir le détail de l'incident <a href="https://gestepm.com/shares/intervention/no-programmed/detail/{{idUrl}}" class="normalA">ici</a>.</p>
+		<p>Pour accéder au détail de l'incident dans le forum: <a href="http://forum.gestepm.com/{{forumUrl}}">http://forum.gestepm.com/{{forumUrl}}</a></p>
+		<br />
+		<img src="https://epmgastech.com/wp-content/uploads/2018/08/Logo_EPM_web.png" />
+		<br /><br />
+		<span class="smallInfoText">Cet e-mail a été généré automatiquement via l'application <a href="https://gestepm.com/" class="smallInfoA">GestEPM</a>.</span>
+	</body>
+</html>

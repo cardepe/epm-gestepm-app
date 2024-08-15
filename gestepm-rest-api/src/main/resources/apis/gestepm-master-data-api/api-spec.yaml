@@ -1,0 +1,1008 @@
+openapi: 3.0.3
+info:
+  title: GestEPM Master Data API
+  version: 0.1.0
+  description: GestEPM Master Data API
+  contact:
+    name: Carlos Devesa Pérez
+servers:
+  - url: /api
+paths:
+  /v1/activity-centers:
+    parameters: []
+    get:
+      summary: V1 - List activity centers
+      operationId: list-activity-centers-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResActivityCenterList'
+      description: list-activity-centers-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: List of activity center ids to filter.
+        - schema:
+            type: string
+          in: query
+          name: name
+          description: Search by activity center name.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: countryIds
+          description: List of country ids to filter.
+      tags:
+        - activity-centers-v1
+    post:
+      summary: V1 - Create activity center
+      operationId: create-activity-center-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResActivityCenter'
+        '404':
+          description: country-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+        '409':
+          description: activity-center-already-exist
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: create-activity-center-v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqCreateActivityCenter'
+      tags:
+        - activity-centers-v1
+  '/v1/activity-centers/{id}':
+    parameters:
+      - schema:
+          type: integer
+        name: id
+        in: path
+        required: true
+        description: Activity center id.
+    get:
+      summary: V1 - Find activity center
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResActivityCenter'
+        '404':
+          description: activity-center-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-activity-center-by-id-v1
+      description: find-activity-center-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+      tags:
+        - activity-centers-v1
+    put:
+      summary: V1 - Update activity center
+      operationId: update-activity-center-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResActivityCenter'
+        '404':
+          description: activity-center-not-found | country-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: update-activity-center-v1
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqUpdateActivityCenter'
+      tags:
+        - activity-centers-v1
+    delete:
+      summary: V1 - Delete activity center
+      operationId: delete-activity-center-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: activity-center-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: delete-activity-center-v1
+      tags:
+        - activity-centers-v1
+  /v1/countries:
+    get:
+      summary: V1 - List countries
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResCountryList'
+      operationId: list-countries-v1
+      description: list-countries-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: List of country ids to filter.
+        - schema:
+            type: string
+          in: query
+          name: name
+          description: Search by country name.
+        - schema:
+            type: array
+            items:
+              type: string
+          in: query
+          name: tags
+          description: List of tags to filter.
+      tags:
+        - countries-v1
+    post:
+      summary: V1 - Create country
+      operationId: create-country-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResCountry'
+        '409':
+          description: country-already-exist
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: create-country-v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqCreateCountry'
+      tags:
+        - countries-v1
+    parameters: []
+  '/v1/countries/{id}':
+    parameters:
+      - schema:
+          type: integer
+        name: id
+        in: path
+        required: true
+        description: Country id.
+    get:
+      summary: V1 - Find country
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResCountry'
+        '404':
+          description: country-not-found
+      operationId: find-country-by-id-v1
+      description: find-country-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+      tags:
+        - countries-v1
+    put:
+      summary: V1 - Update country
+      operationId: update-country-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResCountry'
+        '404':
+          description: country-not-found
+      description: update-country-v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqUpdateCountry'
+      tags:
+        - countries-v1
+    delete:
+      summary: V1 - Delete country
+      operationId: delete-country-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: country-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: delete-country-v1
+      tags:
+        - countries-v1
+  /v1/displacements:
+    get:
+      summary: V1 - List displacements
+      tags:
+        - displacement-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResDisplacementList'
+      operationId: list-displacements-v1
+      description: list-displacements-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: List of displacement ids to filter.
+        - schema:
+            type: integer
+          in: query
+          name: activityCenterId
+          description: List of activity center ids to filter.
+        - schema:
+            type: string
+          in: query
+          name: name
+          description: Search by displacement name.
+        - schema:
+            type: integer
+          in: query
+          name: type
+          description: Search by displacement type.
+    post:
+      summary: ''
+      operationId: create-displacement-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResDisplacement'
+        '404':
+          description: activity-center-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - displacement-v1
+      description: create-displacement-v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqCreateDisplacement'
+  '/v1/displacements/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    get:
+      summary: V1 - Find displacement
+      tags:
+        - displacement-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResDisplacement'
+        '404':
+          description: displacement-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-displacement-by-id-v1
+      description: find-displacement-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+    put:
+      summary: V1 - Update displacement
+      operationId: update-displacement-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResDisplacement'
+        '404':
+          description: displacement-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - displacement-v1
+      description: update-displacement-v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqUpdateDisplacement'
+    delete:
+      summary: V1 - Delete displacement
+      operationId: delete-displacement-v1
+      responses:
+        '200':
+          description: '**OK**'
+        '404':
+          description: displacement-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - displacement-v1
+      description: delete-displacement-v1
+  /v1/levels:
+    get:
+      summary: V1 - List levels
+      tags:
+        - levels-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResLevelList'
+      operationId: list-levels-v1
+      description: list-levels-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: List of level ids to filter.
+        - schema:
+            type: string
+          in: query
+          name: name
+          description: Search by level name.
+    parameters: []
+    post:
+      summary: V1 - Create level
+      operationId: create-level-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResLevel'
+        '409':
+          description: level-already-exists
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - levels-v1
+      description: create-level-v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqCreateLevel'
+  '/v1/levels/{id}':
+    parameters:
+      - schema:
+          type: integer
+        name: id
+        in: path
+        required: true
+        description: Level id.
+    get:
+      summary: V1 - Find level
+      tags:
+        - levels-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResLevel'
+        '404':
+          description: level-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-level-by-id-v1
+      description: find-level-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+    put:
+      summary: V1 - Update Level
+      operationId: update-level-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResLevel'
+        '404':
+          description: level-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+        '409':
+          description: level-already-exists
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - levels-v1
+      description: update-level-v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqUpdateLevel'
+    delete:
+      summary: V1 - Delete level
+      operationId: delete-level-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: level-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - levels-v1
+      description: delete-level-v1
+  /v1/working-holidays:
+    get:
+      summary: V1 - List working holidays
+      tags:
+        - working-holidays-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResWorkingHolidayList'
+      operationId: list-working-holidays-v1
+      description: list-working-holidays-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: List of working holiday ids to filter.
+        - schema:
+            type: string
+          in: query
+          name: name
+          description: Search by working holiday name.
+        - schema:
+            type: string
+            format: date
+          in: query
+          name: date
+          description: Search by working holiday date.
+        - schema:
+            type: integer
+          in: query
+          name: countryId
+          description: Search by working holiday country.
+        - schema:
+            type: integer
+          in: query
+          name: activityCenterId
+          description: Search by working holiday activity center.
+    post:
+      summary: V1 - Create working holidays
+      operationId: create-working-holiday-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResWorkingHoliday'
+        '404':
+          description: country-not-found | activity-center-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - working-holidays-v1
+      description: create-working-holiday-v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqCreateWorkingHoliday'
+    parameters: []
+  '/v1/working-holidays/{id}':
+    parameters:
+      - schema:
+          type: integer
+        name: id
+        in: path
+        required: true
+        description: Working holiday id.
+    get:
+      summary: V1 - Find working holiday
+      tags:
+        - working-holidays-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResWorkingHoliday'
+        '404':
+          description: working-holiday-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-working-holiday-by-id-v1
+      description: find-working-holiday-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+    put:
+      summary: V1 - Update working holiday
+      operationId: update-working-holiday-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResWorkingHoliday'
+        '404':
+          description: working-holiday-not-found | country-not-found | activity-center-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - working-holidays-v1
+      description: update-working-holiday-v1
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqUpdateWorkingHoliday'
+    delete:
+      summary: V1 - Delete working holiday
+      operationId: delete-working-holiday-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: working-holiday-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - working-holidays-v1
+      description: delete-working-holiday-v1
+components:
+  schemas:
+    ActivityCenter:
+      title: ActivityCenter
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        country:
+          $ref: '#/components/schemas/Country'
+      required:
+        - id
+        - name
+        - country
+    Displacement:
+      title: Displacement
+      type: object
+      properties:
+        id:
+          type: integer
+        activityCenter:
+          $ref: ../gestepm-master-data-api/api-spec.yaml#/components/schemas/ActivityCenter
+        name:
+          type: string
+        type:
+          type: integer
+        totalTime:
+          type: integer
+      required:
+        - id
+        - activityCenter
+        - name
+        - type
+        - totalTime
+    ResActivityCenter:
+      title: ResActivityCenter
+      type: object
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          $ref: '#/components/schemas/ActivityCenter'
+    ResActivityCenterList:
+      title: ResActivityCenterList
+      type: object
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivityCenter'
+    ResDisplacement:
+      title: ResDisplacement
+      type: object
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          $ref: '#/components/schemas/Displacement'
+    ResDisplacementList:
+      title: ResDisplacementList
+      type: object
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Displacement'
+    ReqCreateActivityCenter:
+      title: ReqCreateActivityCenter
+      type: object
+      properties:
+        name:
+          type: string
+        countryId:
+          type: integer
+      required:
+        - name
+        - countryId
+    ReqCreateDisplacement:
+      title: ReqCreateDisplacement
+      type: object
+      properties:
+        activityCenterId:
+          type: integer
+        name:
+          type: string
+        type:
+          type: integer
+        totalTime:
+          type: integer
+      required:
+        - activityCenterId
+        - name
+        - type
+        - totalTime
+    ReqUpdateActivityCenter:
+      title: ReqUpdateActivityCenter
+      type: object
+      properties:
+        name:
+          type: string
+        countryId:
+          type: integer
+      required:
+        - name
+        - countryId
+    Country:
+      title: Country
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        tag:
+          type: string
+      required:
+        - id
+        - name
+        - tag
+    ReqUpdateDisplacement:
+      title: ReqUpdateDisplacement
+      type: object
+      properties:
+        activityCenterId:
+          type: integer
+        name:
+          type: string
+        type:
+          type: integer
+        totalTime:
+          type: integer
+      required:
+        - activityCenterId
+        - name
+        - type
+        - totalTime
+    ResCountry:
+      title: ResCountry
+      type: object
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          $ref: '#/components/schemas/Country'
+    ResCountryList:
+      title: ResCountryList
+      type: object
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Country'
+    ReqCreateCountry:
+      title: ReqCreateCountry
+      type: object
+      properties:
+        name:
+          type: string
+        tag:
+          type: string
+      required:
+        - name
+        - tag
+    ReqUpdateCountry:
+      title: ReqUpdateCountry
+      type: object
+      properties:
+        name:
+          type: string
+        tag:
+          type: string
+      required:
+        - name
+        - tag
+    Level:
+      title: Level
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        hourPrice:
+          type: number
+          format: double
+    ResLevel:
+      title: ResLevel
+      type: object
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          $ref: '#/components/schemas/Level'
+    ResLevelList:
+      title: ResLevelList
+      type: object
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Level'
+    ReqCreateLevel:
+      title: ReqCreateLevel
+      type: object
+      properties:
+        name:
+          type: string
+        hourPrice:
+          type: number
+          format: double
+    ReqUpdateLevel:
+      title: ReqUpdateLevel
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        hourPrice:
+          type: number
+          format: double
+    WorkingHoliday:
+      title: WorkingHoliday
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        date:
+          type: string
+          format: date
+        activityCenter:
+          $ref: '#/components/schemas/ActivityCenter'
+    ResWorkingHoliday:
+      title: ResWorkingHoliday
+      type: object
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          $ref: '#/components/schemas/WorkingHoliday'
+    ResWorkingHolidayList:
+      title: ResWorkingHolidayList
+      type: object
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkingHoliday'
+    ReqCreateWorkingHoliday:
+      title: ReqCreateWorkingHoliday
+      type: object
+      properties:
+        name:
+          type: string
+        date:
+          type: string
+          format: date
+        activityCenterId:
+          type: integer
+    ReqUpdateWorkingHoliday:
+      title: ReqUpdateWorkingHoliday
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        date:
+          type: string
+          format: date
+        activityCenterId:
+          type: integer
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags:
+  - name: activity-centers-v1
+    description: V1 - Activity centers
+  - name: countries-v1
+    description: V1 - Countries
+  - name: displacement-v1
+    description: V1 - Displacement
+  - name: levels-v1
+    description: V1 - Levels
+  - name: working-holidays-v1
+    description: V1 - Working holidays
+  - name: predefined-displacements-v1
+    description: V1 - Predefined displacements
+  - name: displacement-types-v1
+    description: V1 - Displacement types
+security:
+  - basicAuth: []

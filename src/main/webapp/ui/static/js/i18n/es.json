@@ -1,0 +1,35 @@
+{
+    "activitycenters": {
+        "create": {
+            "success": "Centro de actividad creado con éxito."
+        },
+        "update": {
+            "success": "Se ha actualizado la configuración del centro de actividad con éxito."
+        },
+        "delete": {
+            "alert": "¿Está seguro que desea eliminar este centro de actividad?",
+            "success": "Centro de actividad eliminado con éxito"
+        }
+    },
+    "countries": {
+        "create": {
+            "success": "País creado con éxito."
+        },
+        "update": {
+            "success": "Se ha actualizado la configuración del país con éxito."
+        },
+        "delete": {
+            "alert": "¿Está seguro que desea eliminar este país?",
+            "success": "País eliminado con éxito"
+        }
+    },
+    "shares": {
+        "noprogrammed": {
+            "intervention": {
+                "update": {
+                    "success": "Se ha actualizado la intervención con éxito."
+                }
+            }
+        }
+    }
+}

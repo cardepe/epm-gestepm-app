@@ -1,0 +1,57 @@
+sql:
+
+  qry-list-of-nps: |
+    
+    SELECT
+      nps.id AS id_pagination,
+      nps.id AS no_programmed_share_id,
+      nps.user_id,
+      nps.project_id,
+      nps.user_signing_id,
+      nps.notice_date,
+      nps.end_date,
+      nps.intervention_description,
+      nps.family,
+      nps.sub_family,
+      nps.topic_id,
+      nps.forum_title,
+      nps.state,
+      nps.last_diagnosis,
+      i.id AS intervention_id,
+      npsf.id AS no_programmed_share_file_id
+    FROM ${sch-gestepm}.intervention_shares nps
+    LEFT JOIN ${sch-gestepm}.intervention_sub_shares i ON i.intervention_id = nps.id
+    LEFT JOIN ${sch-gestepm}.intervention_share_files npsf ON npsf.share_id = nps.id
+
+    #whereToken #filter
+
+  qry-page-of-nps: |
+
+    ${sql.paginated-query-group-prefix}
+    ${sql.qry-list-of-nps}
+    ${sql.paginated-query-suffix}
+
+  qry-count-of-nps: |
+
+    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    FROM (${sql.qry-list-of-nps}) final
+
+  filter-nps-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-nps-ids}
+    -- AND]
+
+  filter-nps-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-nps-id}
+    -- AND]
+
+  predicate-for-nps-id: |
+
+    nps.id = :attr_nps_id
+
+  predicate-for-nps-ids: |
+
+    nps.id IN (:attr_nps_ids)

@@ -1,0 +1,13 @@
+package com.epm.gestepm.modelapi.country.service;
+
+import com.epm.gestepm.modelapi.country.dto.Country;
+
+import java.util.List;
+
+public interface CountryServiceOld {
+
+	Country getById(Long id);
+
+	List<Country> findAll();
+
+}

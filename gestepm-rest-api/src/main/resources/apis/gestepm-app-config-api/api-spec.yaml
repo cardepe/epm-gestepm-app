@@ -1,0 +1,239 @@
+openapi: 3.0.3
+info:
+  title: GestEPM App Config API
+  version: 0.1.0
+  description: GestEPM App Config API
+  contact:
+    name: Carlos Devesa Pérez
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /v1/app-locales:
+    get:
+      summary: V1 - List of application locales
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResAppLocaleList'
+      operationId: list-app-locale-v1
+      description: |-
+        Paginated list of **App Locales**.
+
+        If there are **no App Locales** then the `data` field of the response will be an `empty list { data: [] }`.
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: List of locale ids to filter.
+        - schema:
+            type: array
+            items:
+              type: string
+          in: query
+          name: locales
+          description: List of locale names to filter.
+        - schema:
+            type: boolean
+          in: query
+          name: isDefault
+          description: Filter by default locale.
+      tags:
+        - app-locale-v1
+    parameters: []
+  /v1/permissions:
+    get:
+      summary: V1 - List of permissions
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResPermissionList'
+      operationId: list-permission-v1
+      description: |-
+        Paginated list of **Permissions**.
+
+        If there are **no Permissions** then the `data` field of the response will be an `empty list { data: [] }`.
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: List of permission ids to filter.
+        - schema:
+            type: array
+            items:
+              type: string
+          in: query
+          name: permissions
+          description: List of permission names to filter.
+      tags:
+        - permission-v1
+    parameters: []
+  /v1/roles:
+    get:
+      summary: V1 - List of roles
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResRoleList'
+      operationId: list-role-v1
+      description: |-
+        Paginated list of **Roles**.
+
+        If there are **no Roles** then the `data` field of the response will be an `empty list { data: [] }`.
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: List of role ids to filter.
+        - schema:
+            type: array
+            items:
+              type: string
+          in: query
+          name: roles
+          description: List of role names to filter.
+      tags:
+        - role-v1
+    parameters: []
+components:
+  schemas:
+    AppLocale:
+      allOf:
+        - $ref: '#/components/schemas/Locale'
+        - type: object
+          properties:
+            isDefault:
+              type: boolean
+          required:
+            - isDefault
+    Locale:
+      title: App locale
+      type: object
+      description: An app locale
+      properties:
+        id:
+          type: integer
+          description: App locale identifier
+        locale:
+          type: string
+          description: App locale ISO identifier
+        name:
+          type: string
+          description: App locale name
+      required:
+        - id
+        - locale
+        - name
+    Permission:
+      title: Permission
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Permission identifier
+        name:
+          type: string
+          description: Permission name
+      required:
+        - id
+        - name
+    ResAppLocale:
+      title: App locale response
+      type: object
+      description: Response object containing data of a single app locale
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          $ref: '#/components/schemas/AppLocale'
+    ResAppLocaleList:
+      title: App locale list response
+      type: object
+      description: Response object containing data of a list of app locale
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AppLocale'
+    ResPermissionList:
+      title: Permission list response
+      type: object
+      description: Response object containing data of a list of permissions
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+    ResRoleList:
+      title: Role list response
+      type: object
+      description: Response object containing data of a list of roles
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+    Role:
+      title: Role
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Role identifier
+        name:
+          type: string
+          description: Role name
+        permissions:
+          type: array
+          description: List of permissions
+          items:
+            $ref: '#/components/schemas/Permission'
+      required:
+        - id
+        - name
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags:
+  - name: app-locale-v1
+    description: V1 - App locale configuration
+  - name: role-v1
+    description: V1 - Role configuration
+  - name: permission-v1
+    description: V1 - Permission configuration
+security:
+  - basicAuth: []

@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		
+		<style>
+			.normalText,
+			.normalText ul li {
+				font-size: 14px;
+				color: #000;
+			}
+			
+			.normalA {
+				font-weight: bold;
+				text-decoration: none;
+			}
+			
+			.smallInfoText {
+				font-size: 12px;
+				color: #016163;
+				font-style: italic;
+			}
+			
+			.smallInfoA {
+				color: #016163;
+				font-weight: bold;
+				text-decoration: none;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body style="margin: 0; padding: 0;">
+	
+		<p class="normalText">El operario {{username}} ha iniciado {{subShareType}} en el parte de intervención no programado {{id}} ({{forumTitle}}). Se ha iniciado a las {{startDate}} sobre el proyecto "{{projectName}}".</p>
+		<p>Podrá ver el detalle de la incidencia <a href="https://gestepm.com/shares/intervention/no-programmed/detail/{{idUrl}}" class="normalA">aquí</a>.</p>
+		<p>Para acceder al detalle de la incidencia en el foro: <a href="http://forum.gestepm.com/{{forumUrl}}">http://forum.gestepm.com/{{forumUrl}}</a></p>
+		<br />
+		<img src="https://epmgastech.com/wp-content/uploads/2018/08/Logo_EPM_web.png" />
+		<br /><br />
+		<span class="smallInfoText">Este correo electrónico se ha generado automáticamente a través de la aplicación <a href="https://gestepm.com/" class="smallInfoA">GestEPM</a>.</span>
+	</body>
+</html>

@@ -1,0 +1,78 @@
+sql:
+
+  qry-list-of-c: |
+
+    SELECT
+      c.country_id AS id_pagination,
+      c.country_id,
+      c.name,
+      c.tag
+    FROM ${sch-gestepm}.country c
+
+    #whereToken #filter
+
+  qry-page-of-c: |
+
+    ${sql.paginated-query-group-prefix}
+    ${sql.qry-list-of-c}
+    ${sql.paginated-query-suffix}
+
+  qry-count-of-c: |
+
+    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    FROM (${sql.qry-list-of-c}) final
+
+  qry-create-c: |
+
+    INSERT INTO ${sch-gestepm}.country (
+      name,
+      tag
+    )
+    VALUES (
+      :attr_c_name,
+      :attr_c_tag
+    )
+
+  qry-update-c: |
+
+    UPDATE
+      ${sch-gestepm}.country
+    SET
+      name = :attr_c_name,
+      tag = :attr_c_tag
+    WHERE
+      country_id = :attr_c_id
+
+  qry-delete-c: |
+
+    DELETE FROM ${sch-gestepm}.country WHERE country_id = :attr_c_id
+
+  filter-c-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-c-ids}
+      -- ${sql.predicate-for-c-name}
+      -- ${sql.predicate-for-c-tags}
+    -- AND]
+
+  filter-c-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-c-id}
+    -- AND]
+
+  predicate-for-c-id: |
+
+    c.country_id = :attr_c_id
+
+  predicate-for-c-ids: |
+
+    c.country_id IN (:attr_c_ids)
+
+  predicate-for-c-name: |
+
+    LOWER(c.name) LIKE LOWER(:attr_c_name)
+
+  predicate-for-c-tags: |
+
+    c.tag IN (:attr_c_tags)

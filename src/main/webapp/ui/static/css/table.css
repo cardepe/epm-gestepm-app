@@ -1,0 +1,179 @@
+.dataTable thead, .dataTable em, .dataTable thead, .dataTable a.em {
+	color: #006264;
+}
+
+.dataTable td {
+	color: gray;
+	font-size: 14px;
+	vertical-align: middle;
+}
+
+.dataTable th {
+	font-size: 14px;
+	text-align: center;
+	font-weight: 600;
+	border-top-width: 0;
+	border-bottom-width: 1px !important;
+}
+
+.dataTable tfoot th {
+	border-top-width: 1px;
+}
+
+table.smallTable thead th {
+	font-size: 11px;
+}
+
+table.smallTable tbody td {
+	font-size: 11px;
+}
+
+table.smallTable.dataTable em, table.smallTable.dataTable a.em {
+	font-size: 10px;
+	height: 22px;
+	width: 22px;
+	line-height: 22px;
+}
+
+table.dataTable {
+	margin-top: 0 !important;
+}
+
+table.dataTable em, table.dataTable a.em {
+	font-size: 16px;
+	margin: 0 5px;
+	cursor: pointer;
+	display: inline-block;
+	border-radius: 50%;
+	text-align: center;
+	position: relative;
+	z-index: 1;
+	width: 32px;
+	height: 32px;
+	line-height: 32px;
+}
+
+table.dataTable em:after, table.dataTable a.em:after {
+	pointer-events: none;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	content: '';
+	-webkit-box-sizing: content-box; 
+	-moz-box-sizing: content-box; 
+	box-sizing: content-box;
+}
+
+table.dataTable em:before, table.dataTable a.em:before {
+	speak: none;
+	display: block;
+}
+
+table.dataTable td, table.dataTable th {
+	outline: none; /* Fix Focus Border */
+}
+
+/* Icon efects */
+table.dataTable em, table.dataTable a.em {
+	box-shadow: 0 0 0 4px rgba(0,98,100,0.1);
+	overflow: hidden;
+	-webkit-transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+	-moz-transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+	transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+table.dataTable em:after, table.dataTable a.em:after {
+	display: none;
+}
+
+table.dataTable em:hover, table.dataTable a.em:hover {
+	background: #006264;
+	color: #fff;
+	box-shadow: 0 0 0 8px rgba(0,98,100,0.3);
+}
+
+table.dataTable em:hover:before, table.dataTable a.em:hover:before {
+	-webkit-animation: toBottomFromTop 0.3s forwards;
+	-moz-animation: toBottomFromTop 0.3s forwards;
+	animation: toBottomFromTop 0.3s forwards;
+}
+
+@-webkit-keyframes toBottomFromTop {
+	49% {
+		-webkit-transform: translateY(100%);
+	}
+	50% {
+		opacity: 0;
+		-webkit-transform: translateY(-100%);
+	}
+	51% {
+		opacity: 1;
+	}
+}
+@-moz-keyframes toBottomFromTop {
+	49% {
+		-moz-transform: translateY(100%);
+	}
+	50% {
+		opacity: 0;
+		-moz-transform: translateY(-100%);
+	}
+	51% {
+		opacity: 1;
+	}
+}
+@keyframes toBottomFromTop {
+	49% {
+		transform: translateY(100%);
+	}
+	50% {
+		opacity: 0;
+		transform: translateY(-100%);
+	}
+	51% {
+		opacity: 1;
+	}
+}
+
+
+table.dataTable em:hover:after, table.dataTable a.em:hover:after {
+	-webkit-transform: scale(0.85);
+	-moz-transform: scale(0.85);
+	-ms-transform: scale(0.85);
+	transform: scale(0.85);
+}
+
+	
+.table-striped tbody tr:nth-of-type(odd) {
+	background-color: transparent;
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+	background-color: #fafafa;
+}
+
+.dataTables_paginate .pagination {
+	margin-top: 15px !important;
+	font-size: 14px;
+}
+
+.dataTables_paginate .pagination .paginate_button.active a, .dataTables_paginate .pagination .paginate_button:hover a {
+	background-color: #006264;
+	border-color: #dee2e6;
+	cursor: pointer;
+}
+
+.dataTables_info {
+	padding-top: 0 !important;
+	font-size: 12px;
+}
+
+.dataTables_length label {
+	margin-top: 15px;
+	font-size: 12px;
+}
+
+.dataTables_length label select {
+	font-size: 12px;
+}

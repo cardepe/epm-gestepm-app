@@ -1,0 +1,521 @@
+openapi: 3.0.3
+info:
+  title: GestEPM Core API
+  version: 0.1.0
+  description: GestEPM Core API
+  contact:
+    name: Carlos Devesa Pérez
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /v1/shares/no-programmed:
+    get:
+      summary: V1 - List no programmed shares
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResNoProgrammedShareList'
+      operationId: list-no-programmed-shares-v1
+      description: list-no-programmed-shares-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+      tags:
+        - no-programmed-share-v1
+    post:
+      summary: V1 - Create no programmed share
+      operationId: create-no-programmed-share-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResNoProgrammedShare'
+        '404':
+          description: user-not-found | project-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: create-no-programmed-share-v1
+      tags:
+        - no-programmed-share-v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqCreateNoProgrammedShare'
+  '/v1/shares/no-programmed/{id}':
+    parameters:
+      - schema:
+          type: integer
+        name: id
+        in: path
+        required: true
+        description: No programmed share id.
+    get:
+      summary: V1 - Find no programmed share
+      tags:
+        - no-programmed-share-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResNoProgrammedShare'
+        '404':
+          description: no-programmed-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-no-programmed-share-by-id-v1
+      description: find-no-programmed-share-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+    put:
+      summary: V1 - Update no programmed share
+      operationId: update-no-programmed-share-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResNoProgrammedShare'
+        '404':
+          description: no-programmed-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: update-no-programmed-share-v1
+      tags:
+        - no-programmed-share-v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReqUpdateNoProgrammedShare'
+    delete:
+      summary: V1 - Delete no programmed share
+      operationId: delete-no-programmed-share-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: no-programmed-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: delete-no-programmed-share-v1
+      tags:
+        - no-programmed-share-v1
+  /v1/users:
+    get:
+      summary: V1 - List users
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResUserList'
+      operationId: list-users-v1
+      description: list-users-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+      tags:
+        - user-v1
+    post:
+      summary: ''
+      operationId: post-api-users
+      responses:
+        '200':
+          description: OK
+      tags:
+        - user
+    parameters: []
+  '/v1/users/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+        description: User id.
+    get:
+      summary: Your GET endpoint
+      tags:
+        - user
+      responses: {}
+      operationId: get-api-users-id
+    put:
+      summary: ''
+      operationId: put-api-users-id
+      responses:
+        '200':
+          description: OK
+      tags:
+        - user
+    delete:
+      summary: ''
+      operationId: delete-api-users-id
+      responses:
+        '200':
+          description: OK
+      tags:
+        - user
+components:
+  schemas:
+    Family:
+      title: Family
+      x-stoplight:
+        id: wr1b8bilbahz0
+      type: object
+      properties:
+        id:
+          type: integer
+    Intervention:
+      title: NoProgrammedSubShare
+      x-stoplight:
+        id: isocdt4oo7s7y
+      type: object
+      properties:
+        id:
+          type: integer
+    NoProgrammedShare:
+      title: NoProgrammedShare
+      x-stoplight:
+        id: nkbdyy6acj6uf
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        project:
+          $ref: '#/components/schemas/Project'
+        userSigning:
+          $ref: '#/components/schemas/UserSigning'
+        startDate:
+          type: string
+          x-stoplight:
+            id: yizr915id0hco
+          format: date-time
+        endDate:
+          type: string
+          x-stoplight:
+            id: hk6tamjfxzyw9
+          format: date-time
+        description:
+          type: string
+          x-stoplight:
+            id: gdj67dr4ncyyd
+        family:
+          $ref: '#/components/schemas/Family'
+        subFamily:
+          $ref: '#/components/schemas/SubFamily'
+        topicId:
+          type: integer
+          x-stoplight:
+            id: j8jp9c1aphphk
+        forumTitle:
+          type: string
+          x-stoplight:
+            id: l7fu2mhea9mhk
+        state:
+          type: integer
+          x-stoplight:
+            id: anff5xkbzmal1
+        lastDiagnosis:
+          type: integer
+          x-stoplight:
+            id: g8rnuovvahzqf
+        interventions:
+          x-stoplight:
+            id: vbc9pywk2s6rp
+          type: array
+          items:
+            $ref: '#/components/schemas/Intervention'
+        files:
+          type: array
+          x-stoplight:
+            id: bm1bnujfonrek
+          items:
+            $ref: '#/components/schemas/ShareFile'
+      required:
+        - id
+        - user
+        - project
+        - startDate
+        - description
+        - family
+        - subFamily
+        - state
+    Project:
+      title: Project
+      x-stoplight:
+        id: o6laestj8lfrr
+      type: object
+      properties:
+        id:
+          type: integer
+    ResNoProgrammedShare:
+      title: ResNoProgrammedShare
+      x-stoplight:
+        id: vgzytil43v8ax
+      type: object
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          $ref: '#/components/schemas/NoProgrammedShare'
+    ResNoProgrammedShareList:
+      title: ResNoProgrammedShareList
+      x-stoplight:
+        id: kkaakfc5r7bud
+      type: object
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          type: array
+          x-stoplight:
+            id: iyhras92uhizi
+          items:
+            $ref: '#/components/schemas/NoProgrammedShare'
+    ReqCreateNoProgrammedShare:
+      title: ReqCreateNoProgrammedShare
+      x-stoplight:
+        id: ldpnyzilzvtqy
+      type: object
+      properties:
+        userId:
+          x-stoplight:
+            id: eppwqbphta01e
+          type: integer
+        projectId:
+          x-stoplight:
+            id: sggqr1fnt5uzm
+          type: integer
+        userSigningId:
+          x-stoplight:
+            id: agcxt9fkbe4kh
+          type: integer
+        description:
+          type: string
+          x-stoplight:
+            id: gacqn0qijanqe
+        familyId:
+          x-stoplight:
+            id: 98teq7u7a6y0t
+          type: integer
+        subFamilyId:
+          x-stoplight:
+            id: yo2o9mzu9xp6s
+          type: integer
+        files:
+          type: array
+          x-stoplight:
+            id: 3qo8zw2gm2r6l
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ReqCreateShareFile'
+      required:
+        - userId
+        - projectId
+        - description
+        - familyId
+        - subFamilyId
+    ReqCreateShareFile:
+      title: ReqCreateShareFile
+      x-stoplight:
+        id: e3ga7my2b3m3k
+      type: object
+      properties:
+        shareId:
+          type: integer
+          x-stoplight:
+            id: mrju0evmqp0ps
+        fileName:
+          type: string
+          x-stoplight:
+            id: 46ry9iia2fewn
+        content:
+          type: string
+          x-stoplight:
+            id: vn36yys9xsuwm
+      required:
+        - shareId
+        - fileName
+        - content
+    ReqUpdateNoProgrammedShare:
+      title: ReqUpdateNoProgrammedShare
+      x-stoplight:
+        id: 4l977lsk5qqti
+      type: object
+      properties:
+        userId:
+          x-stoplight:
+            id: k4qwbe31pwz42
+          type: integer
+        projectId:
+          x-stoplight:
+            id: 9wuhjcy3z2xjj
+          type: integer
+        userSigningId:
+          x-stoplight:
+            id: hzqgyqrnjx5a7
+          type: integer
+        startDate:
+          type: string
+          x-stoplight:
+            id: yizr915id0hco
+          format: date-time
+        endDate:
+          type: string
+          x-stoplight:
+            id: hk6tamjfxzyw9
+          format: date-time
+        description:
+          type: string
+          x-stoplight:
+            id: gdj67dr4ncyyd
+        familyId:
+          x-stoplight:
+            id: qcfa7bx25vwvo
+          type: integer
+        subFamilyId:
+          x-stoplight:
+            id: m9cecho7iw6eu
+          type: integer
+        topicId:
+          type: integer
+          x-stoplight:
+            id: j8jp9c1aphphk
+        forumTitle:
+          type: string
+          x-stoplight:
+            id: l7fu2mhea9mhk
+        state:
+          type: integer
+          x-stoplight:
+            id: anff5xkbzmal1
+        lastDiagnosis:
+          type: integer
+          x-stoplight:
+            id: g8rnuovvahzqf
+        files:
+          type: array
+          x-stoplight:
+            id: bm1bnujfonrek
+          items:
+            $ref: '#/components/schemas/ShareFile'
+    ResUserList:
+      title: ResUserList
+      type: object
+      properties:
+        metadata:
+          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    ShareFile:
+      title: ShareFile
+      x-stoplight:
+        id: m8bximaz51t4c
+      type: object
+      properties:
+        id:
+          type: integer
+        shareId:
+          type: integer
+          x-stoplight:
+            id: amc03k1l7w6r4
+        fileName:
+          type: string
+          x-stoplight:
+            id: oe2w9nxlwwwkk
+        content:
+          type: string
+          x-stoplight:
+            id: prsxmvb3f9spa
+      required:
+        - id
+        - shareId
+        - fileName
+        - content
+    SubFamily:
+      title: SubFamily
+      x-stoplight:
+        id: mw171n2rxxhvr
+      type: object
+      properties:
+        id:
+          type: integer
+    User:
+      title: User
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        mail:
+          type: string
+        name:
+          type: string
+        surnames:
+          type: string
+        country:
+          $ref: ../gestepm-master-data-api/api-spec.yaml#/components/schemas/Country
+        activityCenter:
+          $ref: ../gestepm-master-data-api/api-spec.yaml#/components/schemas/ActivityCenter
+        role:
+          $ref: ../gestepm-app-config-api/api-spec.yaml#/components/schemas/Role
+        level:
+          $ref: ../gestepm-master-data-api/api-spec.yaml#/components/schemas/Level
+      required:
+        - id
+        - username
+        - mail
+    UserSigning:
+      title: UserSigning
+      x-stoplight:
+        id: 0j82spjl8a6od
+      type: object
+      properties:
+        id:
+          type: integer
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags:
+  - name: no-programmed-share-v1
+    description: V1 - No Programmed Share
+  - name: user-v1
+    description: V1 - User
+security:
+  - basicAuth: []

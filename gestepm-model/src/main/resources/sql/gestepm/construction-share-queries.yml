@@ -1,0 +1,93 @@
+sql:
+
+  qry-list-of-cs: |
+
+    SELECT
+      cs.id AS id_pagination,
+      cs.id AS construction_share_id,
+      cs.user_id,
+      cs.project_id,
+      cs.user_signing_id,
+      cs.start_date,
+      cs.end_date,
+      cs.observations,
+      cs.signature_op,
+      cs.materials,
+      cs.mr_signature,
+      cs.displacement_share_id,
+      csf.id AS construction_share_file_id,
+      csf.name,
+      csf.ext,
+      csf.content
+    FROM ${sch-gestepm}.construction_shares cs
+    LEFT JOIN ${sch-gestepm}.construction_share_files csf ON csf.share_id = cs.id
+    LEFT JOIN ${sch-gestepm}.projects p ON p.id = cs.projct_id
+    LEFT JOIN ${sch-gestepm}.activity_center ac ON ac.activity_center_id = p.activity_center_id
+
+    #whereToken #filter
+
+  qry-page-of-cs: |
+
+    ${sql.paginated-query-group-prefix}
+    ${sql.qry-list-of-cs}
+    ${sql.paginated-query-suffix}
+
+  qry-count-of-cs: |
+
+    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    FROM (${sql.qry-list-of-cs}) final
+
+  filter-cs-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-cs-ids}
+      -- ${sql.predicate-for-cs-u-id}
+      -- ${sql.predicate-for-cs-p-id}
+      -- ${sql.predicate-for-cs-us-id}
+      -- ${sql.predicate-for-cs-start-date}
+      -- ${sql.predicate-for-cs-end-date}
+      -- ${sql.predicate-for-cs-progress}
+      -- ${sql.predicate-for-cs-ac-id}
+    -- AND]
+
+  filter-cs-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-cs-id}
+    -- AND]
+
+  predicate-for-cs-id: |
+
+    cs.id = :attr_cs_id
+
+  predicate-for-cs-ids: |
+
+    cs.id IN (:attr_cs_ids)
+
+  predicate-for-cs-u-id: |
+
+    cs.user_id = :attr_cs_u_id
+
+  predicate-for-cs-p-id: |
+
+    cs.project_id = :attr_cs_p_id
+
+  predicate-for-cs-us-id: |
+
+    cs.user_signing_id = :attr_cs_us_id
+
+  predicate-for-cs-start-date: |
+
+    cs.start_date = :attr_cs_start_date
+
+  predicate-for-cs-end-date: |
+
+    cs.end_date = :attr_cs_end_date
+
+  predicate-for-cs-progress: |
+
+    (:attr_cs_progress = 1 AND cs.end_date IS NULL) OR (cs.end_date IS NOT NULL)
+
+  predicate-for-cs-ac-id: |
+
+    ac.id = :attr_cs_ac_id

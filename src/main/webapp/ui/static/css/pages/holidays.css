@@ -1,0 +1,93 @@
+.calendar {
+	padding: 0;
+}
+
+.calendar .calendar-header {
+	display: none;
+}
+
+.calendar .month-container {
+	display: inline-flex;
+	background-color: transparent !important;
+    padding: 10px;
+    border-radius: 4px;
+    height: auto !important;
+}
+
+.calendar .months-container .month-container.month-2 {
+	width: 20% !important;
+}
+
+.calendar .month-container .month {
+	table-layout: fixed;
+    width: 280px;
+    margin: 0 auto 10px auto !important;
+    background: white;
+    border-bottom: 2px solid lightgray;
+    border-collapse: inherit;
+    border-radius: 4px;
+    /* border-spacing: 5px 0; */
+    height: 240px !important;
+}
+
+.calendar .month-container .month thead th {
+	padding-top: 5px;
+}
+
+.calendar .month-container .month .month-title {
+	font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 300;
+}
+
+.day-header {
+	color: var(--secondary);
+	font-weight: 300;
+	font-size: 12px !important;
+	font-style: italic;
+}
+
+#currentYear {
+	color: var(--secondary);
+	font-weight: 700;
+	font-size: 18px;
+	margin-right: 8px;
+}
+
+#accordion .accordion-header button {
+	color: var(--secondary);
+	width: 100%;
+    text-align: left;
+    font-size: 14px;
+    padding: 6px 0;
+}
+
+#accordion .accordion-header button:after {
+	font-family: "Font Awesome 5 Free"; 
+	font-weight: 900; 
+	content: "\f068";
+	float: right;
+	color: var(--secondary);
+	font-size: 12px;
+    margin: 2px 0;
+}
+
+#accordion .accordion-header button.collapsed {
+	color: var(--dark);
+}
+
+#accordion .accordion-header button.collapsed:after {
+	content: "\f067";
+}
+
+#accordion .accordion-header:hover button, #accordion .accordion-header button:focus {
+	text-decoration: none !important;
+	color: var(--secondary);
+}
+
+@media (max-width: 575.98px) {
+
+	.calendar .month-container .month {
+		width: 100%;
+	}
+}

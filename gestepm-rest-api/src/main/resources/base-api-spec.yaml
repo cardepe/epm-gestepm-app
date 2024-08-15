@@ -1,0 +1,380 @@
+openapi: 3.0.3
+info:
+  title: GestEPM Base API
+  version: 0.1.0
+  description: GestEPM Base API
+  contact:
+    name: Carlos Devesa Pérez
+servers:
+  - url: 'http://localhost:3000'
+    description: Localhost
+paths:
+  /v1:
+    get:
+      summary: V1 - Root
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResApi'
+      operationId: api-root
+      description: Root path for **API Version 1**. This resource will only include the metadata field as a response includingall resources under /v1 present on `metadata._childResources field of response. This links allows to navigate through the API.
+      tags:
+        - api-root-v1
+    parameters: []
+components:
+  parameters:
+    api-opt-links:
+      name: _links
+      in: query
+      description: API Option - Flag to show links for included resources on response.
+      required: false
+      schema:
+        type: boolean
+        default: false
+    filter-locale-id:
+      name: localeId
+      in: query
+      description: Locale ID of language to filter the requested resource. If not present the resource will be returned on the default API locale.
+      required: false
+      schema:
+        type: integer
+        format: int32
+    filter-locale:
+      name: locale
+      in: query
+      description: Locale ISO of language to filter the requested resource. If not present the resource will be returned on the default API locale.
+      required: false
+      schema:
+        type: string
+        minLength: 2
+        maxLength: 2
+    filter-pagination-limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return.
+      required: false
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+        maximum: 1000
+        default: 20
+    filter-pagination-offset:
+      name: offset
+      in: query
+      description: Number of items to skip before returning the results.
+      required: false
+      schema:
+        type: integer
+        format: int64
+        minimum: 0
+        default: 0
+    api-opt-meta:
+      name: _meta
+      in: query
+      schema:
+        type: array
+        items:
+          type: string
+      description: API Option - List of metadata fields to include in the response.
+    api-opt-expand:
+      name: _expand
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+        uniqueItems: true
+      description: API Option - List of field expansion for included resources on response.
+  schemas:
+    EnumLiveStatus:
+      type: string
+      enum:
+        - ACTIVE
+        - NOT_ACTIVE_YET
+        - DISCHARGED
+        - DELETED
+        - DEPRECATED
+        - NONE
+      title: Live status enumeration
+      description: Valid values for live statuses
+    FieldsApiSupport:
+      title: Flag to indicate if a resource is supported for the current api version
+      type: object
+      description: Fields containing the live status of a resource
+      properties:
+        supportedByCurrentAPIVersion:
+          type: boolean
+      required:
+        - supportedByCurrentAPIVersion
+    FieldsAuditCreate:
+      title: Resource creation info
+      type: object
+      properties:
+        createdAt:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+      required:
+        - createdAt
+        - createdBy
+      description: Fields containing creation user and time
+    FieldsAuditDischarge:
+      title: Resource discharge info
+      type: object
+      properties:
+        dischargedAt:
+          type: string
+          format: date-time
+        dischargedBy:
+          type: string
+      description: Fields containing discharge user and time
+    FieldsAuditLiveStatus:
+      title: Resource live status info
+      type: object
+      properties:
+        liveStatus:
+          $ref: '#/components/schemas/EnumLiveStatus'
+      description: Fields containing the live status of a resource
+    FieldsAuditUpdate:
+      title: Resource update info
+      type: object
+      properties:
+        modifiedAt:
+          type: string
+          format: date-time
+        modifiedBy:
+          type: string
+      description: Fields containing update user and time
+    FieldsExpansionError:
+      title: Expansion error
+      type: object
+      properties:
+        _expandError:
+          $ref: '#/components/schemas/ResError'
+      description: Field containing error upon a failed expansion
+    FieldsSelfLink:
+      title: Link to self
+      type: object
+      description: Field containing link to self resource embedded inside response of another resource.
+      properties:
+        _self:
+          type: string
+          description: Link to embedded resource.
+    Meta:
+      title: Request resource metadata
+      type: object
+      description: Metadata of the requested resource.
+      properties:
+        operation:
+          $ref: '#/components/schemas/MetaInfo'
+        request:
+          $ref: '#/components/schemas/MetaRequest'
+        expand:
+          $ref: '#/components/schemas/MetaExpansion'
+        pagination:
+          $ref: '#/components/schemas/MetaPagination'
+        sort:
+          $ref: '#/components/schemas/MetaSorting'
+        resourceLocale:
+          $ref: '#/components/schemas/MetaLocalization'
+        _toggleLinks:
+          type: string
+          description: Link to resource with the parameter showLinks toggled. Only pressent on GET operations with showLinks param.
+        _resourceDetail:
+          type: string
+        _childResources:
+          type: object
+    MetaExpansion:
+      title: Resource expansion
+      type: object
+      description: Metadata including info on the expansion fields allowed for the API operation.
+      properties:
+        _expandAll:
+          type: string
+          description: Link to resource with all fields expanded.
+        expandableFields:
+          type: array
+          description: List of allowed expansion fields for the resource.
+          items:
+            type: string
+    MetaInfo:
+      title: Resource info
+      type: object
+      description: Metadata including info on operation
+      properties:
+        apiOperationName:
+          type: string
+          description: Name of the api operation.
+        apiOperationDocLink:
+          type: string
+          description: Link to api operation documentation.
+    MetaLocalization:
+      title: Resource localization
+      type: object
+      properties:
+        currentResourceLocale:
+          type: string
+          description: The locale in which the returned resource is displayed.
+        resourceInDefaultLocale:
+          type: string
+          description: Link to current resource for default app locale.
+        resourceInCurrentUserLocale:
+          type: string
+          description: 'Link to current resource for locale of user. User locale is defined by the Accept-Language header, if not present resolves to default. If present and is the same as default app locale, only this link will be returned.'
+      required:
+        - currentResourceLocale
+      description: Metadata including info on resource localization.
+    MetaPagination:
+      title: Resource pagination
+      type: object
+      properties:
+        itemsCount:
+          type: integer
+          description: Number of items in the current response.
+        itemsStart:
+          type: integer
+          description: Index within total elements from which the items start in the current response.
+        itemsFinish:
+          type: integer
+          description: Index within total elements to which the items finish in the current response.
+        itemsTotal:
+          type: integer
+          description: Total elements of the resource from which the response is paginated.
+        requestTimestamp:
+          type: string
+          format: date-time
+        responseTimestamp:
+          type: string
+          format: date-time
+        links:
+          $ref: '#/components/schemas/MetaPaginationLinks'
+      description: Metadata including info on resource pagination.
+    MetaPaginationLinks:
+      title: Resource pagination links
+      type: object
+      description: Metadata including links for pagination.
+      properties:
+        self:
+          type: string
+          description: Link to current requested resource page. If it is the first page it will be the same as self and prev.
+        first:
+          type: string
+          description: Link to first page of requested resource.
+        last:
+          type: string
+          description: Link to last page of requested resource.
+        next:
+          type: string
+          description: Link to next page of requested resource. If there is no more pages it will be the same as self and last.
+        prev:
+          type: string
+          description: Link to previous page of requested resource. If it is the first page it will be the same as self and first.
+    MetaRequest:
+      title: Request info
+      type: object
+      properties:
+        requestURI:
+          type: string
+          description: 'The requested URI of the operation, including parameters.'
+        traceId:
+          type: string
+          description: Request identifier for troubleshooting.
+        requestTimestamp:
+          type: string
+          format: date-time
+          description: Timestamp when request started.
+        responseTimestamp:
+          type: string
+          format: date-time
+          description: Timestamp of response time.
+        responseTime:
+          type: string
+          description: Human readable response time (difference between requestTimestamp and responseTimestamp).
+      description: Metadata including info about the request.
+    MetaSorting:
+      title: Resource sorting
+      type: object
+      properties:
+        _sortASC:
+          type: string
+        _sortDESC:
+          type: string
+        sortableFields:
+          type: array
+          items:
+            type: string
+      description: Metadata including info on the sortable fields allowed for the API operation.
+    ResError:
+      title: Error response
+      type: object
+      description: Response object containing data of an error in a request
+      properties:
+        httpStatus:
+          type: integer
+          description: HTTP Status for error.
+        code:
+          type: integer
+          description: Error code. Groups errors of different areas.
+        title:
+          type: string
+          description: Unique identifier for error.
+        detail:
+          type: string
+          description: Short description of error.
+        errorTraceId:
+          type: string
+          description: Transaction ID of the request.
+        help:
+          type: object
+          description: Object containing hints and help to solve the error.
+      required:
+        - code
+        - title
+        - detail
+    ResSuccess:
+      title: Success response
+      type: object
+      properties:
+        httpStatus:
+          type: integer
+          description: HTTP Status for success.
+        title:
+          type: string
+          description: Unique identifier for success
+        detail:
+          type: string
+          description: Short description of success
+        traceId:
+          type: string
+          description: Transaction ID of the request.
+      required:
+        - title
+        - detail
+      description: Response object containing data of successful request
+    ResApi:
+      title: ApiRoot
+      type: object
+      properties:
+        metadata:
+          $ref: '#/components/schemas/Meta'
+      description: Response object containing data of api root
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    janusBearerAuth:
+      type: http
+      scheme: bearer
+  examples: {}
+tags:
+  - name: api-root-v1
+    description: V1 - Root api
+security:
+  - basicAuth: []
+  - janusBearerAuth: []

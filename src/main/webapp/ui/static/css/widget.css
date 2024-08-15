@@ -1,0 +1,41 @@
+.widget {
+	border: 0px solid transparent;
+    border-bottom: 1px solid lightgray;
+    background-color: #fff;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.widget .header {
+	padding: 16px;
+}
+
+.widget .body {
+	padding-top: 8px;
+	padding-bottom: 32px;
+	text-align: center
+}
+
+.widget .footer {
+	padding: 16px;
+	border-top: 1px solid rgba(0,0,0,.12);
+}
+
+.widget .h3 {
+	font-size: 16px;
+	margin-bottom: 0;
+}
+
+.widget .widget-display {
+	font-size: 72px;
+	color: var(--accent);
+	line-height: 72px;
+}
+
+.widget .h4 {
+	font-size: 15px;
+}
+
+.widget .font-weight-500 {
+	font-weight: 500;
+}

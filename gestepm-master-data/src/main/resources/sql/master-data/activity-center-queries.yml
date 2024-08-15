@@ -1,0 +1,78 @@
+sql:
+
+  qry-list-of-ac: |
+
+    SELECT
+      ac.activity_center_id AS id_pagination,
+      ac.activity_center_id,
+      ac.name,
+      ac.country_id
+    FROM ${sch-gestepm}.activity_center ac
+
+    #whereToken #filter
+
+  qry-page-of-ac: |
+
+    ${sql.paginated-query-group-prefix}
+    ${sql.qry-list-of-ac}
+    ${sql.paginated-query-suffix}
+
+  qry-count-of-ac: |
+
+    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    FROM (${sql.qry-list-of-ac}) final
+
+  qry-create-ac: |
+
+    INSERT INTO ${sch-gestepm}.activity_center (
+      name,
+      country_id
+    )
+    VALUES (
+      :attr_ac_name,
+      :attr_ac_c_id
+    )
+
+  qry-update-ac: |
+
+    UPDATE
+      ${sch-gestepm}.activity_center
+    SET
+      name = :attr_ac_name,
+      country_id = :attr_ac_c_id
+    WHERE
+      activity_center_id = :attr_ac_id
+
+  qry-delete-ac: |
+
+    DELETE FROM ${sch-gestepm}.activity_center WHERE activity_center_id = :attr_ac_id
+
+  filter-ac-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-ac-ids}
+      -- ${sql.predicate-for-ac-name}
+      -- ${sql.predicate-for-ac-c-id}
+    -- AND]
+
+  filter-ac-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-ac-id}
+    -- AND]
+
+  predicate-for-ac-id: |
+
+    ac.activity_center_id = :attr_ac_id
+
+  predicate-for-ac-ids: |
+
+    ac.activity_center_id IN (:attr_ac_ids)
+
+  predicate-for-ac-name: |
+
+    LOWER(ac.name) LIKE LOWER(:attr_ac_name)
+
+  predicate-for-ac-c-id: |
+
+    ac.country_id IN (:attr_ac_c_ids)
