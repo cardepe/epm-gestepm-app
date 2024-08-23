@@ -286,7 +286,7 @@
 												
 												<select id="countryId" name="countryId" class="form-control" required disabled>
 													<c:forEach items="${countries}" var="country">
-														<option value="${country.id}" ${userDetail.activityCenter.country.id == country.id ? 'selected' : ''}>${country.name}</option>
+														<option value="${country.id}" ${userDetail.displacement.country.id == country.id ? 'selected' : ''}>${country.name}</option>
 													</c:forEach>
 												</select>
 											</div>
@@ -299,8 +299,8 @@
 												</label>
 												
 												<select id="activityCenterId" name="activityCenterId" class="form-control" required disabled>
-													<c:forEach items="${activityCenters}" var="activityCenter">
-														<option value="${activityCenter.id}" ${userDetail.activityCenter.id == activityCenter.id ? 'selected' : ''}>${activityCenter.name}</option>
+													<c:forEach items="${activityCenters}" var="displacement">
+														<option value="${displacement.id}" ${userDetail.displacement.id == displacement.id ? 'selected' : ''}>${displacement.name}</option>
 													</c:forEach>
 												</select>
 											</div>
@@ -589,10 +589,10 @@
 
 					<div id="createShareProjectRow" class="row mt-2" style="display: none">
 						<div class="col">
-							<select id="createShareProjectDropdown" class="form-control input" name="project" onchange="loadActivityCenters(this)">
+							<select id="createShareProjectDropdown" class="form-control input" name="project">
 								<option></option>
 								<c:forEach items="${projects}" var="project">
-									<option value="${project.id}" data-info="${project.station}">
+									<option value="${project.id}" data-info="${project.activitiCenter.id}">
 										<spring:message code="${project.name}" />
 									</option>
 								</c:forEach>
@@ -615,7 +615,7 @@
 
 					<div id="createShareActivityCenterRow" class="row mt-2" style="display: none">
 						<div class="col">
-							<select id="createShareActivityCenterDropdown" class="form-control input" name="activityCenter">
+							<select id="createShareActivityCenterDropdown" class="form-control input" name="displacement">
 								<option></option>
 							</select>
 						</div>
@@ -1203,6 +1203,16 @@
 			});
 		});
 
+		$('#createShareProjectDropdown').change(function() {
+
+			let activityCenterId = $('#createShareProjectDropdown option:selected').attr('data-info');
+			let callbackFunction = function(html) {
+				$('#createShareActivityCenterDropdown').html(html);
+			}
+
+			loadDisplacements(activityCenterId, callbackFunction);
+		});
+
 		$('#signinExportButton').click(function() {
 			$('#signinExportModal').modal('hide');
 		});
@@ -1353,20 +1363,6 @@
 		}
 	}
 
-	function loadActivityCenters(control) {
-
-		const projectId = control.value;
-
-		$.ajax({
-			type: "GET",
-			url: "/admin/displacements/project/" + projectId + "/activity",
-			success: function(msg) {
-				msg = '<option disabled selected="selected">-</option>' + msg;
-				$('#createShareActivityCenterDropdown').html(msg);
-			}
-		});
-	}
-
 	function validateForm() {
 
 		var name = $('#name').val(); // document.getElementById('name');
@@ -1387,7 +1383,7 @@
 		const type = $('#createSigningForm #signingTypeDropdown').val();
 		let project = $('#createSigningForm #createShareProjectDropdown').val();
 		let manualType = $('#createSigningForm #createShareManualTypeDropdown').val();
-		let activityCenter = $('#createSigningForm #createShareActivityCenterDropdown').val();
+		let displacement = $('#createSigningForm #createShareActivityCenterDropdown').val();
 		let manualHours = $('#createSigningForm #manualHoursInput').val();
 		let displacementDate = $('#createSigningForm #displacementDateInput').val();
 		let startDate = $('#createSigningForm #startDateInput').val();
@@ -1395,18 +1391,18 @@
 
 		if (type === 'us') {
 			manualType = true;
-			activityCenter = true;
+			displacement = true;
 			displacementDate = true;
 			manualHours = true;
 		} else if (type === 'ps') {
 			manualType = true;
 			project = true;
-			activityCenter = true;
+			displacement = true;
 			displacementDate = true;
 			manualHours = true;
 		} else if (type === 'ums') {
 			project = true;
-			activityCenter = true;
+			displacement = true;
 			displacementDate = true;
 			manualHours = true;
 		} else if (type === 'ds') {
@@ -1415,7 +1411,7 @@
 			endDate = true;
 		}
 
-		return !type || !project || !manualType || !activityCenter || !manualHours || !displacementDate || !startDate || !endDate;
+		return !type || !project || !manualType || !displacement || !manualHours || !displacementDate || !startDate || !endDate;
 	}
 
 	function getShare(id, type) {

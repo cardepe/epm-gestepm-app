@@ -2,8 +2,6 @@ package com.epm.gestepm.controller;
 
 import com.epm.gestepm.model.activitycenter.service.ActivityCenterServiceImpl;
 import com.epm.gestepm.model.country.service.CountryServiceOldImpl;
-import com.epm.gestepm.model.displacement.service.DisplacementServiceImpl;
-import com.epm.gestepm.model.displacement.service.mapper.DisplacementMapper;
 import com.epm.gestepm.model.family.service.FamilyServiceImpl;
 import com.epm.gestepm.model.family.service.mapper.FamilyMapper;
 import com.epm.gestepm.model.holiday.service.HolidayServiceImpl;
@@ -18,9 +16,6 @@ import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.country.dto.Country;
-import com.epm.gestepm.modelapi.displacement.dto.Displacement;
-import com.epm.gestepm.modelapi.displacement.dto.DisplacementDTO;
-import com.epm.gestepm.modelapi.displacement.dto.DisplacementTableDTO;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
 import com.epm.gestepm.modelapi.family.dto.FamilyTableDTO;
@@ -63,9 +58,6 @@ public class AdminController {
 	private CountryServiceOldImpl countryService;
 	
 	@Autowired
-	private DisplacementServiceImpl displacementService;
-	
-	@Autowired
 	private FamilyServiceImpl familyService;
 	
 	@Autowired
@@ -82,188 +74,6 @@ public class AdminController {
 	
 	@Autowired
 	private SubRoleServiceImpl subRoleService;
-	
-	@GetMapping("/displacements")
-	public String displacements(Locale locale, Model model, HttpServletRequest request) {
-
-		try {
-
-			// Loading constants
-			ModelUtil.loadConstants(locale, model, request);
-
-			// Recover user
-			User user = Utiles.getUsuario();
-
-			// Log info
-			log.info("El usuario " + user.getId() + " ha accedido a la vista de Admin Desplazamientos");
-			
-			// Recover Activity Centers
-			List<ActivityCenter> activityCenters = activityCenterServiceOld.findAll();
-						
-			// Order by name
-			activityCenters.sort(Comparator.comparing(ActivityCenter::getName));
-						
-			// Carga del modelo
-			model.addAttribute("activityCenters", activityCenters);			
-			model.addAttribute("tableActionButtons", ModelUtil.getTableModifyActionButtons());
-			
-			// Loading view
-			return "admin-displacements";
-
-		} catch (InvalidUserSessionException e) {
-			log.error(e);
-			return "redirect:/login";
-		}
-	}
-	
-	@ResponseBody
-	@GetMapping("/displacements/dt")
-	public String displacementsDatatable(HttpServletRequest request, Locale locale) {
-
-		DataTableRequest<Displacement> dataTableInRQ = new DataTableRequest<>(request);
-		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
-
-		List<DisplacementTableDTO> displacements = displacementService.getDisplacementsDataTables(pagination);
-
-		Long totalRecords = displacementService.getDisplacementsCount();
-
-		DataTableResults<DisplacementTableDTO> dataTableResult = new DataTableResults<>();
-		dataTableResult.setDraw(dataTableInRQ.getDraw());
-		dataTableResult.setListOfDataObjects(displacements);
-		dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
-		dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
-
-		if (!displacements.isEmpty() && !dataTableInRQ.getPaginationRequest().isFilterByEmpty()) {
-			dataTableResult.setRecordsFiltered(Integer.toString(displacements.size()));
-		}
-
-		return dataTableResult.getJson();
-	}
-	
-	@ResponseBody
-	@PostMapping("/displacements/create")
-	public ResponseEntity<String> createDisplacement(@ModelAttribute DisplacementDTO displacementDTO, Locale locale) {
-		
-		try {			
-			
-			// Recover user
-			User user = Utiles.getUsuario();
-						
-			Displacement displacement = DisplacementMapper.mapDTOToDisplacement(displacementDTO, activityCenterServiceOld);
-			
-			displacementService.save(displacement);
-			
-			log.info("Desplazamiento " + displacement.getTitle() + " creado con éxito por parte del usuario " + user.getId());
-			
-			// Return data
-			return new ResponseEntity<>(messageSource.getMessage("displacement.create.success", new Object[] { }, locale), HttpStatus.OK);
-		
-		} catch (Exception e) {
-			return new ResponseEntity<>(messageSource.getMessage("displacement.create.error", new Object[] { }, locale), HttpStatus.NOT_FOUND);
-		}
-	}
-	
-	@ResponseBody
-	@PostMapping("/displacements/update/{id}")
-	public ResponseEntity<String> updateDisplacement(@PathVariable Long id, @ModelAttribute DisplacementDTO displacementDTO, Locale locale) {
-
-		try {
-			
-			// Recover user
-			User user = Utiles.getUsuario();
-						
-			Displacement currentDisplacement = displacementService.getDisplacementById(id);
-			
-			if (currentDisplacement == null) {
-				log.error("Error al actualizar el desplazamiento: No existe el desplazamiento con id " + id);
-				return new ResponseEntity<>(messageSource.getMessage("displacement.update.error", new Object[] {}, locale), HttpStatus.NOT_FOUND);
-			}
-
-			Displacement displacement = DisplacementMapper.mapDTOToDisplacement(displacementDTO, activityCenterServiceOld);
-			displacement.setId(id);
-			displacement.setProjects(currentDisplacement.getProjects()); // important many to many
-			
-			displacementService.save(displacement);
-			
-			log.info("Desplazamiento " + id + " actualizado con éxito por parte del usuario " + user.getId());
-			
-			// Return data
-			return new ResponseEntity<>(messageSource.getMessage("displacement.update.success", new Object[] { }, locale), HttpStatus.OK);
-		
-		} catch (Exception e) {
-			log.error(e);
-			return new ResponseEntity<>(messageSource.getMessage("displacement.update.error", new Object[] { }, locale), HttpStatus.NOT_FOUND);
-		}
-	}
-	
-	@ResponseBody
-	@DeleteMapping("/displacements/delete/{id}")
-	public ResponseEntity<String> deleteDisplacement(@PathVariable Long id, Locale locale) {
-
-		try {
-			
-			// Recover user
-			User user = Utiles.getUsuario();
-						
-			displacementService.delete(id);
-			
-			log.info("Desplazamiento " + id + " eliminado con éxito por parte del usuario " + user.getId());
-			
-			// Return data
-			return new ResponseEntity<>(messageSource.getMessage("displacement.delete.success", new Object[] { }, locale), HttpStatus.OK);
-		
-		} catch (Exception e) {
-			return new ResponseEntity<>(messageSource.getMessage("displacement.delete.error", new Object[] { }, locale), HttpStatus.NOT_FOUND);
-		}
-	}
-	
-	@ResponseBody
-	@GetMapping("/displacements/project/{id}/project")
-	public ResponseEntity<String> loadDisplacementsFromProjectProject(@PathVariable Long id, Locale locale) {
-	
-		Project project = projectService.getProjectById(id);
-		
-		if (project == null) {
-			return null;
-		}
-		
-		List<Displacement> displacements = project.getDisplacements(); // displacementService.getDisplacementsByActivityCenter(project.getActivityCenter().getId());
-		String callbackText = "";
-		
-		for (Displacement d : displacements) {
-			callbackText += "<option value=\"" + d.getId() + "\">" + d.getTitle() + "</option>";
-		}
-
-		// Return data
-		return new ResponseEntity<>(callbackText, HttpStatus.OK);
-	}
-	
-	@ResponseBody
-	@GetMapping("/displacements/project/{id}/activity")
-	public ResponseEntity<String> loadDisplacementsFromProjectActivity(@PathVariable Long id, Locale locale) {
-	
-		Project project = projectService.getProjectById(id);
-		
-		if (project == null || project.getActivityCenter() == null) {
-			return null;
-		}
-		
-		List<Displacement> displacements = displacementService.getDisplacementsByActivityCenter(project.getActivityCenter().getId());
-		displacements.sort(Comparator.comparing(Displacement::getTitle));
-
-		String callbackText = "";
-
-		for (Displacement d : displacements) {
-
-			final String displacementType = messageSource.getMessage("displacements.type." + d.getDisplacementType(), new Object[] { }, locale);
-			final String totalTime = Utiles.minutesToHoursAndMinutesString(d.getTotalTime());
-
-			callbackText += "<option value=\"" + d.getId() + "\">" + d.getTitle() + " (" + displacementType + " - " + totalTime + ")</option>";
-		}
-
-		// Return data
-		return new ResponseEntity<>(callbackText, HttpStatus.OK);
-	}
 
 	@GetMapping("/holidays")
 	public String holidays(Locale locale, Model model, HttpServletRequest request) {

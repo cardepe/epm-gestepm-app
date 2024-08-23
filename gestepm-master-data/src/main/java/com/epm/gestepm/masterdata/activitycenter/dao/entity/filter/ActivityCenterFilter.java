@@ -2,6 +2,7 @@ package com.epm.gestepm.masterdata.activitycenter.dao.entity.filter;
 
 import com.epm.gestepm.lib.entity.AttributeMap;
 import com.epm.gestepm.lib.entity.CollectableAttributes;
+import com.epm.gestepm.lib.entity.Orderable;
 import lombok.Data;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 import static com.epm.gestepm.masterdata.activitycenter.dao.constants.ActivityCenterAttributes.*;
 
 @Data
-public class ActivityCenterFilter implements CollectableAttributes {
+public class ActivityCenterFilter extends Orderable implements CollectableAttributes {
 
   private List<Integer> ids;
 

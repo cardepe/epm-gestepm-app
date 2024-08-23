@@ -59,13 +59,14 @@ public class CountryController extends BaseController implements CountriesV1Api,
     @Override
     @RequirePermits(value = PRMT_READ_C, action = "Get Countries List")
     @LogExecution(operation = OP_READ)
-    public ResponseEntity<ResCountryList> listCountriesV1(final List<String> meta, final Boolean links, final Long offset, final Long limit, final List<Integer> ids, final String name, final List<String> tags) {
+    public ResponseEntity<ResCountryList> listCountriesV1(final List<String> meta, final Boolean links, final Long offset, final Long limit, final String order, final String orderBy, final List<Integer> ids, final String name, final List<String> tags) {
 
         final CountryListRestRequest req = new CountryListRestRequest(ids, name, tags);
 
         this.setCommon(req, meta, links, null);
         this.setDefaults(req);
         this.setPagination(req, limit, offset);
+        this.setOrder(req, order, orderBy);
 
         final CountryFilterDto filterDto = getMapper(MapCRToCountryFilterDto.class).from(req);
         final Page<CountryDto> page = this.countryService.list(filterDto, offset, limit);

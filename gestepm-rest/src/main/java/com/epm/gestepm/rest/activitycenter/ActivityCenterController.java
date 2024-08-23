@@ -61,13 +61,14 @@ public class ActivityCenterController extends BaseController implements Activity
     @Override
     @RequirePermits(value = PRMT_READ_AC, action = "Get activity center list")
     @LogExecution(operation = OP_READ)
-    public ResponseEntity<ResActivityCenterList> listActivityCentersV1(final List<String> meta, final Boolean links, Set<String> expand, final Long offset, final Long limit, final List<Integer> ids, final String name, final List<Integer> countryIds) {
+    public ResponseEntity<ResActivityCenterList> listActivityCentersV1(final List<String> meta, final Boolean links, Set<String> expand, final Long offset, final Long limit, final String order, final String orderBy, final List<Integer> ids, final String name, final List<Integer> countryIds) {
 
         final ActivityCenterListRestRequest req = new ActivityCenterListRestRequest(ids, name, countryIds);
 
         this.setCommon(req, meta, links, expand);
         this.setDefaults(req);
         this.setPagination(req, limit, offset);
+        this.setOrder(req, order, orderBy);
 
         final ActivityCenterFilterDto filterDto = getMapper(MapACRToActivityCenterFilterDto.class).from(req);
         final Page<ActivityCenterDto> page = this.activityCenterService.list(filterDto, offset, limit);

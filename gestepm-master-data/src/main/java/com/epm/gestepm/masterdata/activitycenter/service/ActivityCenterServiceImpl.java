@@ -23,6 +23,7 @@ import com.epm.gestepm.masterdata.api.activitycenter.service.ActivityCenterServi
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -56,6 +57,7 @@ public class ActivityCenterServiceImpl implements ActivityCenterService {
     final ActivityCenterFilter filter = getMapper(MapACToActivityCenterFilter.class).from(filterDto);
 
     final List<ActivityCenter> list = this.activityCenterDao.list(filter);
+    list.sort(Comparator.comparing(ActivityCenter::getName));
 
     return getMapper(MapACToActivityCenterDto.class).from(list);
   }

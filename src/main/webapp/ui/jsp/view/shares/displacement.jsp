@@ -52,11 +52,10 @@
 								<div class="row mt-4">
 									<div class="col">
 										<div class="form-group">
-											<select id="projectDropdown" class="form-control input"
-												name="project" required>
+											<select id="projectDropdown" class="form-control input" name="project" required>
 												<option></option>
 												<c:forEach items="${projects}" var="project">
-													<option value="${project.id}" data-info="${project}">
+													<option value="${project.id}" data-info="${project.activityCenter.id}">
 														<spring:message code="${project.name}" />
 													</option>
 												</c:forEach>
@@ -126,8 +125,8 @@
 					<div class="row">
 						<div class="col-sm-12 col-md-6">
 							<div class="form-group">
-								<label for="activityCenter" class="col-form-label"><spring:message code="shares.displacement.table.activity.center" /></label>
-								<select id="activityCenter" name="activityCenter" class="form-control" onchange="loadDisplacement()" required>
+								<label for="displacement" class="col-form-label"><spring:message code="shares.displacement.table.activity.center" /></label>
+								<select id="displacement" name="displacement" class="form-control" onchange="loadDisplacement()" required>
 									<option disabled selected="selected">
 										<spring:message code="shares.displacement.table.activity.center" />
 									</option>
@@ -159,8 +158,8 @@
 								<option disabled value="" selected="selected">
 									<spring:message code="displacements.displacement.type.placeholder" />
 								</option>
-								<option value="1"><spring:message code="displacements.type.1" /></option>
-								<option value="0"><spring:message code="displacements.type.0" /></option>
+								<option value="PUBLIC_TRANSPORT"><spring:message code="displacements.type.PUBLIC_TRANSPORT" /></option>
+								<option value="VEHICLE"><spring:message code="displacements.type.VEHICLE" /></option>
 							</select>
 						</div>
 					</div>
@@ -208,8 +207,8 @@
 					<div class="row">
 						<div class="col-sm-12 col-md-6">
 							<div class="form-group">
-								<label for="activityCenter" class="col-form-label"><spring:message code="shares.displacement.table.activity.center" /></label>
-								<select id="activityCenter" name="activityCenter" class="form-control" readonly disabled>
+								<label for="displacement" class="col-form-label"><spring:message code="shares.displacement.table.activity.center" /></label>
+								<select id="displacement" name="displacement" class="form-control" readonly disabled>
 									<option disabled selected="selected">
 										<spring:message code="shares.displacement.table.activity.center" />
 									</option>
@@ -323,19 +322,14 @@
 			if (!$('#projectDropdown').val()) {
 				return alert("${jspUtil.parseTagToText('share.create.alert')}");
 			}
-				
-			$('#createModal').modal('show');
 
-			var projectId = $('#projectDropdown').val();
-			
-			$.ajax({
-				type: "GET",
-				url: "/admin/displacements/project/" + projectId + "/activity",
-				success: function(msg) {
-					msg = '<option disabled selected="selected">-</option>' + msg;
-					$('#activityCenter').html(msg);
-				}
-			});
+			let activityCenterId = $('#projectDropdown option:selected').attr('data-info');
+			let callbackFunction = function(html) {
+				$('#displacement').html(html);
+				$('#createModal').modal('show');
+			}
+
+			loadDisplacements(activityCenterId, callbackFunction);
 		});
 
 		$('#createShareBtn').click(function () {
@@ -381,71 +375,50 @@
 	});
 
 	function validateForm() {
-		var activityCenter = document.getElementById('activityCenter');
+		var displacement = document.getElementById('displacement');
 		var displacementDate = document.getElementById('displacementDate');
 		var manualHours = document.getElementById('manualHours');
 		var displacementType = document.getElementById('displacementType');
 
-		return (!activityCenter.value.length || !displacementDate.value.length || !manualHours.value.length || !displacementType.value.length);
+		return (!displacement.value.length || !displacementDate.value.length || !manualHours.value.length || !displacementType.value.length);
 	}
 
 	function getDisplacement(id) {
 		return $.ajax({
-		    url: '/displacements/' + id,
-		    type: 'GET'
-		 });
-	}
-	
-	function getShare(id) {
-		return $.ajax({
-		    url: '/shares/displacement/' + id,
+		    url: '/v1/displacements/' + id,
 		    type: 'GET'
 		 });
 	}
 
-	function getMsg(projectId) {
-		return $.ajax({
-		    url: '/admin/displacements/project/' + projectId + '/activity',
-		    type: 'GET'
-		 });
-	}
+	function loadDisplacement() {
+		let id =  $('#displacement').val();
 
-	function initForm(share, form) {
-		Object.keys(share).forEach(function (key) {
-			
-			if (key == 'displacement') {
-				form.elements['displacementType'].value = share[key].displacementType;
-			}
-			
-			if (form.elements[key]) {
-				form.elements[key].value = share[key];
-				form.elements[key].checked = share[key];
-			}
+		axios.get('/v1/displacements/' + id).then((response) => {
+			let displacement = response.data.data;
+
+			let manualHoursInput = $('#createModal #manualHours');
+			let typeInput = $('#createModal #displacementType');
+
+			manualHoursInput.val(minutesToTime(displacement.totalTime));
+			manualHoursInput.attr('disabled', true);
+
+			typeInput.val(displacement.type);
+			typeInput.attr('disabled', true);
 		});
 	}
-	
-	async function viewShare(id) {
-		var share = await getShare(id);
 
-		var msg = await getMsg(share.projectId);
-		msg = '<option disabled selected="selected">-</option>' + msg;
-		$('#viewDispForm #activityCenter').html(msg);
-		
-		var form = document.forms['viewDispForm'];
-		initForm(share, form);
-		$('#viewModal').modal('show');
+	function minutesToTime(minutes) {
+		return new Date(minutes * 60 * 1000).toISOString().substring(11, 16);
 	}
 
-	async function loadDisplacement() {
+	function formatType(type) {
+		if (type === 'PUBLIC_TRANSPORT') {
+			return messages.displacements.publictransport;
+		} else if (type === 'VEHICLE') {
+			return messages.displacements.vehicle;
+		}
 
-		var id =  $('#activityCenter').val();
-		var displacement = await getDisplacement(id);
-		
-		$('#createModal #manualHours').val(displacement.totalTime);
-		$('#createModal #manualHours').attr('disabled', true);
-
-		$('#createModal #displacementType').val(displacement.displacementType);
-		$('#createModal #displacementType').attr('disabled', true);
+		return 'UNDEFINED';
 	}
-	
+
 </script>

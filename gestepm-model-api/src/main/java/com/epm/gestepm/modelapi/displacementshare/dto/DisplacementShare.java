@@ -44,7 +44,7 @@ public class DisplacementShare {
 	private Date displacementDate;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "DISPLACEMENT_ID", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "DISPLACEMENT_ID", referencedColumnName = "displacement_id", nullable = false)
 	private Displacement displacement;
 	
 	@Column(name = "MANUAL_HOURS", nullable = false, length = 11)

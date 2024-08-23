@@ -2,11 +2,15 @@ package com.epm.gestepm.masterdata.api.activitycenter.dto.finder;
 
 import com.epm.gestepm.lib.cache.CacheKeyBuilder;
 import com.epm.gestepm.lib.cache.UsableAsCacheKey;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ActivityCenterByIdFinderDto implements UsableAsCacheKey {
 
   @NotNull

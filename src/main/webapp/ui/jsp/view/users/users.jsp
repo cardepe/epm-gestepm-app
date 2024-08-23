@@ -198,8 +198,8 @@
 								</label>
 								
 								<select id="activityCenterId" name="activityCenterId" class="form-control" required>
-									<c:forEach items="${activityCenters}" var="activityCenter">
-										<option value="${activityCenter.id}">${activityCenter.name}</option>
+									<c:forEach items="${activityCenters}" var="displacement">
+										<option value="${displacement.id}">${displacement.name}</option>
 									</c:forEach>
 								</select>
 							</div>

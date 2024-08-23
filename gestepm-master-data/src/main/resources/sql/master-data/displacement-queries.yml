@@ -1,0 +1,94 @@
+sql:
+
+  qry-list-of-d: |
+
+    SELECT
+      d.displacement_id AS id_pagination,
+      d.displacement_id,
+      d.activity_center_id,
+      ac.name AS activity_center_name,
+      d.name,
+      d.type,
+      d.total_time
+    FROM ${sch-gestepm}.displacement d
+    LEFT JOIN ${sch-gestepm}.activity_center ac ON d.activity_center_id = ac.activity_center_id
+
+    #whereToken #filter
+    #orderByToken
+
+  qry-page-of-d: |
+
+    ${sql.paginated-query-group-prefix}
+    ${sql.qry-list-of-d}
+    ${sql.paginated-query-suffix}
+
+  qry-count-of-d: |
+
+    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    FROM (${sql.qry-list-of-d}) final
+
+  qry-create-d: |
+
+    INSERT INTO ${sch-gestepm}.displacement (
+      activity_center_id,
+      name,
+      type,
+      total_time
+    )
+    VALUES (
+      :attr_d_ac_id,
+      :attr_d_name,
+      :attr_d_type,
+      :attr_d_total_time
+    )
+
+  qry-update-d: |
+
+    UPDATE
+      ${sch-gestepm}.displacement
+    SET
+      activity_center_id = :attr_d_ac_id,
+      name = :attr_d_name,
+      type = :attr_d_type,
+      total_time = :attr_d_total_time
+    WHERE
+      displacement_id = :attr_d_id
+
+  qry-delete-d: |
+
+    DELETE FROM ${sch-gestepm}.displacement WHERE displacement_id = :attr_d_id
+
+  filter-d-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-d-ids}
+      -- ${sql.predicate-for-d-ac-id}
+      -- ${sql.predicate-for-d-name}
+      -- ${sql.predicate-for-d-type}
+    -- AND]
+
+  filter-d-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-d-id}
+    -- AND]
+
+  predicate-for-d-id: |
+
+    d.displacement_id = :attr_d_id
+
+  predicate-for-d-ids: |
+
+    d.displacement_id IN (:attr_d_ids)
+
+  predicate-for-d-ac-id: |
+
+    d.activity_center_id IN (:attr_d_ac_ids)
+
+  predicate-for-d-name: |
+
+    LOWER(d.name) LIKE LOWER(:attr_d_name)
+
+  predicate-for-d-type: |
+    
+    d.type = :attr_d_type
