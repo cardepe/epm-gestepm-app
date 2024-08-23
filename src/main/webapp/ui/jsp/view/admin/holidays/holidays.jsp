@@ -78,7 +78,7 @@
 									<th id="thDate"><spring:message
 											code="holidays.admin.table.date" /></th>
 									<th id="thCountry"><spring:message
-											code="holidays.admin.table.displacement" /></th>
+											code="holidays.admin.table.activity.center" /></th>
 									<th id="thActivityCenter"><spring:message
 											code="holidays.admin.table.activity.center" /></th>
 									<th id="thActions" class="all"><spring:message
@@ -151,19 +151,19 @@
 					<div class="row">
 						<div class="col">
 							<div class="form-group">
-								<label for="displacement" class="col-form-label"><spring:message
-										code="holidays.admin.table.displacement" /></label>
+								<label for="activityCenter" class="col-form-label"><spring:message
+										code="holidays.admin.table.activity.center" /></label>
 
 								<select
-									id="displacement" name="displacement" class="form-control"
+									id="activityCenter" name="activityCenter" class="form-control"
 									required>
 									<option disabled value="" selected="selected">
 										<spring:message
-											code="holidays.admin.displacement.placeholder" />
+											code="holidays.admin.activity.center.placeholder" />
 									</option>
-									<c:forEach items="${countries}" var="displacement">
-										<option value="${displacement.id}">
-											<spring:message code="${displacement.name}" />
+									<c:forEach items="${countries}" var="activityCenter">
+										<option value="${activityCenter.id}">
+											<spring:message code="${activityCenter.name}" />
 										</option>
 									</c:forEach>
 								</select>
@@ -172,19 +172,19 @@
 						
 						<div class="col">
 							<div class="form-group">
-								<label for="displacement" class="col-form-label"><spring:message
+								<label for="activityCenter" class="col-form-label"><spring:message
 										code="holidays.admin.table.activity.center" /></label> 
 
 								<select
-									id="displacement" name="displacement" class="form-control"
+									id="activityCenter" name="activityCenter" class="form-control"
 									required>
 									<option value="" selected="selected">
 										<spring:message
 											code="holidays.admin.activity.center.placeholder" />
 									</option>
-									<c:forEach items="${activityCenters}" var="displacement">
-										<option value="${displacement.id}">
-											<spring:message code="${displacement.name}" />
+									<c:forEach items="${activityCenters}" var="activityCenter">
+										<option value="${activityCenter.id}">
+											<spring:message code="${activityCenter.name}" />
 										</option>
 									</c:forEach>
 								</select>
@@ -270,19 +270,19 @@
 					<div class="row">
 						<div class="col">
 							<div class="form-group">
-								<label for="displacement" class="col-form-label"><spring:message
-										code="holidays.admin.table.displacement" /></label>
+								<label for="activityCenter" class="col-form-label"><spring:message
+										code="holidays.admin.table.activity.center" /></label>
 
 								<select
-									id="displacement" name="displacement" class="form-control"
+									id="activityCenter" name="activityCenter" class="form-control"
 									required>
 									<option disabled value="" selected="selected">
 										<spring:message
-											code="holidays.admin.displacement.placeholder" />
+											code="holidays.admin.activity.center.placeholder" />
 									</option>
-									<c:forEach items="${countries}" var="displacement">
-										<option value="${displacement.id}">
-											<spring:message code="${displacement.name}" />
+									<c:forEach items="${countries}" var="activityCenter">
+										<option value="${activityCenter.id}">
+											<spring:message code="${activityCenter.name}" />
 										</option>
 									</c:forEach>
 								</select>
@@ -291,19 +291,19 @@
 						
 						<div class="col">
 							<div class="form-group">
-								<label for="displacement" class="col-form-label"><spring:message
+								<label for="activityCenter" class="col-form-label"><spring:message
 										code="holidays.admin.table.activity.center" /></label> 
 
 								<select
-									id="displacement" name="displacement" class="form-control"
+									id="activityCenter" name="activityCenter" class="form-control"
 									required>
 									<option value="" selected="selected">
 										<spring:message
 											code="holidays.admin.activity.center.placeholder" />
 									</option>
-									<c:forEach items="${activityCenters}" var="displacement">
-										<option value="${displacement.id}">
-											<spring:message code="${displacement.name}" />
+									<c:forEach items="${activityCenters}" var="activityCenter">
+										<option value="${activityCenter.id}">
+											<spring:message code="${activityCenter.name}" />
 										</option>
 									</c:forEach>
 								</select>
@@ -421,9 +421,9 @@
 		var name = $('#name').val();
 		var day = $('#day').val();
 		var month = $('#month').val();
-		var displacement = $('#displacement').val();
+		var activityCenter = $('#activityCenter').val();
 
-		return !name || !day || !month || !displacement;
+		return !name || !day || !month || !activityCenter;
 	}
 
 	function deleteHoliday(id) {
@@ -449,7 +449,7 @@
 		}
 	}
 
-	function editHoliday(id, name, date, displacement, displacement) {
+	function editHoliday(id, name, date, activityCenter, activityCenter) {
 
 		var day = date.split('/')[0];
 		var month = date.split('/')[1];
@@ -458,12 +458,12 @@
 		$('#editModal').find('#day').val(day);
 		$('#editModal').find('#month').val(month);
 		
-		$('#editModal').find('#displacement option').filter(function() {
-		    return this.text == displacement;
+		$('#editModal').find('#activityCenter option').filter(function() {
+		    return this.text == activityCenter;
 		}).attr('selected', true);
 
-		$('#editModal').find('#displacement option').filter(function() {
-		    return this.text == displacement;
+		$('#editModal').find('#activityCenter option').filter(function() {
+		    return this.text == activityCenter; 
 		}).attr('selected', true);
 		
 		$('#editModal').modal('show');	

@@ -205,18 +205,18 @@
 						</div>
 						
 						<div class="col-sm-12 col-md-6">
-							<label for="displacement" class="col-form-label"><spring:message
+							<label for="activityCenter" class="col-form-label"><spring:message
 									code="displacements.table.activity.center" /></label> <select
-								id="displacement" name="displacement" class="form-control"
+								id="activityCenter" name="activityCenter" class="form-control"
 								required>
 								<option disabled value="" selected="selected">
 									<spring:message
 										code="displacements.activity.center.placeholder" />
 								</option>
-								<c:forEach items="${activityCenters}" var="displacement">
-									<option value="${displacement.id}"
-										data-info="${displacement}">
-										<spring:message code="${displacement.name}" />
+								<c:forEach items="${activityCenters}" var="activityCenter">
+									<option value="${activityCenter.id}"
+										data-info="${activityCenter}">
+										<spring:message code="${activityCenter.name}" />
 									</option>
 								</c:forEach>
 							</select>
@@ -435,9 +435,9 @@
 		var objectiveCost = document.getElementById('objectiveCost');
 		var startDate = document.getElementById('startDate');
 		var objectiveDate = document.getElementById('objectiveDate');
-		var displacement = document.getElementById('displacement');
+		var activityCenter = document.getElementById('activityCenter');
 
-		return (!projectName.value.length || !responsable.value.length || !objectiveCost.value.length || !startDate.value.length || !objectiveDate.value.length || !displacement.value.length);
+		return (!projectName.value.length || !responsable.value.length || !objectiveCost.value.length || !startDate.value.length || !objectiveDate.value.length || !activityCenter.value.length);
 	}
 	
 	function resetTable() {

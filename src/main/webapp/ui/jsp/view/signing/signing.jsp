@@ -233,8 +233,8 @@
 
 						<div class="col">
 							<div class="form-group">
-								<label for="displacement" class="col-form-label"><spring:message code="shares.displacement.table.activity.center" /></label>
-								<select id="displacement" name="displacement" class="form-control" onchange="loadDisplacement()" required>
+								<label for="activityCenter" class="col-form-label"><spring:message code="shares.displacement.table.activity.center" /></label>
+								<select id="activityCenter" name="activityCenter" class="form-control" onchange="loadDisplacement()" required>
 									<option disabled selected="selected">
 										<spring:message code="shares.displacement.table.activity.center" />
 									</option>

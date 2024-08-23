@@ -615,7 +615,7 @@
 
 					<div id="createShareActivityCenterRow" class="row mt-2" style="display: none">
 						<div class="col">
-							<select id="createShareActivityCenterDropdown" class="form-control input" name="displacement">
+							<select id="createShareActivityCenterDropdown" class="form-control input" name="activityCenter">
 								<option></option>
 							</select>
 						</div>
@@ -1383,7 +1383,7 @@
 		const type = $('#createSigningForm #signingTypeDropdown').val();
 		let project = $('#createSigningForm #createShareProjectDropdown').val();
 		let manualType = $('#createSigningForm #createShareManualTypeDropdown').val();
-		let displacement = $('#createSigningForm #createShareActivityCenterDropdown').val();
+		let activityCenter  = $('#createSigningForm #createShareActivityCenterDropdown').val();
 		let manualHours = $('#createSigningForm #manualHoursInput').val();
 		let displacementDate = $('#createSigningForm #displacementDateInput').val();
 		let startDate = $('#createSigningForm #startDateInput').val();
@@ -1391,18 +1391,18 @@
 
 		if (type === 'us') {
 			manualType = true;
-			displacement = true;
+			activityCenter  = true;
 			displacementDate = true;
 			manualHours = true;
 		} else if (type === 'ps') {
 			manualType = true;
 			project = true;
-			displacement = true;
+			activityCenter  = true;
 			displacementDate = true;
 			manualHours = true;
 		} else if (type === 'ums') {
 			project = true;
-			displacement = true;
+			activityCenter  = true;
 			displacementDate = true;
 			manualHours = true;
 		} else if (type === 'ds') {
@@ -1411,7 +1411,7 @@
 			endDate = true;
 		}
 
-		return !type || !project || !manualType || !displacement || !manualHours || !displacementDate || !startDate || !endDate;
+		return !type || !project || !manualType || !activityCenter  || !manualHours || !displacementDate || !startDate || !endDate;
 	}
 
 	function getShare(id, type) {

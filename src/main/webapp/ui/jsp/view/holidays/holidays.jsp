@@ -126,7 +126,7 @@
 	let rejectedColor = '#E74C3C';
 
 	let selectedYear = new Date().getFullYear();
-	let disabledWeekDays = ${user.displacement.displacement.id == 1 ? [ 0, 6] : [0] };
+	let disabledWeekDays = ${user.activityCenter.id == 1 ? [ 0, 6] : [0] };
 
 	let currentYearHolidaysCount = ${user.currentYearHolidaysCount};
 	let lastYearHolidaysCount = ${user.lastYearHolidaysCount};

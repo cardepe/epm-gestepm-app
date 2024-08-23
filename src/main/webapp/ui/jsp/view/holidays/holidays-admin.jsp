@@ -132,7 +132,7 @@
 	let projectId;
 
 	let selectedYear = new Date().getFullYear();
-	let disabledWeekDays = ${user.displacement.displacement.id == 1 ? [ 0, 6] : [0] };
+	let disabledWeekDays = ${user.activityCenter.id == 1 ? [ 0, 6] : [0] };
 
 	$(document).ready(function() {
 
