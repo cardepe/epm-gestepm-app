@@ -1,18 +1,16 @@
 package com.epm.gestepm.model.displacement.service;
 
-import java.util.List;
-
 import com.epm.gestepm.model.displacement.dao.DisplacementRepository;
+import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
+import com.epm.gestepm.modelapi.displacement.dto.Displacement;
 import com.epm.gestepm.modelapi.displacement.dto.DisplacementDTO;
 import com.epm.gestepm.modelapi.displacement.dto.DisplacementTableDTO;
+import com.epm.gestepm.modelapi.displacement.service.DisplacementService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.epm.gestepm.modelapi.displacement.dto.Displacement;
-import com.epm.gestepm.modelapi.displacement.service.DisplacementService;
-import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
+import java.util.List;
 
 @Service
 @Transactional
@@ -27,10 +25,6 @@ public class DisplacementServiceImpl implements DisplacementService {
 	
 	public List<Displacement> getAll() {
 		return (List<Displacement>) displacementRepository.findAll();
-	}
-	
-	public List<Displacement> getDisplacementsByActivityCenter(long activityCenterId) {
-		return displacementRepository.findByActivityCenterId(activityCenterId);
 	}
 
 	@Override
@@ -51,16 +45,6 @@ public class DisplacementServiceImpl implements DisplacementService {
 	@Override
 	public void delete(Long id) {
 		displacementRepository.deleteById(id);
-	}
-	
-	@Override
-	public List<DisplacementTableDTO> getDisplacementsDataTables(PaginationCriteria pagination) {
-		return displacementRepository.findDisplacementsDataTables(pagination);
-	}
-	
-	@Override
-	public Long getDisplacementsCount() {
-		return displacementRepository.findDisplacementsCount();
 	}
 	
 	@Override

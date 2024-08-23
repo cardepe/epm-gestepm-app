@@ -9,9 +9,12 @@ import com.epm.gestepm.masterdata.api.displacement.dto.finder.DisplacementByIdFi
 import com.epm.gestepm.masterdata.api.displacement.dto.updater.DisplacementUpdateDto;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 public interface DisplacementService {
+
+  List<@Valid DisplacementDto> list(@Valid DisplacementFilterDto filterDto);
 
   Page<@Valid DisplacementDto> list(@Valid DisplacementFilterDto filterDto, Long offset, Long limit);
 

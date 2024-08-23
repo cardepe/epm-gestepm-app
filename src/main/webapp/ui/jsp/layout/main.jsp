@@ -106,7 +106,7 @@
 		<script type="text/javascript" src="/webjars/select2/4.0.12/js/select2.full.min.js"></script>
 	</c:if>
 	
-	<c:if test="${fn:startsWith(pageName, '/expenses') || fn:startsWith(pageName, '/signing') || fn:startsWith(pageName, '/shares') || fn:startsWith(pageName,'/projects') || fn:startsWith(pageName,'/users') || fn:startsWith(pageName,'/roles') || fn:startsWith(pageName,'/admin') || fn:startsWith(pageName,'/countries') || fn:startsWith(pageName,'/activity-centers') }">
+	<c:if test="${fn:startsWith(pageName, '/expenses') || fn:startsWith(pageName, '/signing') || fn:startsWith(pageName, '/shares') || fn:startsWith(pageName,'/projects') || fn:startsWith(pageName,'/users') || fn:startsWith(pageName,'/roles') || fn:startsWith(pageName,'/admin') || fn:startsWith(pageName,'/countries') || fn:startsWith(pageName,'/activity-centers') || fn:startsWith(pageName,'/displacements') }">
 		<!-- JS Datatables -->
 		<script type="text/javascript" src="/webjars/datatables/1.10.20/js/jquery.dataTables.min.js"></script>
 		<script type="text/javascript" src="/webjars/datatables/1.10.20/js/dataTables.bootstrap4.min.js"></script>

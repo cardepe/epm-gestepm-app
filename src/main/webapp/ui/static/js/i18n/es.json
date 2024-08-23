@@ -23,6 +23,20 @@
             "success": "País eliminado con éxito"
         }
     },
+    "displacements": {
+        "create": {
+            "success": "Desplazamiento creado con éxito."
+        },
+        "update": {
+            "success": "Se ha actualizado la información del desplazamiento con éxito."
+        },
+        "delete": {
+            "alert": "¿Está seguro que desea eliminar este desplazamiento?",
+            "success": "Desplazamiento eliminado con éxito"
+        },
+        "publictransport": "Transporte público",
+        "vehicle": "Vehículo"
+    },
     "shares": {
         "noprogrammed": {
             "intervention": {

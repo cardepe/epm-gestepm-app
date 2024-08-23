@@ -276,10 +276,10 @@
 											<label for="activityCenterInfoInput" class="col-form-label"><spring:message
 													code="displacements.table.activity.center" /></label> 
 													
-											<select id="activityCenterInfoInput" name="activityCenter" class="form-control" required disabled>
-												<c:forEach items="${activityCenters}" var="activityCenter">
-													<option value="${activityCenter.id}" <c:if test="${activityCenter.id == project.activityCenter.id}">selected</c:if>>
-														<spring:message code="${activityCenter.name}" />
+											<select id="activityCenterInfoInput" name="displacement" class="form-control" required disabled>
+												<c:forEach items="${activityCenters}" var="displacement">
+													<option value="${displacement.id}" <c:if test="${displacement.id == project.displacement.id}">selected</c:if>>
+														<spring:message code="${displacement.name}" />
 													</option>
 												</c:forEach>
 											</select>
@@ -1061,8 +1061,8 @@
 					<div class="row">
 						<div class="col-sm-12 col-md-6">
 							<div class="form-group">
-								<label for="activityCenter" class="col-form-label"><spring:message code="shares.displacement.table.activity.center" /></label>
-								<select id="activityCenter" name="activityCenter" class="form-control" required readonly disabled>
+								<label for="displacement" class="col-form-label"><spring:message code="shares.displacement.table.activity.center" /></label>
+								<select id="displacement" name="displacement" class="form-control" required readonly disabled>
 									<option disabled selected="selected">
 										<spring:message code="shares.displacement.table.activity.center" />
 									</option>
@@ -1132,8 +1132,8 @@
 					<div class="row">
 						<div class="col-sm-12 col-md-6">
 							<div class="form-group">
-								<label for="activityCenter" class="col-form-label"><spring:message code="shares.displacement.table.activity.center" /></label>
-								<select id="activityCenter" name="activityCenter" class="form-control" required>
+								<label for="displacement" class="col-form-label"><spring:message code="shares.displacement.table.activity.center" /></label>
+								<select id="displacement" name="displacement" class="form-control" required>
 									<option disabled selected="selected">
 										<spring:message code="shares.displacement.table.activity.center" />
 									</option>
@@ -1963,13 +1963,13 @@
 
 	function validateForm() {
 		var projectName = document.getElementById('projectNameInfoInput');
-		var activityCenter = document.getElementById('activityCenterInfoInput');
+		var displacement = document.getElementById('activityCenterInfoInput');
 		var responsable = document.getElementById('responsableInfoInput');
 		var objectiveCost = document.getElementById('objectiveCostInfoInput');
 		var startDate = document.getElementById('startDateInfoInput');
 		var objectiveDate = document.getElementById('objectiveDateInfoInput');
 
-		return (!projectName.value.length || !activityCenter.value.length || !responsable.value.length || !objectiveCost.value.length || !startDate.value.length || !objectiveDate.value.length);
+		return (!projectName.value.length || !displacement.value.length || !responsable.value.length || !objectiveCost.value.length || !startDate.value.length || !objectiveDate.value.length);
 	}
 
 	function validateCustomerForm() {
@@ -2285,13 +2285,6 @@
 			}
 		});
 	}
-
-	function getMsg(projectId) {
-		return $.ajax({
-		    url: '/admin/displacements/project/' + projectId + '/activity',
-		    type: 'GET'
-		 });
-	}
 	
 	async function csViewShare(id) {
 		var share = await getCsShare(id);
@@ -2301,15 +2294,17 @@
 	}
 
 	async function dsViewShare(id) {
-		var share = await getDsShare(id);
+		let share = await getDsShare(id);
+		let activityCenterId = share.activityCenter.id;
+		let callbackFunction = function(html) {
+			$('#viewDispForm #displacement').html(html);
 
-		var msg = await getMsg(share.projectId);
-		msg = '<option disabled selected="selected">-</option>' + msg;
-		$('#viewDispForm #activityCenter').html(msg);
-		
-		var form = document.forms['viewDispForm'];
-		initForm(share, form);
-		$('#viewDispModal').modal('show');
+			let form = document.forms['viewDispForm'];
+			initForm(share, form);
+			$('#viewDispModal').modal('show');
+		}
+
+		loadDisplacements(activityCenterId, callbackFunction);
 	}
 
 	async function ipsViewShare(id) {
@@ -2402,15 +2397,17 @@
 	}
 
 	async function dsEditShare(id) {
-		var share = await getDsShare(id);
+		let share = await getDsShare(id);
+		let activityCenterId = share.activityCenter.id;
+		let callbackFunction = function(html) {
+			$('#updateDispForm #displacement').html(html);
 
-		var msg = await getMsg(share.projectId);
-		msg = '<option disabled selected="selected">-</option>' + msg;
-		$('#updateDispForm #activityCenter').html(msg);
+			let form = document.forms['updateDispForm'];
+			initForm(share, form);
+			$('#updateDispModal').modal('show');
+		}
 
-		var form = document.forms['updateDispForm'];
-		initForm(share, form);
-		$('#updateDispModal').modal('show');
+		loadDisplacements(activityCenterId, callbackFunction);
 
 		$('#updateDispBtn').unbind('click').click(function () {
 

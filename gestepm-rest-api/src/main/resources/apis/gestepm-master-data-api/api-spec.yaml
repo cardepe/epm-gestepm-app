@@ -27,6 +27,8 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
         - schema:
             type: array
             items:
@@ -170,6 +172,8 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
         - schema:
             type: array
             items:
@@ -301,6 +305,8 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
         - schema:
             type: array
             items:
@@ -309,9 +315,11 @@ paths:
           name: ids
           description: List of displacement ids to filter.
         - schema:
-            type: integer
+            type: array
+            items:
+              type: integer
           in: query
-          name: activityCenterId
+          name: activityCenterIds
           description: List of activity center ids to filter.
         - schema:
             type: string
@@ -319,7 +327,7 @@ paths:
           name: name
           description: Search by displacement name.
         - schema:
-            type: integer
+            $ref: '#/components/schemas/DisplacementType'
           in: query
           name: type
           description: Search by displacement type.
@@ -350,10 +358,11 @@ paths:
   '/v1/displacements/{id}':
     parameters:
       - schema:
-          type: string
+          type: integer
         name: id
         in: path
         required: true
+        description: Displacement id.
     get:
       summary: V1 - Find displacement
       tags:
@@ -407,6 +416,10 @@ paths:
       responses:
         '200':
           description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
         '404':
           description: displacement-not-found
           content:
@@ -435,6 +448,8 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
         - schema:
             type: array
             items:
@@ -571,6 +586,8 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
         - schema:
             type: array
             items:
@@ -722,11 +739,11 @@ components:
         id:
           type: integer
         activityCenter:
-          $ref: ../gestepm-master-data-api/api-spec.yaml#/components/schemas/ActivityCenter
+          $ref: '#/components/schemas/ActivityCenter'
         name:
           type: string
         type:
-          type: integer
+          $ref: '#/components/schemas/DisplacementType'
         totalTime:
           type: integer
       required:
@@ -735,6 +752,16 @@ components:
         - name
         - type
         - totalTime
+    DisplacementType:
+      title: DisplacementType
+      x-stoplight:
+        id: vqwhgqimmfnf8
+      type: string
+      enum:
+        - VEHICLE
+        - PUBLIC_TRANSPORT
+      example: VEHICLE
+      description: 'VEHICLE, PUBLIC_TRANSPORT'
     ResActivityCenter:
       title: ResActivityCenter
       type: object
@@ -791,7 +818,7 @@ components:
         name:
           type: string
         type:
-          type: integer
+          $ref: '#/components/schemas/DisplacementType'
         totalTime:
           type: integer
       required:
@@ -833,7 +860,7 @@ components:
         name:
           type: string
         type:
-          type: integer
+          $ref: '#/components/schemas/DisplacementType'
         totalTime:
           type: integer
       required:

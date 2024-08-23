@@ -136,7 +136,7 @@
     
     <!-- Displacements -->
     <definition name="admin-displacements" extends="fullFrameLayaout">
-        <put-attribute name="body" value="/ui/jsp/view/admin/displacements/displacements.jsp" />
+        <put-attribute name="body" value="/ui/jsp/view/admin/displacements/view.jsp" />
     </definition>
     
     <!-- Countries -->

@@ -10,7 +10,8 @@ public class ListCountryV1Operation extends APIOperation<CountriesV1Api, Country
         super("listCountryV1");
 
         this.generateLinksWith(
-                (apiClass, req) -> apiClass.listCountriesV1(req.getMeta(), req.getLinks(), req.getOffset(), req.getLimit(), req.getIds(), req.getName(), req.getTags()));
+                (apiClass, req) -> apiClass.listCountriesV1(req.getMeta(), req.getLinks(), req.getOffset(),
+                        req.getLimit(), req.getOrder(), req.getOrderBy(), req.getIds(), req.getName(), req.getTags()));
     }
 
 }

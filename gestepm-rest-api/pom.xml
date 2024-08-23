@@ -57,7 +57,7 @@
                             <generatorName>spring</generatorName>
                             <apiPackage>com.epm.gestepm.restapi.openapi.api</apiPackage>
                             <modelPackage>com.epm.gestepm.restapi.openapi.model</modelPackage>
-                            <skipOverwrite>true</skipOverwrite>
+                            <skipOverwrite>false</skipOverwrite>
                             <configOptions>
                                 <useSpringBoot3>false</useSpringBoot3>
                                 <useTags>true</useTags>
@@ -76,7 +76,7 @@
                             <generatorName>spring</generatorName>
                             <apiPackage>com.epm.gestepm.restapi.openapi.api</apiPackage>
                             <modelPackage>com.epm.gestepm.restapi.openapi.model</modelPackage>
-                            <skipOverwrite>true</skipOverwrite>
+                            <skipOverwrite>false</skipOverwrite>
                             <configOptions>
                                 <useSpringBoot3>false</useSpringBoot3>
                                 <useTags>true</useTags>
@@ -95,7 +95,7 @@
                             <generatorName>spring</generatorName>
                             <apiPackage>com.epm.gestepm.restapi.openapi.api</apiPackage>
                             <modelPackage>com.epm.gestepm.restapi.openapi.model</modelPackage>
-                            <skipOverwrite>true</skipOverwrite>
+                            <skipOverwrite>false</skipOverwrite>
                             <configOptions>
                                 <useSpringBoot3>false</useSpringBoot3>
                                 <useTags>true</useTags>
@@ -114,7 +114,7 @@
                             <generatorName>spring</generatorName>
                             <apiPackage>com.epm.gestepm.restapi.openapi.api</apiPackage>
                             <modelPackage>com.epm.gestepm.restapi.openapi.model</modelPackage>
-                            <skipOverwrite>true</skipOverwrite>
+                            <skipOverwrite>false</skipOverwrite>
                             <configOptions>
                                 <useSpringBoot3>false</useSpringBoot3>
                                 <useTags>true</useTags>
@@ -133,7 +133,7 @@
                             <generatorName>spring</generatorName>
                             <apiPackage>com.epm.gestepm.restapi.openapi.api</apiPackage>
                             <modelPackage>com.epm.gestepm.restapi.openapi.model</modelPackage>
-                            <skipOverwrite>true</skipOverwrite>
+                            <skipOverwrite>false</skipOverwrite>
                             <configOptions>
                                 <useSpringBoot3>false</useSpringBoot3>
                                 <useTags>true</useTags>

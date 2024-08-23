@@ -10,7 +10,7 @@ public class ListActivityCenterV1Operation extends APIOperation<ActivityCentersV
         super("listActivityCenterV1");
 
         this.generateLinksWith((apiClass, req) -> apiClass.listActivityCentersV1(req.getMeta(), req.getLinks(),
-                req.getExpand(), req.getOffset(), req.getLimit(), req.getIds(), req.getName(), req.getCountryIds()));
+                req.getExpand(), req.getOffset(), req.getLimit(), req.getOrder(), req.getOrderBy(), req.getIds(), req.getName(), req.getCountryIds()));
     }
 
 }
