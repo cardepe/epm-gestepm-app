@@ -6,7 +6,6 @@ import com.epm.gestepm.lib.controller.metadata.APIMetadata;
 import com.epm.gestepm.lib.controller.response.ResponseSuccessfulHelper;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
-import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.masterdata.api.displacement.dto.DisplacementDto;
 import com.epm.gestepm.masterdata.api.displacement.dto.creator.DisplacementCreateDto;
@@ -43,17 +42,17 @@ import static org.mapstruct.factory.Mappers.getMapper;
 @EnableExecutionLog(layerMarker = REST)
 public class DisplacementController extends BaseController implements DisplacementV1Api, ResponsesForDisplacement, ResponsesForDisplacementList {
 
-    private final DisplacementService activityCenterService;
+    private final DisplacementService displacementService;
 
     public DisplacementController(final CommonProviders commonProviders, final ApplicationContext appCtx,
                                   final AppLocaleService appLocaleService, final ResponseSuccessfulHelper successHelper,
-                                  final DisplacementService activityCenterService) {
+                                  final DisplacementService displacementService) {
 
         super(commonProviders.localeProvider(), commonProviders.executionRequestProvider(),
                 commonProviders.executionTimeProvider(), commonProviders.restContextProvider(), appCtx, appLocaleService,
                 successHelper);
 
-        this.activityCenterService = activityCenterService;
+        this.displacementService = displacementService;
     }
 
     @Override
@@ -69,7 +68,7 @@ public class DisplacementController extends BaseController implements Displaceme
         this.setOrder(req, order, orderBy);
 
         final DisplacementFilterDto filterDto = getMapper(MapDRToDisplacementFilterDto.class).from(req);
-        final Page<DisplacementDto> page = this.activityCenterService.list(filterDto, offset, limit);
+        final Page<DisplacementDto> page = this.displacementService.list(filterDto, offset, limit);
 
         final APIMetadata metadata = this.getMetadata(req, page, new ListDisplacementV1Operation());
         final List<Displacement> data = getMapper(MapDToDisplacementResponse.class).from(page);
@@ -88,8 +87,8 @@ public class DisplacementController extends BaseController implements Displaceme
 
         this.setCommon(req, meta, links, null);
 
-        final DisplacementByIdFinderDto finderDto = getMapper(MapDRToDByIdFinderDto.class).from(req);
-        final DisplacementDto dto = this.activityCenterService.findOrNotFound(finderDto);
+        final DisplacementByIdFinderDto finderDto = getMapper(MapDRToDisplacementByIdFinderDto.class).from(req);
+        final DisplacementDto dto = this.displacementService.findOrNotFound(finderDto);
 
         final APIMetadata metadata = this.getMetadata(req, new FindDisplacementV1Operation());
         final Displacement data = getMapper(MapDToDisplacementResponse.class).from(dto);
@@ -106,7 +105,7 @@ public class DisplacementController extends BaseController implements Displaceme
 
         final DisplacementCreateDto createDto = getMapper(MapDToDisplacementCreateDto.class).from(reqCreateDisplacement);
 
-        final DisplacementDto activityCenterDto = this.activityCenterService.create(createDto);
+        final DisplacementDto activityCenterDto = this.displacementService.create(createDto);
 
         final APIMetadata metadata = this.getDefaultMetadata();
         final Displacement data = getMapper(MapDToDisplacementResponse.class).from(activityCenterDto);
@@ -126,7 +125,7 @@ public class DisplacementController extends BaseController implements Displaceme
         final DisplacementUpdateDto updateDto = getMapper(MapDToDisplacementUpdateDto.class).from(reqUpdateDisplacement);
         updateDto.setId(id);
 
-        final DisplacementDto activityCenterDto = this.activityCenterService.update(updateDto);
+        final DisplacementDto activityCenterDto = this.displacementService.update(updateDto);
 
         final APIMetadata metadata = this.getDefaultMetadata();
         final Displacement data = getMapper(MapDToDisplacementResponse.class).from(activityCenterDto);
@@ -146,7 +145,7 @@ public class DisplacementController extends BaseController implements Displaceme
         final DisplacementDeleteDto deleteDto = new DisplacementDeleteDto();
         deleteDto.setId(id);
 
-        this.activityCenterService.delete(deleteDto);
+        this.displacementService.delete(deleteDto);
 
         return this.success(getMapper(ResSuccessMapper.class)::from);
     }

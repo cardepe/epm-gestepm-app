@@ -5,7 +5,7 @@ import com.epm.gestepm.rest.displacement.request.DisplacementFindRestRequest;
 import org.mapstruct.Mapper;
 
 @Mapper
-public interface MapDRToDByIdFinderDto {
+public interface MapDRToDisplacementByIdFinderDto {
 
   DisplacementByIdFinderDto from(DisplacementFindRestRequest req);
 

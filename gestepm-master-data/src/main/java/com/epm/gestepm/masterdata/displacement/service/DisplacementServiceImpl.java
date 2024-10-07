@@ -98,7 +98,7 @@ public class DisplacementServiceImpl implements DisplacementService {
           debugOut = true,
           msgIn = "Finding displacement by ID, result is expected or will fail",
           msgOut = "Found displacement by ID",
-          errorMsg = "Activity center by ID not found")
+          errorMsg = "Displacement by ID not found")
   public DisplacementDto findOrNotFound(DisplacementByIdFinderDto finderDto) {
 
     final Supplier<RuntimeException> notFound = () -> new DisplacementNotFoundException(finderDto.getId());
@@ -127,7 +127,7 @@ public class DisplacementServiceImpl implements DisplacementService {
   @LogExecution(operation = OP_UPDATE,
           debugOut = true,
           msgIn = "Updating displacement",
-          msgOut = "Activity center updated OK",
+          msgOut = "Displacement updated OK",
           errorMsg = "Failed to update displacement")
   public DisplacementDto update(DisplacementUpdateDto updateDto) {
 
@@ -148,7 +148,7 @@ public class DisplacementServiceImpl implements DisplacementService {
   @LogExecution(operation = OP_DELETE,
           debugOut = true,
           msgIn = "Deleting displacement",
-          msgOut = "Activity center deleted OK",
+          msgOut = "Displacement deleted OK",
           errorMsg = "Failed to delete displacement")
   public void delete(DisplacementDeleteDto deleteDto) {
 
