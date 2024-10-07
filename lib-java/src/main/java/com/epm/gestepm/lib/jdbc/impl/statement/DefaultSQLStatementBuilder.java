@@ -18,6 +18,7 @@ import com.epm.gestepm.lib.jdbc.api.statement.SQLStatementKeyResolver;
 import com.epm.gestepm.lib.jdbc.impl.filter.SQLFilterParser;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
+import org.apache.commons.lang3.StringUtils;
 
 @EnableExecutionLog(layerMarker = DELEGATOR)
 public class DefaultSQLStatementBuilder implements SQLStatementBuilder {
@@ -108,15 +109,21 @@ public class DefaultSQLStatementBuilder implements SQLStatementBuilder {
                 final String columnName = ob.getColumnName();
                 final SQLOrderByType type = ob.getSqlOrderByType();
 
-                return String.format("%s %s", columnName, type.toString());
+                if (StringUtils.isNoneBlank(columnName) && type != null) {
+                    return String.format("%s %s", columnName, type);
+                } else {
+                    return StringUtils.EMPTY;
+                }
 
             }).collect(Collectors.joining(","));
 
             if (!order.isBlank()) {
                 statement = statement.replace("#orderByToken", "ORDER BY #orderBy");
+                statement = statement.replace("#orderBy", order);
+            } else {
+                statement = statement.replace("#orderByToken,", "ORDER BY");
+                statement = statement.replace("#orderByToken", StringUtils.EMPTY);
             }
-
-            statement = statement.replace("#orderBy", order);
         }
 
         statement = statement.replace("#filter", "");

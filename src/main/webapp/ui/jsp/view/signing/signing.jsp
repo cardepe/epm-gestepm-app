@@ -223,7 +223,7 @@
 								<select id="displacementProjectDropdown" class="form-control" required>
 									<option></option>
 									<c:forEach items="${displacementProjects}" var="project">
-										<option value="${project.id}" data-info="${project}">
+										<option value="${project.id}" data-info="${project.activityCenter.id}">
 											<spring:message code="${project.name}" />
 										</option>
 									</c:forEach>
@@ -260,8 +260,8 @@
 								<option disabled value="" selected="selected">
 									<spring:message code="displacements.displacement.type.placeholder" />
 								</option>
-								<option value="1"><spring:message code="displacements.type.1" /></option>
-								<option value="0"><spring:message code="displacements.type.0" /></option>
+								<option value="PUBLIC_TRANSPORT"><spring:message code="displacements.type.PUBLIC_TRANSPORT" /></option>
+								<option value="VEHICLE"><spring:message code="displacements.type.VEHICLE" /></option>
 							</select>
 						</div>
 					</div>
@@ -342,12 +342,6 @@
 			placeholder: "${jspUtil.parseTagToText('project.selectable')}",
 			dropdownCssClass: 'selectStyle'
 		});
-
-		/*$('#displacementProjectDropdown').select2({
-			allowClear: true,
-			placeholder: "${jspUtil.parseTagToText('project.selectable')}",
-			dropdownCssClass: 'selectStyle'
-		});*/
 		/* End Select 2 */
 		
 		/* Datatables */
@@ -395,16 +389,13 @@
 		});
 
 		$('#displacementProjectDropdown').change(function() {
-			let projectId = $('#displacementProjectDropdown').val();
-			
-			$.ajax({
-				type: "GET",
-				url: "/admin/displacements/project/" + projectId + "/activity",
-				success: function(msg) {
-					msg = '<option disabled selected="selected">-</option>' + msg;
-					$('#activityCenter').html(msg);
-				}
-			});
+
+			let activityCenterId = $('#displacementProjectDropdown option:selected').attr('data-info');
+			let callbackFunction = function(html) {
+				$('#displacement').html(html);
+			}
+
+			loadDisplacements(activityCenterId, callbackFunction);
 		});
 
 		$('#createDispBtn').click(function() {
@@ -671,26 +662,22 @@
 	// End Material Functions
 
 	// Displacement Functions
-	
-	function getDisplacement(id) {
-		return $.ajax({
-		    url: '/displacements/' + id,
-		    type: 'GET'
-		 });
+	function loadDisplacement() {
+		let id =  $('#displacement').val();
+
+		axios.get('/v1/displacements/' + id).then((response) => {
+			let displacement = response.data.data;
+
+			let manualHoursInput = $('#manualHours');
+			let typeInput = $('#displacementType');
+
+			manualHoursInput.val(minutesToTime(displacement.totalTime));
+			manualHoursInput.attr('disabled', true);
+
+			typeInput.val(displacement.type);
+			typeInput.attr('disabled', true);
+		});
 	}
-	
-	async function loadDisplacement() {
-
-		var id =  $('#activityCenter').val();
-		var displacement = await getDisplacement(id);
-		
-		$('#manualHours').val(displacement.totalTime);
-		$('#manualHours').attr('disabled', true);
-
-		$('#displacementType').val(displacement.displacementType);
-		$('#displacementType').attr('disabled', true);
-	}
-
 	// End Displacement Functions
 	
 	// Signing Functions

@@ -27,6 +27,8 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
         - schema:
             type: array
             items:
@@ -170,6 +172,8 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
         - schema:
             type: array
             items:
@@ -301,6 +305,8 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
         - schema:
             type: array
             items:
@@ -309,9 +315,11 @@ paths:
           name: ids
           description: List of displacement ids to filter.
         - schema:
-            type: integer
+            type: array
+            items:
+              type: integer
           in: query
-          name: activityCenterId
+          name: activityCenterIds
           description: List of activity center ids to filter.
         - schema:
             type: string
@@ -319,7 +327,7 @@ paths:
           name: name
           description: Search by displacement name.
         - schema:
-            type: integer
+            $ref: '#/components/schemas/DisplacementType'
           in: query
           name: type
           description: Search by displacement type.
@@ -350,10 +358,11 @@ paths:
   '/v1/displacements/{id}':
     parameters:
       - schema:
-          type: string
+          type: integer
         name: id
         in: path
         required: true
+        description: Displacement id.
     get:
       summary: V1 - Find displacement
       tags:
@@ -407,6 +416,10 @@ paths:
       responses:
         '200':
           description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
         '404':
           description: displacement-not-found
           content:
@@ -435,6 +448,8 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
         - schema:
             type: array
             items:
@@ -551,64 +566,76 @@ paths:
       tags:
         - levels-v1
       description: delete-level-v1
-  /v1/working-holidays:
+  /v1/holidays:
     get:
-      summary: V1 - List working holidays
+      summary: V1 - List holidays
       tags:
-        - working-holidays-v1
+        - holidays-v1
       responses:
         '200':
           description: '**OK**'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResWorkingHolidayList'
-      operationId: list-working-holidays-v1
-      description: list-working-holidays-v1
+                $ref: '#/components/schemas/ResHolidayList'
+      operationId: list-holidays-v1
+      description: list-holidays-v1
       parameters:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
         - schema:
             type: array
             items:
               type: integer
           in: query
           name: ids
-          description: List of working holiday ids to filter.
+          description: List of holiday ids to filter.
         - schema:
             type: string
           in: query
           name: name
-          description: Search by working holiday name.
+          description: Search by holiday name.
         - schema:
-            type: string
+            type: integer
             format: date
           in: query
-          name: date
-          description: Search by working holiday date.
+          name: day
+          description: Search by holiday day.
         - schema:
             type: integer
+            format: date
           in: query
-          name: countryId
-          description: Search by working holiday country.
+          name: month
+          description: Search by holiday month.
         - schema:
-            type: integer
+            type: array
+            items:
+              type: integer
           in: query
-          name: activityCenterId
-          description: Search by working holiday activity center.
+          name: countryIds
+          description: List of holiday countries to filter.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: activityCenterIds
+          description: List of holiday activity centers to filter.
     post:
-      summary: V1 - Create working holidays
-      operationId: create-working-holiday-v1
+      summary: V1 - Create holidays
+      operationId: create-holiday-v1
       responses:
         '200':
           description: '**OK**'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResWorkingHoliday'
+                $ref: '#/components/schemas/ResHoliday'
         '404':
           description: country-not-found | activity-center-not-found
           content:
@@ -616,73 +643,73 @@ paths:
               schema:
                 $ref: ../../base-api-spec.yaml#/components/schemas/ResError
       tags:
-        - working-holidays-v1
-      description: create-working-holiday-v1
+        - holidays-v1
+      description: create-holiday-v1
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReqCreateWorkingHoliday'
+              $ref: '#/components/schemas/ReqCreateHoliday'
     parameters: []
-  '/v1/working-holidays/{id}':
+  '/v1/holidays/{id}':
     parameters:
       - schema:
           type: integer
         name: id
         in: path
         required: true
-        description: Working holiday id.
+        description: Holiday id.
     get:
-      summary: V1 - Find working holiday
+      summary: V1 - Find holiday
       tags:
-        - working-holidays-v1
+        - holidays-v1
       responses:
         '200':
           description: '**OK**'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResWorkingHoliday'
+                $ref: '#/components/schemas/ResHoliday'
         '404':
-          description: working-holiday-not-found
+          description: holiday-not-found
           content:
             application/json:
               schema:
                 $ref: ../../base-api-spec.yaml#/components/schemas/ResError
-      operationId: find-working-holiday-by-id-v1
-      description: find-working-holiday-by-id-v1
+      operationId: find-holiday-by-id-v1
+      description: find-holiday-by-id-v1
       parameters:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
     put:
-      summary: V1 - Update working holiday
-      operationId: update-working-holiday-v1
+      summary: V1 - Update holiday
+      operationId: update-holiday-v1
       responses:
         '200':
           description: '**OK**'
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ResWorkingHoliday'
+                $ref: '#/components/schemas/ResHoliday'
         '404':
-          description: working-holiday-not-found | country-not-found | activity-center-not-found
+          description: holiday-not-found | country-not-found | activity-center-not-found
           content:
             application/json:
               schema:
                 $ref: ../../base-api-spec.yaml#/components/schemas/ResError
       tags:
-        - working-holidays-v1
-      description: update-working-holiday-v1
+        - holidays-v1
+      description: update-holiday-v1
       parameters: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReqUpdateWorkingHoliday'
+              $ref: '#/components/schemas/ReqUpdateHoliday'
     delete:
-      summary: V1 - Delete working holiday
-      operationId: delete-working-holiday-v1
+      summary: V1 - Delete holiday
+      operationId: delete-holiday-v1
       responses:
         '200':
           description: '**OK**'
@@ -691,14 +718,14 @@ paths:
               schema:
                 $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
         '404':
-          description: working-holiday-not-found
+          description: holiday-not-found
           content:
             application/json:
               schema:
                 $ref: ../../base-api-spec.yaml#/components/schemas/ResError
       tags:
-        - working-holidays-v1
-      description: delete-working-holiday-v1
+        - holidays-v1
+      description: delete-holiday-v1
 components:
   schemas:
     ActivityCenter:
@@ -722,11 +749,11 @@ components:
         id:
           type: integer
         activityCenter:
-          $ref: ../gestepm-master-data-api/api-spec.yaml#/components/schemas/ActivityCenter
+          $ref: '#/components/schemas/ActivityCenter'
         name:
           type: string
         type:
-          type: integer
+          $ref: '#/components/schemas/DisplacementType'
         totalTime:
           type: integer
       required:
@@ -735,6 +762,16 @@ components:
         - name
         - type
         - totalTime
+    DisplacementType:
+      title: DisplacementType
+      x-stoplight:
+        id: vqwhgqimmfnf8
+      type: string
+      enum:
+        - VEHICLE
+        - PUBLIC_TRANSPORT
+      example: VEHICLE
+      description: 'VEHICLE, PUBLIC_TRANSPORT'
     ResActivityCenter:
       title: ResActivityCenter
       type: object
@@ -791,7 +828,7 @@ components:
         name:
           type: string
         type:
-          type: integer
+          $ref: '#/components/schemas/DisplacementType'
         totalTime:
           type: integer
       required:
@@ -833,7 +870,7 @@ components:
         name:
           type: string
         type:
-          type: integer
+          $ref: '#/components/schemas/DisplacementType'
         totalTime:
           type: integer
       required:
@@ -930,29 +967,43 @@ components:
         hourPrice:
           type: number
           format: double
-    WorkingHoliday:
-      title: WorkingHoliday
+    Holiday:
+      title: Holiday
       type: object
       properties:
         id:
           type: integer
         name:
           type: string
-        date:
-          type: string
+        day:
+          type: integer
           format: date
+          x-stoplight:
+            id: 9s10celwcbojh
+        month:
+          type: integer
+          x-stoplight:
+            id: gfr8y5iy7omn3
+        country:
+          $ref: '#/components/schemas/Country'
         activityCenter:
           $ref: '#/components/schemas/ActivityCenter'
-    ResWorkingHoliday:
-      title: ResWorkingHoliday
+      required:
+        - id
+        - name
+        - day
+        - month
+        - country
+    ResHoliday:
+      title: ResHoliday
       type: object
       properties:
         metadata:
           $ref: ../../base-api-spec.yaml#/components/schemas/Meta
         data:
-          $ref: '#/components/schemas/WorkingHoliday'
-    ResWorkingHolidayList:
-      title: ResWorkingHolidayList
+          $ref: '#/components/schemas/Holiday'
+    ResHolidayList:
+      title: ResHolidayList
       type: object
       properties:
         metadata:
@@ -960,31 +1011,61 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/WorkingHoliday'
-    ReqCreateWorkingHoliday:
-      title: ReqCreateWorkingHoliday
+            $ref: '#/components/schemas/Holiday'
+    ReqCreateHoliday:
+      title: ReqCreateHoliday
       type: object
       properties:
         name:
           type: string
-        date:
-          type: string
+        day:
+          type: integer
           format: date
+          x-stoplight:
+            id: 2a6rkcj20se9p
+        month:
+          type: integer
+          x-stoplight:
+            id: p4syeg8po8egs
+        countryId:
+          type: integer
+          x-stoplight:
+            id: 9pehpomct5i1h
         activityCenterId:
           type: integer
-    ReqUpdateWorkingHoliday:
-      title: ReqUpdateWorkingHoliday
+      required:
+        - name
+        - day
+        - month
+        - countryId
+    ReqUpdateHoliday:
+      title: ReqUpdateHoliday
+      x-stoplight:
+        id: 3bb80b3a7980f
       type: object
       properties:
-        id:
-          type: integer
         name:
           type: string
-        date:
-          type: string
+        day:
+          type: integer
           format: date
+          x-stoplight:
+            id: oilck61kmi3ao
+        month:
+          type: integer
+          x-stoplight:
+            id: 9dr95aln03na4
+        countryId:
+          type: integer
+          x-stoplight:
+            id: kx43a8zjy9qbo
         activityCenterId:
           type: integer
+      required:
+        - name
+        - day
+        - month
+        - countryId
   securitySchemes:
     bearerAuth:
       type: http
@@ -998,11 +1079,7 @@ tags:
     description: V1 - Displacement
   - name: levels-v1
     description: V1 - Levels
-  - name: working-holidays-v1
-    description: V1 - Working holidays
-  - name: predefined-displacements-v1
-    description: V1 - Predefined displacements
-  - name: displacement-types-v1
-    description: V1 - Displacement types
+  - name: holidays-v1
+    description: V1 - Holidays
 security:
   - basicAuth: []

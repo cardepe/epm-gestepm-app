@@ -2285,13 +2285,6 @@
 			}
 		});
 	}
-
-	function getMsg(projectId) {
-		return $.ajax({
-		    url: '/admin/displacements/project/' + projectId + '/activity',
-		    type: 'GET'
-		 });
-	}
 	
 	async function csViewShare(id) {
 		var share = await getCsShare(id);
@@ -2301,15 +2294,16 @@
 	}
 
 	async function dsViewShare(id) {
-		var share = await getDsShare(id);
+		let share = await getDsShare(id);
+		let activityCenterId = share.activityCenter.id;
+		let callbackFunction = function(html) {
+			$('#viewDispForm #displacement').html(html);
+			let form = document.forms['viewDispForm'];
+			initForm(share, form);
+			$('#viewDispModal').modal('show');
+		}
 
-		var msg = await getMsg(share.projectId);
-		msg = '<option disabled selected="selected">-</option>' + msg;
-		$('#viewDispForm #activityCenter').html(msg);
-		
-		var form = document.forms['viewDispForm'];
-		initForm(share, form);
-		$('#viewDispModal').modal('show');
+		loadDisplacements(activityCenterId, callbackFunction);
 	}
 
 	async function ipsViewShare(id) {
@@ -2402,20 +2396,21 @@
 	}
 
 	async function dsEditShare(id) {
-		var share = await getDsShare(id);
+		let share = await getDsShare(id);
+		let activityCenterId = share.activityCenter.id;
+		let callbackFunction = function(html) {
+			$('#updateDispForm #displacement').html(html);
+			let form = document.forms['updateDispForm'];
+			initForm(share, form);
+			$('#updateDispModal').modal('show');
+		}
 
-		var msg = await getMsg(share.projectId);
-		msg = '<option disabled selected="selected">-</option>' + msg;
-		$('#updateDispForm #activityCenter').html(msg);
-
-		var form = document.forms['updateDispForm'];
-		initForm(share, form);
-		$('#updateDispModal').modal('show');
+		loadDisplacements(activityCenterId, callbackFunction);
 
 		$('#updateDispBtn').unbind('click').click(function () {
 
 			showLoading();
-			
+
 			$.ajax({
 				type: "PUT",
 				url: "/shares/displacement/" + id,

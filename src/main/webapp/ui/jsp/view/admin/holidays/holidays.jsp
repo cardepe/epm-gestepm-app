@@ -78,7 +78,7 @@
 									<th id="thDate"><spring:message
 											code="holidays.admin.table.date" /></th>
 									<th id="thCountry"><spring:message
-											code="holidays.admin.table.activityCenter" /></th>
+											code="holidays.admin.table.activity.center" /></th>
 									<th id="thActivityCenter"><spring:message
 											code="holidays.admin.table.activity.center" /></th>
 									<th id="thActions" class="all"><spring:message
@@ -152,14 +152,14 @@
 						<div class="col">
 							<div class="form-group">
 								<label for="activityCenter" class="col-form-label"><spring:message
-										code="holidays.admin.table.activityCenter" /></label>
+										code="holidays.admin.table.activity.center" /></label>
 
 								<select
 									id="activityCenter" name="activityCenter" class="form-control"
 									required>
 									<option disabled value="" selected="selected">
 										<spring:message
-											code="holidays.admin.activityCenter.placeholder" />
+											code="holidays.admin.activity.center.placeholder" />
 									</option>
 									<c:forEach items="${countries}" var="activityCenter">
 										<option value="${activityCenter.id}">
@@ -271,14 +271,14 @@
 						<div class="col">
 							<div class="form-group">
 								<label for="activityCenter" class="col-form-label"><spring:message
-										code="holidays.admin.table.activityCenter" /></label>
+										code="holidays.admin.table.activity.center" /></label>
 
 								<select
 									id="activityCenter" name="activityCenter" class="form-control"
 									required>
 									<option disabled value="" selected="selected">
 										<spring:message
-											code="holidays.admin.activityCenter.placeholder" />
+											code="holidays.admin.activity.center.placeholder" />
 									</option>
 									<c:forEach items="${countries}" var="activityCenter">
 										<option value="${activityCenter.id}">

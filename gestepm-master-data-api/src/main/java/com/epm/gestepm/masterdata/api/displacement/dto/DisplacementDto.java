@@ -18,7 +18,7 @@ public class DisplacementDto implements Serializable {
     private String name;
 
     @NotNull
-    private Integer type;
+    private DisplacementTypeDto type;
 
     @NotNull
     private Integer totalTime;

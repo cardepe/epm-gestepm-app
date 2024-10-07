@@ -10,11 +10,8 @@ import com.epm.gestepm.modelapi.displacement.dto.DisplacementTableDTO;
 public interface DisplacementService {
 	Displacement getDisplacementById(long displacementId);
 	List<Displacement> getAll();
-	List<Displacement> getDisplacementsByActivityCenter(long activityCenterId);
 	void save(Displacement displacement);
 	void delete(Long id);
-	List<DisplacementTableDTO> getDisplacementsDataTables(PaginationCriteria pagination);
-	Long getDisplacementsCount();
 	List<DisplacementTableDTO> getDisplacementsDataTablesByProjectId(Long projectId, PaginationCriteria pagination);
 	Long getDisplacementsCountByProjectId(Long projectId);
 	List<DisplacementDTO> getNotDisplacementDTOsByProjectId(Long projectId);

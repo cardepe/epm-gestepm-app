@@ -90,6 +90,20 @@ components:
           type: string
         uniqueItems: true
       description: API Option - List of field expansion for included resources on response.
+    filter-order:
+      name: order
+      in: query
+      required: false
+      schema:
+        type: string
+      description: 'ASC, DESC.'
+    filter-order-by:
+      name: orderBy
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Order by field name.
   schemas:
     EnumLiveStatus:
       type: string

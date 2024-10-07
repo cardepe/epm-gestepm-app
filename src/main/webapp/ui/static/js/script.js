@@ -48,6 +48,33 @@ function hideLoading() {
 	$('.loading').hide();
 }
 
+function timePassed(time) {
+	let[hours, mins] = time.split(":");
+	return parseInt(hours) * 60 + parseInt(mins);
+}
+
+function minutesToTime(minutes) {
+	return new Date(minutes * 60 * 1000).toISOString().substring(11, 16);
+}
+
+function loadDisplacements(activityCenterId, callback) {
+
+	axios.get('/v1/displacements/', { params: { activityCenterIds: activityCenterId, order: 'ASC', orderBy: 'name' }}).then((response) => {
+
+		let html = '<option disabled selected="selected">-</option>';
+
+		response.data.data.forEach(displacement => {
+
+			let displacementType = formatType(displacement.type);
+			let totalTime = minutesToTime(displacement.totalTime);
+
+			html += '<option value="' + displacement.id + '">' + displacement.name + ' (' + displacementType + ' - ' + totalTime + ')</option>';
+		})
+
+		callback(html);
+	});
+}
+
 window.addEventListener("load", function(){
 	messages = getI18n('es');
 	hideLoading();

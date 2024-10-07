@@ -1,0 +1,100 @@
+sql:
+
+  qry-list-of-h: |
+
+    SELECT
+      h.holiday_id AS id_pagination,
+      h.holiday_id,
+      h.name,
+      h.day,
+      h.month,
+      h.country_id,
+      h.activity_center_id
+    FROM ${sch-gestepm}.holiday h
+
+    #whereToken #filter
+    #orderByToken
+
+  qry-page-of-h: |
+
+    ${sql.paginated-query-group-prefix}
+    ${sql.qry-list-of-h}
+    ${sql.paginated-query-suffix}
+
+  qry-count-of-h: |
+
+    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    FROM (${sql.qry-list-of-h}) final
+
+  qry-create-h: |
+
+    INSERT INTO ${sch-gestepm}.holiday (
+      name,
+      day,
+      month,
+      country_id,
+      activity_center_id
+    )
+    VALUES (
+      :attr_h_name,
+      :attr_h_day,
+      :attr_h_month,
+      :attr_h_c_id,
+      :attr_h_ac_id
+    )
+
+  qry-update-h: |
+
+    UPDATE
+      ${sch-gestepm}.holiday
+    SET
+      name = :attr_h_name,
+      day = :attr_h_day,
+      month = :attr_h_month,
+      country_id = :attr_h_c_id,
+      activity_center_id = :attr_h_ac_id
+    WHERE
+      holiday_id = :attr_h_id
+
+  qry-delete-h: |
+
+    DELETE FROM ${sch-gestepm}.holiday WHERE holiday_id = :attr_h_id
+
+  filter-h-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-h-ids}
+      -- ${sql.predicate-for-h-ac-id}
+      -- ${sql.predicate-for-h-name}
+      -- ${sql.predicate-for-h-type}
+    -- AND]
+
+  filter-h-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-h-id}
+    -- AND]
+
+  predicate-for-h-id: |
+
+    h.holiday_id = :attr_h_id
+
+  predicate-for-h-ids: |
+
+    h.holiday_id IN (:attr_h_ids)
+
+  predicate-for-h-day: |
+
+    h.day = :attr_h_day
+
+  predicate-for-h-month: |
+
+    h.month = :attr_h_month
+
+  predicate-for-h-c-id: |
+
+    h.country_id IN (:attr_h_c_ids)
+
+  predicate-for-h-ac-id: |
+
+    h.activity_center_id IN (:attr_h_ac_ids)

@@ -46,15 +46,6 @@ public class MainController {
 	public void loadSigningScheduled(Locale locale, Model model, HttpServletRequest request) {
 		signingScheduled.dailyPersonalSigningProcess();
 	}
-	
-	@ResponseBody
-	@GetMapping("/displacements/{id}")
-	public DisplacementDTO getDisplacement(@PathVariable Long id) {
-
-		Displacement displacement = displacementService.getDisplacementById(id);
-
-		return DisplacementMapper.mapDisplacementToDTO(displacement);
-	}
 
 	@GetMapping("/test")
 	public void testMethod() {

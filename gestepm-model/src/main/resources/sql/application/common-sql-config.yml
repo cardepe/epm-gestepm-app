@@ -8,10 +8,6 @@ sql:
 
   paginated-query-group-prefix: |
 
-    SELECT res_.* FROM ( SELECT DENSE_RANK() OVER(ORDER BY id_pagination) AS rownumber_, temp_.* FROM (
-
-  paginated-query-group-order-prefix: |
-
     SELECT res_.* FROM ( SELECT DENSE_RANK() OVER(#orderByToken, id_pagination) AS rownumber_, temp_.* FROM (
 
   paginated-query-suffix: |

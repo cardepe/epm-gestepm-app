@@ -1,5 +1,6 @@
 package com.epm.gestepm.masterdata.api.displacement.dto.creator;
 
+import com.epm.gestepm.masterdata.api.displacement.dto.DisplacementTypeDto;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -14,7 +15,7 @@ public class DisplacementCreateDto {
     private String name;
 
     @NotNull
-    private Integer type;
+    private DisplacementTypeDto type;
 
     @NotNull
     private Integer totalTime;
