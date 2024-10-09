@@ -81,3 +81,26 @@ function parseActionButtons(userRole, userSigningState, hasPrivileges, projectId
 		});
 	})
 }
+
+function filterShares(pageNumber) {
+	const id = $('#shareIdInput').val();
+	const type = $('#sharesTypeDropdown').val();
+	const project = $('#projectFilterDropdown').val();
+	const progress = $('#stateFilterDropdown').val();
+	const user = $('#usersDropdown').val();
+
+	const currentURL = new URL(window.location.href);
+
+	if (id) { currentURL.searchParams.set('id', id); }
+	if (type) { currentURL.searchParams.set('type', type); }
+	if (project) { currentURL.searchParams.set('project', project); }
+	if (progress) { currentURL.searchParams.set('progress', progress); }
+	if (user) { currentURL.searchParams.set('user', user); }
+	if (pageNumber) { currentURL.searchParams.set('pageNumber', pageNumber); }
+
+	window.history.pushState(null, '', currentURL.toString());
+
+	currentURL.pathname = currentURL.pathname + '/dt';
+
+	dTable.ajax.url(currentURL.toString()).load();
+}

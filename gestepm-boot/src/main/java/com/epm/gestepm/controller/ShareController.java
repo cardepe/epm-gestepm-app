@@ -2,7 +2,6 @@ package com.epm.gestepm.controller;
 
 import com.epm.gestepm.lib.file.FileUtils;
 import com.epm.gestepm.model.interventionshare.service.mapper.ShareMapper;
-import com.epm.gestepm.modelapi.common.scope.ShareListFilterParams;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
@@ -147,9 +146,6 @@ public class ShareController {
     @Autowired
     private SMTPService smtpService;
 
-    @Resource(name = "rsShareListFilterParams")
-    private ShareListFilterParams shareListFilterParams;
-
     @GetMapping("/intervention")
     public String interventionsView(Locale locale, Model model, HttpServletRequest request) {
 
@@ -208,7 +204,6 @@ public class ShareController {
             model.addAttribute("language", locale.getLanguage());
             model.addAttribute("userRole", user.getRole().getRoleName());
             model.addAttribute("usersDTO", usersDTO);
-            model.addAttribute("filters", shareListFilterParams);
 
             // Load Action Buttons for DataTable
             model.addAttribute("tableActionButtons", ModelUtil.getInterventionActionButtons());
@@ -296,12 +291,6 @@ public class ShareController {
 
         final DataTableRequest<InterventionShare> dataTableInRQ = new DataTableRequest<>(request);
         final PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
-
-        shareListFilterParams.setId(id);
-        shareListFilterParams.setType(type);
-        shareListFilterParams.setProgress(progress);
-        shareListFilterParams.setProjectId(project);
-        shareListFilterParams.setUserId(userId);
 
         final Long totalRecords = interventionShareService.getAllShareTableCount(id, type, project, progress, userId);
         final List<ShareTableDTO> shareTableDTOs = interventionShareService.getAllShareTable((pagination.getPageNumber() / pagination.getPageSize()), pagination.getPageSize(), id, type, project, progress, userId);
