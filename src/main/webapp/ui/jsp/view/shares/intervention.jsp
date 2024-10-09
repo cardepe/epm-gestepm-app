@@ -1312,7 +1312,7 @@ em[disabled] {
 		inputsNumber.forEach(input => {$(input).val(''); })
 		inputsSelect.forEach(input => {$(input).val('').trigger('change'); })
 
-		dTable.ajax.reload();
+		dTable.ajax.url('/shares/intervention/dt').load();
 		window.history.replaceState({ }, '', '/shares/intervention');
 	}
 
