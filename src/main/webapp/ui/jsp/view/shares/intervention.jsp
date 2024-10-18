@@ -1527,5 +1527,3 @@ em[disabled] {
 	}
 
 </script>
-
-<script src="/ui/static/js/pages/shares/storage.js"></script>

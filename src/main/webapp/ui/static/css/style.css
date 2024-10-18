@@ -219,7 +219,7 @@ img.idioma {
 }
 
 #usersDropdown + span > span > span,
-#responsableDropdown + span > span > span {
+#responsibleDropdown + span > span > span {
 	font-size: 12px;
 	height: 30px !important;
 	border-color: #ced4da !important;
