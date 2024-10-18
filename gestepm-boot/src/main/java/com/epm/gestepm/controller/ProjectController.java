@@ -183,7 +183,7 @@ public class ProjectController {
 
 	@ResponseBody
 	@GetMapping("/dt")
-	public String userBossProjectsDatatable(@RequestParam(required = false) Long projectId, @RequestParam(required = false) Long responsableId, @RequestParam(required = false) Integer station, HttpServletRequest request, Locale locale) {
+	public String userBossProjectsDatatable(@RequestParam(required = false) Long projectId, @RequestParam(required = false) Long responsibleId, @RequestParam(required = false) Integer station, HttpServletRequest request) {
 
 		try {
 
@@ -198,7 +198,7 @@ public class ProjectController {
 			
 			Object[] params = new Object[3];
 			params[0] = projectId;
-			params[1] = responsableId;
+			params[1] = responsibleId;
 			params[2] = station;
 
 			if (user.getRole().getRoleName().equals(Constants.ROLE_ADMIN) || user.getRole().getRoleName().equals(Constants.ROLE_TECHNICAL_SUPERVISOR)) {

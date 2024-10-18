@@ -46,7 +46,7 @@
 							<button id="endInterventionAndBackBtn" type="button" class="btn btn-danger btn-sm"><span class="fc-icon fc-icon-chevron-left"></span> <spring:message code="shares.intervention.detail.top.btn" /></button>
 						</c:when>
 						<c:otherwise>
-							<a id="defaultReturnBtn" href="/shares/intervention" class="btn btn-standard btn-sm">
+							<a id="returnBtn" href="/shares/intervention" class="btn btn-standard btn-sm">
 								<span class="fc-icon fc-icon-chevron-left"></span> <spring:message code="back" />
 							</a>
 						</c:otherwise>
@@ -837,35 +837,20 @@
 </script>
 
 <script>
-
-	let shareId;
-	let lastPageUrl;
-
 	document.addEventListener("DOMContentLoaded", function() {
-		storageProduct();
-		setReturnStorageProduct();
+		setReturnButtonUrl();
 	});
 
-	function storageProduct() {
+	function setReturnButtonUrl() {
 		if (document.referrer) {
 
-			let url = window.location.pathname;
-			shareId = url.substring('/shares/intervention/no-programmed/detail/'.length).split('/')[0];
-
-			let lastPagePath = new URL(document.referrer).pathname;
-			let queryParams = getLastPageQueryParams();
-			lastPageUrl = lastPagePath + (queryParams ? '?' + queryParams : '');
+			const lastPagePath = new URL(document.referrer).pathname;
+			const queryParams = document.referrer.split('?')[1];
+			const lastPageUrl = lastPagePath + (queryParams ? '?' + queryParams : '');
 
 			if (lastPagePath === '/shares/intervention') {
-				addShareStorage(shareId, lastPageUrl);
+				$('#returnBtn').attr('href', lastPageUrl);
 			}
 		}
 	}
-
-	function setReturnStorageProduct() {
-		$('#defaultReturnBtn').attr('href', getShareStorage(shareId));
-	}
-
 </script>
-
-<script src="/ui/static/js/pages/shares/storage.js"></script>

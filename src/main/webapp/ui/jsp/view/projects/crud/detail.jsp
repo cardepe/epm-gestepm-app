@@ -38,7 +38,7 @@
 			</div>
 			<div class="col-2">
 				<div class="float-right calendarBtns">
-					<a href="/projects" class="btn btn-standard btn-sm">
+					<a id="returnBtn" href="${pageContext.request.contextPath}/projects" class="btn btn-standard btn-sm">
 						<span class="fc-icon fc-icon-chevron-left"></span> <spring:message code="back" />
 					</a>
 				</div>
@@ -2786,4 +2786,23 @@
 		});
 	}
 	
+</script>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+		setReturnButtonUrl();
+	});
+
+	function setReturnButtonUrl() {
+		if (document.referrer) {
+
+			const lastPagePath = new URL(document.referrer).pathname;
+			const queryParams = document.referrer.split('?')[1];
+			const lastPageUrl = lastPagePath + (queryParams ? '?' + queryParams : '');
+
+			if (lastPagePath === '/projects') {
+				$('#returnBtn').attr('href', lastPageUrl);
+			}
+		}
+	}
 </script>

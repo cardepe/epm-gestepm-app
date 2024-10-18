@@ -57,12 +57,11 @@
 			<div class="row">
 				<div class="col">
 					<div class="card">
-						<div class="card-body">
-							
+						<div class="card-body" data-table-filter="form">
 							<span class="title"><spring:message code="users.search" /></span>
 							
 							<div class="form-group">
-								<select id="usersDropdown" class="form-control input" name="userDTO">
+								<select id="usersDropdown" data-table-filter="userId" class="form-control input" name="userDTO">
 									<option></option>
 									<c:forEach items="${usersDTO}" var="userDTO">
 										<option value="${userDTO.userId}" data-info="${userDTO}">
@@ -73,7 +72,7 @@
 							</div>
 							
 							<div class="form-group">
-								<select id="stateFilterDropdown" class="form-control input">
+								<select id="stateFilterDropdown" data-table-filter="state" class="form-control input">
 									<option></option>
 									<option value="0">
 										<spring:message code="user.detail.state.active" />
@@ -92,7 +91,7 @@
 								</div>
 								
 								<div class="col">
-									<button type="button" class="btn btn-outline-success btn-sm w-100" style="font-size: 12px" onclick="searchUser()">
+									<button type="button" class="btn btn-outline-success btn-sm w-100" style="font-size: 12px" onclick="filterTable()">
 										<em class="fas fa-search"></em> <spring:message code="search" />
 									</button>
 								</div>
@@ -111,7 +110,7 @@
 					</div>
 
 					<div class="table-responsive">
-						<table id="uTable" class="table table-striped table-borderer dataTable w-100">
+						<table id="dTable" class="table table-striped table-borderer dataTable w-100">
 							<caption class="d-none">
 								NO SONAR
 							</caption>
@@ -267,55 +266,18 @@
 <jsp:useBean id="jspUtil" class="com.epm.gestepm.modelapi.common.utils.JspUtil"/>
 
 <script>
-	var $=jQuery.noConflict();
-	var uTable;
+	let $ = jQuery.noConflict();
+
+	let dropdowns = [
+		{ id: '#usersDropdown', placeholder: '${jspUtil.parseTagToText('user.selectable')}' },
+		{ id: '#stateFilterDropdown', placeholder: '${jspUtil.parseTagToText('user.state.selectable')}' }
+	];
 	
 	$(document).ready(function() {
 
-		/* Select 2 */
-		$('#usersDropdown').select2({
-			allowClear: true,
-			placeholder: "${jspUtil.parseTagToText('user.selectable')}",
-			dropdownCssClass: 'selectStyle'
+		dropdowns.forEach(function(item) {
+			$(item.id).select2({allowClear: true, placeholder: item.placeholder, dropdownCssClass: 'selectStyle'});
 		});
-
-		$('#stateFilterDropdown').select2({
-			allowClear: true,
-			placeholder: "${jspUtil.parseTagToText('user.state.selectable')}",
-			dropdownCssClass: 'selectStyle'
-		});
-		/* End Select 2 */
-		
-		/* Datatables */
-		uTable = $('#uTable').DataTable({
-			"searching": false,
-			"responsive": true,
-			"processing": true,
-			"serverSide": true,
-			"lengthMenu": [ 10, 25, 50, 75, 100 ],
-			"ajax": "/users/dt",
-			"rowId": "us_id",
-			"language": {
-				"url": "/ui/static/lang/datatables/${locale}.json"
-			},
-			"columns": [
-				{ "data": "us_id" },
-				{ "data": "us_name" },
-				{ "data": "us_surnames" },
-				{ "data": "ro_roleName" },
-				{ "data": "sr_subRoleName" },
-				{ "data": null }
-			],
-			"columnDefs": [
-				{ "className": "text-center", "targets": "_all" },
-				{ "defaultContent": "${tableActionButtons}", "orderable": false, "targets": -1 }
-			],
-			"dom": "<'top'i>rt<'bottom'<'row no-gutters'<'col'l><'col'p>>><'clear'>",
-			"drawCallback": function(settings, json) {
-				parseActionButtons(${user.role.id});
-			}
-		});
-		/* End Datatables */
 
 		$('.btnDetail').click(function(event) {
 
@@ -339,7 +301,7 @@
 					url: "/users/create",
 					data: $('#createUserForm').serialize(),
 					success: function(msg) {
-						uTable.ajax.reload();
+						dTable.ajax.reload();
 						hideLoading();
 						showNotify(msg, 'success');
 					},
@@ -353,16 +315,6 @@
 			}
 		});
 	});
-
-	function resetTable() {
-		uTable.ajax.url('/users/dt').load();
-	}
-
-	function searchUser() {
-		var userId = $('#usersDropdown').val();
-		var state = $('#stateFilterDropdown').val();
-		uTable.ajax.url('/users/dt?userId=' + userId + '&state=' + state).load();
-	}
 
 	function validateForm() {
 		var name = $('#name').val(); // document.getElementById('name');
@@ -387,7 +339,7 @@
 				type: "DELETE",
 				url: "/users/delete/" + id,
 				success: function(msg) {
-					$('#uTable').DataTable().ajax.reload();
+					dTable.ajax.reload();
 					hideLoading();
 					showNotify(msg, 'success');
 				},
@@ -399,4 +351,70 @@
 		}
 	}
 	
+</script>
+
+<script>
+
+	document.addEventListener("DOMContentLoaded", function() {
+		dTable = generateDataTable();
+		handleDatatableFromParams();
+		onChangePage();
+	});
+
+	function generateDataTable() {
+		return $('#dTable').DataTable({
+			searching: false,
+			responsive: true,
+			processing: true,
+			serverSide: true,
+			lengthMenu: [ 10, 25, 50, 75, 100 ],
+			ajax: '/users/dt',
+			rowId: 'us_id',
+			language: {
+				url: '/ui/static/lang/datatables/${locale}.json'
+			},
+			columns: [
+				{ data: 'us_id' },
+				{ data: 'us_name' },
+				{ data: 'us_surnames' },
+				{ data: 'ro_roleName' },
+				{ data: 'sr_subRoleName' },
+				{ data: null }
+			],
+			columnDefs: [
+				{ className: 'text-center', targets: '_all' },
+				{ defaultContent: '${tableActionButtons}', orderable: false, targets: -1 }
+			],
+			dom: "<'top'i>rt<'bottom'<'row no-gutters'<'col'l><'col'p>>><'clear'>",
+			drawCallback: function() {
+				parseActionButtons(${user.role.id});
+			}
+		});
+	}
+
+	function handleDatatableFromParams() {
+		const queryParams = new URLSearchParams(window.location.search);
+
+		let userId = queryParams.get('userId');
+		let state = queryParams.get('state');
+		let pageNumber = queryParams.get('pageNumber');
+
+		const filterForm = document.querySelector('[data-table-filter="form"]');
+
+		filterForm.querySelector('[data-table-filter="userId"]').value = userId;
+		filterForm.querySelector('[data-table-filter="state"]').value = state;
+
+		filterTable(pageNumber);
+	}
+
+	function onChangePage() {
+		dTable.on('page.dt', function() {
+			const pageInfo = dTable.page.info();
+			const currentURL = new URL(window.location.href);
+			currentURL.searchParams.set('pageNumber', pageInfo.page + 1);
+
+			window.history.pushState(null, '', currentURL.toString());
+		});
+	}
+
 </script>

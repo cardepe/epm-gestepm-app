@@ -89,7 +89,7 @@ function filterShares(pageNumber) {
 	const progress = $('#stateFilterDropdown').val();
 	const user = $('#usersDropdown').val();
 
-	const currentURL = new URL(window.location.href);
+	const currentURL = new URL(location.protocol + '//' + location.host + location.pathname);
 
 	if (id) { currentURL.searchParams.set('id', id); }
 	if (type) { currentURL.searchParams.set('type', type); }

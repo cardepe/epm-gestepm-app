@@ -74,11 +74,11 @@
 			<div class="row">
 				<div class="col">
 					<div class="card">
-						<div class="card-body">
+						<div class="card-body" data-table-filter="form">
 							<span class="title"><spring:message code="filters" /></span>
 							
 							<div class="form-group mt-2">
-								<select id="projectDropdown" class="form-control input">
+								<select id="projectDropdown" data-table-filter="projectId" class="form-control input">
 									<option></option>
 									<c:forEach items="${projectListDTO}" var="projectDTO">
 										<option value="${projectDTO.id}">
@@ -89,7 +89,7 @@
 							</div>
 							
 							<div class="form-group mt-2 mb-2">
-								<select id="responsableDropdown" class="form-control input">
+								<select id="responsibleDropdown" data-table-filter="responsibleId" class="form-control input">
 									<option></option>
 									<c:forEach items="${responsables}" var="responsable">
 										<option value="${responsable.userId}">
@@ -100,7 +100,7 @@
 							</div>
 							
 							<div class="custom-control custom-checkbox">
-							    <input type="checkbox" class="custom-control-input" id="checkboxIsStation">
+							    <input type="checkbox" class="custom-control-input" data-table-filter="station" id="checkboxIsStation">
 							    <label class="custom-control-label mr-3" for="checkboxIsStation" style="font-size: 12px; padding-top: 3px"><spring:message code="projects.filter.station.checkbox" /></label>
 							</div>
 							
@@ -112,7 +112,7 @@
 								</div>
 								
 								<div class="col">
-									<button type="button" class="btn btn-outline-success btn-sm w-100" style="font-size: 12px" onclick="filterProjects()">
+									<button type="button" class="btn btn-outline-success btn-sm w-100" style="font-size: 12px" onclick="filterTable()">
 										<em class="fas fa-search"></em> <spring:message code="search" />
 									</button>
 								</div>
@@ -314,9 +314,7 @@
 <jsp:useBean id="jspUtil" class="com.epm.gestepm.modelapi.common.utils.JspUtil"/>
 
 <script>
-	var $=jQuery.noConflict();
-
-	var dtable;
+	const $ = jQuery.noConflict();
 
 	$(document).ready(function() {
 
@@ -334,7 +332,7 @@
 			dropdownCssClass: 'selectStyle'
 		});
 
-		$('#responsableDropdown').select2({
+		$('#responsibleDropdown').select2({
 			allowClear: true,
 			placeholder: "${jspUtil.parseTagToText('responsable.selectable')}",
 			dropdownCssClass: 'selectStyle'
@@ -346,49 +344,6 @@
 			dropdownCssClass: 'selectStyle'
 		});
 		/* End Select 2 */
-		
-		/* Datatables */
-		dTable = $('#dTable').DataTable({
-			"searching": false,
-			"responsive": true,
-			"processing": true,
-			"serverSide": true,
-			"lengthMenu": [ 10, 25, 50, 75, 100 ],
-			"ajax": "/projects/dt",
-			"rowId": "pr_id",
-			"language": {
-				"url": "/ui/static/lang/datatables/${locale}.json"
-			},
-			"columns": [
-				{ "data": "pr_id" },
-				{ "data": "pr_name" },
-				{ "data": "pr_startDate" },
-				{ "data": "pr_objectiveDate" },
-				{ "data": null }
-			],
-			"columnDefs": [
-				{ "className": "text-center", "targets": "_all" },
-				{ "orderable": false, "targets": 2 },
-				{  
-				    "render": function ( data, type, row ) {
-                    	return moment(data).format('DD/MM/YYYY');
-                	},
-                	"targets": 2 
-                },
-                {  
-				    "render": function ( data, type, row ) {
-                    	return moment(data).format('DD/MM/YYYY');
-                	},
-                	"targets": 3 
-                },
-				{ "defaultContent": "${tableActionButtons}", "orderable": false, "targets": -1 }
-			],
-			"dom": "<'top'i>rt<'bottom'<'row no-gutters'<'col'l><'col'p>>><'clear'>",
-			"drawCallback": function(settings, json) {
-				parseActionButtons();
-			}
-		});
-		/* End Datatables */
 
 		$('.btnDetail').click(function(event) {
 
@@ -438,18 +393,6 @@
 		var activityCenter = document.getElementById('activityCenter');
 
 		return (!projectName.value.length || !responsable.value.length || !objectiveCost.value.length || !startDate.value.length || !objectiveDate.value.length || !activityCenter.value.length);
-	}
-	
-	function resetTable() {
-		dTable.ajax.url('/projects/dt').load();
-	}
-
-	function filterProjects() {
-		var projectId = $('#projectDropdown').val();
-		var responsableId = $('#responsableDropdown').val();
-		var station = $('#checkboxIsStation').prop('checked') ? 1 : null;
-		
-		dTable.ajax.url('/projects/dt?projectId=' + projectId + '&responsableId=' + responsableId + (station == 1 ? '&station=' + station : '')).load();
 	}
 
 	function copyProject() {
@@ -505,5 +448,92 @@
 			});
 		}
 	}
+
+	function generateDataTable() {
+		return $('#dTable').DataTable({
+			searching: false,
+			responsive: true,
+			processing: true,
+			serverSide: true,
+			lengthMenu: [ 10, 25, 50, 75, 100 ],
+			ajax: '/projects/dt',
+			rowId: 'pr_id',
+			language: {
+				url: '/ui/static/lang/datatables/${locale}.json'
+			},
+			columns: [
+				{ data: 'pr_id' },
+				{ data: 'pr_name' },
+				{ data: 'pr_startDate' },
+				{ data: 'pr_objectiveDate' },
+				{ data: null }
+			],
+			columnDefs: [
+				{ className: 'text-center', targets: '_all' },
+				{ orderable: false, targets: 2 },
+				{
+					render: function(data) {
+						return moment(data).format('DD/MM/YYYY');
+					},
+					targets: 2
+				},
+				{
+					render: function (data) {
+						return moment(data).format('DD/MM/YYYY');
+					},
+					targets: 3
+				},
+				{ defaultContent: "${tableActionButtons}", orderable: false, targets: -1 }
+			],
+			dom: "<'top'i>rt<'bottom'<'row no-gutters'<'col'l><'col'p>>><'clear'>",
+			drawCallback: function() {
+				parseActionButtons();
+			},
+			initComplete: function() {
+				const queryParams = new URLSearchParams(window.location.search);
+				const pageNumber = queryParams.get('pageNumber');
+				if (pageNumber) {
+					dTable.page(pageNumber - 1).draw(false);
+				}
+			}
+		});
+	}
 	
+</script>
+
+<script>
+
+	document.addEventListener("DOMContentLoaded", function() {
+		dTable = generateDataTable();
+		handleDatatableFromParams();
+		onChangePage();
+	});
+
+	function handleDatatableFromParams() {
+		const queryParams = new URLSearchParams(window.location.search);
+
+		let projectId = queryParams.get('projectId');
+		let responsibleId = queryParams.get('responsibleId');
+		let isStation = queryParams.get('station');
+		let pageNumber = queryParams.get('pageNumber');
+
+		const filterForm = document.querySelector('[data-table-filter="form"]');
+
+		filterForm.querySelector('[data-table-filter="projectId"]').value = projectId;
+		filterForm.querySelector('[data-table-filter="responsibleId"]').value = responsibleId;
+		filterForm.querySelector('[data-table-filter="station"]').checked = isStation;
+
+		filterTable(pageNumber);
+	}
+
+	function onChangePage() {
+		dTable.on('page.dt', function() {
+			const pageInfo = dTable.page.info();
+			const currentURL = new URL(window.location.href);
+			currentURL.searchParams.set('pageNumber', pageInfo.page + 1);
+
+			window.history.pushState(null, '', currentURL.toString());
+		});
+	}
+
 </script>
