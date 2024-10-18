@@ -46,7 +46,7 @@
 							<button id="endInterventionAndBackBtn" type="button" class="btn btn-danger btn-sm"><span class="fc-icon fc-icon-chevron-left"></span> <spring:message code="shares.intervention.detail.top.btn" /></button>
 						</c:when>
 						<c:otherwise>
-							<a href="/shares/intervention" class="btn btn-standard btn-sm">
+							<a id="defaultReturnBtn" href="/shares/intervention" class="btn btn-standard btn-sm">
 								<span class="fc-icon fc-icon-chevron-left"></span> <spring:message code="back" />
 							</a>
 						</c:otherwise>
@@ -661,7 +661,7 @@
 				const url = '/shares/intervention/no-programmed/detail/' + shareId + '/end';
 				axios.post(url, formData).then(() => {
 					interventionForm.submit();
-					if (goBack) { window.location.href = '/shares/intervention'; }
+					if (goBack) { window.location.href = lastPageUrl; }
 				}).catch(error => showNotify(error.responseText, 'danger')).finally(() => {
 					resetForm();
 					hideLoading();
@@ -835,3 +835,37 @@
 	}
 
 </script>
+
+<script>
+
+	let shareId;
+	let lastPageUrl;
+
+	document.addEventListener("DOMContentLoaded", function() {
+		storageProduct();
+		setReturnStorageProduct();
+	});
+
+	function storageProduct() {
+		if (document.referrer) {
+
+			let url = window.location.pathname;
+			shareId = url.substring('/shares/intervention/no-programmed/detail/'.length).split('/')[0];
+
+			let lastPagePath = new URL(document.referrer).pathname;
+			let queryParams = getLastPageQueryParams();
+			lastPageUrl = lastPagePath + (queryParams ? '?' + queryParams : '');
+
+			if (lastPagePath === '/shares/intervention') {
+				addShareStorage(shareId, lastPageUrl);
+			}
+		}
+	}
+
+	function setReturnStorageProduct() {
+		$('#defaultReturnBtn').attr('href', getShareStorage(shareId));
+	}
+
+</script>
+
+<script src="/ui/static/js/pages/shares/storage.js"></script>

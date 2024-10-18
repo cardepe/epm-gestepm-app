@@ -21,7 +21,7 @@ public class DisplacementTableDTO {
 	@SerializedName("di_totalTime")
 	private String totalTime;
 
-	public DisplacementTableDTO(Long id, String activityCenter, String title, int displacementType, int totalTime) {
+	public DisplacementTableDTO(Long id, String activityCenter, String title, String displacementType, int totalTime) {
 		super();
 		
 		JspUtil jspUtil = new JspUtil();

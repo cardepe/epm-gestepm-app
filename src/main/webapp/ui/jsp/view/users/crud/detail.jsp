@@ -286,7 +286,7 @@
 												
 												<select id="countryId" name="countryId" class="form-control" required disabled>
 													<c:forEach items="${countries}" var="country">
-														<option value="${country.id}" ${userDetail.displacement.country.id == country.id ? 'selected' : ''}>${country.name}</option>
+														<option value="${country.id}" ${userDetail.activityCenter.country.id == country.id ? 'selected' : ''}>${country.name}</option>
 													</c:forEach>
 												</select>
 											</div>
@@ -299,8 +299,8 @@
 												</label>
 												
 												<select id="activityCenterId" name="activityCenterId" class="form-control" required disabled>
-													<c:forEach items="${activityCenters}" var="displacement">
-														<option value="${displacement.id}" ${userDetail.displacement.id == displacement.id ? 'selected' : ''}>${displacement.name}</option>
+													<c:forEach items="${activityCenters}" var="activityCenter">
+														<option value="${activityCenter.id}" ${userDetail.activityCenter.id == activityCenter.id ? 'selected' : ''}>${activityCenter.name}</option>
 													</c:forEach>
 												</select>
 											</div>
@@ -592,7 +592,7 @@
 							<select id="createShareProjectDropdown" class="form-control input" name="project">
 								<option></option>
 								<c:forEach items="${projects}" var="project">
-									<option value="${project.id}" data-info="${project.activitiCenter.id}">
+									<option value="${project.id}" data-info="${project.id}">
 										<spring:message code="${project.name}" />
 									</option>
 								</c:forEach>

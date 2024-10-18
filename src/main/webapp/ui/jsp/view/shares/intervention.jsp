@@ -90,57 +90,47 @@ em[disabled] {
 			<div class="row">
 				<div class="col">
 					<div class="card">
-						<div class="card-body">
+						<div class="card-body" data-table-filter="form">
 							
 							<span class="title"><spring:message code="filters" /></span>
 
 							<div class="form-group mt-2 mb-2">
-								<input id="shareIdInput" type="number" class="form-control input" value="${filters.id}" placeholder="<spring:message code="shares.intervention.table.id" />" />
+								<input id="shareIdInput" data-table-filter="id" type="number" class="form-control input" placeholder="<spring:message code="shares.intervention.table.id" />" />
 							</div>
 
 							<div class="form-group mt-2 mb-2">
-								<select id="sharesTypeDropdown" class="form-control input">
+								<select id="sharesTypeDropdown" data-table-filter="type" class="form-control input">
 									<option></option>
 									<c:forEach items="${sharesType}" var="shareType">
-										<option value="${shareType}" ${filters.type == shareType ? 'selected' : ''}>
-											<spring:message code="${shareType}" />
-										</option>
+										<option value="${shareType}"><spring:message code="${shareType}" /></option>
 									</c:forEach>
 								</select>
 							</div>
 							
 							<div class="form-group mb-2">
-								<select id="projectFilterDropdown" class="form-control input">
+								<select id="projectFilterDropdown" data-table-filter="project" class="form-control input">
 									<option></option>
 									<c:forEach items="${projects}" var="project">
-										<option value="${project.id}" ${filters.projectId == project.id ? 'selected' : ''} data-info="${project.station}">
-											<spring:message code="${project.name}" />
-										</option>
+										<option value="${project.id}" data-info="${project.station}"><spring:message code="${project.name}" /></option>
 									</c:forEach>
 								</select>
 							</div>
 
 			
 							<div class="form-group mb-2">
-								<select id="stateFilterDropdown" class="form-control input">
+								<select id="stateFilterDropdown" data-table-filter="progress" class="form-control input">
 									<option></option>
-									<option value="1" ${filters.progress == 1 ? 'selected' : ''}>
-										<spring:message code="shares.intervention.table.state.open" />
-									</option>
-									<option value="0" ${filters.progress == 0 ? 'selected' : ''}>
-										<spring:message code="shares.intervention.table.state.close" />
-									</option>
+									<option value="1"><spring:message code="shares.intervention.table.state.open" /></option>
+									<option value="0"><spring:message code="shares.intervention.table.state.close" /></option>
 								</select>
 							</div>
 
 							<sec:authorize access="hasAuthority('ROLE_JEFE_PROYECTO') or hasAuthority('ROLE_RRHH') or hasAuthority('ROLE_ADMIN')">
 								<div class="form-group">
-									<select id="usersDropdown" class="form-control input" name="userDTO">
+									<select id="usersDropdown" data-table-filter="user" class="form-control input" name="userDTO">
 										<option></option>
 										<c:forEach items="${usersDTO}" var="userDTO">
-											<option value="${userDTO.userId}" ${filters.userId == userDTO.userId ? 'selected' : ''} data-info="${userDTO}">
-												<spring:message code="${userDTO.name} ${userDTO.surnames}" />
-											</option>
+											<option value="${userDTO.userId}" data-info="${userDTO}"><spring:message code="${userDTO.name} ${userDTO.surnames}" /></option>
 										</c:forEach>
 									</select>
 								</div>
@@ -827,90 +817,6 @@ em[disabled] {
 
 		/* End Select 2 */
 
-		/* Datatables */
-		dTable = $('#dTable').DataTable({
-			"searching": false,
-			"responsive": true,
-			"processing": true,
-			"serverSide": true,
-			"lengthMenu": [ 10, 25, 50, 75, 100 ],
-			"ajax": "/shares/intervention/dt",
-			"rowId": "st_id",
-			"language": {
-				"url": "/ui/static/lang/datatables/${locale}.json"
-			},
-			"columns": [
-				{ "data": "st_id" },
-				{ "data": "st_projectId" },
-				{ "data": "st_forumTitle", "defaultContent": "-" },
-				{ "data": "st_startDate" },
-				{ "data": "st_endDate" },
-				{ "data": "st_shareType" },
-				{ "data": null }
-			],
-			"columnDefs": [
-				{ "className": "text-center", "targets": "_all" },
-				{  
-				    "render": function ( data, type, row ) {
-                        return parseId(data);
-                	},
-                	"targets": 0
-                },
-                {  
-				    "render": function ( data, type, row ) {
-					    if (!data) {
-							return '-';
-						} else {
-                    		return moment(data).format('DD/MM/YYYY HH:mm');
-						}
-                	},
-                	"targets": 3
-                },
-                {  
-				    "render": function ( data, type, row ) {
-					    if (!data) {
-							return "${jspUtil.parseTagToText('shares.intervention.table.state.open')}";
-						} else {
-                    		return "${jspUtil.parseTagToText('shares.intervention.table.state.close')}";
-						}
-                	},
-                	"targets": 4
-                },
-                {  
-				    "render": function ( data, type, row ) {
-                        return parseShareType(data);
-                	},
-                	"targets": 5
-                },
-				{ "defaultContent": "${tableActionButtons}", "orderable": false, "targets": -1 },
-				{ "orderable": false, "targets": "_all" }
-			],
-			"dom": "<'top'i>rt<'bottom'<'row no-gutters'<'col'l><'col'p>>><'clear'>",
-			"drawCallback": function(settings, json) {
-				offset = settings._iDisplayStart;
-				limit = settings._iDisplayLength;
-				parseActionButtons('${userRole}', ${ userSigning != null }, ${ havePrivileges }, '${ userSigning.project.name }');
-			}
-		});
-		/* End Datatables */
-
-		let hasFilters = ${ filters != null ? true : false };
-		if (hasFilters) { filterShares(); }
-		
-		function parseShareType(data) {
-			if (data === 'ips') {
-				return '<div class="badge badge-secondary"> ${jspUtil.parseTagToText('ips')} </div>';
-			} else if (data === 'is') {
-				return '<span class="badge badge-primary"> ${jspUtil.parseTagToText('is')} </span>';
-			} else if (data === 'cs') {
-				return '<span class="badge badge-success"> ${jspUtil.parseTagToText('cs')} </span>';
-			} else if (data === 'ws') {
-				return '<span class="badge badge-info"> ${jspUtil.parseTagToText('ws')} </span>';
-			}
-			
-			return '';
-		}
-
 		$('#create').click(function () {
 
 			if (!$('#projectDropdown').val()) {
@@ -1399,22 +1305,15 @@ em[disabled] {
 	}
 
 	function resetTable() {
+		const filterForm = document.querySelector('[data-table-filter="form"]');
+		const inputsNumber = filterForm.querySelectorAll('input[type="number"]');
+		const inputsSelect = filterForm.querySelectorAll('select');
+
+		inputsNumber.forEach(input => {$(input).val(''); })
+		inputsSelect.forEach(input => {$(input).val('').trigger('change'); })
+
 		dTable.ajax.url('/shares/intervention/dt').load();
-	}
-
-	function filterShares() {
-
-		const id = $('#shareIdInput').val();
-		const type = $('#sharesTypeDropdown').val();
-		const project = $('#projectFilterDropdown').val();
-		const progress = $('#stateFilterDropdown').val();
-		let user = $('#usersDropdown').val();
-
-		if (user === undefined) {
-			user = '';
-		}
-		
-		dTable.ajax.url('/shares/intervention/dt?id=' + id + '&type=' + type + '&project=' + project + '&progress=' + progress + '&user=' + user).load();
+		window.history.replaceState({ }, '', '/shares/intervention');
 	}
 
 	function exportShares() {
@@ -1496,5 +1395,137 @@ em[disabled] {
 
 		return html;
 	}
+
+	function generateDataTable() {
+		return $('#dTable').DataTable({
+			"searching": false,
+			"responsive": true,
+			"processing": true,
+			"serverSide": true,
+			"lengthMenu": [ 10, 25, 50, 75, 100 ],
+			"ajax": "/shares/intervention/dt",
+			"rowId": "st_id",
+			"language": {
+				"url": "/ui/static/lang/datatables/${locale}.json"
+			},
+			"columns": [
+				{ "data": "st_id" },
+				{ "data": "st_projectId" },
+				{ "data": "st_forumTitle", "defaultContent": "-" },
+				{ "data": "st_startDate" },
+				{ "data": "st_endDate" },
+				{ "data": "st_shareType" },
+				{ "data": null }
+			],
+			"columnDefs": [
+				{ "className": "text-center", "targets": "_all" },
+				{
+					"render": function ( data, type, row ) {
+						return parseId(data);
+					},
+					"targets": 0
+				},
+				{
+					"render": function ( data, type, row ) {
+						if (!data) {
+							return '-';
+						} else {
+							return moment(data).format('DD/MM/YYYY HH:mm');
+						}
+					},
+					"targets": 3
+				},
+				{
+					"render": function ( data, type, row ) {
+						if (!data) {
+							return "${jspUtil.parseTagToText('shares.intervention.table.state.open')}";
+						} else {
+							return "${jspUtil.parseTagToText('shares.intervention.table.state.close')}";
+						}
+					},
+					"targets": 4
+				},
+				{
+					"render": function ( data ) {
+						return parseShareType(data);
+					},
+					"targets": 5
+				},
+				{ "defaultContent": "${tableActionButtons}", "orderable": false, "targets": -1 },
+				{ "orderable": false, "targets": "_all" }
+			],
+			"dom": "<'top'i>rt<'bottom'<'row no-gutters'<'col'l><'col'p>>><'clear'>",
+			"drawCallback": function(settings) {
+				offset = settings._iDisplayStart;
+				limit = settings._iDisplayLength;
+				parseActionButtons('${userRole}', ${ userSigning != null }, ${ havePrivileges }, '${ userSigning.project.name }');
+			},
+			"initComplete": function() {
+				const queryParams = new URLSearchParams(window.location.search);
+				const pageNumber = queryParams.get('pageNumber');
+
+				if (pageNumber) {
+					dTable.page(pageNumber - 1).draw(false);
+				}
+			}
+		});
+	}
+
+	function parseShareType(data) {
+		if (data === 'ips') {
+			return '<div class="badge badge-secondary"> ${jspUtil.parseTagToText('ips')} </div>';
+		} else if (data === 'is') {
+			return '<span class="badge badge-primary"> ${jspUtil.parseTagToText('is')} </span>';
+		} else if (data === 'cs') {
+			return '<span class="badge badge-success"> ${jspUtil.parseTagToText('cs')} </span>';
+		} else if (data === 'ws') {
+			return '<span class="badge badge-info"> ${jspUtil.parseTagToText('ws')} </span>';
+		}
+
+		return '';
+	}
 	
 </script>
+
+<script>
+
+	document.addEventListener("DOMContentLoaded", function() {
+		dTable = generateDataTable();
+		handleDatatableFromParams();
+		onChangePage();
+	});
+
+	function handleDatatableFromParams() {
+		const queryParams = new URLSearchParams(window.location.search);
+
+		let id = queryParams.get('id');
+		let type = queryParams.get('type');
+		let projectId = queryParams.get('project');
+		let progress = queryParams.get('progress');
+		let userId = queryParams.get('user');
+		let pageNumber = queryParams.get('pageNumber');
+
+		const filterForm = document.querySelector('[data-table-filter="form"]');
+
+		filterForm.querySelector('[data-table-filter="id"]').value = id;
+		filterForm.querySelector('[data-table-filter="type"]').value = type;
+		filterForm.querySelector('[data-table-filter="project"]').value = projectId;
+		filterForm.querySelector('[data-table-filter="progress"]').value = progress;
+		filterForm.querySelector('[data-table-filter="user"]').value = userId;
+
+		filterShares(pageNumber);
+	}
+
+	function onChangePage() {
+		dTable.on('page.dt', function() {
+			const pageInfo = dTable.page.info();
+			const currentURL = new URL(window.location.href);
+			currentURL.searchParams.set('pageNumber', pageInfo.page + 1);
+
+			window.history.pushState(null, '', currentURL.toString());
+		});
+	}
+
+</script>
+
+<script src="/ui/static/js/pages/shares/storage.js"></script>

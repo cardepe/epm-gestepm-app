@@ -40,7 +40,7 @@ public class HolidayViewController {
         model.addAttribute("tableActionButtons", ModelUtil.getTableModifyActionButtons());
     }
 
-    @GetMapping("/holidays")
+    @GetMapping("/fixme-holidays")
     // @LogExecution(operation = OP_VIEW) : fixme model prints infinite loop
     public String viewProductPage(final Model model) {
 
