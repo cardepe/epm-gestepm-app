@@ -314,8 +314,6 @@
 <jsp:useBean id="jspUtil" class="com.epm.gestepm.modelapi.common.utils.JspUtil"/>
 
 <script>
-	const $ = jQuery.noConflict();
-
 	$(document).ready(function() {
 
 		/* Select 2 */
