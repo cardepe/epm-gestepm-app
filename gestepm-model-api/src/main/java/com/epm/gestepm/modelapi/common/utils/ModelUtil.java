@@ -113,12 +113,6 @@ public class ModelUtil {
 			   "<em class=\\\"far fa-trash-alt\\\"></em>";
 	}
 	
-	public static String getTableCRUDActionButtons() {
-		return "<em class=\\\"fas fa-eye\\\"></em>" +
-			   "<em class=\\\"fas fa-edit\\\"></em>" +
-			   "<em class=\\\"far fa-trash-alt\\\"></em>";
-	}
-	
 	public static String getTableActionButtonsOnlyTrash() {
 		return "<em class=\\\"far fa-trash-alt\\\"></em>";
 	}
@@ -137,10 +131,6 @@ public class ModelUtil {
 	
 	public static String getViewActionButton() {
 		return "<em class=\\\"fas fa-eye\\\"></em>";
-	}
-
-	public static String getTrashActionButton() {
-		return "<em class=\\\"fas fa-trash-alt\\\"></em>";
 	}
 	
 	public static String getViewTrashActionButton() {

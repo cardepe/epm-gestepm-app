@@ -48,16 +48,10 @@ public class HolidayViewController {
         countryFilterDto.setOrder("ASC");
         countryFilterDto.setOrderBy("name");
 
-        final ActivityCenterFilterDto activityCenterFilterDto = new ActivityCenterFilterDto();
-        activityCenterFilterDto.setOrder("ASC");
-        activityCenterFilterDto.setOrderBy("name");
+        final List<CountryDto> countries = this.countryService.list(countryFilterDto);
 
-        final List<CountryDto> countryDtos = this.countryService.list(countryFilterDto);
-        final List<ActivityCenterDto> activityCenterDtos = this.activityCenterService.list(activityCenterFilterDto);
+        model.addAttribute("countries", countries);
 
-        model.addAttribute("countries", countryDtos);
-        model.addAttribute("activityCenters", activityCenterDtos);
-
-        return "admin-countries";
+        return "admin-holidays";
     }
 }
