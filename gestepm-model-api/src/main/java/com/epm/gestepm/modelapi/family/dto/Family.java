@@ -2,6 +2,7 @@ package com.epm.gestepm.modelapi.family.dto;
 
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
+import net.minidev.json.annotate.JsonIgnore;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,32 +27,29 @@ public class Family {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", unique = true, nullable = false, precision = 10)
 	private Long id;
-	
+
 	@ManyToOne
 	@JoinColumn(name="FAMILY_ID")
 	private Family family;
 
-	@OneToMany (fetch = FetchType.EAGER, mappedBy = "family")
-	private Collection<Family> families = new ArrayList<>();
-	
 	@Column(name="NAME_ES", nullable=false, length=128)
-    private String nameES;
-	
+	private String nameES;
+
 	@Column(name="NAME_FR", nullable=false, length=128)
-    private String nameFR;
-	
+	private String nameFR;
+
 	@Column(name="BRAND", length=64)
-    private String brand;
-	
+	private String brand;
+
 	@Column(name="MODEL", length=64)
-    private String model;
-	
+	private String model;
+
 	@Column(name="ENROLLMENT", length=64)
-    private String enrollment;
-	
+	private String enrollment;
+
 	@Column(name="COMMON", nullable=false, length=1)
-    private int common;
-	
+	private int common;
+
 	@OneToMany(mappedBy = "family")
 	private List<SubFamily> subFamilies;
 
@@ -73,14 +71,6 @@ public class Family {
 
 	public void setFamily(Family family) {
 		this.family = family;
-	}
-
-	public Collection<Family> getFamilies() {
-		return families;
-	}
-
-	public void setFamilies(Collection<Family> families) {
-		this.families = families;
 	}
 
 	public String getNameES() {

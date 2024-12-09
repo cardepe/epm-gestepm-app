@@ -1,6 +1,6 @@
 package com.epm.gestepm.modelapi.family.dto;
 
-import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyDTO;
+import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyOldDTO;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class FamilyDTO {
 	
 	private Integer common;
 
-	private List<SubFamilyDTO> subfamilies;
+	private List<SubFamilyOldDTO> subfamilies;
 
 	public FamilyDTO() {
 
@@ -123,11 +123,11 @@ public class FamilyDTO {
 		this.common = common;
 	}
 
-	public List<SubFamilyDTO> getSubfamilies() {
+	public List<SubFamilyOldDTO> getSubfamilies() {
 		return subfamilies;
 	}
 
-	public void setSubfamilies(List<SubFamilyDTO> subfamilies) {
+	public void setSubfamilies(List<SubFamilyOldDTO> subfamilies) {
 		this.subfamilies = subfamilies;
 	}
 }

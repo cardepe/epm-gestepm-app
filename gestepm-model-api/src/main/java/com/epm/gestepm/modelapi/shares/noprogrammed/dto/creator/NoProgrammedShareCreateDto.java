@@ -17,16 +17,4 @@ public class NoProgrammedShareCreateDto {
 
     private Integer userSigningId;
 
-    @NotNull
-    private String description;
-
-    @NotNull
-    private Integer familyId;
-
-    @NotNull
-    private Integer subFamilyId;
-
-    @Singular
-    private Set<Integer> fileIds;
-
 }

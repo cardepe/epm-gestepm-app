@@ -1,7 +1,8 @@
-package com.epm.gestepm.modelapi.common.utils.smtp;
+package com.epm.gestepm.model.common.utils.smtp;
 
+import com.epm.gestepm.model.shares.noprogrammed.dao.entity.updater.NoProgrammedShareUpdate;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.company.dto.Company;
+import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
 import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
@@ -10,6 +11,7 @@ import com.epm.gestepm.modelapi.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.interventionsubshare.dto.InterventionSubShare;
 import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigning;
 import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.NoProgrammedShareUpdateDto;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
@@ -126,21 +128,21 @@ public class SMTPServiceImpl implements SMTPService {
 	}
 	
 	@Async
-	public void sendOpenInterventionShareMail(String to, InterventionShare share, Locale locale) {
+	public void sendOpenInterventionShareMail(String to, NoProgrammedShareUpdateDto share, User user, Project project, Locale locale) {
 		
 		log.info("Preparando la plantilla de correo: intervention_share_open_mail_template_" + locale.getLanguage() + ".html");
 
-		String subject = messageSource.getMessage("smtp.mail.intervention.share.open.subject", new Object[] { share.getForumTitle(), share.getProject().getName() }, locale);
+		String subject = messageSource.getMessage("smtp.mail.intervention.share.open.subject", new Object[] { share.getForumTitle(), project.getName() }, locale);
 		
 		Map<String, String> params = new HashMap<>();
 		params.put("id", share.getId().toString());
-		params.put("username", share.getUser().getName() + " " + share.getUser().getSurnames());
-		params.put("projectName", share.getProject().getName());
-		params.put("startDate", Utiles.transformTimestampToString(share.getNoticeDate()));
+		params.put("username", user.getName() + " " + user.getSurnames());
+		params.put("projectName", project.getName());
+		params.put("startDate", Utiles.transformToString(share.getStartDate()));
 		params.put("description", share.getDescription());
 		params.put("idUrl", share.getId().toString());
-		params.put("forumUrl", share.getProject().getForumId() == null || share.getTopicId() == null
-				? "-" : "viewtopic.php?f=" + share.getProject().getForumId() + "&t=" + share.getTopicId().toString());
+		params.put("forumUrl", project.getForumId() == null || share.getTopicId() == null
+				? "-" : "viewtopic.php?f=" + project.getForumId() + "&t=" + share.getTopicId().toString());
 		params.put("forumTitle", share.getForumTitle());
 		
 		loadTemplateAndSendMail(smtpMailFrom, to, subject, "intervention_share_open_mail_template_" + locale.getLanguage() + ".html", params);

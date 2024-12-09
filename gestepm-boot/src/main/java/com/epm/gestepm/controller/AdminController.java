@@ -8,6 +8,7 @@ import com.epm.gestepm.model.holiday.service.HolidayServiceImpl;
 import com.epm.gestepm.model.holiday.service.mapper.HolidayMapper;
 import com.epm.gestepm.model.project.service.ProjectServiceImpl;
 import com.epm.gestepm.model.subfamily.service.SubFamilyServiceImpl;
+import com.epm.gestepm.model.subfamily.service.mapper.MapSFToSubFamilyDto;
 import com.epm.gestepm.model.subrole.service.SubRoleServiceImpl;
 import com.epm.gestepm.modelapi.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
@@ -24,7 +25,8 @@ import com.epm.gestepm.modelapi.holiday.dto.HolidayDTO;
 import com.epm.gestepm.modelapi.holiday.dto.HolidayTableDTO;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
-import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyDTO;
+import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyDto;
+import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyOldDTO;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
@@ -40,10 +42,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+
+import static org.mapstruct.factory.Mappers.getMapper;
 
 @Controller
 @RequestMapping("/admin")
@@ -339,7 +340,7 @@ public class AdminController {
 			// Log info
 			log.info("El usuario " + user.getId() + " ha accedido a la vista de Admin Family Edit");
 			
-			List<SubFamilyDTO> subFamilies = subFamilyService.getByFamily(familyId);
+			List<SubFamilyOldDTO> subFamilies = subFamilyService.getByFamily(familyId);
 			
 			// Get Sub Roles
 			List<SubRole> subRoles = subRoleService.getAll();
@@ -421,37 +422,29 @@ public class AdminController {
 	
 	@ResponseBody
 	@GetMapping("/families/{familyId}/subfamilies")
-	public ResponseEntity<String> loadSubFamiliesFromFamily(@PathVariable Long familyId, Locale locale) {
-	
-		Family family = familyService.getById(familyId);
+	public ResponseEntity<List<SubFamilyDto>> loadSubFamiliesFromFamily(@PathVariable Long familyId, Locale locale) {
+
+		final List<SubFamily> subFamilies = new ArrayList<>();
+		final Family family = familyService.getById(familyId);
 		
-		if (family == null || family.getSubFamilies() == null) {
-			return null;
-		}
-		
-		List<SubFamily> subFamilies = null;
-		
-		if (family.getCommon() == 3) {
-			subFamilies = family.getFamily().getSubFamilies();
-			
-		} else {
-			subFamilies = family.getSubFamilies();
-		}
-		
-		if ("es".equals(locale.getLanguage())) {
-			subFamilies.sort(Comparator.comparing(SubFamily::getNameES));
-		} else {
-			subFamilies.sort(Comparator.comparing(SubFamily::getNameFR));
+		if (family != null) {
+
+			if (family.getCommon() == 3) {
+				subFamilies.addAll(family.getFamily().getSubFamilies());
+			} else {
+				subFamilies.addAll(family.getSubFamilies());
+			}
+
+			if ("es".equals(locale.getLanguage())) {
+				subFamilies.sort(Comparator.comparing(SubFamily::getNameES));
+			} else {
+				subFamilies.sort(Comparator.comparing(SubFamily::getNameFR));
+			}
 		}
 
-		String callbackText = "";
-		
-		for (SubFamily f : subFamilies) {
-			callbackText += "<option value=\"" + f.getId() + "\">" + ("es".equals(locale.getLanguage()) ? f.getNameES() : f.getNameFR()) + "</option>";
-		}
+		final List<SubFamilyDto> response = getMapper(MapSFToSubFamilyDto.class).from(subFamilies, locale);
 
-		// Return data
-		return new ResponseEntity<>(callbackText, HttpStatus.OK);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	@ResponseBody

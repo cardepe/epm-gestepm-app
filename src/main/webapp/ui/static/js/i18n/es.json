@@ -39,11 +39,16 @@
     },
     "shares": {
         "noprogrammed": {
+            "title": "Parte de intervención no programado nº {0}",
+            "update": {
+                "success": "Se ha actualizado el parte no programado con éxito."
+            },
             "intervention": {
                 "update": {
                     "success": "Se ha actualizado la intervención con éxito."
                 }
-            }
+            },
+            "postForumUrl": "Puede ver la entrada en el foro clicando aquí."
         }
     }
 }

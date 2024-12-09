@@ -7,7 +7,7 @@ import com.epm.gestepm.modelapi.common.config.ApplicationContextProvider;
 import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
 import com.epm.gestepm.modelapi.project.dto.ProjectFamilyDTO;
-import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyDTO;
+import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyOldDTO;
 import com.epm.gestepm.modelapi.subrole.service.SubRoleService;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
@@ -29,8 +29,8 @@ public class  FamilyMapper {
 		
 		List<SubFamily> subFamilies = new ArrayList<>();
 		
-		for (SubFamilyDTO subFamilyDTO : familyDTO.getSubfamilies()) {
-			SubFamily subFamily = mapSubDTOToSubFamily(subFamilyDTO);
+		for (SubFamilyOldDTO subFamilyOldDTO : familyDTO.getSubfamilies()) {
+			SubFamily subFamily = mapSubDTOToSubFamily(subFamilyOldDTO);
 			subFamilies.add(subFamily);			
 		}
 		
@@ -39,19 +39,19 @@ public class  FamilyMapper {
 		return family;
 	}
 	
-	public static SubFamily mapSubDTOToSubFamily(SubFamilyDTO subFamilyDTO) {
+	public static SubFamily mapSubDTOToSubFamily(SubFamilyOldDTO subFamilyOldDTO) {
 		
 		SubFamily subFamily = new SubFamily();
-		subFamily.setId(subFamilyDTO.getId());
-		subFamily.setNameES(subFamilyDTO.getNameES());
-		subFamily.setNameFR(subFamilyDTO.getNameFR());
+		subFamily.setId(subFamilyOldDTO.getId());
+		subFamily.setNameES(subFamilyOldDTO.getNameES());
+		subFamily.setNameFR(subFamilyOldDTO.getNameFR());
 		
-		if (subFamilyDTO.getSubRoleNames() != null && !subFamilyDTO.getSubRoleNames().isEmpty()) {
+		if (subFamilyOldDTO.getSubRoleNames() != null && !subFamilyOldDTO.getSubRoleNames().isEmpty()) {
 			
 			List<SubRole> subRoles = new ArrayList<>();
 			SubRoleService subRoleService = ApplicationContextProvider.getContext().getBean(SubRoleService.class);
 			
-			String[] subRoleNames = subFamilyDTO.getSubRoleNames().split(",");
+			String[] subRoleNames = subFamilyOldDTO.getSubRoleNames().split(",");
 			
 			for (String subRoleName : subRoleNames) {
 				

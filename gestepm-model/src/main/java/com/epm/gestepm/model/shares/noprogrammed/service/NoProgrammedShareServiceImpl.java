@@ -1,5 +1,6 @@
 package com.epm.gestepm.model.shares.noprogrammed.service;
 
+import com.epm.gestepm.forum.model.api.dto.Topic;
 import com.epm.gestepm.forum.model.api.service.TopicService;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
@@ -7,7 +8,6 @@ import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.model.shares.noprogrammed.dao.NoProgrammedShareDao;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.NoProgrammedShare;
-import com.epm.gestepm.model.shares.noprogrammed.dao.entity.NoProgrammedShareStateEnum;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.creator.NoProgrammedShareCreate;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.deleter.NoProgrammedShareDelete;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.filter.NoProgrammedShareFilter;
@@ -15,9 +15,11 @@ import com.epm.gestepm.model.shares.noprogrammed.dao.entity.finder.NoProgrammedS
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.updater.NoProgrammedShareUpdate;
 import com.epm.gestepm.model.shares.noprogrammed.service.mapper.*;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
 import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.project.exception.ProjectIsNotStationException;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.creator.NoProgrammedShareCreateDto;
@@ -29,15 +31,21 @@ import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareN
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
+import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.user.service.UserService;
+import com.itextpdf.xmp.impl.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
@@ -50,30 +58,32 @@ import static org.mapstruct.factory.Mappers.getMapper;
 @EnableExecutionLog(layerMarker = SERVICE)
 public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
 
-    // private final FamilyService familyService;
+    private final FamilyService familyService;
+
+    private final HttpServletRequest request;
 
     private final NoProgrammedShareDao noProgrammedShareDao;
 
-    // private final ProjectService projectService;
+    private final ProjectService projectService;
 
-    // private final SubFamilyService subFamilyService;
+    private final SMTPService smtpService;
 
-    // private final TopicService topicService;
+    private final SubFamilyService subFamilyService;
 
-    public NoProgrammedShareServiceImpl(NoProgrammedShareDao noProgrammedShareDao) {
-        this.noProgrammedShareDao = noProgrammedShareDao;
-    }
+    private final TopicService topicService;
 
-    /*public NoProgrammedShareServiceImpl(FamilyService familyService, NoProgrammedShareDao noProgrammedShareDao,
-                                        ProjectService projectService, SubFamilyService subFamilyService,
-                                        TopicService topicService) {
+    private final UserService userService;
+
+    public NoProgrammedShareServiceImpl(FamilyService familyService, HttpServletRequest request, NoProgrammedShareDao noProgrammedShareDao, ProjectService projectService, SMTPService smtpService, SubFamilyService subFamilyService, TopicService topicService, UserService userService) {
         this.familyService = familyService;
+        this.request = request;
         this.noProgrammedShareDao = noProgrammedShareDao;
         this.projectService = projectService;
+        this.smtpService = smtpService;
         this.subFamilyService = subFamilyService;
         this.topicService = topicService;
+        this.userService = userService;
     }
-    */
 
     @Override
     @RequirePermits(value = PRMT_READ_NPS, action = "List countries")
@@ -83,7 +93,6 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
             msgOut = "Paginating no programmed shares OK",
             errorMsg = "Failed to paginate no programmed shares")
     public Page<NoProgrammedShareDto> list(NoProgrammedShareFilterDto filterDto, Long offset, Long limit) {
-
         final NoProgrammedShareFilter filter = getMapper(MapNPSToNoProgrammedShareFilter.class).from(filterDto);
 
         final Page<NoProgrammedShare> page = this.noProgrammedShareDao.list(filter, offset, limit);
@@ -99,7 +108,6 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
             msgOut = "Found no programmed share by ID",
             errorMsg = "Failed to find no programmed share by ID")
     public Optional<NoProgrammedShareDto> find(final NoProgrammedShareByIdFinderDto finderDto) {
-
         final NoProgrammedShareByIdFinder finder = getMapper(MapNPSToNoProgrammedShareByIdFinder.class).from(finderDto);
 
         final Optional<NoProgrammedShare> found = this.noProgrammedShareDao.find(finder);
@@ -115,7 +123,6 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
             msgOut = "Found no programmed share by ID",
             errorMsg = "No programmed share by ID not found")
     public NoProgrammedShareDto findOrNotFound(final NoProgrammedShareByIdFinderDto finderDto) {
-
         final Supplier<RuntimeException> notFound = () -> new NoProgrammedShareNotFoundException(finderDto.getId());
 
         return this.find(finderDto).orElseThrow(notFound);
@@ -130,21 +137,21 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
             msgOut = "New country no programmed share OK",
             errorMsg = "Failed to create new no programmed share")
     public NoProgrammedShareDto create(NoProgrammedShareCreateDto createDto) {
-
         // TODO: check if userId exists
         // TODO: check if projectId exists
+        // TODO: check if user can create a share in this project
+        // TODO: check userSigning and privileges ??
+
+        final Project projectDto = this.projectService.getProjectById(Long.valueOf(createDto.getProjectId()));
+
+        if (projectDto.getStation() != 1) {
+            throw new ProjectIsNotStationException(projectDto.getId().intValue());
+        }
 
         final NoProgrammedShareCreate create = getMapper(MapNPSToNoProgrammedShareCreate.class).from(createDto);
         create.setStartDate(OffsetDateTime.now());
-        // create.setTopicId();
-        // create.setForumTitle();
-        create.setState(NoProgrammedShareStateEnum.NEW);
 
         final NoProgrammedShare result = this.noProgrammedShareDao.create(create);
-
-        if (result != null) {
-            // TODO: appendFiles
-        }
 
         return getMapper(MapNPSToNoProgrammedShareDto.class).from(result);
     }
@@ -161,9 +168,12 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
         final NoProgrammedShareByIdFinderDto finderDto = new NoProgrammedShareByIdFinderDto();
         finderDto.setId(updateDto.getId());
 
-        findOrNotFound(finderDto);
+        final NoProgrammedShareDto noProgrammedShareDto = findOrNotFound(finderDto);
 
-        final NoProgrammedShareUpdate update = getMapper(MapNPSToNoProgrammedShareUpdate.class).from(updateDto);
+        final NoProgrammedShareUpdate update = getMapper(MapNPSToNoProgrammedShareUpdate.class).from(updateDto,
+                getMapper(MapNPSToNoProgrammedShareUpdate.class).from(noProgrammedShareDto));
+
+        this.createForumEntryAndUpdate(update);
 
         final NoProgrammedShare updated = this.noProgrammedShareDao.update(update);
 
@@ -189,25 +199,48 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
         this.noProgrammedShareDao.delete(delete);
     }
 
-    // FIXME: change to forum module.
-    /*
-    private void generateForumTitle(final NoProgrammedShareCreateDto createDto) {
+    private void createForumEntryAndUpdate(NoProgrammedShareUpdate update) {
+        final Project project = this.projectService.getProjectById(Long.valueOf(update.getProjectId()));
+        final Long forumId = project.getForumId();
+        final String forumTitle = this.getForumTitle(update);
+        final String ip = request.getLocalAddr();
 
-        final Family family = this.familyService.getById(createDto.getFamilyId().longValue());
-        final Locale locale = new Locale("");
-        final Project project = this.projectService.getProjectById(createDto.getProjectId().longValue());
-        final SubFamily subFamily = this.subFamilyService.getById(createDto.getSubFamilyId().longValue());
+        final User user = this.userService.getUserById(Long.valueOf(update.getUserId()));
 
-        if (project.getForumId() != null) {
+        final Topic topic = topicService.create(forumTitle, update.getDescription(), forumId, ip, user.getUsername(),
+                update.getFiles().stream().map(file -> convertToMultipartFile(file.getName() + "." +  file.getExt(), Base64.decode(file.getContent()).getBytes()))
+                        .collect(Collectors.toList()));
 
-            final String familyName = ("es".equalsIgnoreCase(locale.getLanguage()) ? family.getNameES() : family.getNameFR())
-                    + (StringUtils.isNoneBlank(family.getBrand()) ? " " + family.getBrand() : "")
-                    + (StringUtils.isNoneBlank(family.getModel()) ? " " + family.getModel() : "")
-                    + (StringUtils.isNoneBlank(family.getEnrollment()) ? " " + family.getEnrollment() : "");
+        update.setTopicId(topic.getId().intValue());
+        update.setForumTitle(forumTitle);
 
-            final String forumTitle = share.getId() + " " + Utiles.getDateFormattedForForum(share.getNoticeDate()) + " " + familyStr + " " + ("es".equals(locale.getLanguage()) ? share.getSubFamily().getNameES() : share.getSubFamily().getNameFR());
+        this.sendMail(getMapper(MapNPSToNoProgrammedShareUpdateDto.class).from(update), user, project);
+    }
 
+    public static MultipartFile convertToMultipartFile(String fileName, byte[] content) {
+        return new MockMultipartFile("file", fileName, "application/octet-stream", content);
+    }
+
+    private String getForumTitle(final NoProgrammedShareUpdate updateDto) {
+        final Family family = this.familyService.getById(updateDto.getFamilyId().longValue());
+        final SubFamily subFamily = this.subFamilyService.getById(updateDto.getSubFamilyId().longValue());
+
+        final String familyName = ("es".equalsIgnoreCase(request.getLocale().getLanguage()) ? family.getNameES() : family.getNameFR())
+                + (StringUtils.isNoneBlank(family.getBrand()) ? " " + family.getBrand() : "")
+                + (StringUtils.isNoneBlank(family.getModel()) ? " " + family.getModel() : "")
+                + (StringUtils.isNoneBlank(family.getEnrollment()) ? " " + family.getEnrollment() : "");
+
+        return StringUtils.joinWith(" ", String.valueOf(updateDto.getId()), Utiles.getDateFormatted(updateDto.getStartDate(), "yyMMdd"),
+                familyName, "es".equals(request.getLocale().getLanguage()) ? subFamily.getNameES() : subFamily.getNameFR());
+    }
+
+    private void sendMail(final NoProgrammedShareUpdateDto share, final User user, final Project project) {
+        this.smtpService.sendOpenInterventionShareMail(user.getEmail(), share, user, project, request.getLocale());
+
+        if (project.getResponsables() != null && !project.getResponsables().isEmpty()) {
+            for (User responsable : project.getResponsables()) {
+                smtpService.sendOpenInterventionShareMail(responsable.getEmail(), share, user, project, request.getLocale());
+            }
         }
     }
-    */
 }

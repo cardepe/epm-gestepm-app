@@ -11,22 +11,28 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.NoProgrammedShare;
+import com.epm.gestepm.model.shares.noprogrammed.dao.entity.ShareFile;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.creator.NoProgrammedShareCreate;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.deleter.NoProgrammedShareDelete;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.filter.NoProgrammedShareFilter;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.finder.NoProgrammedShareByIdFinder;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.updater.NoProgrammedShareUpdate;
+import com.epm.gestepm.model.shares.noprogrammed.dao.entity.updater.ShareFileUpdate;
 import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRSManyExtractor;
 import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRSOneExtractor;
 import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRowMapper;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.ShareFileDto;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
+import static com.epm.gestepm.model.shares.noprogrammed.dao.constants.NoProgrammedShareFileQueries.QRY_CREATE_NPSF;
 import static com.epm.gestepm.model.shares.noprogrammed.dao.constants.NoProgrammedShareQueries.*;
 
 @Component("noProgrammedShareDao")
@@ -135,6 +141,10 @@ public class NoProgrammedShareDaoImpl implements NoProgrammedShareDao {
 
     this.sqlDatasource.execute(sqlQuery);
 
+    if (!update.getFiles().isEmpty()) {
+      this.insertFiles(update.getFiles(), update.getId());
+    }
+
     return this.find(finder).orElse(null);
   }
 
@@ -155,4 +165,18 @@ public class NoProgrammedShareDaoImpl implements NoProgrammedShareDao {
     this.sqlDatasource.execute(sqlQuery);
   }
 
+  private void insertFiles(final Set<ShareFileUpdate> files, final Integer shareId) {
+
+    files.forEach(fileUpdate -> {
+      fileUpdate.setShareId(shareId);
+
+      final AttributeMap params = fileUpdate.collectAttributes();
+
+      final SQLInsert<BigInteger> sqlInsert = new SQLInsert<BigInteger>()
+              .useQuery(QRY_CREATE_NPSF)
+              .withParams(params);
+
+      this.sqlDatasource.execute(sqlInsert);
+    });
+  }
 }

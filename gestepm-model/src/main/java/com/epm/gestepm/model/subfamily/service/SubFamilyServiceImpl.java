@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.epm.gestepm.model.subfamily.dao.SubFamilyRepository;
 import com.epm.gestepm.modelapi.role.dto.RoleDTO;
-import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyDTO;
+import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyOldDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,13 +31,13 @@ public class SubFamilyServiceImpl implements SubFamilyService {
 	}
 	
 	@Override
-	public List<SubFamilyDTO> getByFamily(Long familyId) {
+	public List<SubFamilyOldDTO> getByFamily(Long familyId) {
 		
-		List<SubFamilyDTO> subFamilyDTOs = subFamilyRepository.findByFamily(familyId);
+		List<SubFamilyOldDTO> subFamilyOldDTOS = subFamilyRepository.findByFamily(familyId);
 		
-		for (SubFamilyDTO subFamilyDTO : subFamilyDTOs) {
+		for (SubFamilyOldDTO subFamilyOldDTO : subFamilyOldDTOS) {
 			
-			List<RoleDTO> subRoles = subFamilyRepository.findSubRolsById(subFamilyDTO.getId());
+			List<RoleDTO> subRoles = subFamilyRepository.findSubRolsById(subFamilyOldDTO.getId());
 			
 			if (subRoles != null && !subRoles.isEmpty()) {
 				
@@ -53,12 +53,12 @@ public class SubFamilyServiceImpl implements SubFamilyService {
 					subRolesName = subRolesName.substring(0, subRolesName.length() - 2);
 				}
 				
-				subFamilyDTO.setSubRoleNames(subRolesName);
-				subFamilyDTO.setSubRoles(subRolesId);
+				subFamilyOldDTO.setSubRoleNames(subRolesName);
+				subFamilyOldDTO.setSubRoles(subRolesId);
 			}
 		}
 		
-		return subFamilyDTOs;
+		return subFamilyOldDTOS;
 	}
 	
 	@Override

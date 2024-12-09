@@ -219,6 +219,10 @@ public class Utiles {
 	public static String getDateFormatted(final OffsetDateTime offsetDateTime) {
 		return offsetDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 	}
+
+	public static String getDateFormatted(final OffsetDateTime offsetDateTime, String pattern) {
+		return offsetDateTime.format(DateTimeFormatter.ofPattern(pattern));
+	}
 	
 	/**
 	 * Get Date as String from timestamp

@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SubFamilyDTO {
+public class SubFamilyOldDTO {
 
 	private Long id;
 
@@ -19,11 +19,11 @@ public class SubFamilyDTO {
 	
 	private List<Long> subRoles;
 
-	public SubFamilyDTO() {
+	public SubFamilyOldDTO() {
 
 	}
 
-	public SubFamilyDTO(Long id, String nameES, String nameFR) {
+	public SubFamilyOldDTO(Long id, String nameES, String nameFR) {
 		super();
 		this.id = id;
 		this.nameES = nameES;

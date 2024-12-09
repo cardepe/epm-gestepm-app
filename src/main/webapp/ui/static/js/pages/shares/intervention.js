@@ -104,3 +104,18 @@ function filterShares(pageNumber) {
 
 	dTable.ajax.url(currentURL.toString()).load();
 }
+
+function createNoProgrammedShare(userId, projectId) {
+	showLoading();
+
+	axios.post('/v1/shares/no-programmed', {
+		userId: userId,
+		projectId: projectId
+	}).then((response) => {
+		const shareId = response.data.data.id;
+		window.location.href = '/shares/intervention/no-programmed/detail/' + shareId;
+	}).catch(error => showNotify(error, 'danger'))
+		.finally(() => {
+			hideLoading();
+		});
+}

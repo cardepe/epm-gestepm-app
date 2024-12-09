@@ -138,7 +138,7 @@ public class LogHandlerParser {
             currentNode.set(valueKey, jsonNode);
 
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.info(String.format("Could not display the log of the object ‘%s’.", key));
         }
     }
 

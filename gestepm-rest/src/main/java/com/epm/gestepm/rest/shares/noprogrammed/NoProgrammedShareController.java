@@ -62,7 +62,7 @@ public class NoProgrammedShareController extends BaseController implements NoPro
     @Override
     @RequirePermits(value = PRMT_READ_NPS, action = "Get no programmed share list")
     @LogExecution(operation = OP_READ)
-    public ResponseEntity<ResNoProgrammedShareList> listNoProgrammedSharesV1(final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit) {
+    public ResponseEntity<ListNoProgrammedSharesV1200Response> listNoProgrammedSharesV1(final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit) {
 
         final NoProgrammedShareListRestRequest req = new NoProgrammedShareListRestRequest(null);
 
@@ -76,17 +76,18 @@ public class NoProgrammedShareController extends BaseController implements NoPro
         final APIMetadata metadata = this.getMetadata(req, page, new ListNoProgrammedShareV1Operation());
         final List<NoProgrammedShare> data = getMapper(MapNPSToNoProgrammedShareResponse.class).from(page);
 
-        return toResNoProgrammedShareListResponse(metadata, data, page.hashCode());
+        return toListNoProgrammedSharesV1200Response(metadata, data, page.hashCode());
     }
 
     @Override
     @RequirePermits(value = PRMT_READ_NPS, action = "Find no programmed share")
     @LogExecution(operation = OP_READ)
-    public ResponseEntity<ResNoProgrammedShare> findNoProgrammedShareByIdV1(final Integer id, final List<String> meta, final Boolean links, final Set<String> expand) {
+    public ResponseEntity<CreateNoProgrammedShareV1200Response> findNoProgrammedShareByIdV1(final Integer id, final List<String> meta, final Boolean links, final Set<String> expand, final String locale) {
 
         final NoProgrammedShareFindRestRequest req = new NoProgrammedShareFindRestRequest(id);
+        req.setLocale(locale);
 
-        this.setCommon(req, meta, links, null);
+        this.setCommon(req, meta, links, expand);
 
         final NoProgrammedShareByIdFinderDto finderDto = getMapper(MapNPSToNoProgrammedShareByIdFinderDto.class).from(req);
         final NoProgrammedShareDto dto = this.noProgrammedShareService.findOrNotFound(finderDto);
@@ -102,7 +103,7 @@ public class NoProgrammedShareController extends BaseController implements NoPro
     @Override
     @RequirePermits(value = PRMT_EDIT_NPS, action = "Create no programmed share")
     @LogExecution(operation = OP_CREATE)
-    public ResponseEntity<ResNoProgrammedShare> createNoProgrammedShareV1(final ReqCreateNoProgrammedShare reqCreateNoProgrammedShare) {
+    public ResponseEntity<CreateNoProgrammedShareV1200Response> createNoProgrammedShareV1(final CreateNoProgrammedShareV1Request reqCreateNoProgrammedShare) {
 
         final NoProgrammedShareCreateDto createDto = getMapper(MapNPSToNoProgrammedShareCreateDto.class).from(reqCreateNoProgrammedShare);
 
@@ -111,7 +112,7 @@ public class NoProgrammedShareController extends BaseController implements NoPro
         final APIMetadata metadata = this.getDefaultMetadata();
         final NoProgrammedShare data = getMapper(MapNPSToNoProgrammedShareResponse.class).from(countryDto);
 
-        final ResNoProgrammedShare response = new ResNoProgrammedShare();
+        final CreateNoProgrammedShareV1200Response response = new CreateNoProgrammedShareV1200Response();
         response.setMetadata(getMapper(MetadataMapper.class).from(metadata));
         response.setData(data);
 
@@ -121,7 +122,7 @@ public class NoProgrammedShareController extends BaseController implements NoPro
     @Override
     @RequirePermits(value = PRMT_EDIT_NPS, action = "Update no programmed share")
     @LogExecution(operation = OP_UPDATE)
-    public ResponseEntity<ResNoProgrammedShare> updateNoProgrammedShareV1(final Integer id, final ReqUpdateNoProgrammedShare reqUpdateNoProgrammedShare) {
+    public ResponseEntity<CreateNoProgrammedShareV1200Response> updateNoProgrammedShareV1(final Integer id, final UpdateNoProgrammedShareV1Request reqUpdateNoProgrammedShare) {
 
         final NoProgrammedShareUpdateDto updateDto = getMapper(MapNPSToNoProgrammedShareUpdateDto.class).from(reqUpdateNoProgrammedShare);
         updateDto.setId(id);
@@ -131,7 +132,7 @@ public class NoProgrammedShareController extends BaseController implements NoPro
         final APIMetadata metadata = this.getDefaultMetadata();
         final NoProgrammedShare data = getMapper(MapNPSToNoProgrammedShareResponse.class).from(countryDto);
 
-        final ResNoProgrammedShare response = new ResNoProgrammedShare();
+        final CreateNoProgrammedShareV1200Response response = new CreateNoProgrammedShareV1200Response();
         response.setMetadata(getMapper(MetadataMapper.class).from(metadata));
         response.setData(data);
 

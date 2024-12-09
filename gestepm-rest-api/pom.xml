@@ -45,7 +45,7 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>6.2.1</version>
+                <version>7.10.0</version>
                 <executions>
                     <execution>
                         <id>base-api</id>
@@ -82,6 +82,9 @@
                                 <useTags>true</useTags>
                                 <interfaceOnly>true</interfaceOnly>
                             </configOptions>
+                            <globalProperties>
+                                <skipFormModel>false</skipFormModel>
+                            </globalProperties>
                         </configuration>
                     </execution>
 

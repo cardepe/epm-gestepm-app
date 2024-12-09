@@ -12,7 +12,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
 import com.epm.gestepm.modelapi.role.dto.RoleDTO;
-import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyDTO;
+import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyOldDTO;
 import org.springframework.stereotype.Repository;
 
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
@@ -25,12 +25,12 @@ public class SubFamilyRepositoryImpl implements SubFamilyRepositoryCustom {
 	private EntityManager entityManager;
 	
 	@Override
-	public List<SubFamilyDTO> findByFamily(Long familyId) {
+	public List<SubFamilyOldDTO> findByFamily(Long familyId) {
 		
 		try {
 
 			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<SubFamilyDTO> cQuery = cb.createQuery(SubFamilyDTO.class);
+			CriteriaQuery<SubFamilyOldDTO> cQuery = cb.createQuery(SubFamilyOldDTO.class);
 
 			Root<SubFamily> root = cQuery.from(SubFamily.class);
 

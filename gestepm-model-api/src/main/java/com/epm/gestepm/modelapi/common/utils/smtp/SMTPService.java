@@ -8,6 +8,7 @@ import com.epm.gestepm.modelapi.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.interventionsubshare.dto.InterventionSubShare;
 import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigning;
 import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.NoProgrammedShareUpdateDto;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
@@ -23,7 +24,7 @@ public interface SMTPService {
 	void sendOpenConstructionShareMail(String to, ConstructionShare share, Locale locale);
 	void sendCloseConstructionShareMail(String to, ConstructionShare share, byte[] pdfGenerated, Locale locale);
 	
-	void sendOpenInterventionShareMail(String to, InterventionShare share, Locale locale);
+	void sendOpenInterventionShareMail(String to, NoProgrammedShareUpdateDto share, User user, Project project, Locale locale);
 	void sendCloseInterventionShareMail(String to, InterventionShare share, Locale locale);
 	
 	void sendOpenInterventionSubShareMail(String to, InterventionSubShare share, Locale locale);

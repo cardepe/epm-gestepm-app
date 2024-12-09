@@ -1,0 +1,16 @@
+sql:
+
+  qry-create-npsf: |
+    
+    INSERT INTO ${sch-gestepm}.intervention_share_files (
+      share_id,
+      name,
+      ext,
+      content
+    )
+    VALUES (
+      :attr_npsf_nps_id,
+      :attr_npsf_name,
+      :attr_npsf_ext,
+      :attr_npsf_content
+    )

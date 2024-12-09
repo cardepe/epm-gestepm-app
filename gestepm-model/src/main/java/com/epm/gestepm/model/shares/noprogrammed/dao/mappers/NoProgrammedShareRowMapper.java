@@ -1,6 +1,7 @@
 package com.epm.gestepm.model.shares.noprogrammed.dao.mappers;
 
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.NoProgrammedShare;
+import com.epm.gestepm.model.shares.noprogrammed.dao.entity.NoProgrammedShareStateEnum;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -54,12 +55,12 @@ public class NoProgrammedShareRowMapper implements RowMapper<NoProgrammedShare> 
     noProgrammedShare.setUserSigningId(nullableInt(rs, COL_NPS_USER_SIGNING_ID));
     noProgrammedShare.setStartDate(rs.getTimestamp(COL_NPS_START_DATE).toInstant().atOffset(ZoneOffset.UTC));
     noProgrammedShare.setEndDate(nullableOffsetDateTime(rs, COL_NPS_END_DATE));
-    noProgrammedShare.setDescription(rs.getString(COL_NPS_DESCRIPTION));
-    noProgrammedShare.setFamilyId(rs.getInt(COL_NPS_FAMILY_ID));
-    noProgrammedShare.setSubFamilyId(rs.getInt(COL_NPS_SUB_FAMILY_ID));
+    noProgrammedShare.setDescription(nullableString(rs, COL_NPS_DESCRIPTION));
+    noProgrammedShare.setFamilyId(nullableInt(rs, COL_NPS_FAMILY_ID));
+    noProgrammedShare.setSubFamilyId(nullableInt(rs, COL_NPS_SUB_FAMILY_ID));
     noProgrammedShare.setTopicId(nullableInt(rs, COL_NPS_TOPIC_ID));
     noProgrammedShare.setForumTitle(nullableString(rs, COL_NPS_FORUM_TITLE));
-    noProgrammedShare.setState(rs.getInt(COL_NPS_STATE));
+    noProgrammedShare.setState(NoProgrammedShareStateEnum.fromValue(rs.getInt(COL_NPS_STATE)));
     noProgrammedShare.setLastDiagnosis(rs.getInt(COL_NPS_LAST_DIAGNOSIS));
 
     final Set<Integer> interventionIds = new HashSet<>();

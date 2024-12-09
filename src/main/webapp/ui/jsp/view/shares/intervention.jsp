@@ -204,10 +204,6 @@ em[disabled] {
 
 <input id="userLanguageInput" value="${ language }" type="hidden" />
 
-<form id="createNoProgForm">
-	<input id="noPrProjectId" name="projectId" type="hidden" required>
-</form>
-
 <form id="createShareForm">
 	<input id="shareProjectId" name="projectId" type="hidden" required>
 	<input id="shareClientNotif" name="clientNotif" type="hidden" required>
@@ -290,36 +286,6 @@ em[disabled] {
 					<div class="float-right">
 						<button id="btnRefuseNotif" type="button" class="btn btn-sm btn-danger"><spring:message code="no" /></button>
 						<button id="btnConfirmNotif" type="button" class="btn btn-sm btn-success"><spring:message code="yes" /></button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-<!-- /MODAL -->
-
-<!-- MODAL -->
-<div id="popupModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<div class="modal-title">
-					<h5 id="modalTitle">
-						<spring:message code="info" />
-					</h5>
-				</div>
-			</div>
-			<div class="modal-body">		
-				<div class="row">
-					<div class="col">
-						<span><spring:message code="shares.intervention.create.not.station" /></span>
-					</div>
-				</div>
-			</div>
-			<div class="modal-footer clearfix">
-				<div class="w-100">
-					<div class="float-left">
-						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
 					</div>
 				</div>
 			</div>
@@ -851,35 +817,9 @@ em[disabled] {
 		});
 
 		$('#btnNoProgrammedShare').click(function () {
-
-			var dropdownInfo = $('#projectDropdown').find(':selected').attr('data-info');
-
-			var station = dropdownInfo.split(';')[0];
-
-			if (station != 1) {
-				$('#popupModal').modal('show');
-			} else {
-
-				showLoading();
-				
-				var projectId = $('#projectDropdown').val();
-				
-				$('#noPrProjectId').val(projectId);
-	
-				$.ajax({
-					type: "POST",
-					url: "/shares/intervention/no-programmed/create",
-					data: $('#createNoProgForm').serialize(),
-					success: function(msg) {
-						hideLoading();
-						window.location.href = "/shares/intervention/no-programmed/detail/" + msg;
-					},
-					error: function(e) {
-						hideLoading();
-						showNotify(e.responseText, 'danger');
-					}
-				});
-			}
+			const userId = ${ user.id };
+			const projectId = $('#projectDropdown').val();
+			createNoProgrammedShare(userId, projectId);
 
 			$('#createSelectorModal').modal('hide');
 		});
@@ -888,7 +828,6 @@ em[disabled] {
 			shareSelectedType = 'ws';
 			createWorkShare();
 			$('#createSelectorModal').modal('hide');
-			
 		});
 		/* END INITIALIZE SHARE */
 
@@ -1037,24 +976,9 @@ em[disabled] {
 		        cache: false,
 				data: data,
 				success: function(msg) {
-
-					var projectId = $('#projectIdProgInput').val();
-					
-					$('#noPrProjectId').val(projectId);
-
-					$.ajax({
-						type: "POST",
-						url: "/shares/intervention/no-programmed/create",
-						data: $('#createNoProgForm').serialize(),
-						success: function(msg) {
-							window.location.href = "/shares/intervention/no-programmed/detail/" + msg;
-						},
-						error: function(e) {
-							hideLoading();
-							showNotify(e.responseText, 'danger');
-						}
-					});
-					
+					const userId = ${ user.id };
+					const projectId = $('#projectIdProgInput').val();
+					createNoProgrammedShare(userId, projectId);
 				},
 				error: function(e) {
 					hideLoading();

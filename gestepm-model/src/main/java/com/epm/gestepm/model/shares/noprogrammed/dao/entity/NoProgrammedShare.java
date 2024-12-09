@@ -1,5 +1,6 @@
 package com.epm.gestepm.model.shares.noprogrammed.dao.entity;
 
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareStateEnumDto;
 import lombok.Data;
 import lombok.Singular;
 
@@ -28,13 +29,10 @@ public class NoProgrammedShare implements Serializable {
 
   private OffsetDateTime endDate;
 
-  @NotNull
   private String description;
 
-  @NotNull
   private Integer familyId;
 
-  @NotNull
   private Integer subFamilyId;
 
   private Integer topicId;
@@ -42,7 +40,7 @@ public class NoProgrammedShare implements Serializable {
   private String forumTitle;
 
   @NotNull
-  private Integer state;
+  private NoProgrammedShareStateEnum state;
 
   @NotNull
   private Integer lastDiagnosis;

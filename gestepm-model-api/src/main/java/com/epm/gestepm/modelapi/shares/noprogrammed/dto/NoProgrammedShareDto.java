@@ -28,13 +28,10 @@ public class NoProgrammedShareDto implements Serializable {
 
     private OffsetDateTime endDate;
 
-    @NotNull
     private String description;
 
-    @NotNull
     private Integer familyId;
 
-    @NotNull
     private Integer subFamilyId;
 
     private Integer topicId;
@@ -42,7 +39,7 @@ public class NoProgrammedShareDto implements Serializable {
     private String forumTitle;
 
     @NotNull
-    private Integer state;
+    private NoProgrammedShareStateEnumDto state;
 
     @NotNull
     private Integer lastDiagnosis;

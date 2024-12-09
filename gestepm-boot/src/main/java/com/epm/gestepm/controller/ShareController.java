@@ -373,54 +373,6 @@ public class ShareController {
         }
     }
 
-    @ResponseBody
-    @PostMapping("/intervention/no-programmed/create")
-    public ResponseEntity<?> createNoProgrammedIntervention(@ModelAttribute InterventionNoPrDTO interventionNoPrDTO, Locale locale, Model model, HttpServletRequest request) {
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Get Current UserSigning
-            UserSigning currentUserSigning = userSigningService.getByUserIdAndEndDate(user.getId(), null);
-
-            if (currentUserSigning == null && !Utiles.havePrivileges(user.getSubRole().getRol())) {
-                return new ResponseEntity<>(messageSource.getMessage("signing.page.not.enable", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-            }
-
-            // Get share project
-            Project project = projectService.getProjectById(interventionNoPrDTO.getProjectId());
-
-            if (project == null) {
-                throw new Exception("El proyecto " + interventionNoPrDTO.getProjectId() + " no existe");
-            }
-
-            // Map Intervention share
-            InterventionShare interventionShare = ShareMapper.mapDTOToInterventionShare(interventionNoPrDTO, user, project);
-            interventionShare.setUserSigning(currentUserSigning);
-            interventionShare.setState(1); // new share
-            interventionShare.setLastDiagnosis(0); // not diagnosis actually
-            interventionShare.setNoticeDate(new Timestamp(new Date().getTime()));
-
-            // Fix JavaScript noticeDate by Navigator
-            interventionShare.setNoticeDate(new Timestamp(new Date().getTime()));
-
-            // Save intervention
-            interventionShare = interventionShareService.save(interventionShare);
-
-            // Log info
-            log.info("Creado nuevo parte de intervención no programado " + interventionShare.getId() + " por parte del usuario " + user.getId());
-
-            // Return data
-            return new ResponseEntity<>(interventionShare.getId(), HttpStatus.OK);
-
-        } catch (Exception e) {
-            log.error(e);
-            return new ResponseEntity<>(messageSource.getMessage("shares.no.programmed.create.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-        }
-    }
-
     @GetMapping("/intervention/no-programmed/detail/{id}")
     public String viewNoProgrammedShare(@PathVariable Long id, Locale locale, Model model, HttpServletRequest request) {
 
@@ -475,10 +427,6 @@ public class ShareController {
             // Get Current UserSigning
             UserSigning currentUserSigning = userSigningService.getByUserIdAndEndDate(user.getId(), null);
 
-            // Post forum url
-            String postForumUrl = forumUrl + "/viewtopic.php?f=" + share.getProject().getForumId() + "&t=" + share.getTopicId();
-            String postForumTitle = share.getId() + " " + Utiles.getDateFormattedForForum(share.getNoticeDate());
-
             // Actual int
             if (share.getState() == 3) {
                 InterventionSubShare actualIntervention = interventionSubShareService.getOpenIntervention(id);
@@ -496,13 +444,12 @@ public class ShareController {
             model.addAttribute("families", families);
             model.addAttribute("materialsRequired", materialsRequired);
             model.addAttribute("usersTeam", usersTeam);
-            model.addAttribute("postForumUrl", postForumUrl);
-            model.addAttribute("postForumTitle", postForumTitle);
             model.addAttribute("displacements", displacements);
             model.addAttribute("language", locale.getLanguage());
             model.addAttribute("hasRole", hasRole);
             model.addAttribute("userSigning", currentUserSigning);
             model.addAttribute("havePrivileges", havePrivileges);
+            model.addAttribute("forumUrl", forumUrl);
 
             // Load Action Buttons for DataTable
             model.addAttribute("interventionTableActionButtons", ModelUtil.getTableDownloadInterventionButtons());
@@ -664,55 +611,6 @@ public class ShareController {
             log.error(e);
 
             return "error";
-        }
-    }
-
-    @PostMapping("/intervention/no-programmed/detail/{id}/update")
-    public String updateNoProgrammedInterventionDescription(@PathVariable Long id, @ModelAttribute InterventionNoPrDTO interventionNoPrDTO, Locale locale, Model model, HttpServletRequest request) {
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            InterventionShare share = interventionShareService.getInterventionShareById(id);
-
-            if (share == null) {
-                throw new Exception("El parte de intervencion no programado " + id + " no existe");
-            }
-
-            if (share.getFamily() != null) {
-                throw new Exception("Ya se ha completado la descripcion de la averia del parte de intervencion no programado " + id);
-            }
-
-            share = interventionShareService.update(share, interventionNoPrDTO, user, request.getLocalAddr(), locale);
-
-            // Send Emails
-            smtpService.sendOpenInterventionShareMail(user.getEmail(), share, locale);
-
-            if (share.getProject().getResponsables() != null && !share.getProject().getResponsables().isEmpty()) {
-
-                for (User responsable : share.getProject().getResponsables()) {
-                    smtpService.sendOpenInterventionShareMail(responsable.getEmail(), share, locale);
-                }
-            }
-
-            if ("on".equals(interventionNoPrDTO.getClientNotif()) && share.getProject().getCustomer() != null) {
-                smtpService.sendOpenInterventionShareMail(share.getProject().getCustomer().getMainEmail(), share, locale);
-            }
-
-            log.info("Parte de intervencion no programado " + id + " actualizado con exito por parte del usuario " + user.getId());
-
-            return "redirect:/shares/intervention/no-programmed/detail/" + id;
-
-        } catch (InvalidUserSessionException e) {
-            log.error(e);
-            return "redirect:/login";
-
-        } catch (Exception e) {
-            log.error(e);
-            model.addAttribute("msgError", e.toString());
-            return "simple-error";
         }
     }
 

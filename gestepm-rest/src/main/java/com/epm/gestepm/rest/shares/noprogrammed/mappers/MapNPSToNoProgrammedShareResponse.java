@@ -2,12 +2,11 @@ package com.epm.gestepm.rest.shares.noprogrammed.mappers;
 
 import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.ShareFileUpdateDto;
 import com.epm.gestepm.restapi.openapi.model.Intervention;
 import com.epm.gestepm.restapi.openapi.model.NoProgrammedShare;
 import com.epm.gestepm.restapi.openapi.model.ShareFile;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 import org.springframework.util.CollectionUtils;
 
 import java.util.*;
@@ -53,5 +52,12 @@ public interface MapNPSToNoProgrammedShareResponse {
       return shareFile;
 
     }).collect(Collectors.toList());
+  }
+
+  @AfterMapping
+  default void parse(@MappingTarget NoProgrammedShare response) {
+    response.setUserSigning(response.getUserSigning() != null && response.getUserSigning().getId() != null ? response.getUserSigning() : null);
+    response.setFamily(response.getFamily() != null && response.getFamily().getId() != null ? response.getFamily() : null);
+    response.setSubFamily(response.getSubFamily() != null && response.getSubFamily().getId() != null ? response.getSubFamily() : null);
   }
 }

@@ -49,8 +49,6 @@ components:
       required: false
       schema:
         type: string
-        minLength: 2
-        maxLength: 2
     filter-pagination-limit:
       name: limit
       in: query
