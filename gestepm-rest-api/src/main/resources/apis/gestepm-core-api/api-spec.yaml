@@ -100,64 +100,106 @@ paths:
       description: delete-no-programmed-share-v1
       tags:
         - no-programmed-share-v1
-  '/v1/shares/no-programmed/{shareId}/interventions':
+  '/v1/shares/no-programmed/{shareId}/inspections':
     parameters:
       - $ref: '#/components/parameters/Share-Id'
     get:
-      summary: V1 - List interventions
-      tags:
-        - no-programmed-share-v1
+      summary: V1 - List inspections
       responses:
         '200':
-          $ref: '#/components/responses/InterventionList'
+          $ref: '#/components/responses/InspectionList'
         '404':
           description: no-programmed-share-not-found
           content:
             application/json:
               schema:
                 $ref: ../../base-api-spec.yaml#/components/schemas/ResError
-      operationId: list-interventions-v1
-      description: list-interventions-v1
+      operationId: list-inspections-v1
+      description: list-inspections-v1
       parameters:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+      tags:
+        - inspection-v1
     post:
-      summary: V1 - Create intervention
-      operationId: create-intervention-v1
+      summary: V1 - Create inspection
+      operationId: create-inspection-v1
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Inspection'
+        '404':
+          description: no-programmed-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: create-inspection-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateInspection'
       tags:
-        - no-programmed-share-v1
-      description: create-intervention-v1
-  '/v1/shares/no-programmed/{shareId}/interventions/{interventionId}':
+        - inspection-v1
+  '/v1/shares/no-programmed/{shareId}/inspections/{inspectionId}':
     parameters:
       - $ref: '#/components/parameters/Share-Id'
-      - schema:
-          type: string
-        name: interventionId
-        in: path
-        required: true
+      - $ref: '#/components/parameters/Inspection-Id'
     get:
-      summary: Your GET endpoint
-      tags: []
-      responses: {}
-      operationId: get-v1-shares-no-programmed-shareId-interventions-interventionId
-    put:
-      summary: ''
-      operationId: put-v1-shares-no-programmed-shareId-interventions-interventionId
+      summary: V1 - Find inspection
+      tags:
+        - inspection-v1
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/Inspection'
+        '404':
+          description: no-programmed-share-not-found | inspection-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-inspection-by-id-v1
+      description: find-inspection-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+    patch:
+      summary: V1 - Update inspection
+      operationId: update-inspection-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/Inspection'
+        '404':
+          description: no-programmed-share-not-found | inspection-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - inspection-v1
+      description: update-inspection-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateInspection'
     delete:
-      summary: ''
-      operationId: delete-v1-shares-no-programmed-shareId-interventions-interventionId
+      summary: V1 - Delete inspection
+      operationId: delete-inspection-v1
       responses:
         '200':
-          description: OK
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: no-programmed-share-not-found | inspection-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - inspection-v1
+      description: delete-inspection-v1
   /v1/users:
     get:
       summary: V1 - List users
@@ -181,7 +223,7 @@ paths:
         '200':
           description: OK
       tags:
-        - user
+        - user-v1
     parameters: []
   '/v1/users/{id}':
     parameters:
@@ -194,8 +236,10 @@ paths:
     get:
       summary: Your GET endpoint
       tags:
-        - user
-      responses: {}
+        - user-v1
+      responses:
+        '200':
+          description: OK
       operationId: get-api-users-id
     put:
       summary: ''
@@ -204,7 +248,7 @@ paths:
         '200':
           description: OK
       tags:
-        - user
+        - user-v1
     delete:
       summary: ''
       operationId: delete-api-users-id
@@ -212,7 +256,7 @@ paths:
         '200':
           description: OK
       tags:
-        - user
+        - user-v1
 components:
   schemas:
     Family:
@@ -227,8 +271,8 @@ components:
           type: string
           x-stoplight:
             id: 0q1hdsc073x4b
-    Intervention:
-      title: Intervention
+    Inspection:
+      title: Inspection
       x-stoplight:
         id: isocdt4oo7s7y
       type: object
@@ -240,9 +284,13 @@ components:
         share:
           $ref: '#/components/schemas/NoProgrammedShare'
         action:
-          type: integer
+          type: string
           x-stoplight:
             id: 4v0eavn531ar2
+          enum:
+            - INTERVENTION
+            - DIAGNOSIS
+            - FOLLOWING
         startDate:
           type: string
           x-stoplight:
@@ -297,6 +345,13 @@ components:
           type: integer
           x-stoplight:
             id: jefh8p0m16cgw
+        files:
+          type: array
+          x-stoplight:
+            id: lxtp67qj9tr4z
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ShareFile'
       required:
         - id
         - share
@@ -356,16 +411,17 @@ components:
           type: integer
           x-stoplight:
             id: g8rnuovvahzqf
-        interventions:
+        inspections:
           x-stoplight:
             id: vbc9pywk2s6rp
           type: array
           items:
-            $ref: '#/components/schemas/Intervention'
+            $ref: '#/components/schemas/Inspection'
         files:
           type: array
           x-stoplight:
             id: bm1bnujfonrek
+          uniqueItems: true
           items:
             $ref: '#/components/schemas/ShareFile'
       required:
@@ -499,7 +555,7 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-    InterventionList:
+    InspectionList:
       description: Example response
       content:
         application/json:
@@ -511,8 +567,8 @@ components:
               data:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Intervention'
-    Intervention:
+                  $ref: '#/components/schemas/Inspection'
+    Inspection:
       description: Example response
       content:
         application/json:
@@ -522,7 +578,7 @@ components:
               metadata:
                 $ref: ../../base-api-spec.yaml#/components/schemas/Meta
               data:
-                $ref: '#/components/schemas/Intervention'
+                $ref: '#/components/schemas/Inspection'
   requestBodies:
     CreateNoProgrammedShare:
       content:
@@ -597,20 +653,20 @@ components:
                       x-field-extra-annotation: '@com.fasterxml.jackson.annotation.JsonIgnore'
                       x-stoplight:
                         id: 6ce64ca1txbth
-    CreateIntervention:
+    CreateInspection:
       content:
         application/json:
           schema:
             type: object
             properties:
-              userId:
-                type: integer
-                x-stoplight:
-                  id: mo3kufj2a6q8i
               userSigningId:
                 type: integer
                 x-stoplight:
                   id: g69xyki5xv9nf
+              firstTechnicalId:
+                type: integer
+                x-stoplight:
+                  id: mo3kufj2a6q8i
               secondTechnicalId:
                 type: integer
                 x-stoplight:
@@ -624,8 +680,105 @@ components:
                   - DIAGNOSIS
                   - FOLLOWING
             required:
-              - userId
+              - firstTechnicalId
               - action
+    UpdateInspection:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userSigningId:
+                type: integer
+                x-stoplight:
+                  id: t10n2ylj4wpp9
+              shareId:
+                type: integer
+                x-stoplight:
+                  id: 7698jnio7hx4a
+              action:
+                type: string
+                x-stoplight:
+                  id: g7a5og6lprr3z
+                enum:
+                  - INTERVENTION
+                  - DIAGNOSIS
+                  - FOLLOWING
+              startDate:
+                type: string
+                x-stoplight:
+                  id: hq0cj136wuhz8
+                format: date-time
+              endDate:
+                type: string
+                x-stoplight:
+                  id: fvu31rjn1sxul
+                format: date-time
+              description:
+                type: string
+                x-stoplight:
+                  id: 51g2z0w667qn5
+              firstTechnicalId:
+                type: integer
+                x-stoplight:
+                  id: hlj8iv7ybklpt
+              secondTechnicalId:
+                type: string
+                x-stoplight:
+                  id: 74cdncarps5va
+              signature:
+                type: string
+                x-stoplight:
+                  id: tuy7ko9etwryl
+              operatorSignature:
+                type: string
+                x-stoplight:
+                  id: m1yshgsj7ekbo
+              clientName:
+                type: string
+                x-stoplight:
+                  id: 0c6m3cyog2nhk
+              materialIds:
+                type: array
+                x-stoplight:
+                  id: begtcvhk3jc1o
+                items:
+                  x-stoplight:
+                    id: t9ngw7e3zyz5c
+                  type: integer
+              materialFile:
+                type: string
+                x-stoplight:
+                  id: 52so0d165nfib
+              materialFileExtension:
+                type: string
+                x-stoplight:
+                  id: rgc09zq7wbb1n
+              equipmentHours:
+                type: integer
+                x-stoplight:
+                  id: f68utayhplewm
+              topicId:
+                type: integer
+                x-stoplight:
+                  id: wpcby5fkmiyh1
+              files:
+                type: array
+                x-stoplight:
+                  id: lfdu9vub3ip95
+                items:
+                  x-stoplight:
+                    id: drjhxhl33x20c
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      x-stoplight:
+                        id: vrhnxcl5lm6sy
+                    content:
+                      type: string
+                      x-stoplight:
+                        id: krfqwi7lui6wg
   parameters:
     Share-Id:
       name: shareId
@@ -634,10 +787,17 @@ components:
       schema:
         type: integer
       description: Share identificator.
+    Inspection-Id:
+      name: inspectionId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Inspection identificator.
 tags:
+  - name: inspection-v1
+    description: V1 - Inspection
   - name: no-programmed-share-v1
     description: V1 - No Programmed Share
   - name: user-v1
     description: V1 - User
-security:
-  - basicAuth: []

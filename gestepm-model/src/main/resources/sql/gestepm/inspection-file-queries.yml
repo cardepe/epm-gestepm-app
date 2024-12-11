@@ -1,0 +1,16 @@
+sql:
+
+  qry-create-if: |
+    
+    INSERT INTO ${sch-gestepm}.intervention_sub_share_files (
+      sub_share_id,
+      name,
+      ext,
+      content
+    )
+    VALUES (
+      :attr_if_i_id,
+      :attr_if_name,
+      :attr_if_ext,
+      :attr_if_content
+    )

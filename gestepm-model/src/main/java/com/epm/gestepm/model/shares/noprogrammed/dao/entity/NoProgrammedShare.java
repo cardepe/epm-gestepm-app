@@ -46,7 +46,7 @@ public class NoProgrammedShare implements Serializable {
   private Integer lastDiagnosis;
 
   @Singular
-  private Set<Integer> interventionIds;
+  private Set<Integer> inspectionIds;
 
   @Singular
   private Set<Integer> fileIds;

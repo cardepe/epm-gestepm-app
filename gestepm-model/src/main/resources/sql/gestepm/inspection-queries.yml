@@ -1,0 +1,133 @@
+sql:
+
+  qry-list-of-i: |
+    
+    SELECT
+      i.id AS id_pagination,
+      i.id AS intervention_id,
+      i.user_signing_id,
+      i.intervention_id as share_id,
+      i.action,
+      i.start_date,
+      i.end_date,
+      i.description,
+      i.first_technical,
+      i.second_technical,
+      i.signature,
+      i.signature_op,
+      i.client_name,
+      i.materials,
+      i.materials_file,
+      i.equipment_hours,   
+      i.topic_id,
+      ifi.id AS intervention_file_id
+    FROM ${sch-gestepm}.intervention_sub_shares i
+    LEFT JOIN ${sch-gestepm}.intervention_sub_share_files ifi ON i.id = ifi.sub_share_id
+
+    #whereToken #filter
+
+  qry-page-of-i: |
+
+    SELECT 
+      i.id AS id_pagination,
+      i.id AS intervention_id,
+      i.user_signing_id,
+      i.intervention_id AS share_id,
+      i.action,
+      i.start_date,
+      i.end_date,
+      i.description,
+      i.first_technical,
+      i.second_technical,
+      i.signature,
+      i.signature_op,
+      i.client_name,
+      i.materials,
+      i.materials_file,
+      i.equipment_hours,
+      i.topic_id,
+      ifi.id AS intervention_file_id
+    FROM
+      bbdd_gestepm.intervention_sub_shares i
+    LEFT JOIN
+      bbdd_gestepm.intervention_sub_share_files ifi
+    ON
+      i.id = ifi.sub_share_id
+    WHERE
+      i.intervention_id = 29137
+    ORDER BY
+      i.intervention_id, i.id
+    LIMIT 10 OFFSET 0
+
+  qry-count-of-i: |
+
+    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    FROM (${sql.qry-list-of-i}) final
+
+  qry-create-i: |
+    
+    INSERT INTO ${sch-gestepm}.intervention_sub_shares (
+      user_signing_id,
+      intervention_id,
+      action,
+      start_date,
+      first_technical,
+      second_technical
+    )
+    VALUES (
+      :attr_i_user_signing_id,
+      :attr_i_share_id,
+      :attr_i_action,
+      :attr_i_start_date,
+      :attr_i_first_technical_id,
+      :attr_i_second_technical_id
+    )
+
+  qry-update-i: |
+    
+    UPDATE
+      ${sch-gestepm}.intervention_sub_shares
+    SET
+      user_signing_id = :attr_i_user_signing_id, 
+      intervention_id as share_id = :attr_i_share_id, 
+      action = :attr_i_action, 
+      start_date = :attr_i_start_date, 
+      end_date = :attr_i_end_date, 
+      description = :attr_i_description, 
+      first_technical = :attr_i_first_technical_id, 
+      second_technical = :attr_i_second_technical_id, 
+      signature = :attr_i_signature, 
+      signature_op = :attr_i_operator_signature, 
+      client_name = :attr_i_client_name, 
+      materials = :attr_i_materials, 
+      materials_file = :attr_i_materials_file, 
+      materials_file_ext = :attr_i_materials_file_extension,
+      equipment_hours = :attr_i_equipment_hours,
+      topic_id = :attr_i_topic_id
+    WHERE
+      id = :attr_i_id
+
+  filter-i-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-i-ids}
+      -- ${sql.predicate-for-i-share-id}
+    -- AND]
+
+  filter-i-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-i-id}
+    -- AND]
+
+  predicate-for-i-id: |
+
+    i.id = :attr_i_id
+
+  predicate-for-i-ids: |
+
+    i.id IN (:attr_i_ids)
+
+  predicate-for-i-share-id: |
+
+    i.intervention_id = :attr_i_share_id

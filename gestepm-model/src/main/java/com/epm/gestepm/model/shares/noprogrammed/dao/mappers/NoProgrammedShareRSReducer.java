@@ -16,13 +16,13 @@ public class NoProgrammedShareRSReducer implements BinaryOperator<NoProgrammedSh
       return current;
     }
 
-    if (!CollectionUtils.isEmpty(total.getInterventionIds()) && !CollectionUtils.isEmpty(current.getInterventionIds())) {
+    if (!CollectionUtils.isEmpty(total.getInspectionIds()) && !CollectionUtils.isEmpty(current.getInspectionIds())) {
 
-      final Set<Integer> interventionIds = new LinkedHashSet<>();
-      interventionIds.addAll(total.getInterventionIds());
-      interventionIds.addAll(current.getInterventionIds());
+      final Set<Integer> inspectionIds = new LinkedHashSet<>();
+      inspectionIds.addAll(total.getInspectionIds());
+      inspectionIds.addAll(current.getInspectionIds());
 
-      total.setInterventionIds(interventionIds);
+      total.setInspectionIds(inspectionIds);
     }
 
     if (!CollectionUtils.isEmpty(total.getFileIds()) && !CollectionUtils.isEmpty(current.getFileIds())) {

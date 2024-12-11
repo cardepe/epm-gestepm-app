@@ -63,13 +63,13 @@ public class NoProgrammedShareRowMapper implements RowMapper<NoProgrammedShare> 
     noProgrammedShare.setState(NoProgrammedShareStateEnum.fromValue(rs.getInt(COL_NPS_STATE)));
     noProgrammedShare.setLastDiagnosis(rs.getInt(COL_NPS_LAST_DIAGNOSIS));
 
-    final Set<Integer> interventionIds = new HashSet<>();
+    final Set<Integer> inspectionIds = new HashSet<>();
 
     if (hasValue(rs, COL_NPS_INTERVENTION_ID)) {
-      interventionIds.add(rs.getInt(COL_NPS_INTERVENTION_ID));
+      inspectionIds.add(rs.getInt(COL_NPS_INTERVENTION_ID));
     }
 
-    noProgrammedShare.setInterventionIds(interventionIds);
+    noProgrammedShare.setInspectionIds(inspectionIds);
 
     final Set<Integer> fileIds = new HashSet<>();
 

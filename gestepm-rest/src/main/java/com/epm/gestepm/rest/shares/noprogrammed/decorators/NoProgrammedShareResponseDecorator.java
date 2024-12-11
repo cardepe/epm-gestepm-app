@@ -31,7 +31,7 @@ public class NoProgrammedShareResponseDecorator extends BaseResponseDataDecorato
 
     public static final String NPS_SF_EXPAND = "subFamily";
 
-    public static final String NPS_I_EXPAND = "interventions";
+    public static final String NPS_I_EXPAND = "inspections";
 
     public static final String NPS_NPSF_EXPAND = "files";
 
