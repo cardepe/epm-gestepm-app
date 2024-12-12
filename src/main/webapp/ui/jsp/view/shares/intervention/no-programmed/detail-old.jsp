@@ -262,7 +262,7 @@
 										</form>
 									</c:when>
 									<c:when test="${ share.state == 3 }">
-										<jsp:include page="intervention-form.jsp">
+										<jsp:include page="../../no-programmed/inspection/inspection-form.jsp">
 											<jsp:param name="prefix" value="complete" />
 										</jsp:include>
 									</c:when>
@@ -337,7 +337,7 @@
 	</div>
 </div>
 
-<jsp:include page="material-modal.jsp" />
+<jsp:include page="../../no-programmed/inspection/material-modal.jsp" />
 
 <!-- MODAL -->
 <div id="editInterventionModal" class="modal fade intervention-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -349,7 +349,7 @@
 				</div>
 			</div>
 			<div class="modal-body">
-				<jsp:include page="intervention-form.jsp">
+				<jsp:include page="../../no-programmed/inspection/inspection-form.jsp">
 					<jsp:param name="prefix" value="update" />
 				</jsp:include>
 			</div>
@@ -684,8 +684,6 @@
 		if (typeof signatureOp !== 'undefined' && signatureOp !== '') {
 			signaturePadOp.fromDataURL(signatureOp);
 		}
-
-
 	}
 
 	function resizeCanvas() {

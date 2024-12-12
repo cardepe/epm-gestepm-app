@@ -13,34 +13,23 @@ import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionDTO;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareService;
 import com.epm.gestepm.modelapi.displacement.dto.Displacement;
-import com.epm.gestepm.modelapi.displacement.dto.DisplacementDTO;
 import com.epm.gestepm.modelapi.displacement.service.DisplacementService;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShareDTO;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShareTableDTO;
 import com.epm.gestepm.modelapi.displacementshare.service.DisplacementShareService;
 import com.epm.gestepm.modelapi.expense.dto.FileDTO;
-import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
-import com.epm.gestepm.modelapi.family.service.FamilyService;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionShareMaterial;
 import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
 import com.epm.gestepm.modelapi.interventionshare.dto.*;
-import com.epm.gestepm.modelapi.interventionshare.mapper.MapISMToInterventionMaterialDto;
 import com.epm.gestepm.modelapi.interventionshare.mapper.MapISSToInterventionFinalDto;
 import com.epm.gestepm.modelapi.interventionshare.service.InterventionShareService;
 import com.epm.gestepm.modelapi.interventionsubshare.dto.InterventionSubShare;
-import com.epm.gestepm.modelapi.interventionsubshare.dto.InterventionSubShareTableDTO;
 import com.epm.gestepm.modelapi.interventionsubshare.service.InterventionSubShareService;
-import com.epm.gestepm.modelapi.interventionsubsharefile.service.InterventionSubShareFileService;
-import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequiredDTO;
-import com.epm.gestepm.modelapi.materialrequired.service.MaterialRequiredService;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
-import com.epm.gestepm.modelapi.role.dto.RoleDTO;
-import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.dto.UserDTO;
 import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
@@ -54,11 +43,9 @@ import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
 import com.epm.gestepm.modelapi.worksharefile.dto.WorkShareFile;
 import com.epm.gestepm.modelapi.worksharefile.service.WorkShareFileService;
 import com.mysql.jdbc.StringUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.*;
@@ -66,7 +53,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -74,7 +60,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -92,14 +77,8 @@ public class ShareController {
 
     private static final Log log = LogFactory.getLog(ShareController.class);
 
-    @Value("${forum.url}")
-    private String forumUrl;
-
     @Autowired
     private DisplacementShareService displacementShareService;
-
-    @Autowired
-    private FamilyService familyService;
 
     @Autowired
     private InterventionShareService interventionShareService;
@@ -108,16 +87,10 @@ public class ShareController {
     private InterventionSubShareService interventionSubShareService;
 
     @Autowired
-    private InterventionSubShareFileService interventionSubShareFileService;
-
-    @Autowired
     private ConstructionShareService constructionShareService;
 
     @Autowired
     private InterventionPrShareService interventionPrShareService;
-
-    @Autowired
-    private MaterialRequiredService materialRequiredService;
 
     @Autowired
     private WorkShareService workShareService;
@@ -130,9 +103,6 @@ public class ShareController {
 
     @Autowired
     private ProjectService projectService;
-
-    @Autowired
-    private SubFamilyService subFamilyService;
 
     @Autowired
     private UserService userService;
@@ -258,32 +228,6 @@ public class ShareController {
         return obj;
     }
 
-    @ResponseBody
-    @DeleteMapping("/intervention/no-programmed/delete/{id}")
-    public ResponseEntity<String> deleteShare(@PathVariable Long id, Locale locale) {
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            if (user.getRole().getId() != Constants.ROLE_PL_ID && user.getRole().getId() != Constants.ROLE_ADMIN_ID) {
-                log.error("El usuario " + user.getId() + " no tiene los permisos suficientes para eliminar el parte no programado " + id);
-                return new ResponseEntity<>(messageSource.getMessage("share.delete.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-            }
-
-            interventionShareService.deleteById(id);
-
-            log.info("Parte de intervención " + id + " eliminado con éxito por parte del usuario " + user.getId());
-
-            // Return data
-            return new ResponseEntity<>(messageSource.getMessage("share.delete.success", new Object[]{}, locale), HttpStatus.OK);
-
-        } catch (Exception e) {
-            return new ResponseEntity<>(messageSource.getMessage("share.delete.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-        }
-    }
-
     @SuppressWarnings("unchecked")
     @ResponseBody
     @GetMapping("/intervention/dt")
@@ -312,7 +256,7 @@ public class ShareController {
     public void exportPdf(@RequestParam(required = false, defaultValue = "0") Integer offset, @RequestParam(required = false, defaultValue = "10") Integer limit,
                           @RequestParam(required = false) Long id, @RequestParam(required = false) String type, @RequestParam(required = false) Long project,
                           @RequestParam(required = false) Integer progress, @RequestParam(required = false, name = "user") Long userId,
-                          HttpServletRequest request, HttpServletResponse response, Locale locale) {
+                          HttpServletResponse response, Locale locale) {
 
         try {
 
@@ -373,272 +317,6 @@ public class ShareController {
         }
     }
 
-    @GetMapping("/intervention/no-programmed/detail/{id}")
-    public String viewNoProgrammedShare(@PathVariable Long id, Locale locale, Model model, HttpServletRequest request) {
-
-        try {
-
-            // Loading constants
-            ModelUtil.loadConstants(locale, model, request);
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Log info
-            log.info("El usuario " + user.getId() + " ha accedido a la vista de detalle del parte no programado " + id);
-
-            InterventionShare share = interventionShareService.getInterventionShareById(id);
-
-            if (share == null) {
-                model.addAttribute("msgError", "error.share.no.programed.not.found");
-                return "simple-error";
-            }
-
-            // Recover static data
-            List<FamilyDTO> families = familyService.getCommonFamilyDTOsByProjectId(share.getProject().getId(), locale);
-
-            // Recover materials required
-            List<MaterialRequiredDTO> materialsRequired = materialRequiredService.getMaterialsRequiredByProjectId(share.getProject().getId());
-
-            // Recover all users in a project
-            List<UserDTO> usersTeam = userService.getUserDTOsByProjectId(share.getProject().getId());
-
-            // Load Roles by SubFamily
-            boolean hasRole = false;
-
-            if (share.getSubFamily() != null) {
-
-                List<RoleDTO> subRoles = subFamilyService.getSubRolsById(share.getSubFamily().getId());
-
-                if (subRoles == null || subRoles.isEmpty()) {
-                    hasRole = true;
-                } else {
-
-                    for (RoleDTO roleDTO : subRoles) {
-
-                        if (user.getSubRole().getRol().equals(roleDTO.getName())) {
-                            hasRole = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // Get Current UserSigning
-            UserSigning currentUserSigning = userSigningService.getByUserIdAndEndDate(user.getId(), null);
-
-            // Actual int
-            if (share.getState() == 3) {
-                InterventionSubShare actualIntervention = interventionSubShareService.getOpenIntervention(id);
-                model.addAttribute("intervention", actualIntervention);
-            }
-
-            // Displacements
-            List<DisplacementDTO> displacements = displacementService.getDisplacementDTOsByProjectId(share.getProject().getId());
-
-            // Have Privileges
-            boolean havePrivileges = Utiles.havePrivileges(user.getSubRole().getRol());
-
-            // Add to model
-            model.addAttribute("share", share);
-            model.addAttribute("families", families);
-            model.addAttribute("materialsRequired", materialsRequired);
-            model.addAttribute("usersTeam", usersTeam);
-            model.addAttribute("displacements", displacements);
-            model.addAttribute("language", locale.getLanguage());
-            model.addAttribute("hasRole", hasRole);
-            model.addAttribute("userSigning", currentUserSigning);
-            model.addAttribute("havePrivileges", havePrivileges);
-            model.addAttribute("forumUrl", forumUrl);
-
-            // Load Action Buttons for DataTable
-            model.addAttribute("interventionTableActionButtons", ModelUtil.getTableDownloadInterventionButtons());
-            model.addAttribute("tableActionButtons", ModelUtil.getTableModifyActionButtons());
-
-            // Loading view
-            return "intervention-share-detail";
-
-        } catch (InvalidUserSessionException e) {
-            log.error(e);
-            return "redirect:/login";
-        }
-    }
-
-    @ResponseBody
-    @GetMapping("/intervention/no-programmed/detail/{id}/dt")
-    public DataTableResults<InterventionSubShareTableDTO> noProgrammedInterventionSharesDatatable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
-
-        DataTableRequest<InterventionShare> dataTableInRQ = new DataTableRequest<>(request);
-        PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
-
-        List<InterventionSubShareTableDTO> subShareDTOs = interventionSubShareService.getInterventionSubSharesByShareDataTables(id, pagination);
-
-        Long totalRecords = interventionSubShareService.getInterventionSubSharesCountByShareId(id);
-
-        DataTableResults<InterventionSubShareTableDTO> dataTableResult = new DataTableResults<>();
-        dataTableResult.setDraw(dataTableInRQ.getDraw());
-        dataTableResult.setListOfDataObjects(subShareDTOs);
-        dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
-        dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
-
-        if (subShareDTOs != null && !subShareDTOs.isEmpty() && !dataTableInRQ.getPaginationRequest().isFilterByEmpty()) {
-            dataTableResult.setRecordsFiltered(Integer.toString(subShareDTOs.size()));
-        }
-
-        return dataTableResult;
-    }
-
-    @ResponseBody
-    @PostMapping("/intervention/no-programmed/detail/{id}/displacement/create")
-    public ResponseEntity<IdMsgDTO> createDisplacementFromNoProgrammedIntervention(@PathVariable Long id, @ModelAttribute DisplacementShareDTO displacementShareDTO, Locale locale, Model model, HttpServletRequest request) {
-
-        IdMsgDTO response = new IdMsgDTO();
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            InterventionShare share = interventionShareService.getInterventionShareById(id);
-
-            // Get displacement
-            Displacement displacement = displacementService.getDisplacementById(displacementShareDTO.getActivityCenter());
-
-            // AutDisp
-            displacementShareDTO.setManualDisplacement(0);
-
-            // Map Intervention share stepper
-            DisplacementShare displacementShare = ShareMapper.mapDTOToDisplacementShare(displacementShareDTO, user, share.getProject(), displacement);
-            displacementShare.setOriginalDate(new Timestamp(new Date().getTime()));
-
-            // Save intervention
-            displacementShare = displacementShareService.save(displacementShare);
-
-            // Log info
-            log.info("Creado nuevo parte de desplazamiento " + displacementShare.getId() + " por parte del usuario " + user.getId());
-
-            // Return data
-            response.setId(displacementShare.getId());
-            response.setMsg(messageSource.getMessage("shares.displacement.create.success", new Object[]{}, locale));
-            return new ResponseEntity<>(response, HttpStatus.OK);
-
-        } catch (Exception e) {
-            log.error("Error al crear un parte de desplazamiento: %s", e);
-            response.setMsg(messageSource.getMessage("shares.displacement.create.error", new Object[]{}, locale));
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PostMapping("/intervention/no-programmed/detail/{id}/init")
-    public String initNoProgrammedIntervention(@PathVariable Long id, @ModelAttribute InterventionNoPrDTO interventionNoPrDTO, Locale locale, Model model, HttpServletRequest request) {
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Get Current UserSigning
-            UserSigning currentUserSigning = userSigningService.getByUserIdAndEndDate(user.getId(), null);
-
-            if (currentUserSigning == null && !Utiles.havePrivileges(user.getSubRole().getRol())) {
-                model.addAttribute("msgError", messageSource.getMessage("signing.page.not.enable", new Object[]{}, locale));
-                return "simple-error";
-            }
-
-            User secondTechnicalUser = null;
-
-            if (interventionNoPrDTO.getSecondTechnical() != null) {
-
-                secondTechnicalUser = userService.getUserById(interventionNoPrDTO.getSecondTechnical());
-
-                if (secondTechnicalUser == null) {
-                    throw new Exception("El usuario" + interventionNoPrDTO.getSecondTechnical() + " no existe");
-                }
-            }
-
-            InterventionShare share = interventionShareService.getInterventionShareById(id);
-            share.setState(3); // inProgress
-
-            if (interventionNoPrDTO.getAction() == 2) {
-                share.setLastDiagnosis(1);
-            } else if (interventionNoPrDTO.getAction() == 1) {
-                share.setLastDiagnosis(2);
-            } else {
-                share.setLastDiagnosis(0);
-            }
-
-            interventionShareService.save(share);
-
-            Long interventionsCount = interventionShareService.getInterventionsCount(id);
-
-            InterventionSubShare subShare = new InterventionSubShare();
-            subShare.setUserSigning(currentUserSigning);
-            subShare.setOrderId(interventionsCount + 1);
-            subShare.setAction(interventionNoPrDTO.getAction());
-            subShare.setInterventionShare(share);
-            subShare.setFirstTechnical(user);
-            subShare.setSecondTechnical(secondTechnicalUser);
-            subShare.setStartDate(OffsetDateTime.now());
-
-            if (!StringUtils.isNullOrEmpty(interventionNoPrDTO.getMaterialsRequired())) {
-                subShare.setMaterials(interventionNoPrDTO.getMaterialsRequired());
-            }
-
-            if (!StringUtils.isNullOrEmpty(interventionNoPrDTO.getMrSignature())) {
-                subShare.setMrSignature(interventionNoPrDTO.getMrSignature());
-            }
-
-            subShare.setDisplacementShareId(interventionNoPrDTO.getDispShareId());
-            interventionSubShareService.save(subShare);
-
-//			// Send Emails
-//			smtpService.sendOpenInterventionSubShareMail(user.getEmail(), subShare, locale);
-//			
-//			if (share.getProject().getResponsables() != null && !share.getProject().getResponsables().isEmpty()) {
-//				
-//				for (User responsable : share.getProject().getResponsables()) {
-//					smtpService.sendOpenInterventionSubShareMail(responsable.getEmail(), subShare, locale);
-//				}
-//			}
-//			
-//			if ("on".equals(interventionNoPrDTO.getClientNotif()) && share.getProject().getCustomer() != null) {
-//				smtpService.sendOpenInterventionSubShareMail(share.getProject().getCustomer().getMainEmail(), subShare, locale);
-//			}
-
-            return "redirect:/shares/intervention/no-programmed/detail/" + id;
-
-        } catch (Exception e) {
-            log.error(e);
-
-            return "error";
-        }
-    }
-
-    @ResponseBody
-    @PostMapping("/intervention/no-programmed/detail/{id}/end")
-    public ResponseEntity<String> updateInterventionNoProgrammedDescription(@PathVariable Long id, @ModelAttribute InterventionNoPrDTO interventionNoPrDTO, Locale locale, Model model, HttpServletRequest request) {
-
-        try {
-
-            InterventionSubShare actualIntervention = interventionSubShareService.getOpenIntervention(id);
-
-            if (actualIntervention == null) {
-                log.error("No hay ninguna intervencion abierta para el parte " + id);
-                return new ResponseEntity<>(messageSource.getMessage("shares.intervention.detail.close.intervention.empty.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-            }
-
-            // Update Intervention
-            interventionSubShareService.updateInterventionInfo(actualIntervention, interventionNoPrDTO);
-
-            // Return data
-            return new ResponseEntity<>(actualIntervention.getId().toString(), HttpStatus.OK);
-
-        } catch (Exception e) {
-            log.error(e);
-            return new ResponseEntity<>(messageSource.getMessage("shares.intervention.detail.close.intervention.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-        }
-    }
-
     @PostMapping("/intervention/no-programmed/detail/{id}/files")
     public String uploadFilesNoProgrammedInterventionDescription(@PathVariable Long id, @ModelAttribute InterventionNoPrDTO interventionNoPrDTO, Locale locale, Model model, HttpServletRequest request) {
 
@@ -652,24 +330,6 @@ public class ShareController {
             if (actualIntervention == null) {
                 throw new Exception(messageSource.getMessage("shares.intervention.detail.close.intervention.empty.error", new Object[]{}, locale));
             }
-
-            // Update MaterialsFile
-            if (interventionNoPrDTO.getMaterialsFile() != null && !interventionNoPrDTO.getMaterialsFile().isEmpty()) {
-                String fileName = interventionNoPrDTO.getMaterialsFile().getOriginalFilename();
-                String ext = FilenameUtils.getExtension(fileName);
-                byte[] materialsFileData = FileUtils.compressBytes(interventionNoPrDTO.getMaterialsFile().getBytes());
-
-                actualIntervention.setMaterialsFile(materialsFileData);
-                actualIntervention.setMaterialsFileExt(ext);
-            }
-
-            // Upload Files
-            if (interventionNoPrDTO.getFiles() != null && !interventionNoPrDTO.getFiles().isEmpty()) {
-                interventionSubShareFileService.uploadFiles(actualIntervention, interventionNoPrDTO.getFiles());
-            }
-
-            // Close intervention
-            actualIntervention = interventionSubShareService.closeIntervention(actualIntervention, interventionNoPrDTO, user, request.getLocalAddr(), locale);
 
             byte[] pdfGenerated = interventionSubShareService.generateInterventionSharePdf(actualIntervention, locale);
 
@@ -695,7 +355,7 @@ public class ShareController {
             }
 
             // Return data
-            return "redirect:/shares/intervention/no-programmed/detail/" + id;
+            return "redirect:/shares/no-programmed/" + id;
 
         } catch (Exception e) {
             log.error("An error ocurred when upload intervention images: ", e);
@@ -737,32 +397,6 @@ public class ShareController {
         return new HttpEntity<>(new ByteArrayResource(fileBytes), header);
     }
 
-    @ResponseBody
-    @DeleteMapping("/intervention/no-programmed/detail/{id}/delete")
-    public ResponseEntity<String> deleteInterventionNoProgrammed(@PathVariable Long id, Locale locale) {
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            if (user.getRole().getId() != Constants.ROLE_PL_ID && user.getRole().getId() != Constants.ROLE_ADMIN_ID) {
-                log.error("El usuario " + user.getId() + " no tiene los permisos suficientes para eliminar el parte no programado " + id);
-                return new ResponseEntity<>(messageSource.getMessage("share.delete.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-            }
-
-            interventionSubShareService.deleteById(id);
-
-            log.info("Intervención " + id + " eliminada con éxito por parte del usuario " + user.getId());
-
-            // Return data
-            return new ResponseEntity<>(messageSource.getMessage("share.delete.success", new Object[]{}, locale), HttpStatus.OK);
-
-        } catch (Exception e) {
-            return new ResponseEntity<>(messageSource.getMessage("share.delete.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-        }
-    }
-
     @PostMapping("/intervention/no-programmed/detail/{id}/close")
     public String closeNoProgrammedInterventionDescription(@PathVariable Long id, Locale locale, Model model, HttpServletRequest request) {
 
@@ -789,7 +423,7 @@ public class ShareController {
 
             log.info("Parte de intervencion no programado " + id + " cerrado con exito por parte del usuario " + user.getId());
 
-            return "redirect:/shares/intervention/no-programmed/detail/" + id;
+            return "redirect:/shares/no-programmed/" + id;
 
         } catch (Exception e) {
             log.error(e);
@@ -830,7 +464,7 @@ public class ShareController {
     }
 
     @ResponseBody
-    @GetMapping("/intervention/no-programmed/{id}")
+    @GetMapping(" {id}")
     public InterventionDTO getNoProgrammedShare(@PathVariable Long id) {
 
         InterventionSubShare interventionShare = interventionSubShareService.getById(id);
@@ -857,8 +491,8 @@ public class ShareController {
             return null;
         }
 
-        String shareIdStr = subShare.getInterventionShare().getId() + "/" + subShare.getOrderId();
 
+        String shareIdStr = subShare.getInterventionShare().getId() + "/" + subShare.getOrderId();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentDispositionFormData("attachment", messageSource.getMessage("shares.no.programmed.pdf.name", new Object[]{shareIdStr.replace("/", "-"), Utiles.getDateFormatted(subShare.getStartDate())}, locale) + ".pdf");
 
@@ -890,28 +524,6 @@ public class ShareController {
         headers.setContentDispositionFormData("attachment", messageSource.getMessage("shares.no.programmed.materials.pdf.name", new Object[]{shareIdStr.replace("/", "-"), Utiles.getDateFormatted(subShare.getStartDate())}, locale) + ".pdf");
 
         return new HttpEntity<>(pdf, headers);
-    }
-
-    @GetMapping(value = "/intervention/no-programmed/detail/{shareId}/{interventionId}/materials")
-    public HttpEntity<ByteArrayResource> exportMaterialsFile(@PathVariable Long shareId, @PathVariable Long interventionId, Locale locale) {
-
-        log.info("Exportando el fichero de materiales del parte de intervención " + shareId + "/" + interventionId);
-
-        InterventionSubShare subShare = interventionSubShareService.getByShareAndOrder(shareId, interventionId);
-
-        if (subShare == null) {
-            log.error("No existe la intervención con id " + shareId + "/" + interventionId);
-            return null;
-        }
-
-        String fileName = "intervention_materials_" + shareId + "_" + interventionId + "." + subShare.getMaterialsFileExt();
-
-        HttpHeaders header = new HttpHeaders();
-        header.setContentType(new MediaType("application", "force-download"));
-        header.set(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; filename=\"" + fileName + "\"");
-
-        return new HttpEntity<>(new ByteArrayResource(FileUtils.decompressBytes(subShare.getMaterialsFile())), header);
     }
 
     @ResponseBody
@@ -1775,25 +1387,6 @@ public class ShareController {
         final InterventionSubShare interventionSubShare = interventionSubShareService.getById(interventionId);
 
         return getMapper(MapISSToInterventionFinalDto.class).from(interventionSubShare);
-    }
-
-    @ResponseBody
-    @PutMapping("/no-programmed/{shareId}/intervention/{interventionId}")
-    public InterventionFinalDto updateIntervention(@ModelAttribute InterventionUpdateFinalDto updateDto,
-                                                   @PathVariable Long shareId, @PathVariable Long interventionId) throws Exception {
-        updateDto.setId(interventionId);
-
-        final InterventionSubShare interventionSubShare = interventionSubShareService.update(updateDto);
-        return getMapper(MapISSToInterventionFinalDto.class).from(interventionSubShare);
-    }
-
-    @ResponseBody
-    @GetMapping("/no-programmed/{shareId}/intervention/{interventionId}/materials")
-    public List<InterventionMaterialDto> getInterventionMaterials(@PathVariable Long shareId, @PathVariable Long interventionId) {
-
-        final List<InterventionShareMaterial> list = interventionSubShareService.listInterventionShareMaterial(interventionId);
-
-        return getMapper(MapISMToInterventionMaterialDto.class).from(list);
     }
 
     private List<PdfFileDTO> getConstructionSharesPdf(final List<ShareTableDTO> shareTableDTOs, final Locale locale) {

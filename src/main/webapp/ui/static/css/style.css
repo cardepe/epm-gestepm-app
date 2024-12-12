@@ -28,6 +28,18 @@ body {
 	background-color: var(--phover);
 }
 
+.btn-standard-outline {
+	color: var(--primary);
+	background-color: transparent;
+	border: 1px solid var(--primary);
+}
+
+.btn-standard-outline:hover {
+	color: #fff;
+	background-color: var(--phover);
+	border: 1px solid transparent;
+}
+
 .btn-accent {
 	color: #fff;
 	background-color: var(--accent);

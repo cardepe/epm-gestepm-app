@@ -1,14 +1,15 @@
 package com.epm.gestepm.model.inspection.dao.mappers;
 
+import com.epm.gestepm.lib.file.FileUtils;
 import com.epm.gestepm.model.inspection.dao.entity.ActionEnum;
 import com.epm.gestepm.model.inspection.dao.entity.Inspection;
+import com.epm.gestepm.model.inspection.dao.entity.Material;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneOffset;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,7 +41,13 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
 
     public static final String COL_I_CLIENT_NAME = "client_name";
 
-    public static final String COL_I_MATERIALS = "materials";
+    public static final String COL_I_MATERIAL_ID = "material_id";
+
+    public static final String COL_I_MATERIAL_DESCRIPTION = "material_description";
+
+    public static final String COL_I_MATERIAL_UNITS = "material_units";
+
+    public static final String COL_I_MATERIAL_REFERENCE = "material_reference";
 
     public static final String COL_I_MATERIALS_FILE = "materials_file";
 
@@ -69,21 +76,22 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
         inspection.setSignature(nullableString(rs, COL_I_SIGNATURE));
         inspection.setOperatorSignature(nullableString(rs, COL_I_OPERATOR_SIGNATURE));
         inspection.setClientName(nullableString(rs, COL_I_CLIENT_NAME));
-        inspection.setMaterialsFile(nullableString(rs, COL_I_MATERIALS_FILE));
-        inspection.setMaterialsFileExtension(nullableString(rs, COL_I_MATERIALS_FILE_EXT));
+        if (hasValue(rs, COL_I_MATERIALS_FILE)) {
+            inspection.setMaterialsFile(Base64.getEncoder().encodeToString(FileUtils.decompressBytes(rs.getBytes(COL_I_MATERIALS_FILE))));
+            inspection.setMaterialsFileExtension(nullableString(rs, COL_I_MATERIALS_FILE_EXT));
+        }
         inspection.setEquipmentHours(nullableInt(rs, COL_I_EQUIPMENT_HOURS));
         inspection.setTopicId(nullableInt(rs, COL_I_TOPIC_ID));
 
-        final Set<Integer> materialIds = new HashSet<>();
+        if (hasValue(rs, COL_I_MATERIAL_ID)) {
+            final Material material = new Material();
+            material.setId(rs.getInt(COL_I_MATERIAL_ID));
+            material.setDescription(rs.getString(COL_I_MATERIAL_DESCRIPTION));
+            material.setUnits(rs.getInt(COL_I_MATERIAL_UNITS));
+            material.setReference(rs.getString(COL_I_MATERIAL_REFERENCE));
 
-        if (hasValue(rs, COL_I_MATERIALS)) {
-            Collections.addAll(materialIds, Arrays.stream(rs.getString(COL_I_MATERIALS)
-                    .split(";"))
-                    .map(Integer::valueOf)
-                    .toArray(Integer[]::new));
+            inspection.getMaterials().add(material);
         }
-
-        inspection.setMaterialIds(materialIds);
 
         final Set<Integer> fileIds = new HashSet<>();
 

@@ -218,7 +218,7 @@
         let actions = [ { action: 'edit', permission: 'edit_activity_centers' }, { action: 'delete', permission: 'edit_activity_centers' }]
         let expand = [ 'country' ]
 
-        customDataTable = new CustomDataTable(columns, endpoint, actions, expand);
+        customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand);
         createDataTable('#dTable', customDataTable, locale);
     });
 

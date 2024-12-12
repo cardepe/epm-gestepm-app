@@ -1,6 +1,5 @@
 package com.epm.gestepm.model.shares.noprogrammed.dao.entity;
 
-import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareStateEnumDto;
 import lombok.Data;
 import lombok.Singular;
 
@@ -46,7 +45,7 @@ public class NoProgrammedShare implements Serializable {
   private Integer lastDiagnosis;
 
   @Singular
-  private Set<Integer> inspectionIds;
+  private List<Integer> inspectionIds;
 
   @Singular
   private Set<Integer> fileIds;

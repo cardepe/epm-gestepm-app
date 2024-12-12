@@ -503,7 +503,7 @@
 			<div class="modal-footer clearfix">
 				<div class="w-100">
 					<div class="float-left">
-						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 					</div>
 					<div class="float-right">
 						<button id="addMember" type="submit" class="btn btn-sm btn-success"><spring:message code="add" /></button>
@@ -542,7 +542,7 @@
 			<div class="modal-footer clearfix">
 				<div class="w-100">
 					<div class="float-left">
-						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 					</div>
 					<div class="float-right">
 						<button id="addBoss" type="submit" class="btn btn-sm btn-success"><spring:message code="add" /></button>
@@ -633,7 +633,7 @@
 			<div class="modal-footer clearfix">
 				<div class="w-100">
 					<div class="float-left">
-						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 					</div>
 					<div class="float-right">
 						<button id="addEquipment" type="submit" class="btn btn-sm btn-success"><spring:message code="add" /></button>
@@ -723,7 +723,7 @@
 			<div class="modal-footer clearfix">
 				<div class="w-100">
 					<div class="float-left">
-						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 					</div>
 					<div class="float-right">
 						<button id="editEquipment" type="submit" class="btn btn-sm btn-success"><spring:message code="edit" /></button>
@@ -781,7 +781,7 @@
 			<div class="modal-footer clearfix">
 				<div class="w-100">
 					<div class="float-left">
-						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 					</div>
 					<div class="float-right">
 						<button id="addMaterialRequired" type="submit" class="btn btn-sm btn-success"><spring:message code="add" /></button>
@@ -839,7 +839,7 @@
 			<div class="modal-footer clearfix">
 				<div class="w-100">
 					<div class="float-left">
-						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 					</div>
 					<div class="float-right">
 						<button id="editMaterialRequired" type="submit" class="btn btn-sm btn-success"><spring:message code="add" /></button>
@@ -888,7 +888,7 @@
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 					</div>
 				</div>
@@ -935,7 +935,7 @@
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 						<div class="float-right">
 							<button id="updateConstBtn" type="button" class="btn btn-sm btn-success"><spring:message code="save" /></button>
@@ -985,7 +985,7 @@
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 					</div>
 				</div>
@@ -1032,7 +1032,7 @@
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 						<div class="float-right">
 							<button id="updateProgBtn" type="button" class="btn btn-sm btn-success"><spring:message code="save" /></button>
@@ -1106,7 +1106,7 @@
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 					</div>
 				</div>
@@ -1180,7 +1180,7 @@
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 						<div class="float-right">
 							<button id="updateDispBtn" type="button" class="btn btn-sm btn-success"><spring:message code="save" /></button>
@@ -1232,7 +1232,7 @@
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 					</div>
 				</div>
@@ -1281,7 +1281,7 @@
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 						<div class="float-right">
 							<button id="updateWorkBtn" type="button" class="btn btn-sm btn-success" data-dismiss="modal"><spring:message code="update" /></button>
@@ -1324,7 +1324,7 @@
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 						<div class="float-right">
 							<button id="updateIntBtn" type="button" class="btn btn-sm btn-success" data-dismiss="modal"><spring:message code="update" /></button>
@@ -1365,7 +1365,7 @@
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 						<div class="float-right">
 							<button id="addDispBtn" type="button" class="btn btn-sm btn-success" data-dismiss="modal"><spring:message code="save" /></button>
@@ -1406,7 +1406,7 @@
 			<div class="modal-footer clearfix">
 				<div class="w-100">
 					<div class="float-left">
-						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 					</div>
 					<div class="float-right">
 						<button id="addDeclineExpenseBtn" type="button" class="btn btn-sm btn-success"><spring:message code="decline" /></button>

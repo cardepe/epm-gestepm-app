@@ -4,17 +4,23 @@ import com.epm.gestepm.lib.applocale.apimodel.service.AppLocaleService;
 import com.epm.gestepm.lib.controller.BaseController;
 import com.epm.gestepm.lib.controller.metadata.APIMetadata;
 import com.epm.gestepm.lib.controller.response.ResponseSuccessfulHelper;
+import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.creator.InspectionCreateDto;
 import com.epm.gestepm.modelapi.inspection.dto.deleter.InspectionDeleteDto;
 import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
 import com.epm.gestepm.modelapi.inspection.dto.finder.InspectionByIdFinderDto;
 import com.epm.gestepm.modelapi.inspection.dto.updater.InspectionUpdateDto;
+import com.epm.gestepm.modelapi.inspection.service.InspectionExportService;
 import com.epm.gestepm.modelapi.inspection.service.InspectionService;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
 import com.epm.gestepm.rest.common.CommonProviders;
 import com.epm.gestepm.rest.common.MetadataMapper;
 import com.epm.gestepm.rest.common.ResSuccessMapper;
@@ -29,6 +35,12 @@ import com.epm.gestepm.rest.inspection.response.ResponsesForInspectionList;
 import com.epm.gestepm.restapi.openapi.api.InspectionV1Api;
 import com.epm.gestepm.restapi.openapi.model.*;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSource;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,27 +61,42 @@ public class InspectionController extends BaseController implements InspectionV1
 
     private final InspectionService inspectionService;
 
+    private final InspectionExportService inspectionExportService;
+
+    private final LocaleProvider localeProvider;
+
+    private final NoProgrammedShareService noProgrammedShareService;
+
+    private final MessageSource messageSource;
+
     public InspectionController(final CommonProviders commonProviders, final ApplicationContext appCtx,
                                 final AppLocaleService appLocaleService, final ResponseSuccessfulHelper successHelper,
-                                final InspectionService inspectionService) {
+                                final InspectionService inspectionService, InspectionExportService inspectionExportService, LocaleProvider localeProvider, NoProgrammedShareService noProgrammedShareService, MessageSource messageSource) {
 
         super(commonProviders.localeProvider(), commonProviders.executionRequestProvider(),
                 commonProviders.executionTimeProvider(), commonProviders.restContextProvider(), appCtx, appLocaleService,
                 successHelper);
 
         this.inspectionService = inspectionService;
+        this.inspectionExportService = inspectionExportService;
+        this.localeProvider = localeProvider;
+        this.noProgrammedShareService = noProgrammedShareService;
+        this.messageSource = messageSource;
     }
 
     @Override
     @RequirePermits(value = PRMT_READ_I, action = "Get inspection list")
     @LogExecution(operation = OP_READ)
-    public ResponseEntity<ListInspectionsV1200Response> listInspectionsV1(final Integer shareId, final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit) {
-
+    public ResponseEntity<ListInspectionsV1200Response> listInspectionsV1(final Integer shareId, final List<String> meta,
+                                                                          final Boolean links, final Set<String> expand,
+                                                                          final Long offset, final Long limit, final String order,
+                                                                          final String orderBy) {
         final InspectionListRestRequest req = new InspectionListRestRequest(shareId, new ArrayList<>());
 
         this.setCommon(req, meta, links, expand);
         this.setDefaults(req);
         this.setPagination(req, limit, offset);
+        this.setOrder(req, order, orderBy);
 
         final InspectionFilterDto filterDto = getMapper(MapIToInspectionFilterDto.class).from(req);
         final Page<InspectionDto> page = this.inspectionService.list(filterDto, offset, limit);
@@ -129,10 +156,10 @@ public class InspectionController extends BaseController implements InspectionV1
         updateDto.setId(inspectionId);
         updateDto.setShareId(shareId);
 
-        final InspectionDto countryDto = this.inspectionService.update(updateDto);
+        final InspectionDto inspectionDto = this.inspectionService.update(updateDto);
 
         final APIMetadata metadata = this.getDefaultMetadata();
-        final Inspection data = getMapper(MapIToInspectionResponse.class).from(countryDto);
+        final Inspection data = getMapper(MapIToInspectionResponse.class).from(inspectionDto);
 
         final CreateInspectionV1200Response response = new CreateInspectionV1200Response();
         response.setMetadata(getMapper(MetadataMapper.class).from(metadata));
@@ -151,6 +178,33 @@ public class InspectionController extends BaseController implements InspectionV1
         this.inspectionService.delete(deleteDto);
 
         return this.success(getMapper(ResSuccessMapper.class)::from);
+    }
+
+    @Override
+    @RequirePermits(value = PRMT_READ_I, action = "Export inspection")
+    @LogExecution(operation = OP_READ)
+    public ResponseEntity<Resource> exportInspectionV1(final Integer shareId, final Integer inspectionId) {
+
+        final String language = this.localeProvider.getLocale().orElse("es");
+        final java.util.Locale locale = new java.util.Locale(language);
+
+        final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(shareId));
+        final InspectionDto inspection = this.inspectionService.findOrNotFound(new InspectionByIdFinderDto(inspectionId));
+
+        final byte[] pdf = this.inspectionExportService.generate(inspection);
+        final String dateFormat = "dd-MM-yyyy";
+        final Resource resource = new ByteArrayResource(pdf);
+        final String fileName = messageSource.getMessage("shares.no.programmed.pdf.name",
+                new Object[] {
+                        noProgrammedShare.getId() + "-" + inspection.getOrder(noProgrammedShare.getInspectionIds()),
+                        Utiles.transform(inspection.getStartDate(), dateFormat)
+                }, locale) + ".pdf";
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 }
 

@@ -75,6 +75,10 @@ sql:
     WHERE
       id = :attr_nps_id
 
+  qry-delete-nps: |
+    
+    DELETE FROM ${sch-gestepm}.intervention_shares WHERE id = :attr_nps_id
+
   filter-nps-by-params: |
 
     -- [AND

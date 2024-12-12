@@ -2,13 +2,16 @@ package com.epm.gestepm.modelapi.inspection.dto.filter;
 
 import com.epm.gestepm.lib.cache.CacheKeyBuilder;
 import com.epm.gestepm.lib.cache.UsableAsCacheKey;
+import com.epm.gestepm.lib.dto.OrderableDto;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
-public class InspectionFilterDto implements UsableAsCacheKey {
+@EqualsAndHashCode(callSuper = true)
+public class InspectionFilterDto extends OrderableDto implements UsableAsCacheKey {
 
   private List<Integer> ids;
 

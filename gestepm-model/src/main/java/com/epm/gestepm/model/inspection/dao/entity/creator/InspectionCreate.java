@@ -13,7 +13,6 @@ import static com.epm.gestepm.model.inspection.dao.constants.InspectionAttribute
 @Data
 public class InspectionCreate implements CollectableAttributes {
 
-    @NotNull
     private Integer userSigningId;
 
     @NotNull

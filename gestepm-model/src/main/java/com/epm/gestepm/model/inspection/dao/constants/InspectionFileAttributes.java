@@ -6,7 +6,7 @@ public abstract class InspectionFileAttributes {
 
   public static final String ATTR_IF_IDS = "attr_if_ids";
 
-  public static final String ATTR_IF_I_ID = "attr_if_i_id";
+  public static final String ATTR_IF_INSPECTION_ID = "attr_if_inspection_id";
 
   public static final String ATTR_IF_NAME = "attr_if_name";
 

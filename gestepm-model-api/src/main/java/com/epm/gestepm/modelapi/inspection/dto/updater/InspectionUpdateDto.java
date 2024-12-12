@@ -1,11 +1,14 @@
 package com.epm.gestepm.modelapi.inspection.dto.updater;
 
 import com.epm.gestepm.modelapi.inspection.dto.ActionEnumDto;
+import com.epm.gestepm.modelapi.inspection.dto.creator.InspectionFileCreateDto;
+import com.epm.gestepm.modelapi.inspection.dto.creator.MaterialCreateDto;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Data
 public class InspectionUpdateDto {
@@ -15,21 +18,16 @@ public class InspectionUpdateDto {
 
     private Integer userSigningId;
 
-    @NotNull
     private Integer shareId;
 
-    @NotNull
     private ActionEnumDto action;
 
-    @NotNull
     private OffsetDateTime startDate;
 
     private OffsetDateTime endDate;
 
-    @NotNull
     private String description;
 
-    @NotNull
     private Integer firstTechnicalId;
 
     private Integer secondTechnicalId;
@@ -40,14 +38,16 @@ public class InspectionUpdateDto {
 
     private String clientName;
 
-    private List<Integer> materialIds;
+    private List<MaterialCreateDto> materials;
 
-    private String materialsFile;
-
-    private String materialsFileExtension;
+    private InspectionFileCreateDto materialsFile;
 
     private Integer equipmentHours;
 
     private Integer topicId;
+
+    private Set<InspectionFileCreateDto> files;
+
+    private Boolean notify;
 
 }

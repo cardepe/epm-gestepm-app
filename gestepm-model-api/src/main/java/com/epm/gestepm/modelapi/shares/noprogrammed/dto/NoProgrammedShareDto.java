@@ -6,6 +6,7 @@ import lombok.Singular;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -44,7 +45,7 @@ public class NoProgrammedShareDto implements Serializable {
     private Integer lastDiagnosis;
 
     @Singular
-    private Set<Integer> inspectionIds;
+    private List<Integer> inspectionIds;
 
     @Singular
     private Set<Integer> fileIds;

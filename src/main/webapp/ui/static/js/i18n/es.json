@@ -37,8 +37,27 @@
         "publictransport": "Transporte público",
         "vehicle": "Vehículo"
     },
+    "inspections": {
+        "title": "Revisión número {0}",
+        "intervention": "Intervención",
+        "diagnosis": "Diagnóstico",
+        "following": "Seguimiento",
+        "create": {
+            "success": "Revisión con id {0} creada con éxito."
+        },
+        "update": {
+            "success": "Revisión con id {0} actualizada con éxito."
+        },
+        "delete" : {
+            "alert": "¿Está seguro que quiere borrar la revisión {0}?",
+            "success": "Revisión nº {0} eliminada con éxito."
+        }
+    },
     "shares": {
         "noprogrammed": {
+            "delete": {
+                "success": "Parte de intervención no programado nº {0} eliminado con éxito."
+            },
             "title": "Parte de intervención no programado nº {0}",
             "update": {
                 "success": "Se ha actualizado el parte no programado con éxito."
@@ -48,7 +67,21 @@
                     "success": "Se ha actualizado la intervención con éxito."
                 }
             },
+            "files": {
+                "empty": "No se adjuntaron archivos para este parte."
+            },
             "postForumUrl": "Puede ver la entrada en el foro clicando aquí."
         }
+    },
+    "actions": {
+        "label": "Acciones",
+        "view": "Detalle",
+        "edit": "Editar",
+        "delete": "Eliminar",
+        "pdfFile": "Fichero PDF"
+    },
+    "commons": {
+        "yes": "Sí",
+        "no": "No"
     }
 }

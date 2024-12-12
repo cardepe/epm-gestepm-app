@@ -292,7 +292,7 @@
             }
         ]
 
-        customDataTable = new CustomDataTable(columns, endpoint, actions, expand, null, columnsDef);
+        customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, null, null, columnsDef);
         createDataTable('#dTable', customDataTable, locale);
     });
 

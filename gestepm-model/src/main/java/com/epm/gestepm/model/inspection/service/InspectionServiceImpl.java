@@ -1,5 +1,7 @@
 package com.epm.gestepm.model.inspection.service;
 
+import com.epm.gestepm.forum.model.api.dto.Topic;
+import com.epm.gestepm.forum.model.api.service.TopicService;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
@@ -12,6 +14,8 @@ import com.epm.gestepm.model.inspection.dao.entity.filter.InspectionFilter;
 import com.epm.gestepm.model.inspection.dao.entity.finder.InspectionByIdFinder;
 import com.epm.gestepm.model.inspection.dao.entity.updater.InspectionUpdate;
 import com.epm.gestepm.model.inspection.service.mapper.*;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.creator.InspectionCreateDto;
 import com.epm.gestepm.modelapi.inspection.dto.deleter.InspectionDeleteDto;
@@ -20,10 +24,23 @@ import com.epm.gestepm.modelapi.inspection.dto.finder.InspectionByIdFinderDto;
 import com.epm.gestepm.modelapi.inspection.dto.updater.InspectionUpdateDto;
 import com.epm.gestepm.modelapi.inspection.exception.InspectionNotFoundException;
 import com.epm.gestepm.modelapi.inspection.service.InspectionService;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareStateEnumDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.NoProgrammedShareUpdateDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareForbiddenException;
+import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
+import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.user.exception.UserByIdNotFoundException;
+import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
+import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -39,10 +56,28 @@ import static org.mapstruct.factory.Mappers.getMapper;
 @EnableExecutionLog(layerMarker = SERVICE)
 public class InspectionServiceImpl implements InspectionService {
 
+    private final HttpServletRequest request;
+
     private final InspectionDao inspectionDao;
 
-    public InspectionServiceImpl(InspectionDao inspectionDao) {
+    private final NoProgrammedShareService noProgrammedShareService;
+
+    private final SMTPService smtpService;
+
+    private final TopicService topicService;
+
+    private final UserService userService;
+
+    private final UserSigningService userSigningService;
+
+    public InspectionServiceImpl(HttpServletRequest request, InspectionDao inspectionDao, NoProgrammedShareService noProgrammedShareService, SMTPService smtpService, TopicService topicService, UserService userService, UserSigningService userSigningService) {
+        this.request = request;
         this.inspectionDao = inspectionDao;
+        this.noProgrammedShareService = noProgrammedShareService;
+        this.smtpService = smtpService;
+        this.topicService = topicService;
+        this.userService = userService;
+        this.userSigningService = userSigningService;
     }
 
     @Override
@@ -97,16 +132,24 @@ public class InspectionServiceImpl implements InspectionService {
             msgOut = "New country inspection OK",
             errorMsg = "Failed to create new inspection")
     public InspectionDto create(InspectionCreateDto createDto) {
-        
+
+        this.checker(createDto.getFirstTechnicalId(), createDto);
+
+        final NoProgrammedShareDto noProgrammedShare =
+                this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(createDto.getShareId()));
+
         final InspectionCreate create = getMapper(MapIToInspectionCreate.class).from(createDto);
         create.setStartDate(OffsetDateTime.now());
 
         final Inspection result = this.inspectionDao.create(create);
 
+        this.updateNoProgrammedShare(noProgrammedShare.getId(), NoProgrammedShareStateEnumDto.IN_PROGRESS);
+
         return getMapper(MapIToInspectionDto.class).from(result);
     }
 
     @Override
+    @Transactional
     @RequirePermits(value = PRMT_EDIT_I, action = "Update inspection")
     @LogExecution(operation = OP_UPDATE,
             debugOut = true,
@@ -114,16 +157,26 @@ public class InspectionServiceImpl implements InspectionService {
             msgOut = "Intervention updated OK",
             errorMsg = "Failed to update inspection")
     public InspectionDto update(InspectionUpdateDto updateDto) {
+        this.checker(updateDto.getFirstTechnicalId(), updateDto);
 
-        final InspectionByIdFinderDto finderDto = new InspectionByIdFinderDto();
-        finderDto.setId(updateDto.getId());
+        final InspectionDto inspection = findOrNotFound(new InspectionByIdFinderDto(updateDto.getId()));
+        final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(
+                new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
 
-        final InspectionDto InspectionDto = findOrNotFound(finderDto);
+        this.createForumComment(updateDto, noProgrammedShare);
+
+        if (updateDto.getEndDate() == null) {
+            updateDto.setEndDate(OffsetDateTime.now());
+        }
 
         final InspectionUpdate update = getMapper(MapIToInspectionUpdate.class).from(updateDto,
-                getMapper(MapIToInspectionUpdate.class).from(InspectionDto));
+                getMapper(MapIToInspectionUpdate.class).from(inspection));
 
         final Inspection updated = this.inspectionDao.update(update);
+
+        if (updateDto.getNotify()) {
+
+        }
 
         return getMapper(MapIToInspectionDto.class).from(updated);
     }
@@ -146,4 +199,77 @@ public class InspectionServiceImpl implements InspectionService {
 
         this.inspectionDao.delete(delete);
     }
+
+    private <T> void checker(final Integer userId, final T dto) {
+        final Supplier<RuntimeException> userNotFound = () -> new UserByIdNotFoundException(userId);
+        final User user = Optional.ofNullable(this.userService.getUserById(userId.longValue()))
+                .orElseThrow(userNotFound);
+
+        final UserSigning userSigning = this.userSigningService.getByUserIdAndEndDate(userId.longValue(), null);
+
+        if (userSigning == null && !Utiles.havePrivileges(user.getSubRole().getRol())) {
+            throw new NoProgrammedShareForbiddenException(userId, user.getSubRole().getRol());
+        }
+
+        if (userSigning != null) {
+            if (dto instanceof InspectionCreateDto) {
+                ((InspectionCreateDto) dto).setUserSigningId(userId);
+            } else if (dto instanceof InspectionUpdateDto) {
+                ((InspectionUpdateDto) dto).setUserSigningId(userId);
+                ((InspectionUpdateDto) dto).setFirstTechnicalId(null);
+            }
+        }
+    }
+
+    private void createForumComment(InspectionUpdateDto update, NoProgrammedShareDto noProgrammedShare) {
+
+
+        if (noProgrammedShare.getTopicId() != null) {
+            final StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(update.getDescription().replace("\n", "<br/>"));
+
+            if (CollectionUtils.isEmpty(update.getMaterials())) {
+                stringBuilder.append("<br/><br/>Materiales:<br/> <LIST><s>[list]</s>");
+
+                update.getMaterials().forEach(material -> {
+                    stringBuilder.append("<LI><s>[*]</s>").append(material.getDescription()).append("/").append(material.getUnits()).append(" uds (ref: ").append(material.getReference()).append(")</LI>");
+                });
+
+                stringBuilder.append("<e>[/list]</e></LIST>");
+            }
+
+            // TODO: add materials file, when refactor no URL enabled. should install documental gestor before...
+
+            final String title = "Re: " + noProgrammedShare.getForumTitle();
+            final String content = stringBuilder.toString();
+            final String ip = request.getLocalAddr();
+
+            final User user = this.userService.getUserById(Long.valueOf(update.getFirstTechnicalId()));
+
+            // TODO: same with files, now null.
+
+            final Topic topic = this.topicService.create(title, content, noProgrammedShare.getTopicId().longValue(), ip,
+                    user.getUsername(), null);
+
+            update.setTopicId(topic.getId().intValue());
+        }
+    }
+
+    private void updateNoProgrammedShare(final Integer id, final NoProgrammedShareStateEnumDto state) {
+        final NoProgrammedShareUpdateDto noProgrammedShareUpdateDto = new NoProgrammedShareUpdateDto();
+        noProgrammedShareUpdateDto.setId(id);
+        noProgrammedShareUpdateDto.setState(state);
+
+        this.noProgrammedShareService.update(noProgrammedShareUpdateDto);
+    }
+
+    /*private void sendMail(final InspectionUpdateDto inspection, final User user, final Project project) {
+        this.smtpService.sendOpenInterventionShareMail(user.getEmail(), inspection, user, project, request.getLocale());
+
+        if (project.getResponsables() != null && !project.getResponsables().isEmpty()) {
+            for (User responsable : project.getResponsables()) {
+                smtpService.sendOpenInterventionShareMail(responsable.getEmail(), share, user, project, request.getLocale());
+            }
+        }
+    }*/
 }

@@ -16,6 +16,10 @@ function getI18n(locale) {
 	return messages;
 }
 
+function parseDate(date, format) {
+	return moment(date).format(format)
+}
+
 function parseStatus(data) {
 
 	if (data === 'Pendiente' || data === 'Approbation en attente') {

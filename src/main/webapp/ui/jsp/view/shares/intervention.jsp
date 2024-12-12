@@ -249,7 +249,7 @@ em[disabled] {
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 					</div>
 				</div>
@@ -280,7 +280,7 @@ em[disabled] {
 			<div class="modal-footer clearfix">
 				<div class="w-100">
 					<div class="float-left">
-						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 					</div>
 					
 					<div class="float-right">
@@ -370,7 +370,7 @@ em[disabled] {
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 						<div class="float-right">
 							<button id="createConstBtn" type="button" class="btn btn-sm btn-success"><spring:message code="finish" /></button>
@@ -485,7 +485,7 @@ em[disabled] {
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 						<div class="float-right">
 							<button id="createNoPrShareBtn" type="button" class="btn btn-sm btn-info"><spring:message code="shares.intervention.create.nopr.title" /></button>
@@ -575,7 +575,7 @@ em[disabled] {
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 						<div class="float-right">
 							<button id="createWorkBtn" type="button" class="btn btn-sm btn-success"><spring:message code="finish" /></button>
@@ -1271,24 +1271,30 @@ em[disabled] {
 			if (shareType === 'cs') {
 				restUrl = '/shares/intervention/construction/delete/' + shareId;
 			} else if (shareType === 'is') {
-				restUrl = '/shares/intervention/no-programmed/delete/' + shareId;
+				axios.delete('/v1/shares/no-programmed/' + shareId).then(() => {
+					$('#dTable').DataTable().ajax.reload();
+					showNotify(messages.shares.noprogrammed.delete.success.replace('{0}', shareId));
+				}).catch(error => showNotify(error, 'danger'))
+						.finally(() => hideLoading());
 			} else if (shareType === 'ips') {
 				restUrl = '/shares/intervention/programmed/delete/' + shareId;
 			} else if (shareType === 'ws') {
 				restUrl = '/shares/work/' + shareId;
 			}			
 
-			$.ajax({
-				type: "DELETE",
-				url: restUrl,
-				success: function(msg) {
-					$('#dTable').DataTable().ajax.reload();
-					showNotify(msg, 'success');
-				},
-				error: function(e) {
-					showNotify(e.responseText, 'danger');
-				}
-			});
+			if (restUrl) {
+				$.ajax({
+					type: "DELETE",
+					url: restUrl,
+					success: function (msg) {
+						$('#dTable').DataTable().ajax.reload();
+						showNotify(msg, 'success');
+					},
+					error: function (e) {
+						showNotify(e.responseText, 'danger');
+					}
+				});
+			}
 		}
 	}
 

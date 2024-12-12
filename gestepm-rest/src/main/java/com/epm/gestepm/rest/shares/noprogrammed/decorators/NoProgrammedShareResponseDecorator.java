@@ -6,12 +6,18 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareFileByIdFinderDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareFileService;
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
 import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.rest.shares.noprogrammed.mappers.MapNPSFToFileResponse;
 import com.epm.gestepm.rest.shares.noprogrammed.request.NoProgrammedShareFindRestRequest;
 import com.epm.gestepm.restapi.openapi.model.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DELEGATOR;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_PROCESS;
@@ -37,15 +43,18 @@ public class NoProgrammedShareResponseDecorator extends BaseResponseDataDecorato
 
     private final FamilyService familyService;
 
+    private final NoProgrammedShareFileService noProgrammedShareFileService;
+
     private final ProjectService projectService;
 
     private final SubFamilyService subFamilyService;
 
     private final UserService userService;
 
-    public NoProgrammedShareResponseDecorator(ApplicationContext applicationContext, FamilyService familyService, ProjectService projectService, SubFamilyService subFamilyService, UserService userService) {
+    public NoProgrammedShareResponseDecorator(ApplicationContext applicationContext, FamilyService familyService, NoProgrammedShareFileService noProgrammedShareFileService, ProjectService projectService, SubFamilyService subFamilyService, UserService userService) {
         super(applicationContext);
         this.familyService = familyService;
+        this.noProgrammedShareFileService = noProgrammedShareFileService;
         this.projectService = projectService;
         this.subFamilyService = subFamilyService;
         this.userService = userService;
@@ -124,6 +133,19 @@ public class NoProgrammedShareResponseDecorator extends BaseResponseDataDecorato
                     .name(request.getLocale().equals("es") ? subFamilyDto.getNameES() : subFamilyDto.getNameFR());
 
             data.setSubFamily(response);
+        }
+
+        if (request.hasExpand(NPS_NPSF_EXPAND) && data.getFiles() != null && !data.getFiles().isEmpty()) {
+
+            final Set<ShareFile> shareFiles = data.getFiles();
+
+            final Set<ShareFile> response = shareFiles.stream()
+                    .map(shareFile -> new NoProgrammedShareFileByIdFinderDto(shareFile.getId()))
+                    .map(this.noProgrammedShareFileService::findOrNotFound)
+                    .map(noProgrammedShareFile -> getMapper(MapNPSFToFileResponse.class).from(noProgrammedShareFile))
+                    .collect(Collectors.toSet());
+
+            data.setFiles(response);
         }
     }
 }

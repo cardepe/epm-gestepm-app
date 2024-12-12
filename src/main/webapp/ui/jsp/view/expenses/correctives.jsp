@@ -123,7 +123,7 @@
 					<div class="row">
 						<div class="col">
 							<div class="form-group">
-								<label for="createCostInput" class="col-form-label"><spring:message code="expense.corrective.create.modal.cost" /></label> 
+								<label for="createCostInput" class="col-form-label"><spring:message code="expense.corrective.create.modal.cost" /></label>
 								<input id="createCostInput" name="cost" type="number" class="form-control" required>
 							</div>
 						</div>
@@ -175,7 +175,7 @@
 					<div class="row">
 						<div class="col">
 							<div class="form-group">
-								<label for="editCostInput" class="col-form-label"><spring:message code="expense.corrective.create.modal.cost" /></label> 
+								<label for="editCostInput" class="col-form-label"><spring:message code="expense.corrective.create.modal.cost" /></label>
 								<input id="editCostInput" name="cost" type="number" class="form-control" required>
 							</div>
 						</div>

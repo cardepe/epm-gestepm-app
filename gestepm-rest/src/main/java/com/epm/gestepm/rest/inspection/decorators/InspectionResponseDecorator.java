@@ -4,24 +4,33 @@ import com.epm.gestepm.lib.controller.RestRequest;
 import com.epm.gestepm.lib.controller.decorator.BaseResponseDataDecorator;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
+import com.epm.gestepm.modelapi.inspection.dto.finder.InspectionFileByIdFinderDto;
+import com.epm.gestepm.modelapi.inspection.service.InspectionFileService;
+import com.epm.gestepm.rest.inspection.mappers.MapIFToFileResponse;
 import com.epm.gestepm.rest.inspection.request.InspectionFindRestRequest;
 import com.epm.gestepm.restapi.openapi.model.Inspection;
+import com.epm.gestepm.restapi.openapi.model.ShareFile;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DELEGATOR;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_PROCESS;
+import static org.mapstruct.factory.Mappers.getMapper;
 
 @Component("inspectionResponseDecorator")
 @EnableExecutionLog(layerMarker = DELEGATOR)
 public class InspectionResponseDecorator extends BaseResponseDataDecorator<Inspection> {
 
-    public static final String I_MATERIALS_EXPAND = "materials";
-
     public static final String I_FILES_EXPAND = "files";
+
+    private final InspectionFileService inspectionFileService;
     
-    public InspectionResponseDecorator(ApplicationContext applicationContext) {
+    public InspectionResponseDecorator(ApplicationContext applicationContext, InspectionFileService inspectionFileService) {
         super(applicationContext);
+        this.inspectionFileService = inspectionFileService;
     }
 
     @Override
@@ -37,29 +46,16 @@ public class InspectionResponseDecorator extends BaseResponseDataDecorator<Inspe
             selfReq.commonValuesFrom(request);
         }
 
-        /*if (request.hasExpand(I_MATERIALS_EXPAND) && data.getUser() != null) {
+        if (request.hasExpand(I_FILES_EXPAND) && data.getFiles() != null && !data.getFiles().isEmpty()) {
+            final Set<ShareFile> inspectionFiles = data.getFiles();
 
-            final User user = data.getUser();
-            final Integer id = user.getId();
+            final Set<ShareFile> response = inspectionFiles.stream()
+                    .map(inspectionFile -> new InspectionFileByIdFinderDto(inspectionFile.getId()))
+                    .map(this.inspectionFileService::findOrNotFound)
+                    .map(inspectionFile -> getMapper(MapIFToFileResponse.class).from(inspectionFile))
+                    .collect(Collectors.toSet());
 
-            final com.epm.gestepm.modelapi.user.dto.User userDto = this.userService.getUserById(Long.valueOf(id));
-            final User response = new User().id(id).name(userDto.getName()).surnames(userDto.getSurnames());
-
-            data.setUser(response);
+            data.setFiles(response);
         }
-
-        if (request.hasExpand(I_FILES_EXPAND) && data.() != null) {
-
-            final SubFamily subFamily = data.getSubFamily();
-            final Integer id = subFamily.getId();
-
-            // FIXME
-            final com.epm.gestepm.modelapi.subfamily.dto.SubFamily subFamilyDto = this.subFamilyService.getById(Long.valueOf(id));
-            final SubFamily response = new SubFamily()
-                    .id(id)
-                    .name(request.getLocale().equals("es") ? subFamilyDto.getNameES() : subFamilyDto.getNameFR());
-
-            data.setSubFamily(response);
-        }*/
     }
 }

@@ -122,6 +122,8 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
       tags:
         - inspection-v1
     post:
@@ -200,6 +202,25 @@ paths:
       tags:
         - inspection-v1
       description: delete-inspection-v1
+  '/v1/shares/no-programmed/{shareId}/inspections/{inspectionId}/export':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+      - $ref: '#/components/parameters/Inspection-Id'
+    get:
+      summary: V1 - Export inspection
+      tags:
+        - inspection-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/InspectionExport'
+        '404':
+          description: inspection-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: export-inspection-v1
+      description: export-inspection-v1
   /v1/users:
     get:
       summary: V1 - List users
@@ -322,18 +343,16 @@ components:
           x-stoplight:
             id: y5zosfb602nzz
         materials:
-          type: array
           x-stoplight:
             id: 96cv7joi0oiwc
+          type: array
           items:
-            x-stoplight:
-              id: a9c437a5hksx3
-            type: integer
+            $ref: '#/components/schemas/Material'
         materialsFile:
           type: string
           x-stoplight:
             id: 8lfzk9pa7wyrg
-        materialsFileExt:
+        materialsFileExtension:
           type: string
           x-stoplight:
             id: 790fxpi66ikvh
@@ -358,6 +377,23 @@ components:
         - action
         - startDate
         - firstTechnical
+    InspectionExport:
+      title: InspectionExport
+      x-stoplight:
+        id: tasr45536jkpv
+      type: object
+      properties:
+        fileName:
+          type: string
+          x-stoplight:
+            id: e1jgjm7ps0rai
+        content:
+          type: string
+          x-stoplight:
+            id: f9995ys9avvcv
+      required:
+        - fileName
+        - content
     NoProgrammedShare:
       title: NoProgrammedShare
       x-stoplight:
@@ -453,7 +489,7 @@ components:
       properties:
         id:
           type: integer
-        fileName:
+        name:
           type: string
           x-stoplight:
             id: oe2w9nxlwwwkk
@@ -461,10 +497,9 @@ components:
           type: string
           x-stoplight:
             id: prsxmvb3f9spa
-          format: byte
       required:
         - id
-        - fileName
+        - name
         - content
     SubFamily:
       title: SubFamily
@@ -512,6 +547,26 @@ components:
       properties:
         id:
           type: integer
+    Material:
+      title: Material
+      x-stoplight:
+        id: 9erl59kl8o8oo
+      type: object
+      properties:
+        id:
+          type: integer
+        description:
+          type: string
+          x-stoplight:
+            id: rfh6ew7z1jlea
+        units:
+          type: integer
+          x-stoplight:
+            id: u4cp15j0fz8lx
+        reference:
+          type: string
+          x-stoplight:
+            id: 7lqm8m6y0f4ih
   securitySchemes:
     bearerAuth:
       type: http
@@ -579,6 +634,13 @@ components:
                 $ref: ../../base-api-spec.yaml#/components/schemas/Meta
               data:
                 $ref: '#/components/schemas/Inspection'
+    InspectionExport:
+      description: Example response
+      content:
+        application/octet-stream:
+          schema:
+            type: string
+            format: binary
   requestBodies:
     CreateNoProgrammedShare:
       content:
@@ -593,10 +655,6 @@ components:
               projectId:
                 x-stoplight:
                   id: 2juj0v781js7f
-                type: integer
-              userSigningId:
-                x-stoplight:
-                  id: n6dwe4xx9tnre
                 type: integer
             required:
               - userId
@@ -659,10 +717,6 @@ components:
           schema:
             type: object
             properties:
-              userSigningId:
-                type: integer
-                x-stoplight:
-                  id: g69xyki5xv9nf
               firstTechnicalId:
                 type: integer
                 x-stoplight:
@@ -688,14 +742,6 @@ components:
           schema:
             type: object
             properties:
-              userSigningId:
-                type: integer
-                x-stoplight:
-                  id: t10n2ylj4wpp9
-              shareId:
-                type: integer
-                x-stoplight:
-                  id: 7698jnio7hx4a
               action:
                 type: string
                 x-stoplight:
@@ -704,16 +750,6 @@ components:
                   - INTERVENTION
                   - DIAGNOSIS
                   - FOLLOWING
-              startDate:
-                type: string
-                x-stoplight:
-                  id: hq0cj136wuhz8
-                format: date-time
-              endDate:
-                type: string
-                x-stoplight:
-                  id: fvu31rjn1sxul
-                format: date-time
               description:
                 type: string
                 x-stoplight:
@@ -738,30 +774,29 @@ components:
                 type: string
                 x-stoplight:
                   id: 0c6m3cyog2nhk
-              materialIds:
+              materials:
                 type: array
                 x-stoplight:
                   id: begtcvhk3jc1o
                 items:
-                  x-stoplight:
-                    id: t9ngw7e3zyz5c
-                  type: integer
-              materialFile:
-                type: string
+                  $ref: '#/components/schemas/Material'
+              materialsFile:
+                type: object
                 x-stoplight:
                   id: 52so0d165nfib
-              materialFileExtension:
-                type: string
-                x-stoplight:
-                  id: rgc09zq7wbb1n
+                properties:
+                  name:
+                    type: string
+                    x-stoplight:
+                      id: 34xgcj290t9pz
+                  content:
+                    type: string
+                    x-stoplight:
+                      id: 34eu2yg71stbp
               equipmentHours:
                 type: integer
                 x-stoplight:
                   id: f68utayhplewm
-              topicId:
-                type: integer
-                x-stoplight:
-                  id: wpcby5fkmiyh1
               files:
                 type: array
                 x-stoplight:
@@ -779,6 +814,10 @@ components:
                       type: string
                       x-stoplight:
                         id: krfqwi7lui6wg
+              notify:
+                type: boolean
+                x-stoplight:
+                  id: c5vq4d1j24aah
   parameters:
     Share-Id:
       name: shareId

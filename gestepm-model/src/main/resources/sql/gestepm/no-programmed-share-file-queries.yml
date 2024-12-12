@@ -1,5 +1,18 @@
 sql:
 
+  qry-list-of-npsf: |
+    
+    SELECT
+      npsf.id AS id_pagination,
+      npsf.id AS no_programmed_share_file_id,
+      npsf.share_id,
+      npsf.name,
+      npsf.content,
+      npsf.ext
+    FROM ${sch-gestepm}.intervention_share_files npsf
+    
+    #whereToken #filter
+
   qry-create-npsf: |
     
     INSERT INTO ${sch-gestepm}.intervention_share_files (
@@ -14,3 +27,28 @@ sql:
       :attr_npsf_ext,
       :attr_npsf_content
     )
+
+  filter-npsf-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-npsf-ids}
+      -- ${sql.predicate-for-npsf-share-id}
+    -- AND]
+
+  filter-npsf-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-npsf-id}
+    -- AND]
+
+  predicate-for-npsf-id: |
+
+    npsf.id = :attr_npsf_id
+
+  predicate-for-npsf-ids: |
+
+    npsf.id IN (:attr_npsf_ids)
+
+  predicate-for-npsf-share-id: |
+
+    npsf.intervention_id = :attr_npsf_share_id

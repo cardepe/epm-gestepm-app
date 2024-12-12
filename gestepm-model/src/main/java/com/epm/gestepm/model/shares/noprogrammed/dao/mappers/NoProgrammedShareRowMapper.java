@@ -7,7 +7,9 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static com.epm.gestepm.lib.jdbc.utils.ResultSetMappingUtils.*;
@@ -63,7 +65,7 @@ public class NoProgrammedShareRowMapper implements RowMapper<NoProgrammedShare> 
     noProgrammedShare.setState(NoProgrammedShareStateEnum.fromValue(rs.getInt(COL_NPS_STATE)));
     noProgrammedShare.setLastDiagnosis(rs.getInt(COL_NPS_LAST_DIAGNOSIS));
 
-    final Set<Integer> inspectionIds = new HashSet<>();
+    final List<Integer> inspectionIds = new ArrayList<>();
 
     if (hasValue(rs, COL_NPS_INTERVENTION_ID)) {
       inspectionIds.add(rs.getInt(COL_NPS_INTERVENTION_ID));

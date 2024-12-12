@@ -6,6 +6,7 @@ import lombok.Singular;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -27,7 +28,6 @@ public class Inspection implements Serializable {
 
   private OffsetDateTime endDate;
 
-  @NotNull
   private String description;
 
   @NotNull
@@ -41,7 +41,7 @@ public class Inspection implements Serializable {
 
   private String clientName;
 
-  private Set<Integer> materialIds;
+  private Set<Material> materials = new HashSet<>();
 
   private String materialsFile;
 

@@ -19,6 +19,7 @@ import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
 import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
 import com.epm.gestepm.modelapi.project.exception.ProjectIsNotStationException;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
@@ -27,12 +28,16 @@ import com.epm.gestepm.modelapi.shares.noprogrammed.dto.deleter.NoProgrammedShar
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.filter.NoProgrammedShareFilterDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.NoProgrammedShareUpdateDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareForbiddenException;
 import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareNotFoundException;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
 import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.user.exception.UserByIdNotFoundException;
 import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
+import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
 import com.itextpdf.xmp.impl.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.mock.web.MockMultipartFile;
@@ -74,7 +79,9 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
 
     private final UserService userService;
 
-    public NoProgrammedShareServiceImpl(FamilyService familyService, HttpServletRequest request, NoProgrammedShareDao noProgrammedShareDao, ProjectService projectService, SMTPService smtpService, SubFamilyService subFamilyService, TopicService topicService, UserService userService) {
+    private final UserSigningService userSigningService;
+
+    public NoProgrammedShareServiceImpl(FamilyService familyService, HttpServletRequest request, NoProgrammedShareDao noProgrammedShareDao, ProjectService projectService, SMTPService smtpService, SubFamilyService subFamilyService, TopicService topicService, UserService userService, UserSigningService userSigningService) {
         this.familyService = familyService;
         this.request = request;
         this.noProgrammedShareDao = noProgrammedShareDao;
@@ -83,6 +90,7 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
         this.subFamilyService = subFamilyService;
         this.topicService = topicService;
         this.userService = userService;
+        this.userSigningService = userSigningService;
     }
 
     @Override
@@ -134,19 +142,10 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
     @LogExecution(operation = OP_CREATE,
             debugOut = true,
             msgIn = "Creating new no programmed share",
-            msgOut = "New country no programmed share OK",
+            msgOut = "New no programmed share created OK",
             errorMsg = "Failed to create new no programmed share")
     public NoProgrammedShareDto create(NoProgrammedShareCreateDto createDto) {
-        // TODO: check if userId exists
-        // TODO: check if projectId exists
-        // TODO: check if user can create a share in this project
-        // TODO: check userSigning and privileges ??
-
-        final Project projectDto = this.projectService.getProjectById(Long.valueOf(createDto.getProjectId()));
-
-        if (projectDto.getStation() != 1) {
-            throw new ProjectIsNotStationException(projectDto.getId().intValue());
-        }
+        this.checker(createDto.getUserId(), createDto.getProjectId(), createDto);
 
         final NoProgrammedShareCreate create = getMapper(MapNPSToNoProgrammedShareCreate.class).from(createDto);
         create.setStartDate(OffsetDateTime.now());
@@ -164,9 +163,9 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
             msgOut = "No programmed share updated OK",
             errorMsg = "Failed to update no programmed share")
     public NoProgrammedShareDto update(NoProgrammedShareUpdateDto updateDto) {
+        this.checker(updateDto.getUserId(), updateDto.getProjectId(), updateDto);
 
-        final NoProgrammedShareByIdFinderDto finderDto = new NoProgrammedShareByIdFinderDto();
-        finderDto.setId(updateDto.getId());
+        final NoProgrammedShareByIdFinderDto finderDto = new NoProgrammedShareByIdFinderDto(updateDto.getId());
 
         final NoProgrammedShareDto noProgrammedShareDto = findOrNotFound(finderDto);
 
@@ -189,14 +188,41 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
             errorMsg = "Failed to delete no programmed share")
     public void delete(NoProgrammedShareDeleteDto deleteDto) {
 
-        final NoProgrammedShareByIdFinderDto finderDto = new NoProgrammedShareByIdFinderDto();
-        finderDto.setId(deleteDto.getId());
+        final NoProgrammedShareByIdFinderDto finderDto = new NoProgrammedShareByIdFinderDto(deleteDto.getId());
 
         findOrNotFound(finderDto);
 
         final NoProgrammedShareDelete delete = getMapper(MapNPSToNoProgrammedShareDelete.class).from(deleteDto);
 
         this.noProgrammedShareDao.delete(delete);
+    }
+
+    private <T> void checker(final Integer userId, final Integer projectId, final T dto) {
+        final Supplier<RuntimeException> userNotFound = () -> new UserByIdNotFoundException(userId);
+        final User user = Optional.ofNullable(this.userService.getUserById(userId.longValue()))
+                .orElseThrow(userNotFound);
+
+        final UserSigning userSigning = this.userSigningService.getByUserIdAndEndDate(userId.longValue(), null);
+
+        if (userSigning == null && !Utiles.havePrivileges(user.getSubRole().getRol())) {
+            throw new NoProgrammedShareForbiddenException(userId, user.getSubRole().getRol());
+        }
+
+        if (userSigning != null) {
+            if (dto instanceof NoProgrammedShareCreateDto) {
+                ((NoProgrammedShareCreateDto) dto).setUserSigningId(userId);
+            } else if (dto instanceof NoProgrammedShareUpdateDto) {
+                ((NoProgrammedShareUpdateDto) dto).setUserSigningId(userId);
+            }
+        }
+
+        final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(projectId);
+        final Project project = Optional.ofNullable(this.projectService.getProjectById(projectId.longValue()))
+                .orElseThrow(projectNotFound);
+
+        if (project.getStation() != 1) {
+            throw new ProjectIsNotStationException(project.getId().intValue());
+        }
     }
 
     private void createForumEntryAndUpdate(NoProgrammedShareUpdate update) {

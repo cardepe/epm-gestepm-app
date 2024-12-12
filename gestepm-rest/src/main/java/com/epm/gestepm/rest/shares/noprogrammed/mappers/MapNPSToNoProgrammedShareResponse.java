@@ -26,7 +26,7 @@ public interface MapNPSToNoProgrammedShareResponse {
   List<NoProgrammedShare> from(Page<NoProgrammedShareDto> list);
 
   @Named("mapInspections")
-  static List<Inspection> mapInspections(final Set<Integer> inspectionIds) {
+  static List<Inspection> mapInspections(final List<Integer> inspectionIds) {
 
     return inspectionIds.stream().map(id -> {
 

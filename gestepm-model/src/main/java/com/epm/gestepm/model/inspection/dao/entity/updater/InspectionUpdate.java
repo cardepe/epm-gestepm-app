@@ -2,14 +2,17 @@ package com.epm.gestepm.model.inspection.dao.entity.updater;
 
 import com.epm.gestepm.lib.entity.AttributeMap;
 import com.epm.gestepm.lib.entity.CollectableAttributes;
+import com.epm.gestepm.lib.file.FileUtils;
 import com.epm.gestepm.model.inspection.dao.constants.InspectionAttributes;
 import com.epm.gestepm.model.inspection.dao.entity.ActionEnum;
-import com.epm.gestepm.model.shares.noprogrammed.dao.entity.updater.ShareFileUpdate;
+import com.epm.gestepm.model.inspection.dao.entity.creator.InspectionFileCreate;
+import com.epm.gestepm.model.inspection.dao.entity.creator.MaterialCreate;
 import lombok.Data;
-import lombok.Singular;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotNull;
 import java.time.OffsetDateTime;
+import java.util.Base64;
 import java.util.List;
 import java.util.Set;
 
@@ -46,7 +49,7 @@ public class InspectionUpdate implements CollectableAttributes {
 
     private String clientName;
 
-    private List<Integer> materialIds;
+    private List<MaterialCreate> materials;
 
     private String materialsFile;
 
@@ -55,9 +58,8 @@ public class InspectionUpdate implements CollectableAttributes {
     private Integer equipmentHours;
 
     private Integer topicId;
-    
-    @Singular
-    private Set<ShareFileUpdate> files;
+
+    private Set<InspectionFileCreate> files;
 
     @Override
     public AttributeMap collectAttributes() {
@@ -76,8 +78,7 @@ public class InspectionUpdate implements CollectableAttributes {
         map.put(InspectionAttributes.ATTR_I_SIGNATURE, this.signature);
         map.put(InspectionAttributes.ATTR_I_OPERATOR_SIGNATURE, this.operatorSignature);
         map.put(InspectionAttributes.ATTR_I_CLIENT_NAME, this.clientName);
-        map.putList(InspectionAttributes.ATTR_I_MATERIALS, this.materialIds);
-        map.put(InspectionAttributes.ATTR_I_MATERIALS_FILE, this.materialsFile);
+        map.put(InspectionAttributes.ATTR_I_MATERIALS_FILE, StringUtils.isNoneEmpty(this.materialsFile) ? FileUtils.compressBytes(Base64.getDecoder().decode(this.materialsFile)) : null);
         map.put(InspectionAttributes.ATTR_I_MATERIALS_FILE_EXTENSION, this.materialsFileExtension);
         map.put(InspectionAttributes.ATTR_I_EQUIPMENT_HOURS, this.equipmentHours);
         map.put(InspectionAttributes.ATTR_I_TOPIC_ID, this.topicId);

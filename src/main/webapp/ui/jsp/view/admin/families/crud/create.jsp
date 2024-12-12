@@ -70,14 +70,14 @@
 								
 								<div class="row mt-2">
 									<div class="col">
-										<label for="familyNameESInput" class="col-form-label" style="font-size: 12px"><spring:message code="families.admin.create.name.esp" /></label>								
+										<label for="familyNameESInput" class="col-form-label" style="font-size: 12px"><spring:message code="families.admin.create.name.esp" /></label>
 										<input type="text" class="form-control form-control-sm" id="familyNameESInput" name="nameES" required>
 									</div>
 								</div>
 								
 								<div class="row">
 									<div class="col">
-										<label for="familyNameFRInput" class="col-form-label" style="font-size: 12px"><spring:message code="families.admin.create.name.fra" /></label>								
+										<label for="familyNameFRInput" class="col-form-label" style="font-size: 12px"><spring:message code="families.admin.create.name.fra" /></label>
 										<input type="text" class="form-control form-control-sm" id="familyNameFRInput" name="nameFR" required>
 									</div>
 								</div>
@@ -158,7 +158,7 @@
 					<div class="row">
 						<div class="col">
 							<div class="form-group">
-								<label for="subFamilyNameES" class="col-form-label"><spring:message code="families.admin.create.name.esp" /></label> 
+								<label for="subFamilyNameES" class="col-form-label"><spring:message code="families.admin.create.name.esp" /></label>
 								<input id="subFamilyNameES" name="subFamilyNameES" type="text" class="form-control" required>
 							</div>
 						</div>
@@ -167,7 +167,7 @@
 					<div class="row">
 						<div class="col">
 							<div class="form-group">
-								<label for="subFamilyNameFR" class="col-form-label"><spring:message code="families.admin.create.name.fra" /></label> 
+								<label for="subFamilyNameFR" class="col-form-label"><spring:message code="families.admin.create.name.fra" /></label>
 								<input id="subFamilyNameFR" name="subFamilyNameFR" type="text" class="form-control" required>
 							</div>
 						</div>
@@ -175,7 +175,7 @@
 					
 					<div class="row">
 						<div class="col">
-							<label for="subRolesDropdown" class="col-form-label"><spring:message code="families.sub.create.modal.sub.roles" /></label> 
+							<label for="subRolesDropdown" class="col-form-label"><spring:message code="families.sub.create.modal.sub.roles" /></label>
 							<select id="subRolesDropdown" class="form-control input selectpicker" data-style="userSelectPicker" data-live-search="true" multiple style="width: 100%" name="subRoles">
 								<c:forEach items="${subRoles}" var="subRole">
 									<option value="${subRole.rol}">				

@@ -6,7 +6,7 @@ public abstract class NoProgrammedShareFileAttributes {
 
   public static final String ATTR_NPSF_IDS = "attr_npsf_ids";
 
-  public static final String ATTR_NPSF_NPS_ID = "attr_npsf_nps_id";
+  public static final String ATTR_NPSF_NPS_ID = "attr_npsf_share_id";
 
   public static final String ATTR_NPSF_NAME = "attr_npsf_name";
 

@@ -4,8 +4,7 @@ import com.epm.gestepm.lib.entity.AttributeMap;
 import com.epm.gestepm.lib.entity.CollectableAttributes;
 import com.epm.gestepm.model.shares.noprogrammed.dao.constants.NoProgrammedShareAttributes;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.NoProgrammedShareStateEnum;
-import com.epm.gestepm.model.shares.noprogrammed.dao.entity.ShareFile;
-import com.epm.gestepm.modelapi.shares.noprogrammed.dto.ShareFileDto;
+import com.epm.gestepm.model.shares.noprogrammed.dao.entity.creator.NoProgrammedShareFileCreate;
 import lombok.Data;
 import lombok.Singular;
 
@@ -44,7 +43,7 @@ public class NoProgrammedShareUpdate implements CollectableAttributes {
     private Integer lastDiagnosis;
 
     @Singular
-    private Set<ShareFileUpdate> files;
+    private Set<NoProgrammedShareFileCreate> files;
 
     @Override
     public AttributeMap collectAttributes() {

@@ -18,46 +18,25 @@ sql:
       i.client_name,
       i.materials,
       i.materials_file,
+      i.materials_file_ext,
       i.equipment_hours,   
       i.topic_id,
-      ifi.id AS intervention_file_id
+      ifi.id AS intervention_file_id,
+      im.id AS material_id,
+      im.units AS material_units,
+      im.description AS material_description,
+      im.reference AS material_reference
     FROM ${sch-gestepm}.intervention_sub_shares i
     LEFT JOIN ${sch-gestepm}.intervention_sub_share_files ifi ON i.id = ifi.sub_share_id
+    LEFT JOIN ${sch-gestepm}.intervention_share_materials im ON i.id = im.intervention_id
 
     #whereToken #filter
 
   qry-page-of-i: |
 
-    SELECT 
-      i.id AS id_pagination,
-      i.id AS intervention_id,
-      i.user_signing_id,
-      i.intervention_id AS share_id,
-      i.action,
-      i.start_date,
-      i.end_date,
-      i.description,
-      i.first_technical,
-      i.second_technical,
-      i.signature,
-      i.signature_op,
-      i.client_name,
-      i.materials,
-      i.materials_file,
-      i.equipment_hours,
-      i.topic_id,
-      ifi.id AS intervention_file_id
-    FROM
-      bbdd_gestepm.intervention_sub_shares i
-    LEFT JOIN
-      bbdd_gestepm.intervention_sub_share_files ifi
-    ON
-      i.id = ifi.sub_share_id
-    WHERE
-      i.intervention_id = 29137
-    ORDER BY
-      i.intervention_id, i.id
-    LIMIT 10 OFFSET 0
+    ${sql.paginated-query-group-prefix}
+    ${sql.qry-list-of-i}
+    ${sql.paginated-query-suffix}
 
   qry-count-of-i: |
 
@@ -89,7 +68,7 @@ sql:
       ${sch-gestepm}.intervention_sub_shares
     SET
       user_signing_id = :attr_i_user_signing_id, 
-      intervention_id as share_id = :attr_i_share_id, 
+      intervention_id = :attr_i_share_id, 
       action = :attr_i_action, 
       start_date = :attr_i_start_date, 
       end_date = :attr_i_end_date, 
@@ -99,13 +78,16 @@ sql:
       signature = :attr_i_signature, 
       signature_op = :attr_i_operator_signature, 
       client_name = :attr_i_client_name, 
-      materials = :attr_i_materials, 
       materials_file = :attr_i_materials_file, 
       materials_file_ext = :attr_i_materials_file_extension,
       equipment_hours = :attr_i_equipment_hours,
       topic_id = :attr_i_topic_id
     WHERE
       id = :attr_i_id
+
+  qry-delete-i: |
+
+    DELETE FROM ${sch-gestepm}.intervention_sub_shares WHERE id = :attr_i_id
 
   filter-i-by-params: |
 

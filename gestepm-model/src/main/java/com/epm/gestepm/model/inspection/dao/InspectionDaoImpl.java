@@ -13,13 +13,15 @@ import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.model.inspection.dao.entity.Inspection;
 import com.epm.gestepm.model.inspection.dao.entity.creator.InspectionCreate;
+import com.epm.gestepm.model.inspection.dao.entity.creator.InspectionFileCreate;
+import com.epm.gestepm.model.inspection.dao.entity.creator.MaterialCreate;
 import com.epm.gestepm.model.inspection.dao.entity.deleter.InspectionDelete;
+import com.epm.gestepm.model.inspection.dao.entity.deleter.MaterialDelete;
 import com.epm.gestepm.model.inspection.dao.entity.filter.InspectionFilter;
 import com.epm.gestepm.model.inspection.dao.entity.finder.InspectionByIdFinder;
 import com.epm.gestepm.model.inspection.dao.entity.updater.InspectionUpdate;
 import com.epm.gestepm.model.inspection.dao.mappers.InspectionRSManyExtractor;
 import com.epm.gestepm.model.inspection.dao.mappers.InspectionRSOneExtractor;
-import com.epm.gestepm.model.shares.noprogrammed.dao.entity.updater.ShareFileUpdate;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -28,21 +30,24 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType.ASC;
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
-import static com.epm.gestepm.model.inspection.dao.constants.InspectionFileQueries.QRY_CREATE_IF;
 import static com.epm.gestepm.model.inspection.dao.constants.InspectionQueries.*;
+import static com.epm.gestepm.model.inspection.dao.constants.MaterialQueries.QRY_CREATE_M;
+import static com.epm.gestepm.model.inspection.dao.constants.MaterialQueries.QRY_DELETE_M;
 import static com.epm.gestepm.model.inspection.dao.mappers.InspectionRowMapper.COL_I_ID;
 
 @Component("inspectionDao")
 @EnableExecutionLog(layerMarker = DAO)
 public class InspectionDaoImpl implements InspectionDao {
 
+  private final InspectionFileDao inspectionFileDao;
+
   private final SQLDatasource sqlDatasource;
 
-  public InspectionDaoImpl(SQLDatasource sqlDatasource) {
-    this.sqlDatasource = sqlDatasource;
+  public InspectionDaoImpl(InspectionFileDao inspectionFileDao, SQLDatasource sqlDatasource) {
+      this.inspectionFileDao = inspectionFileDao;
+      this.sqlDatasource = sqlDatasource;
   }
 
   @Override
@@ -59,7 +64,7 @@ public class InspectionDaoImpl implements InspectionDao {
         .useFilter(FILTER_I_BY_PARAMS)
         .withParams(filter.collectAttributes());
 
-    this.setOrder("ASC", "id", sqlQuery);
+    this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
 
     return this.sqlDatasource.fetch(sqlQuery);
   }
@@ -81,7 +86,7 @@ public class InspectionDaoImpl implements InspectionDao {
         .limit(limit)
         .withParams(filter.collectAttributes());
 
-    this.setOrder("ASC", "id", sqlQuery);
+    this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
 
     return this.sqlDatasource.fetch(sqlQuery);
   }
@@ -145,7 +150,12 @@ public class InspectionDaoImpl implements InspectionDao {
 
     this.sqlDatasource.execute(sqlQuery);
 
-    if (!update.getFiles().isEmpty()) {
+    if (update.getMaterials() != null && !update.getMaterials().isEmpty()) {
+      this.deleteMaterials(update.getId());
+      this.createMaterials(update.getMaterials(), update.getId());
+    }
+
+    if (update.getFiles() != null && !update.getFiles().isEmpty()) {
       this.insertFiles(update.getFiles(), update.getId());
     }
 
@@ -169,26 +179,43 @@ public class InspectionDaoImpl implements InspectionDao {
     this.sqlDatasource.execute(sqlQuery);
   }
 
-  private void insertFiles(final Set<ShareFileUpdate> files, final Integer shareId) {
+  private void createMaterials(final List<MaterialCreate> materials, final Integer inspectionId) {
+    materials.forEach(materialCreate -> {
+      materialCreate.setInspectionId(inspectionId);
 
-    files.forEach(fileUpdate -> {
-      fileUpdate.setShareId(shareId);
+      final AttributeMap params = materialCreate.collectAttributes();
 
-      final AttributeMap params = fileUpdate.collectAttributes();
-
-      final SQLInsert<BigInteger> sqlInsert = new SQLInsert<BigInteger>()
-              .useQuery(QRY_CREATE_IF)
+      final SQLQuery sqlQuery = new SQLQuery()
+              .useQuery(QRY_CREATE_M)
               .withParams(params);
 
-      this.sqlDatasource.execute(sqlInsert);
+      this.sqlDatasource.execute(sqlQuery);
     });
   }
 
-  private void setOrder(String order, String orderBy, SQLQueryFetchMany<Inspection> sqlQuery) {
+  private void deleteMaterials(final Integer inspectionId) {
+    final MaterialDelete delete = new MaterialDelete();
+    delete.setInspectionId(inspectionId);
 
+    final AttributeMap params = delete.collectAttributes();
+
+    final SQLQuery sqlQuery = new SQLQuery()
+            .useQuery(QRY_DELETE_M)
+            .withParams(params);
+
+    this.sqlDatasource.execute(sqlQuery);
+  }
+
+  private void insertFiles(final Set<InspectionFileCreate> files, final Integer inspectionId) {
+    files.forEach(fileCreate -> {
+      fileCreate.setInspectionId(inspectionId);
+      this.inspectionFileDao.create(fileCreate);
+    });
+  }
+
+  private void setOrder(final SQLOrderByType order, final String orderBy, final SQLQueryFetchMany<Inspection> sqlQuery) {
     final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id") ? orderBy : COL_I_ID;
-    final SQLOrderByType orderStatement = order != null ? Enum.valueOf(SQLOrderByType.class, order.toUpperCase()) : ASC;
-
+    final SQLOrderByType orderStatement = order != null ? order : SQLOrderByType.ASC;
     sqlQuery.addOrderBy(orderByStatement, orderStatement);
   }
 }

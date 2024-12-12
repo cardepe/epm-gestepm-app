@@ -1,6 +1,7 @@
 package com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater;
 
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareStateEnumDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.creator.NoProgrammedShareFileCreateDto;
 import lombok.Data;
 import lombok.Singular;
 
@@ -39,6 +40,6 @@ public class NoProgrammedShareUpdateDto {
     private Integer lastDiagnosis;
 
     @Singular
-    private Set<ShareFileUpdateDto> files;
+    private Set<NoProgrammedShareFileCreateDto> files;
 
 }

@@ -5,6 +5,8 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -26,6 +28,8 @@ public class InspectionDto implements Serializable {
 
     private OffsetDateTime endDate;
 
+    private String description;
+
     @NotNull
     private Integer firstTechnicalId;
 
@@ -37,7 +41,7 @@ public class InspectionDto implements Serializable {
 
     private String clientName;
 
-    private Set<Integer> materialIds;
+    private Set<MaterialDto> materials = new HashSet<>();
 
     private String materialsFile;
 
@@ -49,4 +53,12 @@ public class InspectionDto implements Serializable {
 
     private Set<Integer> fileIds;
 
+    public Integer getOrder(final List<Integer> inspectionIds) {
+        return inspectionIds.indexOf(this.id) + 1;
+    }
+
+    public Integer getInspectionTypeNumber(final List<Integer> inspectionIds) {
+        final int index = inspectionIds.indexOf(this.id);
+        return ((index - 1) / 3) + 1;
+    }
 }
