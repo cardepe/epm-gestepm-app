@@ -221,6 +221,7 @@ paths:
                 $ref: ../../base-api-spec.yaml#/components/schemas/ResError
       operationId: export-inspection-v1
       description: export-inspection-v1
+      parameters: []
   /v1/users:
     get:
       summary: V1 - List users
@@ -665,12 +666,6 @@ components:
           schema:
             type: object
             properties:
-              userId:
-                type: integer
-              projectId:
-                type: integer
-              userSigningId:
-                type: integer
               startDate:
                 type: string
                 format: date-time
@@ -694,8 +689,6 @@ components:
                   - INITIALIZED
                   - IN_PROGRESS
                   - CLOSED
-              lastDiagnosis:
-                type: integer
               files:
                 type: array
                 items:

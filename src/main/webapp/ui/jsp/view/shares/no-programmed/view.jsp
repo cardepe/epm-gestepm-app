@@ -15,9 +15,7 @@
             </div>
             <div class="col-12 col-lg-2">
                 <div class="page-header float-right">
-                    <button type="button" class="btn btn-default btn-sm">
-                        <spring:message code="back"/>
-                    </button>
+                    <a id="returnBtn" class="btn btn-default btn-sm"><spring:message code="back"/></a>
                 </div>
             </div>
         </div>
@@ -118,7 +116,7 @@
                     </div>
                 </div>
                 <div class="col text-right">
-                    <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#createModal">
+                    <button id="createInspectionBtn" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#createModal">
                         <spring:message code="inspection.add"/>
                     </button>
                 </div>
@@ -157,8 +155,8 @@
                             <div class="form-group">
                                 <label class="col-form-label w-100"><spring:message code="action" />
                                     <select name="action" class="form-control" required>
-                                        <option value="INTERVENTION"><spring:message code="inspection.type.intervention" /></option>
                                         <option value="DIAGNOSIS"><spring:message code="inspection.type.diagnosis" /></option>
+                                        <option value="INTERVENTION"><spring:message code="inspection.type.intervention" /></option>
                                         <option value="FOLLOWING"><spring:message code="inspection.type.following" /></option>
                                     </select>
                                 </label>
@@ -221,8 +219,12 @@
     let locale = '${locale}';
     let $ = jQuery.noConflict();
 
+    let lastPageUrl;
+    let returnBtn = $('#returnBtn');
+
     let share;
     let nextAction = '${nextAction}';
+    let currentMode;
 
     async function init() {
         const editForm = document.querySelector('#editForm');
@@ -282,10 +284,31 @@
                 description: editForm.querySelector('[name="description"]').value,
                 state: 'INITIALIZED',
                 files: filesData
-            }).then(() => showNotify(messages.shares.noprogrammed.update.success))
-                .catch(error => showNotify(error, 'danger'))
+            }).then((response) => {
+                share = response.data.data;
+                share.files = filesData;
+                setWorkingMode();
+                showNotify(messages.shares.noprogrammed.update.success)
+            }).catch(error => showNotify(error, 'danger'))
                 .finally(() => hideLoading());
         })
+    }
+
+    function close(id) {
+        const finishBtn = $('#finishBtn');
+
+        finishBtn.click(async () => {
+            showLoading();
+
+            axios.patch('/v1/shares/no-programmed/' + id, {
+                state: 'CLOSED'
+            }).then((response) => {
+                share = response.data.data;
+                setCompletedMode();
+                showNotify(messages.shares.noprogrammed.update.success)
+            }).catch(error => showNotify(error, 'danger'))
+                .finally(() => hideLoading());
+        });
     }
 
     function update(share) {
@@ -320,9 +343,12 @@
             document.querySelector('#forumTitle').textContent = share.forumTitle;
         }
 
-        if (['INITIALIZED', 'IN_PROGRESS', 'CLOSED'].includes(share.state)) {
+        if (share.state === 'NEW') {
+            setInitialMode();
+        } else if (share.state === 'INITIALIZED' || share.state === 'IN_PROGRESS') {
+            setWorkingMode();
+        } else {
             setCompletedMode();
-            showFiles();
         }
     }
 
@@ -346,15 +372,50 @@
         }
     }
 
+    function setInitialMode() {
+        document.querySelector('#finishBtn').classList.add('d-none');
+        document.querySelector('#createInspectionBtn').classList.add('d-none');
+
+        currentMode = 'INITIAL';
+    }
+
+    function setWorkingMode() {
+        document.querySelector('#editBtn').remove();
+        document.querySelector('#finishBtn').classList.remove('d-none');
+        document.querySelector('#createInspectionBtn').classList.remove('d-none');
+
+        disableEditForm();
+        showFiles();
+
+        currentMode = 'WORKING';
+    }
+
     function setCompletedMode() {
+        if (currentMode !== 'WORKING') {
+            document.querySelector('#editBtn').remove();
+        }
+
+        document.querySelector('#finishBtn').remove();
+        document.querySelector('#createInspectionBtn').remove();
+
+        if (currentMode !== 'WORKING') {
+            disableEditForm();
+            showFiles();
+        }
+
+        currentMode = 'COMPLETED';
+    }
+
+    function disableEditForm() {
         const form = document.querySelector('#editForm');
-        const elements = form.querySelectorAll('input, textarea, select, button');
+        const files = form.querySelector('[name="files"]');
 
+        if (files) {
+            files.remove();
+        }
+
+        const elements = form.querySelectorAll('input, textarea, select');
         elements.forEach(element => element.disabled = true);
-
-        form.querySelector('#finishBtn').disabled = false;
-        form.querySelector('#editBtn').remove();
-        form.querySelector('[name="files"]').remove();
     }
 
     function toBase64(file) {
@@ -509,11 +570,29 @@
         }
     }
 
+    function setReturnButtonUrl() {
+        if (document.referrer) {
+            const lastPagePath = new URL(document.referrer).pathname;
+
+            if (lastPagePath === '/shares/intervention') {
+                const queryParams = document.referrer.split('?')[1];
+                lastPageUrl = lastPagePath + (queryParams ? '?' + queryParams : '');
+                sessionStorage.setItem('sharesFilter', lastPageUrl);
+            } else if (lastPagePath.startsWith('/shares/no-programmed/')) {
+                lastPageUrl = sessionStorage.getItem('sharesFilter');
+            }
+
+            returnBtn.attr('href', lastPageUrl);
+        }
+    }
+
     $(document).ready(async function () {
         await init();
         update(share);
         edit(share.id);
+        close(share.id);
         loadDataTables();
+        setReturnButtonUrl();
     });
 
 </script>

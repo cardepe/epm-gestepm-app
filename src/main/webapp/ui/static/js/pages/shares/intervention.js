@@ -113,7 +113,7 @@ function createNoProgrammedShare(userId, projectId) {
 		projectId: projectId
 	}).then((response) => {
 		const shareId = response.data.data.id;
-		window.location.href = '/shares//no-programmed/' + shareId;
+		window.location.href = '/shares/no-programmed/' + shareId;
 	}).catch(error => showNotify(error, 'danger'))
 		.finally(() => {
 			hideLoading();

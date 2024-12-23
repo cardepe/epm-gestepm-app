@@ -18,6 +18,7 @@ import com.epm.gestepm.model.shares.noprogrammed.dao.entity.finder.NoProgrammedS
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.updater.NoProgrammedShareUpdate;
 import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRSManyExtractor;
 import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRSOneExtractor;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
@@ -137,8 +138,10 @@ public class NoProgrammedShareDaoImpl implements NoProgrammedShareDao {
 
         this.sqlDatasource.execute(sqlQuery);
 
-        if (!update.getFiles().isEmpty()) {
-            update.getFiles().forEach(noProgrammedShareFileDao::create);
+        if (CollectionUtils.isNotEmpty(update.getFiles())) {
+            update.getFiles().stream()
+                    .peek(file -> file.setShareId(id))
+                    .forEach(noProgrammedShareFileDao::create);
         }
 
         return this.find(finder).orElse(null);

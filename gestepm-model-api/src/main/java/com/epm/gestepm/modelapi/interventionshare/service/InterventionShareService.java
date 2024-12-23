@@ -14,13 +14,7 @@ public interface InterventionShareService {
 	
 	InterventionShare getInterventionShareById(Long id);
 	InterventionShare save(InterventionShare interventionShare);
-	InterventionShare update(InterventionShare share, InterventionNoPrDTO interventionNoPrDTO, User user, String ip, Locale locale) throws Exception;
-	void deleteById(Long id);
-	Long getInterventionSharesCountByUser(Long userId);
-	List<InterventionShareTableDTO> getInterventionSharesByUserDataTables(Long userId, PaginationCriteria pagination);
 	List<ShareTableDTO> getShareTableByActivityCenterId(Long id, Long activityCenterId, Long projectId, Integer progress);
-	List<ShareTableDTO> getShareTableByUserId(Long userId, Long projectId, Integer progress);
-	Long getInterventionsCount(Long id);
 	
 	/* Get all projects for Supervisor Tecnico */
 	Long getAllShareTableCount(Long id, String type, Long projectId, Integer progress, Long userId);

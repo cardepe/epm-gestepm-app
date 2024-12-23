@@ -1,6 +1,5 @@
 package com.epm.gestepm.controller;
 
-import com.epm.gestepm.lib.file.FileUtils;
 import com.epm.gestepm.model.interventionshare.service.mapper.ShareMapper;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
@@ -47,8 +46,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -314,121 +315,6 @@ public class ShareController {
             log.error(e);
         } catch (IOException e) {
             log.error(e);
-        }
-    }
-
-    @PostMapping("/intervention/no-programmed/detail/{id}/files")
-    public String uploadFilesNoProgrammedInterventionDescription(@PathVariable Long id, @ModelAttribute InterventionNoPrDTO interventionNoPrDTO, Locale locale, Model model, HttpServletRequest request) {
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            InterventionSubShare actualIntervention = interventionSubShareService.getOpenIntervention(id);
-
-            if (actualIntervention == null) {
-                throw new Exception(messageSource.getMessage("shares.intervention.detail.close.intervention.empty.error", new Object[]{}, locale));
-            }
-
-            byte[] pdfGenerated = interventionSubShareService.generateInterventionSharePdf(actualIntervention, locale);
-
-            // Send Emails
-            smtpService.sendCloseInterventionSubShareMail(user.getEmail(), actualIntervention, pdfGenerated, locale);
-
-            final String customerMail = actualIntervention.getInterventionShare().getProject().getCustomer() == null
-                    ? "null"
-                    : actualIntervention.getInterventionShare().getProject().getCustomer().getMainEmail();
-
-            log.debug("Opciones de mail de cliente al finalizar una intervención en un parte no programado - checkbox: "
-                    + interventionNoPrDTO.getClientNotif() + ", customer: " + customerMail);
-
-            if (actualIntervention.getInterventionShare().getProject().getResponsables() != null && !actualIntervention.getInterventionShare().getProject().getResponsables().isEmpty()) {
-
-                for (User responsable : actualIntervention.getInterventionShare().getProject().getResponsables()) {
-                    smtpService.sendCloseInterventionSubShareMail(responsable.getEmail(), actualIntervention, pdfGenerated, locale);
-                }
-            }
-
-            if ("on".equals(interventionNoPrDTO.getClientNotif()) && actualIntervention.getInterventionShare().getProject().getCustomer() != null) {
-                smtpService.sendCloseInterventionSubShareMail(actualIntervention.getInterventionShare().getProject().getCustomer().getMainEmail(), actualIntervention, pdfGenerated, locale);
-            }
-
-            // Return data
-            return "redirect:/shares/no-programmed/" + id;
-
-        } catch (Exception e) {
-            log.error("An error ocurred when upload intervention images: ", e);
-            model.addAttribute("msgError", e.toString());
-            return "simple-error";
-        }
-    }
-
-    @GetMapping(value = "/intervention/no-programmed/detail/{shareId}/{interventionId}/materials/file")
-    public HttpEntity<ByteArrayResource> getMaterialsFile(@PathVariable Long shareId, @PathVariable Long interventionId, Locale locale) {
-
-        log.info("Exportando el fichero de materiales adjunto del parte de intervención " + shareId + "/" + interventionId);
-
-        InterventionSubShare subShare = interventionSubShareService.getByShareAndOrder(shareId, interventionId);
-
-        if (subShare == null) {
-            log.error("No existe la intervención con id " + shareId + "/" + interventionId);
-            return null;
-        }
-
-        if (subShare.getMaterialsFile() == null) {
-            log.error("El parte " + shareId + "/" + interventionId + " no contiene un fichero adjunto de materiales");
-            return null;
-        }
-
-        byte[] fileBytes = FileUtils.decompressBytes(subShare.getMaterialsFile());
-
-        if (fileBytes == null) {
-            log.error("Error al generar el fichero de materiales adjunto del parte de intervención " + shareId + "/" + interventionId);
-            return null;
-        }
-
-        String fileName = "materials_file_" + interventionId + "_" + shareId + "." + subShare.getMaterialsFileExt();
-
-        HttpHeaders header = new HttpHeaders();
-        header.setContentType(new MediaType("application", "force-download"));
-        header.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
-
-        return new HttpEntity<>(new ByteArrayResource(fileBytes), header);
-    }
-
-    @PostMapping("/intervention/no-programmed/detail/{id}/close")
-    public String closeNoProgrammedInterventionDescription(@PathVariable Long id, Locale locale, Model model, HttpServletRequest request) {
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Close InterventionShare
-            InterventionShare share = interventionShareService.getInterventionShareById(id);
-            share.setState(4); // end
-            share.setEndDate(new Timestamp(new Date().getTime())); // end date
-            interventionShareService.save(share);
-
-            // Send Emails
-            smtpService.sendCloseInterventionShareMail(user.getEmail(), share, locale);
-
-            if (share.getProject().getResponsables() != null && !share.getProject().getResponsables().isEmpty()) {
-
-                for (User responsable : share.getProject().getResponsables()) {
-                    smtpService.sendCloseInterventionShareMail(responsable.getEmail(), share, locale);
-                }
-            }
-
-            log.info("Parte de intervencion no programado " + id + " cerrado con exito por parte del usuario " + user.getId());
-
-            return "redirect:/shares/no-programmed/" + id;
-
-        } catch (Exception e) {
-            log.error(e);
-            model.addAttribute("msgError", e.toString());
-            return "simple-error";
         }
     }
 

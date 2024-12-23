@@ -60,9 +60,6 @@ sql:
     UPDATE
       ${sch-gestepm}.intervention_shares
     SET
-      user_id = :attr_nps_u_id,
-      project_id = :attr_nps_p_id,
-      user_signing_id = :attr_nps_us_id,
       notice_date = :attr_nps_start_date,
       end_date = :attr_nps_end_date,
       intervention_description = :attr_nps_description,
@@ -70,8 +67,7 @@ sql:
       sub_family = :attr_nps_sf_id,
       topic_id = :attr_nps_topic_id,
       forum_title = :attr_nps_forum_title,
-      state = :attr_nps_state,
-      last_diagnosis = :attr_nps_last_diagnosis
+      state = :attr_nps_state
     WHERE
       id = :attr_nps_id
 

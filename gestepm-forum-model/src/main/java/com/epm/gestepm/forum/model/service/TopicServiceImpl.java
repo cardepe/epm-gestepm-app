@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URLConnection;
 import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import com.epm.gestepm.forum.model.dao.AttachmentRepository;
 import com.epm.gestepm.forum.model.dao.PostRepository;
@@ -14,11 +15,13 @@ import com.epm.gestepm.forum.model.api.dto.Attachment;
 import com.epm.gestepm.forum.model.api.dto.Post;
 import com.epm.gestepm.forum.model.api.dto.Topic;
 import com.epm.gestepm.forum.model.api.service.TopicService;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,18 +60,19 @@ public class TopicServiceImpl implements TopicService {
 	
 	@Autowired
 	private UserForumRepository userForumRepository;
-	
+
+	@Async
 	@Override
-	public Topic create(String topicTitle, String topicContent, Long forumId, String userIp, String username, List<MultipartFile> files) {
+	public CompletableFuture<Topic> create(String topicTitle, String topicContent, Long forumId, String userIp, String username, List<MultipartFile> files) {
 
 		long topicTimer = Instant.now().getEpochSecond();
-		int hasAttachments = files == null || files.isEmpty() ? 0 : 1;
+		int hasAttachments = CollectionUtils.isNotEmpty(files) ? 1 : 0;
 		
 		Long userForumId = userForumRepository.findIdByUsername(username);
 		
 		if (userForumId == null) {
 			log.error("El usuario " + username + " no existe en el foro.");
-			return null;
+			return CompletableFuture.completedFuture(null);
 		}
 		
 		Topic topic = null;
@@ -77,7 +81,7 @@ public class TopicServiceImpl implements TopicService {
 			topic = topicRepository.findById(forumId).orElse(null);
 			
 			if (topic == null) {
-				return null;
+				return CompletableFuture.completedFuture(null);
 			}
 			
 			topic.setTopicLastPosterName(username);
@@ -237,6 +241,6 @@ public class TopicServiceImpl implements TopicService {
 		// Update User Statistics
 		userForumRepository.updateUserPostStats(userForumId, topicTimer);
 		
-		return topic;
+		return CompletableFuture.completedFuture(topic);
 	}
 }

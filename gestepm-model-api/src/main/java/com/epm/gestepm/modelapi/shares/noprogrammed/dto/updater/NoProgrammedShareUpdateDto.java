@@ -15,12 +15,6 @@ public class NoProgrammedShareUpdateDto {
     @NotNull
     private Integer id;
 
-    private Integer userId;
-
-    private Integer projectId;
-
-    private Integer userSigningId;
-
     private OffsetDateTime startDate;
 
     private OffsetDateTime endDate;
@@ -36,8 +30,6 @@ public class NoProgrammedShareUpdateDto {
     private String forumTitle;
 
     private NoProgrammedShareStateEnumDto state;
-
-    private Integer lastDiagnosis;
 
     @Singular
     private Set<NoProgrammedShareFileCreateDto> files;

@@ -70,7 +70,7 @@ public class NoProgrammedShareViewController {
 
         final ActionEnumDto lastAction = this.inspectionService.list(filterDto, 0L, 1L).get(0)
                 .map(InspectionDto::getAction)
-                .orElse(ActionEnumDto.INTERVENTION);
+                .orElse(ActionEnumDto.FOLLOWING);
 
         final List<FamilyDTO> families = familyService.getCommonFamilyDTOsByProjectId(share.getProjectId().longValue(), locale);
         final List<UserDTO> usersTeam = userService.getUserDTOsByProjectId(share.getProjectId().longValue());

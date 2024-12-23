@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.List;
 
 import static com.epm.gestepm.model.shares.noprogrammed.dao.constants.NoProgrammedShareFileAttributes.ATTR_NPSF_IDS;
-import static com.epm.gestepm.model.shares.noprogrammed.dao.constants.NoProgrammedShareFileAttributes.ATTR_NPSF_NPS_ID;
+import static com.epm.gestepm.model.shares.noprogrammed.dao.constants.NoProgrammedShareFileAttributes.ATTR_NPSF_SHARE_ID;
 
 @Data
 public class NoProgrammedShareFileFilter implements CollectableAttributes {
@@ -22,7 +22,7 @@ public class NoProgrammedShareFileFilter implements CollectableAttributes {
         final AttributeMap map = new AttributeMap();
 
         map.putList(ATTR_NPSF_IDS, this.ids);
-        map.put(ATTR_NPSF_NPS_ID, this.shareId);
+        map.put(ATTR_NPSF_SHARE_ID, this.shareId);
 
         return map;
     }

@@ -1,10 +1,11 @@
 package com.epm.gestepm.modelapi.common.utils.smtp;
 
+import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseInspectionMailTemplateDto;
+import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseNoProgrammedShareMailTemplateDto;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
 import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.interventionsubshare.dto.InterventionSubShare;
 import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigning;
 import com.epm.gestepm.modelapi.project.dto.Project;
@@ -25,10 +26,10 @@ public interface SMTPService {
 	void sendCloseConstructionShareMail(String to, ConstructionShare share, byte[] pdfGenerated, Locale locale);
 	
 	void sendOpenInterventionShareMail(String to, NoProgrammedShareUpdateDto share, User user, Project project, Locale locale);
-	void sendCloseInterventionShareMail(String to, InterventionShare share, Locale locale);
+	void closeNoProgrammedShareSendMail(final CloseNoProgrammedShareMailTemplateDto dto);
 	
 	void sendOpenInterventionSubShareMail(String to, InterventionSubShare share, Locale locale);
-	void sendCloseInterventionSubShareMail(String to, InterventionSubShare share, byte[] pdfGenerated, Locale locale);
+	void closeInspectionSendMail(final CloseInspectionMailTemplateDto dto);
 	
 	void sendOpenProgrammedShareMail(String to, InterventionPrShare share, Locale locale);
 	void sendCloseProgrammedShareMail(String to, InterventionPrShare share, byte[] pdfGenerated, Locale locale);

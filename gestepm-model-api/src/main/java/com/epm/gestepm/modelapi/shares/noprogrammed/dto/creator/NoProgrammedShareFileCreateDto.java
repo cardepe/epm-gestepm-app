@@ -9,6 +9,9 @@ import javax.validation.constraints.NotNull;
 public class NoProgrammedShareFileCreateDto {
 
     @NotNull
+    private Integer shareId;
+
+    @NotNull
     private String name;
 
     @NotNull

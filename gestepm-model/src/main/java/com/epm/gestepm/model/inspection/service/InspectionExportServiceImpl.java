@@ -10,6 +10,7 @@ import com.epm.gestepm.modelapi.inspection.dto.InspectionFileDto;
 import com.epm.gestepm.modelapi.inspection.dto.MaterialDto;
 import com.epm.gestepm.modelapi.inspection.dto.finder.InspectionFileByIdFinderDto;
 import com.epm.gestepm.modelapi.inspection.exception.InspectionExportException;
+import com.epm.gestepm.modelapi.inspection.exception.InspectionNotEndedException;
 import com.epm.gestepm.modelapi.inspection.service.InspectionExportService;
 import com.epm.gestepm.modelapi.inspection.service.InspectionFileService;
 import com.epm.gestepm.modelapi.project.dto.Project;
@@ -36,6 +37,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -81,6 +83,10 @@ public class InspectionExportServiceImpl implements InspectionExportService {
     @Override
     public byte[] generate(InspectionDto inspection) {
         try {
+            if (inspection.getEndDate() == null) {
+                throw new InspectionNotEndedException(inspection.getId());
+            }
+
             final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(
                     new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
             final Project project = this.projectService.getProjectById(noProgrammedShare.getProjectId().longValue());
@@ -153,7 +159,7 @@ public class InspectionExportServiceImpl implements InspectionExportService {
             pdfTemplate.close();
 
             return baos.toByteArray();
-        } catch (Exception ex) {
+        } catch (IOException | DocumentException ex) {
             throw new InspectionExportException(inspection.getId());
         }
     }
@@ -189,7 +195,7 @@ public class InspectionExportServiceImpl implements InspectionExportService {
 
                 stamper.insertPage(++pageNumber, pdfTemplate.getPageSizeWithRotation(1));
 
-                final Image image = Image.getInstance(file.getContent());
+                final Image image = Image.getInstance(Base64.getDecoder().decode(file.getContent()));
                 final Rectangle maxImageSize = new Rectangle(PageSize.A4.getWidth() - (leftMargin * 2), PageSize.A4.getHeight() - (topMargin * 2));
 
                 if (image.getWidth() > pageWidth || image.getHeight() > pageHeight) {

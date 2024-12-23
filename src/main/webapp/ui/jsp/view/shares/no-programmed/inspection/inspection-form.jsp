@@ -425,7 +425,7 @@
 
     async function parseMaterialsFile(editForm) {
         const selector = editForm.querySelector('[name="materialsFile"]');
-        if (selector && selector.files) {
+        if (selector && selector.files && selector.files.length > 0) {
             return {
                 name: selector.files[0].name,
                 content: await toBase64(selector.files[0])

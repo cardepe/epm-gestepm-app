@@ -1,6 +1,5 @@
 package com.epm.gestepm.model.inspection.service;
 
-import com.epm.gestepm.forum.model.api.dto.Topic;
 import com.epm.gestepm.forum.model.api.service.TopicService;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
@@ -16,6 +15,7 @@ import com.epm.gestepm.model.inspection.dao.entity.updater.InspectionUpdate;
 import com.epm.gestepm.model.inspection.service.mapper.*;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
+import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseInspectionMailTemplateDto;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.creator.InspectionCreateDto;
 import com.epm.gestepm.modelapi.inspection.dto.deleter.InspectionDeleteDto;
@@ -23,7 +23,11 @@ import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
 import com.epm.gestepm.modelapi.inspection.dto.finder.InspectionByIdFinderDto;
 import com.epm.gestepm.modelapi.inspection.dto.updater.InspectionUpdateDto;
 import com.epm.gestepm.modelapi.inspection.exception.InspectionNotFoundException;
+import com.epm.gestepm.modelapi.inspection.service.InspectionExportService;
 import com.epm.gestepm.modelapi.inspection.service.InspectionService;
+import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
+import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareStateEnumDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
@@ -35,9 +39,10 @@ import com.epm.gestepm.modelapi.user.exception.UserByIdNotFoundException;
 import com.epm.gestepm.modelapi.user.service.UserService;
 import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 
 import javax.servlet.http.HttpServletRequest;
@@ -60,7 +65,11 @@ public class InspectionServiceImpl implements InspectionService {
 
     private final InspectionDao inspectionDao;
 
+    private final InspectionExportService inspectionExportService;
+
     private final NoProgrammedShareService noProgrammedShareService;
+
+    private final ProjectService projectService;
 
     private final SMTPService smtpService;
 
@@ -70,10 +79,12 @@ public class InspectionServiceImpl implements InspectionService {
 
     private final UserSigningService userSigningService;
 
-    public InspectionServiceImpl(HttpServletRequest request, InspectionDao inspectionDao, NoProgrammedShareService noProgrammedShareService, SMTPService smtpService, TopicService topicService, UserService userService, UserSigningService userSigningService) {
+    public InspectionServiceImpl(HttpServletRequest request, InspectionDao inspectionDao, InspectionExportService inspectionExportService, NoProgrammedShareService noProgrammedShareService, ProjectService projectService, SMTPService smtpService, TopicService topicService, UserService userService, UserSigningService userSigningService) {
         this.request = request;
         this.inspectionDao = inspectionDao;
+        this.inspectionExportService = inspectionExportService;
         this.noProgrammedShareService = noProgrammedShareService;
+        this.projectService = projectService;
         this.smtpService = smtpService;
         this.topicService = topicService;
         this.userService = userService;
@@ -163,8 +174,6 @@ public class InspectionServiceImpl implements InspectionService {
         final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(
                 new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
 
-        this.createForumComment(updateDto, noProgrammedShare);
-
         if (updateDto.getEndDate() == null) {
             updateDto.setEndDate(OffsetDateTime.now());
         }
@@ -174,11 +183,13 @@ public class InspectionServiceImpl implements InspectionService {
 
         final Inspection updated = this.inspectionDao.update(update);
 
-        if (updateDto.getNotify()) {
+        this.createForumComment(updateDto, noProgrammedShare);
 
-        }
+        final InspectionDto result = getMapper(MapIToInspectionDto.class).from(updated);
 
-        return getMapper(MapIToInspectionDto.class).from(updated);
+        this.sendMail(result, updateDto.getNotify());
+
+        return result;
     }
 
     @Override
@@ -223,12 +234,11 @@ public class InspectionServiceImpl implements InspectionService {
 
     private void createForumComment(InspectionUpdateDto update, NoProgrammedShareDto noProgrammedShare) {
 
-
         if (noProgrammedShare.getTopicId() != null) {
             final StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(update.getDescription().replace("\n", "<br/>"));
 
-            if (CollectionUtils.isEmpty(update.getMaterials())) {
+            if (CollectionUtils.isNotEmpty(update.getMaterials())) {
                 stringBuilder.append("<br/><br/>Materiales:<br/> <LIST><s>[list]</s>");
 
                 update.getMaterials().forEach(material -> {
@@ -248,10 +258,14 @@ public class InspectionServiceImpl implements InspectionService {
 
             // TODO: same with files, now null.
 
-            final Topic topic = this.topicService.create(title, content, noProgrammedShare.getTopicId().longValue(), ip,
-                    user.getUsername(), null);
+            this.topicService.create(title, content, noProgrammedShare.getTopicId().longValue(), ip, user.getUsername(), null)
+                    .thenApply(topic -> {
+                        final InspectionUpdate inspectionUpdate = new InspectionUpdate();
+                        inspectionUpdate.setId(update.getId());
+                        inspectionUpdate.setTopicId(topic.getId().intValue());
 
-            update.setTopicId(topic.getId().intValue());
+                        return this.inspectionDao.update(inspectionUpdate);
+                    });
         }
     }
 
@@ -263,13 +277,42 @@ public class InspectionServiceImpl implements InspectionService {
         this.noProgrammedShareService.update(noProgrammedShareUpdateDto);
     }
 
-    /*private void sendMail(final InspectionUpdateDto inspection, final User user, final Project project) {
-        this.smtpService.sendOpenInterventionShareMail(user.getEmail(), inspection, user, project, request.getLocale());
+    private void sendMail(final InspectionDto inspection, final Boolean notify) {
+        final byte[] pdf = this.inspectionExportService.generate(inspection);
 
-        if (project.getResponsables() != null && !project.getResponsables().isEmpty()) {
-            for (User responsable : project.getResponsables()) {
-                smtpService.sendOpenInterventionShareMail(responsable.getEmail(), share, user, project, request.getLocale());
-            }
+        final Supplier<RuntimeException> userNotFound = () -> new UserByIdNotFoundException(inspection.getFirstTechnicalId());
+        final User firstTechnical = Optional.ofNullable(this.userService.getUserById(inspection.getFirstTechnicalId().longValue()))
+                .orElseThrow(userNotFound);
+
+        final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService
+                .findOrNotFound(new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
+
+        final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(noProgrammedShare.getProjectId());
+        final Project project = Optional.ofNullable(this.projectService.getProjectById(noProgrammedShare.getProjectId().longValue()))
+                .orElseThrow(projectNotFound);
+
+        final CloseInspectionMailTemplateDto dto = new CloseInspectionMailTemplateDto();
+        dto.setLocale(request.getLocale());
+        dto.setEmail(firstTechnical.getEmail());
+        dto.setNoProgrammedShare(noProgrammedShare);
+        dto.setInspection(inspection);
+        dto.setUser(firstTechnical);
+        dto.setProject(project);
+        dto.setPdf(pdf);
+
+        this.smtpService.closeInspectionSendMail(dto);
+
+        if (CollectionUtils.isNotEmpty(project.getResponsables())) {
+            project.getResponsables().forEach(responsible -> {
+                dto.setEmail(responsible.getEmail());
+                dto.setUser(responsible);
+                this.smtpService.closeInspectionSendMail(dto);
+            });
         }
-    }*/
+
+        if (BooleanUtils.isTrue(notify) && project.getCustomer() != null) {
+            dto.setEmail(project.getCustomer().getMainEmail());
+            this.smtpService.closeInspectionSendMail(dto);
+        }
+    }
 }
