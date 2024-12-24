@@ -95,8 +95,12 @@
         <put-attribute name="body" value="/ui/jsp/view/shares/crud/create.jsp" />
     </definition>
     
-    <definition name="intervention-share-detail" extends="fullFrameLayaout">
-        <put-attribute name="body" value="/ui/jsp/view/shares/intervention/no-programmed/detail.jsp" />
+    <definition name="no-programmed-share-detail" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/no-programmed/view.jsp" />
+    </definition>
+
+    <definition name="inspection-detail" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/no-programmed/inspection/view.jsp" />
     </definition>
     
     <definition name="displacement-share" extends="fullFrameLayaout">

@@ -11,7 +11,7 @@ public class FindNoProgrammedShareV1Operation extends APIOperation<NoProgrammedS
         super("findNoProgrammedShareV1");
 
         this.generateLinksWith(
-                (apiClass, req) -> apiClass.findNoProgrammedShareByIdV1(req.getId(), req.getMeta(), req.getLinks(), req.getExpand()));
+                (apiClass, req) -> apiClass.findNoProgrammedShareByIdV1(req.getId(), req.getMeta(), req.getLinks(), req.getExpand(), req.getLocale()));
     }
 
 }

@@ -1175,6 +1175,11 @@ aside.left-panel:hover {
 	padding: 15px 0;
 }
 
+.right-panel .page-header a {
+	margin-top: 12px;
+	padding: 4px 20px;
+}
+
 .right-panel .page-header button {
 	margin-top: 12px;
 	padding: 4px 20px;

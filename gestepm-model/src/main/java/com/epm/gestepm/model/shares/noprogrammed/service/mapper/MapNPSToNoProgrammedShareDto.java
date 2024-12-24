@@ -2,7 +2,9 @@ package com.epm.gestepm.model.shares.noprogrammed.service.mapper;
 
 import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.NoProgrammedShare;
+import com.epm.gestepm.model.shares.noprogrammed.dao.entity.NoProgrammedShareStateEnum;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareStateEnumDto;
 import org.mapstruct.Mapper;
 
 import java.util.List;
@@ -18,4 +20,5 @@ public interface MapNPSToNoProgrammedShareDto {
     return new Page<>(page.cursor(), from(page.getContent()));
   }
 
+  NoProgrammedShareStateEnumDto from(NoProgrammedShareStateEnum stateEnum);
 }

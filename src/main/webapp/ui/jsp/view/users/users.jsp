@@ -251,7 +251,7 @@
 			<div class="modal-footer clearfix">
 				<div class="w-100">
 					<div class="float-left">
-						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 					</div>
 					<div class="float-right">
 						<button id="create" type="button" class="btn btn-sm btn-success"><spring:message code="create" /></button>

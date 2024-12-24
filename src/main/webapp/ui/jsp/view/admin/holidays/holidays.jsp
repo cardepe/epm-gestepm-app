@@ -197,7 +197,7 @@
 				<div class="w-100">
 					<div class="float-left">
 						<button type="button" class="btn btn-sm" data-dismiss="modal">
-							<spring:message code="cerrar" />
+							<spring:message code="close" />
 						</button>
 					</div>
 					<div class="float-right">
@@ -316,7 +316,7 @@
 				<div class="w-100">
 					<div class="float-left">
 						<button type="button" class="btn btn-sm" data-dismiss="modal">
-							<spring:message code="cerrar" />
+							<spring:message code="close" />
 						</button>
 					</div>
 					<div class="float-right">

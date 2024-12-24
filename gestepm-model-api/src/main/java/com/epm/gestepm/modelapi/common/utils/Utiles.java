@@ -130,6 +130,10 @@ public class Utiles {
 	public static String transformToString(final OffsetDateTime offsetDateTime) {
 		return offsetDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
 	}
+
+	public static String transform(final OffsetDateTime offsetDateTime, final String format) {
+		return offsetDateTime.format(DateTimeFormatter.ofPattern(format));
+	}
 	
 	/**
 	 * Get DateTime String as Date
@@ -218,6 +222,10 @@ public class Utiles {
 
 	public static String getDateFormatted(final OffsetDateTime offsetDateTime) {
 		return offsetDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
+	}
+
+	public static String getDateFormatted(final OffsetDateTime offsetDateTime, String pattern) {
+		return offsetDateTime.format(DateTimeFormatter.ofPattern(pattern));
 	}
 	
 	/**

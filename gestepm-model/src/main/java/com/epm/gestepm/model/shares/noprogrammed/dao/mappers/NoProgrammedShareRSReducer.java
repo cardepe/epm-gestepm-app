@@ -3,7 +3,9 @@ package com.epm.gestepm.model.shares.noprogrammed.dao.mappers;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.NoProgrammedShare;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.BinaryOperator;
 
@@ -16,13 +18,13 @@ public class NoProgrammedShareRSReducer implements BinaryOperator<NoProgrammedSh
       return current;
     }
 
-    if (!CollectionUtils.isEmpty(total.getInterventionIds()) && !CollectionUtils.isEmpty(current.getInterventionIds())) {
+    if (!CollectionUtils.isEmpty(total.getInspectionIds()) && !CollectionUtils.isEmpty(current.getInspectionIds())) {
 
-      final Set<Integer> interventionIds = new LinkedHashSet<>();
-      interventionIds.addAll(total.getInterventionIds());
-      interventionIds.addAll(current.getInterventionIds());
+      final List<Integer> inspectionIds = new ArrayList<>();
+      inspectionIds.addAll(total.getInspectionIds());
+      inspectionIds.addAll(current.getInspectionIds());
 
-      total.setInterventionIds(interventionIds);
+      total.setInspectionIds(inspectionIds);
     }
 
     if (!CollectionUtils.isEmpty(total.getFileIds()) && !CollectionUtils.isEmpty(current.getFileIds())) {

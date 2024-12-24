@@ -36,6 +36,45 @@ sql:
     SELECT COUNT(DISTINCT id_pagination) AS "count"
     FROM (${sql.qry-list-of-nps}) final
 
+  qry-create-nps: |
+    
+    INSERT INTO ${sch-gestepm}.intervention_shares (
+      user_id,
+      project_id,
+      user_signing_id,
+      notice_date,
+      state,
+      last_diagnosis
+    )
+    VALUES (
+      :attr_nps_u_id,
+      :attr_nps_p_id,
+      :attr_nps_us_id,
+      :attr_nps_start_date,
+      1,
+      0
+    )
+
+  qry-update-nps: |
+    
+    UPDATE
+      ${sch-gestepm}.intervention_shares
+    SET
+      notice_date = :attr_nps_start_date,
+      end_date = :attr_nps_end_date,
+      intervention_description = :attr_nps_description,
+      family = :attr_nps_f_id,
+      sub_family = :attr_nps_sf_id,
+      topic_id = :attr_nps_topic_id,
+      forum_title = :attr_nps_forum_title,
+      state = :attr_nps_state
+    WHERE
+      id = :attr_nps_id
+
+  qry-delete-nps: |
+    
+    DELETE FROM ${sch-gestepm}.intervention_shares WHERE id = :attr_nps_id
+
   filter-nps-by-params: |
 
     -- [AND

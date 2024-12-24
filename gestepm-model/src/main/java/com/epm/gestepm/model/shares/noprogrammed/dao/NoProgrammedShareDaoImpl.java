@@ -18,7 +18,7 @@ import com.epm.gestepm.model.shares.noprogrammed.dao.entity.finder.NoProgrammedS
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.updater.NoProgrammedShareUpdate;
 import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRSManyExtractor;
 import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRSOneExtractor;
-import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRowMapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
@@ -33,126 +33,134 @@ import static com.epm.gestepm.model.shares.noprogrammed.dao.constants.NoProgramm
 @EnableExecutionLog(layerMarker = DAO)
 public class NoProgrammedShareDaoImpl implements NoProgrammedShareDao {
 
-  private final SQLDatasource sqlDatasource;
+    private final NoProgrammedShareFileDao noProgrammedShareFileDao;
 
-  public NoProgrammedShareDaoImpl(SQLDatasource sqlDatasource) {
-    this.sqlDatasource = sqlDatasource;
-  }
+    private final SQLDatasource sqlDatasource;
 
-  @Override
-  @LogExecution(operation = OP_READ,
-          debugOut = true,
-          msgIn = "Querying list of no programmed shares",
-          msgOut = "Querying list of no programmed shares OK",
-          errorMsg = "Failed to query list of no programmed shares")
-  public List<NoProgrammedShare> list(NoProgrammedShareFilter filter) {
+    public NoProgrammedShareDaoImpl(NoProgrammedShareFileDao noProgrammedShareFileDao, SQLDatasource sqlDatasource) {
+        this.noProgrammedShareFileDao = noProgrammedShareFileDao;
+        this.sqlDatasource = sqlDatasource;
+    }
 
-    final SQLQueryFetchMany<NoProgrammedShare> sqlQuery = new SQLQueryFetchMany<NoProgrammedShare>()
-        .useRsExtractor(new NoProgrammedShareRSManyExtractor())
-        .useQuery(QRY_LIST_OF_NPS)
-        .useFilter(FILTER_NPS_BY_PARAMS)
-        .withParams(filter.collectAttributes());
+    @Override
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Querying list of no programmed shares",
+            msgOut = "Querying list of no programmed shares OK",
+            errorMsg = "Failed to query list of no programmed shares")
+    public List<NoProgrammedShare> list(NoProgrammedShareFilter filter) {
 
-    return this.sqlDatasource.fetch(sqlQuery);
-  }
+        final SQLQueryFetchMany<NoProgrammedShare> sqlQuery = new SQLQueryFetchMany<NoProgrammedShare>()
+                .useRsExtractor(new NoProgrammedShareRSManyExtractor())
+                .useQuery(QRY_LIST_OF_NPS)
+                .useFilter(FILTER_NPS_BY_PARAMS)
+                .withParams(filter.collectAttributes());
 
-  @Override
-  @LogExecution(operation = OP_READ,
-          debugOut = true,
-          msgIn = "Querying page of no programmed shares",
-          msgOut = "Querying page of no programmed shares OK",
-          errorMsg = "Failed to query page of no programmed shares")
-  public Page<NoProgrammedShare> list(NoProgrammedShareFilter filter, Long offset, Long limit) {
+        return this.sqlDatasource.fetch(sqlQuery);
+    }
 
-    final SQLQueryFetchPage<NoProgrammedShare> sqlQuery = new SQLQueryFetchPage<NoProgrammedShare>()
-        .useRsExtractor(new NoProgrammedShareRSManyExtractor())
-        .useQuery(QRY_PAGE_OF_NPS)
-        .useCountQuery(QRY_COUNT_OF_NPS)
-        .useFilter(FILTER_NPS_BY_PARAMS)
-        .offset(offset)
-        .limit(limit)
-        .withParams(filter.collectAttributes());
+    @Override
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Querying page of no programmed shares",
+            msgOut = "Querying page of no programmed shares OK",
+            errorMsg = "Failed to query page of no programmed shares")
+    public Page<NoProgrammedShare> list(NoProgrammedShareFilter filter, Long offset, Long limit) {
 
-    return this.sqlDatasource.fetch(sqlQuery);
-  }
+        final SQLQueryFetchPage<NoProgrammedShare> sqlQuery = new SQLQueryFetchPage<NoProgrammedShare>()
+                .useRsExtractor(new NoProgrammedShareRSManyExtractor())
+                .useQuery(QRY_PAGE_OF_NPS)
+                .useCountQuery(QRY_COUNT_OF_NPS)
+                .useFilter(FILTER_NPS_BY_PARAMS)
+                .offset(offset)
+                .limit(limit)
+                .withParams(filter.collectAttributes());
 
-  @Override
-  @LogExecution(operation = OP_READ,
-          debugOut = true,
-          msgIn = "Querying to find no programmed share by ID",
-          msgOut = "Querying to find no programmed share by ID OK",
-          errorMsg = "Failed query to find no programmed share by ID")
-  public Optional<NoProgrammedShare> find(NoProgrammedShareByIdFinder finder) {
+        return this.sqlDatasource.fetch(sqlQuery);
+    }
 
-    final SQLQueryFetchOne<NoProgrammedShare> sqlQuery = new SQLQueryFetchOne<NoProgrammedShare>()
-        .useRsExtractor(new NoProgrammedShareRSOneExtractor())
-        .useQuery(QRY_LIST_OF_NPS)
-        .useFilter(FILTER_NPS_BY_ID)
-        .withParams(finder.collectAttributes());
+    @Override
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Querying to find no programmed share by ID",
+            msgOut = "Querying to find no programmed share by ID OK",
+            errorMsg = "Failed query to find no programmed share by ID")
+    public Optional<NoProgrammedShare> find(NoProgrammedShareByIdFinder finder) {
 
-    return this.sqlDatasource.fetch(sqlQuery);
-  }
+        final SQLQueryFetchOne<NoProgrammedShare> sqlQuery = new SQLQueryFetchOne<NoProgrammedShare>()
+                .useRsExtractor(new NoProgrammedShareRSOneExtractor())
+                .useQuery(QRY_LIST_OF_NPS)
+                .useFilter(FILTER_NPS_BY_ID)
+                .withParams(finder.collectAttributes());
 
-  @Override
-  @LogExecution(operation = OP_CREATE,
-          debugOut = true,
-          msgIn = "Persisting new no programmed share",
-          msgOut = "New no programmed share persisted OK",
-          errorMsg = "Failed to persist new no programmed share")
-  public NoProgrammedShare create(NoProgrammedShareCreate create) {
+        return this.sqlDatasource.fetch(sqlQuery);
+    }
 
-    final AttributeMap params = create.collectAttributes();
+    @Override
+    @LogExecution(operation = OP_CREATE,
+            debugOut = true,
+            msgIn = "Persisting new no programmed share",
+            msgOut = "New no programmed share persisted OK",
+            errorMsg = "Failed to persist new no programmed share")
+    public NoProgrammedShare create(NoProgrammedShareCreate create) {
 
-    final NoProgrammedShareByIdFinder finder = new NoProgrammedShareByIdFinder();
+        final AttributeMap params = create.collectAttributes();
 
-    final SQLInsert<BigInteger> sqlInsert = new SQLInsert<BigInteger>()
-            .useQuery(QRY_CREATE_NPS)
-            .withParams(params)
-            .onGeneratedKey(f -> finder.setId(f.intValue()));
+        final NoProgrammedShareByIdFinder finder = new NoProgrammedShareByIdFinder();
 
-    this.sqlDatasource.insert(sqlInsert);
+        final SQLInsert<BigInteger> sqlInsert = new SQLInsert<BigInteger>()
+                .useQuery(QRY_CREATE_NPS)
+                .withParams(params)
+                .onGeneratedKey(f -> finder.setId(f.intValue()));
 
-    return this.find(finder).orElse(null);
-  }
+        this.sqlDatasource.insert(sqlInsert);
 
-  @Override
-  @LogExecution(operation = OP_UPDATE,
-          debugOut = true,
-          msgIn = "Persisting update for no programmed share",
-          msgOut = "Update for no programmed share persisted OK",
-          errorMsg = "Failed to persist update for no programmed share")
-  public NoProgrammedShare update(NoProgrammedShareUpdate update) {
+        return this.find(finder).orElse(null);
+    }
 
-    final Integer id = update.getId();
-    final AttributeMap params = update.collectAttributes();
+    @Override
+    @LogExecution(operation = OP_UPDATE,
+            debugOut = true,
+            msgIn = "Persisting update for no programmed share",
+            msgOut = "Update for no programmed share persisted OK",
+            errorMsg = "Failed to persist update for no programmed share")
+    public NoProgrammedShare update(NoProgrammedShareUpdate update) {
 
-    final NoProgrammedShareByIdFinder finder = new NoProgrammedShareByIdFinder();
-    finder.setId(id);
+        final Integer id = update.getId();
+        final AttributeMap params = update.collectAttributes();
 
-    final SQLQuery sqlQuery = new SQLQuery()
-            .useQuery(QRY_UPDATE_NPS)
-            .withParams(params);
+        final NoProgrammedShareByIdFinder finder = new NoProgrammedShareByIdFinder();
+        finder.setId(id);
 
-    this.sqlDatasource.execute(sqlQuery);
+        final SQLQuery sqlQuery = new SQLQuery()
+                .useQuery(QRY_UPDATE_NPS)
+                .withParams(params);
 
-    return this.find(finder).orElse(null);
-  }
+        this.sqlDatasource.execute(sqlQuery);
 
-  @Override
-  @LogExecution(operation = OP_DELETE,
-          debugOut = true,
-          msgIn = "Persisting delete for no programmed share",
-          msgOut = "Delete for no programmed share persisted OK",
-          errorMsg = "Failed to persist delete for no programmed share")
-  public void delete(NoProgrammedShareDelete delete) {
+        if (CollectionUtils.isNotEmpty(update.getFiles())) {
+            update.getFiles().stream()
+                    .peek(file -> file.setShareId(id))
+                    .forEach(noProgrammedShareFileDao::create);
+        }
 
-    final AttributeMap params = delete.collectAttributes();
+        return this.find(finder).orElse(null);
+    }
 
-    final SQLQuery sqlQuery = new SQLQuery()
-            .useQuery(QRY_DELETE_NPS)
-            .withParams(params);
+    @Override
+    @LogExecution(operation = OP_DELETE,
+            debugOut = true,
+            msgIn = "Persisting delete for no programmed share",
+            msgOut = "Delete for no programmed share persisted OK",
+            errorMsg = "Failed to persist delete for no programmed share")
+    public void delete(NoProgrammedShareDelete delete) {
 
-    this.sqlDatasource.execute(sqlQuery);
-  }
+        final AttributeMap params = delete.collectAttributes();
 
+        final SQLQuery sqlQuery = new SQLQuery()
+                .useQuery(QRY_DELETE_NPS)
+                .withParams(params);
+
+        this.sqlDatasource.execute(sqlQuery);
+    }
 }

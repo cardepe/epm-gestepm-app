@@ -13,6 +13,7 @@ import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
 import java.util.List;
@@ -114,4 +115,15 @@ public class User {
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<ExpenseSheet> expenseSheets;
 
+	public String getFullName() {
+		final StringBuilder builder = new StringBuilder();
+
+		builder.append(this.name);
+
+		if (StringUtils.isNoneBlank(this.surnames)) {
+			builder.append(" ").append(this.surnames);
+		}
+
+		return builder.toString();
+	}
 }

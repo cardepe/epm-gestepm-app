@@ -25,9 +25,9 @@ public class SubFamily {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", unique = true, nullable = false, precision = 10)
 	private Long id;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "FAMILY_ID", referencedColumnName = "ID", nullable = false)
+
+	@ManyToOne
+	@JoinColumn(name = "FAMILY_ID", referencedColumnName = "ID")
 	private Family family;
 	
 	@Column(name = "NAME_ES", nullable = false, length = 128)

@@ -28,13 +28,10 @@ public class NoProgrammedShare implements Serializable {
 
   private OffsetDateTime endDate;
 
-  @NotNull
   private String description;
 
-  @NotNull
   private Integer familyId;
 
-  @NotNull
   private Integer subFamilyId;
 
   private Integer topicId;
@@ -42,13 +39,13 @@ public class NoProgrammedShare implements Serializable {
   private String forumTitle;
 
   @NotNull
-  private Integer state;
+  private NoProgrammedShareStateEnum state;
 
   @NotNull
   private Integer lastDiagnosis;
 
   @Singular
-  private Set<Integer> interventionIds;
+  private List<Integer> inspectionIds;
 
   @Singular
   private Set<Integer> fileIds;

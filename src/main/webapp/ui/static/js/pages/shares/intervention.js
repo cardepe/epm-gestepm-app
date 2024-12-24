@@ -31,7 +31,7 @@ function parseActionButtons(userRole, userSigningState, hasPrivileges, projectId
 				if (shareType === 'ips' || shareType === 'cs' || shareType === 'ws') {
 					$(this).remove();
 				} else if (shareType === 'is') {
-					$(this).wrap('<a href="/shares/intervention/no-programmed/detail/' + id + '"></a>');
+					$(this).wrap('<a href="/shares/no-programmed/' + id + '"></a>');
 				}
 				
 			} else if (index == 1) { // calendar (close)
@@ -103,4 +103,19 @@ function filterShares(pageNumber) {
 	currentURL.pathname = currentURL.pathname + '/dt';
 
 	dTable.ajax.url(currentURL.toString()).load();
+}
+
+function createNoProgrammedShare(userId, projectId) {
+	showLoading();
+
+	axios.post('/v1/shares/no-programmed', {
+		userId: userId,
+		projectId: projectId
+	}).then((response) => {
+		const shareId = response.data.data.id;
+		window.location.href = '/shares/no-programmed/' + shareId;
+	}).catch(error => showNotify(error, 'danger'))
+		.finally(() => {
+			hideLoading();
+		});
 }

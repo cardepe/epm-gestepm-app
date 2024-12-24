@@ -2,18 +2,14 @@ package com.epm.gestepm.rest.shares.noprogrammed.mappers;
 
 import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
-import com.epm.gestepm.restapi.openapi.model.Intervention;
+import com.epm.gestepm.restapi.openapi.model.Inspection;
 import com.epm.gestepm.restapi.openapi.model.NoProgrammedShare;
 import com.epm.gestepm.restapi.openapi.model.ShareFile;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.springframework.util.CollectionUtils;
+import org.mapstruct.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
-
-import static org.mapstruct.factory.Mappers.getMapper;
 
 @Mapper
 public interface MapNPSToNoProgrammedShareResponse {
@@ -23,27 +19,27 @@ public interface MapNPSToNoProgrammedShareResponse {
   @Mapping(source = "userSigningId", target = "userSigning.id")
   @Mapping(source = "familyId", target = "family.id")
   @Mapping(source = "subFamilyId", target = "subFamily.id")
-  @Mapping(source = "interventionIds", target = "interventions", qualifiedByName = "mapInterventions")
+  @Mapping(source = "inspectionIds", target = "inspections", qualifiedByName = "mapInspections")
   @Mapping(source = "fileIds", target = "files", qualifiedByName = "mapFiles")
   NoProgrammedShare from(NoProgrammedShareDto dto);
 
   List<NoProgrammedShare> from(Page<NoProgrammedShareDto> list);
 
-  @Named("mapInterventions")
-  static List<Intervention> mapInterventions(final Set<Integer> interventionIds) {
+  @Named("mapInspections")
+  static List<Inspection> mapInspections(final List<Integer> inspectionIds) {
 
-    return interventionIds.stream().map(id -> {
+    return inspectionIds.stream().map(id -> {
 
-      final Intervention intervention = new Intervention();
-      intervention.setId(id);
+      final Inspection inspection = new Inspection();
+      inspection.setId(id);
 
-      return intervention;
+      return inspection;
 
     }).collect(Collectors.toList());
   }
 
   @Named("mapFiles")
-  static List<ShareFile> mapFiles(final Set<Integer> fileIds) {
+  static Set<ShareFile> mapFiles(final Set<Integer> fileIds) {
 
     return fileIds.stream().map(id -> {
 
@@ -52,6 +48,13 @@ public interface MapNPSToNoProgrammedShareResponse {
 
       return shareFile;
 
-    }).collect(Collectors.toList());
+    }).collect(Collectors.toSet());
+  }
+
+  @AfterMapping
+  default void parse(@MappingTarget NoProgrammedShare response) {
+    response.setUserSigning(response.getUserSigning() != null && response.getUserSigning().getId() != null ? response.getUserSigning() : null);
+    response.setFamily(response.getFamily() != null && response.getFamily().getId() != null ? response.getFamily() : null);
+    response.setSubFamily(response.getSubFamily() != null && response.getSubFamily().getId() != null ? response.getSubFamily() : null);
   }
 }

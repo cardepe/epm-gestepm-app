@@ -25,7 +25,7 @@ public class NoProgrammedShareExceptionHandler extends BaseRestExceptionHandler 
 
     @ExceptionHandler(NoProgrammedShareNotFoundException.class)
     @ResponseStatus(value = NOT_FOUND)
-    public APIError handle(CountryNotFoundException ex) {
+    public APIError handle(NoProgrammedShareNotFoundException ex) {
 
         final Integer id = ex.getId();
 

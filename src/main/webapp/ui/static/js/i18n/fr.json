@@ -39,6 +39,9 @@
     },
     "shares": {
         "noprogrammed": {
+            "update": {
+                "success": "La partie non programmée a été mise à jour avec succès."
+            },
             "intervention": {
                 "update": {
                     "success": "L'intervention a été mise à jour avec succès."

@@ -189,7 +189,7 @@
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 						<div class="float-right">
 							<button id="createDispShareBtn" type="button" class="btn btn-sm btn-info"><spring:message code="shares.displacement.create.title" /></button>
@@ -255,7 +255,7 @@
 						</div>
 						
 						<div class="col-sm-12 col-md-6">
-							<label for="displacementType" class="col-form-label"><spring:message code="displacements.table.displacement.type" /></label> 
+							<label for="displacementType" class="col-form-label"><spring:message code="displacements.table.displacement.type" /></label>
 							<select id="displacementType" name="displacementType" class="form-control">
 								<option disabled value="" selected="selected">
 									<spring:message code="displacements.displacement.type.placeholder" />
@@ -281,7 +281,7 @@
 				<div class="modal-footer clearfix">
 					<div class="w-100">
 						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="cerrar" /></button>
+							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 						</div>
 						<div class="float-right">
 							<button id="createDispBtn" type="button" class="btn btn-sm btn-success"><spring:message code="ccreate" /></button>

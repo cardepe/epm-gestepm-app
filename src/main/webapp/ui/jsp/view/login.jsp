@@ -89,7 +89,7 @@
 						</div>
 					</div>
 					<div class="footer">
-						<spring:message code="login.copyright" /> 
+						<spring:message code="login.copyright" />
 					</div>
 				</div>
 			</div>

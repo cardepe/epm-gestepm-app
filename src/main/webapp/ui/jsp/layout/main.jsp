@@ -92,7 +92,7 @@
 
 	</c:if>
 	
-	<c:if test="${pageName eq '/shares/intervention' || fn:startsWith(pageName, '/shares/intervention/no-programmed/detail/') || pageName eq '/signing'}">
+	<c:if test="${pageName eq '/shares/intervention' || fn:startsWith(pageName, '/shares/no-programmed/') || pageName eq '/signing'}">
 	
 		<!-- JS BS Stepper -->
 		<script type="text/javascript" src="/ui/static/js/plugins/bs-stepper/bs-stepper.min.js"></script>

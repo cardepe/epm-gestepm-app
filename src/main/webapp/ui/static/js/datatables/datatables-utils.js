@@ -3,12 +3,14 @@ let customDataTable;
 
 class CustomDataTable {
 
-    constructor(columns, endpoint, actions, expand, filters, columnDefs, stickyColumns) {
+    constructor(columns, endpoint, data, actions, expand, filters, orderable, columnDefs, stickyColumns) {
         this.columns = columns
         this.endpoint = endpoint
+        this.data = data;
         this.actions = actions
         this.expand = expand
         this.filters = filters
+        this.orderable = orderable
         this.columnDefs = columnDefs
         this.stickyColumns = stickyColumns
     }
@@ -37,6 +39,14 @@ class CustomDataTable {
         this.filters = filters
     }
 
+    orderable() {
+        return this.orderable
+    }
+
+    setOrderable(orderable) {
+        this.orderable = orderable
+    }
+
     columnDefs() {
         return this.columnDefs
     }
@@ -50,14 +60,32 @@ class CustomDataTable {
     }
 }
 
-function createDataTable(tableId, customDataTable, locale) {
-
+function createSimpleDataTable(tableId, customDataTable, locale) {
     dTable = $(tableId).DataTable({
         lengthChange: false,
         searching: false,
         processing: true,
-        serverSide: true,
-        order: [1],
+        data: customDataTable.data,
+        columns: parseArrayToDataTableColumns(customDataTable.columns),
+        columnDefs: generateColumnDefs(customDataTable),
+        rowId: customDataTable.columns[0],
+        language: {
+            url: '/ui/static/lang/datatables/' + locale + '.json'
+        },
+        fixedColumns: customDataTable.stickyColumns,
+        dom: '<\'top\'i>rt<\'bottom\'p><\'clear\'>',
+    })
+
+    return dTable;
+}
+
+function createDataTable(tableId, customDataTable, locale) {
+    dTable = $(tableId).DataTable({
+        lengthChange: false,
+        searching: false,
+        processing: true,
+        serverSide: customDataTable.endpoint,
+        order: customDataTable.orderable,
         ajax: {
             url: customDataTable.endpoint,
             // beforeSend: function (request) {
@@ -123,8 +151,8 @@ function generateColumnDefs(customDataTable) {
             targets: -1,
             data: null,
             orderable: false,
-            render: function(data) {
-                return printActions(customDataTable.actions, data)
+            render: function(data, type, row) {
+                return printActions(customDataTable.actions, row.id)
             }
         }
     )
@@ -224,19 +252,29 @@ function printActions(actions, id) {
     actions.forEach(a => {
 
         if (a.action === 'view') { // FIXME: && a.permission && authentication.permissions.includes(a.permission)) {
-            buttonHtml += '<div class="menu-item px-3">' +
-                '<a href="' + a.url.replace('{id}', id) + '" class="menu-link px-3">' +
-                messages.actions.view +
-                '</a>' +
-                '</div>';
+            buttonHtml += '<a href="' + a.url.replace('{id}', id) + '" class="menu-link">' +
+                '<em class="far fa-eye" onclick="edit(' + id + ')"></em>' +
+                '</a>';
         }
 
         if (a.action === 'edit') { // FIXME: } && a.permission && authentication.permissions.includes(a.permission)) {
-            buttonHtml += '<em class="fas fa-edit" onclick="edit(' + id + ')"></em>';
+            if (a.type === 'redirect') {
+                buttonHtml += '<a href="' + a.url.replace('{id}', id) + '" class="menu-link">' +
+                    '<em class="fas fa-edit" onclick="edit(' + id + ')"></em>' +
+                    '</a>';
+            } else {
+                buttonHtml += '<em class="fas fa-edit" onclick="edit(' + id + ')"></em>';
+            }
         }
 
         if (a.action === 'delete') { // FIXME: } && a.permission && authentication.permissions.includes(a.permission)) {
             buttonHtml += '<em class="far fa-trash-alt" onclick="remove(' + id + ')"></em>';
+        }
+
+        if (a.action === 'file-pdf') {
+            buttonHtml += '<a href="' + a.url.replace('{id}', id) + '" target="_blank" class="menu-link">' +
+                '<em class="fas fa-file-pdf" onclick="edit(' + id + ')"></em>' +
+                '</a>';
         }
     });
 
