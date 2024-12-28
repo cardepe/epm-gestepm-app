@@ -200,7 +200,10 @@ public class InspectionServiceImpl implements InspectionService {
 
         final InspectionDto result = getMapper(MapIToInspectionDto.class).from(updated);
 
-        this.createForumComment(result, noProgrammedShare);
+        if (result.getTopicId() == null) {
+            this.createForumComment(result, noProgrammedShare);
+        }
+
         this.sendMail(result, updateDto.getNotify());
 
         return result;
@@ -274,7 +277,7 @@ public class InspectionServiceImpl implements InspectionService {
 
             this.topicService.create(title, content, noProgrammedShare.getTopicId().longValue(), ip, user.getUsername(), null)
                     .thenApply(topic -> {
-                        final InspectionUpdate inspectionUpdate = new InspectionUpdate();
+                        final InspectionUpdate inspectionUpdate = getMapper(MapIToInspectionUpdate.class).from(inspection);
                         inspectionUpdate.setId(inspection.getId());
                         inspectionUpdate.setTopicId(topic.getId().intValue());
 

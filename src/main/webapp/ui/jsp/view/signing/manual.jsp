@@ -195,7 +195,7 @@
             "columnDefs": [
                 { "className": "text-center", "targets": "_all" },
                 {
-                    "render": function ( data, type, row ) {
+                    "render": function ( data ) {
                         if (!data) { return '-'; }
                         else { return moment(data).format('DD/MM/YYYY HH:mm'); }
                     },
@@ -204,7 +204,7 @@
                 { "defaultContent": "${tableActionButtons}", "orderable": false, "targets": -1 }
             ],
             "dom": "<'top'i>rt<'bottom'<'row no-gutters'<'col'l><'col'p>>><'clear'>",
-            "drawCallback": function(settings, json) {
+            "drawCallback": function() {
                 parseActionButtons(${trashVisible});
             }
         });

@@ -30,11 +30,6 @@ function parseActionButtons(trashVisible) {
                 $(this).wrap('<a href="/signing/manual/' + id + '/file" target="_blank"></a>');
 
             } else if (index === 1) {
-
-                if (!trashVisible) {
-                    $(this).remove();
-                }
-
                 $(this).attr('onclick', 'deleteManualSigning(' + id + ')');
             }
         });

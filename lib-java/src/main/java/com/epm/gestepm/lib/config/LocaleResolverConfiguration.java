@@ -23,6 +23,7 @@ public class LocaleResolverConfiguration {
         final ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasenames("i18n/messages", "i18n/errors", "i18n/front");
         messageSource.setUseCodeAsDefaultMessage(true);
+        // messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
 

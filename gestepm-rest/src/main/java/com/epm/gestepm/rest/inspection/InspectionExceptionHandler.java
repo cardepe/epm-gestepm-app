@@ -4,14 +4,15 @@ import com.epm.gestepm.lib.controller.error.APIError;
 import com.epm.gestepm.lib.controller.error.I18nErrorMessageSource;
 import com.epm.gestepm.lib.controller.exception.BaseRestExceptionHandler;
 import com.epm.gestepm.lib.executiontrace.ExecutionRequestProvider;
+import com.epm.gestepm.modelapi.inspection.exception.InspectionExportException;
+import com.epm.gestepm.modelapi.inspection.exception.InspectionFileNotFoundException;
 import com.epm.gestepm.modelapi.inspection.exception.InspectionNotEndedException;
 import com.epm.gestepm.modelapi.inspection.exception.InspectionNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.*;
 
 @RestControllerAdvice
 public class InspectionExceptionHandler extends BaseRestExceptionHandler {
@@ -21,6 +22,10 @@ public class InspectionExceptionHandler extends BaseRestExceptionHandler {
     public static final String I_NOT_FOUND = "inspection-not-found";
 
     public static final String I_NOT_ENDED = "inspection-not-ended";
+
+    public static final String I_FILE_NOT_FOUND = "inspection-file-not-found";
+
+    public static final String I_EXPORT_EXCEPTION = "inspection-export-exception";
 
     public InspectionExceptionHandler(ExecutionRequestProvider executionRequestProvider, I18nErrorMessageSource i18nErrorMessageSource) {
         super(executionRequestProvider, i18nErrorMessageSource);
@@ -42,6 +47,24 @@ public class InspectionExceptionHandler extends BaseRestExceptionHandler {
         final Integer id = ex.getId();
 
         return toAPIError(I_ERROR_CODE, I_NOT_ENDED, I_NOT_ENDED, id);
+    }
+
+    @ExceptionHandler(InspectionFileNotFoundException.class)
+    @ResponseStatus(value = NOT_FOUND)
+    public APIError handle(InspectionFileNotFoundException ex) {
+
+        final Integer id = ex.getId();
+
+        return toAPIError(I_ERROR_CODE, I_FILE_NOT_FOUND, I_FILE_NOT_FOUND, id);
+    }
+
+    @ExceptionHandler(InspectionExportException.class)
+    @ResponseStatus(value = INTERNAL_SERVER_ERROR)
+    public APIError handle(InspectionExportException ex) {
+
+        final Integer id = ex.getId();
+
+        return toAPIError(I_ERROR_CODE, I_EXPORT_EXCEPTION, I_EXPORT_EXCEPTION, id);
     }
 
 }

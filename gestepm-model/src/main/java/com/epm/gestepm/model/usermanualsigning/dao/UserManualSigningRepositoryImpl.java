@@ -37,7 +37,13 @@ public class UserManualSigningRepositoryImpl implements UserManualSigningReposit
 
 			List<Predicate> predicates = new ArrayList<>();
 
-			cq.multiselect(root.get("id"), root.get("manualSigningType").get("name"), root.get("startDate"), root.get("endDate"), root.get("justification"));
+			cq.multiselect(
+					root.get("id"),
+					root.get("manualSigningType").get("name"),
+					root.get("startDate"),
+					root.get("endDate"),
+					cb.isNotNull(root.get("justification"))
+			);
 
 			/* END #BASE_QUERY */
 
