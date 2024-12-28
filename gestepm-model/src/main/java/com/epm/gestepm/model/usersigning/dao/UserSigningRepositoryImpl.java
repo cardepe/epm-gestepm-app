@@ -1,21 +1,24 @@
 package com.epm.gestepm.model.usersigning.dao;
 
-import java.sql.Time;
-import java.util.*;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
+import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
+import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
+import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
+import com.epm.gestepm.modelapi.usersigning.dto.UserSigningTableDTO;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-
-import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigningTableDTO;
-import org.springframework.stereotype.Repository;
-
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
-import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
+import java.sql.Time;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 @Repository
 public class UserSigningRepositoryImpl implements UserSigningRepositoryCustom {
@@ -107,7 +110,11 @@ public class UserSigningRepositoryImpl implements UserSigningRepositoryCustom {
 		
 		Root<UserSigning> root = cq.from(UserSigning.class);
 		
-		cq.select(root).where(cb.and(cb.between(root.get("endDate"), startDate, endDate), cb.equal(root.get("user"), userId)));
+		cq.select(root).where(cb.and(cb.between(
+				root.get("endDate").as(OffsetDateTime.class),
+				startDate.toInstant().atOffset(ZoneOffset.UTC),
+				endDate.toInstant().atOffset(ZoneOffset.UTC)
+		), cb.equal(root.get("user"), userId)));
 		
 		return entityManager.createQuery(cq).getResultList();
 	}

@@ -1,20 +1,23 @@
 package com.epm.gestepm.model.interventionprshare.service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import com.epm.gestepm.model.interventionprsharefile.dao.InterventionPrShareFileRepository;
+import com.epm.gestepm.lib.file.FileUtils;
 import com.epm.gestepm.model.interventionprshare.dao.InterventionPrShareRepository;
+import com.epm.gestepm.model.interventionprsharefile.dao.InterventionPrShareFileRepository;
 import com.epm.gestepm.model.interventionshare.service.mapper.ShareMapper;
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
+import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
+import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShareFile;
+import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
 import com.epm.gestepm.modelapi.interventionshare.dto.PdfFileDTO;
 import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -25,25 +28,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
-
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShareFile;
-import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
-import com.epm.gestepm.lib.file.FileUtils;
-import com.epm.gestepm.modelapi.common.utils.Utiles;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 @Service
 @Transactional
 public class InterventionPrShareServiceImpl implements InterventionPrShareService {
 
 	private static final Log log = LogFactory.getLog(InterventionPrShareServiceImpl.class);
+
+	private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm";
 	
 	@Autowired
 	private InterventionPrShareRepository interventionPrShareDao;
@@ -110,7 +110,7 @@ public class InterventionPrShareServiceImpl implements InterventionPrShareServic
 	}
 
 	@Override
-	public List<InterventionPrShare> getWeekSigningsByProjectId(Date startDate, Date endDate, Long projectId) {
+	public List<InterventionPrShare> getWeekSigningsByProjectId(OffsetDateTime startDate, OffsetDateTime endDate, Long projectId) {
 		return interventionPrShareDao.findWeekSigningsByProjectId(startDate, endDate, projectId);
 	}
 	
@@ -130,8 +130,8 @@ public class InterventionPrShareServiceImpl implements InterventionPrShareServic
 	        
 	        stamper.getAcroFields().setField("idShare", share.getId().toString());
 			stamper.getAcroFields().setField("station", share.getProject().getName());
-	        stamper.getAcroFields().setField("startDate", Utiles.transformTimestampToString(share.getStartDate()));
-	        stamper.getAcroFields().setField("endDate", Utiles.transformTimestampToString(share.getEndDate()));
+	        stamper.getAcroFields().setField("startDate", Utiles.transform(share.getStartDate(), DATE_FORMAT));
+	        stamper.getAcroFields().setField("endDate", Utiles.transform(share.getEndDate(), DATE_FORMAT));
 
 			if (share.getSecondTechnical() != null) {
 				stamper.getAcroFields().setField("secondTechnical", share.getSecondTechnical().getName() + " " + share.getSecondTechnical().getSurnames());
@@ -210,7 +210,7 @@ public class InterventionPrShareServiceImpl implements InterventionPrShareServic
 	}
 
 	@Override
-	public List<PdfFileDTO> generateSharesByProjectAndInterval(Long projectId, Date startDate, Date endDate) {
+	public List<PdfFileDTO> generateSharesByProjectAndInterval(Long projectId, OffsetDateTime startDate, OffsetDateTime endDate) {
 
 		final List<PdfFileDTO> pdfs = new ArrayList<>();
 

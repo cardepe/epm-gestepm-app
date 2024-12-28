@@ -176,7 +176,7 @@ public class UserController {
 
 	@ResponseBody
 	@GetMapping("/dt")
-	public String userBossUsersDatatable(@RequestParam(required = false) Long userId, @RequestParam(required = false) Integer state, HttpServletRequest request, Locale locale) {
+	public DataTableResults<UserTableDTO> userBossUsersDatatable(@RequestParam(required = false) Long userId, @RequestParam(required = false) Integer state, HttpServletRequest request, Locale locale) {
 
 		try {
 
@@ -212,7 +212,7 @@ public class UserController {
 
 			DataTableResults<UserTableDTO> dataTableResult = new DataTableResults<>();
 			dataTableResult.setDraw(dataTableInRQ.getDraw());
-			dataTableResult.setListOfDataObjects(users);
+			dataTableResult.setData(users);
 			dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 			dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -220,11 +220,11 @@ public class UserController {
 				dataTableResult.setRecordsFiltered(Integer.toString(users.size()));
 			}
 
-			return dataTableResult.getJson();
+			return dataTableResult;
 
 		} catch (InvalidUserSessionException e) {
 			log.error(e);
-			return "redirect:/login";
+			return null;
 		}
 	}
 	
@@ -402,7 +402,7 @@ public class UserController {
 
 	@ResponseBody
 	@GetMapping("/{id}/holidays/dt")
-	public String userHolidaysDatatable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
+	public DataTableResults<UserHolidayDTO> userHolidaysDatatable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
 		
 		try {
 						
@@ -415,7 +415,7 @@ public class UserController {
 
 		    DataTableResults<UserHolidayDTO> dataTableResult = new DataTableResults<>();
 		    dataTableResult.setDraw(dataTableInRQ.getDraw());
-		    dataTableResult.setListOfDataObjects(userHolidays);
+		    dataTableResult.setData(userHolidays);
 		    dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 		    dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -423,7 +423,7 @@ public class UserController {
 				dataTableResult.setRecordsFiltered(Integer.toString(userHolidays.size()));
 			}
 
-		    return dataTableResult.getJson();
+		    return dataTableResult;
 		    
 		} catch (Exception e) {
 			log.error(e);
@@ -433,7 +433,7 @@ public class UserController {
 	
 	@ResponseBody
 	@GetMapping("/{id}/absences/dt")
-	public String userAbsencesDatatable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
+	public DataTableResults<UserAbsenceDTO> userAbsencesDatatable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
 		
 		try {
 						
@@ -446,7 +446,7 @@ public class UserController {
 
 		    DataTableResults<UserAbsenceDTO> dataTableResult = new DataTableResults<>();
 		    dataTableResult.setDraw(dataTableInRQ.getDraw());
-		    dataTableResult.setListOfDataObjects(userAbsences);
+		    dataTableResult.setData(userAbsences);
 		    dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 		    dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -454,7 +454,7 @@ public class UserController {
 				dataTableResult.setRecordsFiltered(Integer.toString(userAbsences.size()));
 			}
 
-		    return dataTableResult.getJson();
+		    return dataTableResult;
 		    
 		} catch (Exception e) {
 			log.error(e);
@@ -512,7 +512,7 @@ public class UserController {
 	
 	@ResponseBody
 	@GetMapping("/{id}/expenses/dt")
-	public String userExpensesDatatable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
+	public DataTableResults<ExpenseSheetTableDTO> userExpensesDatatable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
 
 		try {
 
@@ -536,7 +536,7 @@ public class UserController {
 
 			DataTableResults<ExpenseSheetTableDTO> dataTableResult = new DataTableResults<>();
 			dataTableResult.setDraw(dataTableInRQ.getDraw());
-			dataTableResult.setListOfDataObjects(expenseSheets);
+			dataTableResult.setData(expenseSheets);
 			dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 			dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -545,17 +545,17 @@ public class UserController {
 				dataTableResult.setRecordsFiltered(Integer.toString(expenseSheets.size()));
 			}
 
-			return dataTableResult.getJson();
+			return dataTableResult;
 
 		} catch (InvalidUserSessionException e) {
 			log.error(e);
-			return "redirect:/login";
+			return null;
 		}
 	}
 	
 	@ResponseBody
 	@GetMapping("/{id}/projects/dt")
-	public String userProjectsDatatable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
+	public DataTableResults<ProjectTableDTO> userProjectsDatatable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
 		
 		try {
 						
@@ -568,7 +568,7 @@ public class UserController {
 
 		    DataTableResults<ProjectTableDTO> dataTableResult = new DataTableResults<>();
 		    dataTableResult.setDraw(dataTableInRQ.getDraw());
-		    dataTableResult.setListOfDataObjects(userProjects);
+		    dataTableResult.setData(userProjects);
 		    dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 		    dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -576,7 +576,7 @@ public class UserController {
 				dataTableResult.setRecordsFiltered(Integer.toString(userProjects.size()));
 			}
 
-		    return dataTableResult.getJson();
+		    return dataTableResult;
 		    
 		} catch (Exception e) {
 			log.error(e);

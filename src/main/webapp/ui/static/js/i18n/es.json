@@ -83,5 +83,11 @@
     "commons": {
         "yes": "Sí",
         "no": "No"
+    },
+    "status": {
+        "pending": "Pendiente",
+        "approved": "Aprobado por administración",
+        "paid": "Aprobado",
+        "rejected": "Cancelado"
     }
 }

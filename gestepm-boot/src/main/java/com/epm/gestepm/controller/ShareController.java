@@ -18,17 +18,22 @@ import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShareDTO;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShareTableDTO;
 import com.epm.gestepm.modelapi.displacementshare.service.DisplacementShareService;
 import com.epm.gestepm.modelapi.expense.dto.FileDTO;
+import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
+import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
+import com.epm.gestepm.modelapi.inspection.service.InspectionExportService;
+import com.epm.gestepm.modelapi.inspection.service.InspectionService;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
-import com.epm.gestepm.modelapi.interventionshare.dto.*;
-import com.epm.gestepm.modelapi.interventionshare.mapper.MapISSToInterventionFinalDto;
+import com.epm.gestepm.modelapi.interventionshare.dto.IdMsgDTO;
+import com.epm.gestepm.modelapi.interventionshare.dto.InterventionShare;
+import com.epm.gestepm.modelapi.interventionshare.dto.PdfFileDTO;
+import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.interventionshare.service.InterventionShareService;
-import com.epm.gestepm.modelapi.interventionsubshare.dto.InterventionSubShare;
-import com.epm.gestepm.modelapi.interventionsubshare.service.InterventionSubShareService;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.dto.UserDTO;
 import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
@@ -42,6 +47,7 @@ import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
 import com.epm.gestepm.modelapi.worksharefile.dto.WorkShareFile;
 import com.epm.gestepm.modelapi.worksharefile.service.WorkShareFileService;
 import com.mysql.jdbc.StringUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,8 +66,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.ZoneOffset;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -70,7 +75,6 @@ import java.util.zip.ZipOutputStream;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toCollection;
-import static org.mapstruct.factory.Mappers.getMapper;
 
 @Controller
 @RequestMapping("/shares")
@@ -82,10 +86,16 @@ public class ShareController {
     private DisplacementShareService displacementShareService;
 
     @Autowired
+    private InspectionService inspectionService;
+
+    @Autowired
+    private InspectionExportService inspectionExportService;
+
+    @Autowired
     private InterventionShareService interventionShareService;
 
     @Autowired
-    private InterventionSubShareService interventionSubShareService;
+    private NoProgrammedShareService noProgrammedShareService;
 
     @Autowired
     private ConstructionShareService constructionShareService;
@@ -232,7 +242,7 @@ public class ShareController {
     @SuppressWarnings("unchecked")
     @ResponseBody
     @GetMapping("/intervention/dt")
-    public String userInterventionSharesDatatable(@RequestParam(required = false) Long id, @RequestParam(required = false) String type, @RequestParam(required = false) Long project, @RequestParam(required = false) Integer progress, @RequestParam(required = false, name = "user") Long userId, HttpServletRequest request, Locale locale) {
+    public DataTableResults<ShareTableDTO> userInterventionSharesDatatable(@RequestParam(required = false) Long id, @RequestParam(required = false) String type, @RequestParam(required = false) Long project, @RequestParam(required = false) Integer progress, @RequestParam(required = false, name = "user") Long userId, HttpServletRequest request, Locale locale) {
 
         final DataTableRequest<InterventionShare> dataTableInRQ = new DataTableRequest<>(request);
         final PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
@@ -242,7 +252,7 @@ public class ShareController {
 
         final DataTableResults<ShareTableDTO> dataTableResult = new DataTableResults<>();
         dataTableResult.setDraw(dataTableInRQ.getDraw());
-        dataTableResult.setListOfDataObjects(shareTableDTOs);
+        dataTableResult.setData(shareTableDTOs);
         dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
         dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -250,7 +260,7 @@ public class ShareController {
             dataTableResult.setRecordsFiltered(Integer.toString(shareTableDTOs.size()));
         }
 
-        return dataTableResult.getJson();
+        return dataTableResult;
     }
 
     @GetMapping(value = "/intervention/files", produces = { "application/zip" })
@@ -319,100 +329,6 @@ public class ShareController {
     }
 
     @ResponseBody
-    @PutMapping("/intervention/no-programmed/{id}")
-    public ResponseEntity<String> updateNoProgrammedShare(@PathVariable Long id, @ModelAttribute InterventionDTO interventionDTO,
-                                                          Locale locale, Model model, HttpServletRequest request) {
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Get
-            InterventionSubShare interventionShare = interventionSubShareService.getById(interventionDTO.getId());
-
-            interventionShare.setStartDate(interventionDTO.getStartDate().atOffset(ZoneOffset.UTC));
-            interventionShare.setEndDate(interventionDTO.getEndDate().atOffset(ZoneOffset.UTC));
-
-            // Save intervention
-            interventionShare = interventionSubShareService.save(interventionShare);
-
-            // Log info
-            log.info("Actualizado parte de intervencion no programado " + interventionShare.getId() + " por parte del usuario " + user.getId());
-
-            // Return data
-            return new ResponseEntity<>(messageSource.getMessage("shares.displacement.update.success", new Object[]{}, locale), HttpStatus.OK);
-
-        } catch (Exception e) {
-            log.error(e);
-            return new ResponseEntity<>(messageSource.getMessage("shares.displacement.update.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @ResponseBody
-    @GetMapping(" {id}")
-    public InterventionDTO getNoProgrammedShare(@PathVariable Long id) {
-
-        InterventionSubShare interventionShare = interventionSubShareService.getById(id);
-
-        return ShareMapper.mapInterventionShareToDTO(interventionShare);
-    }
-
-    @GetMapping(value = "/intervention/no-programmed/detail/{shareId}/{interventionId}/pdf", produces = {"application/pdf"})
-    public HttpEntity<byte[]> exportPdf(@PathVariable Long shareId, @PathVariable Long interventionId, Locale locale) {
-
-        log.info("Exportando el pdf del parte de intervención " + shareId + "/" + interventionId);
-
-        InterventionSubShare subShare = interventionSubShareService.getByShareAndOrder(shareId, interventionId);
-
-        if (subShare == null) {
-            log.error("No existe la intervención con id " + shareId + "/" + interventionId);
-            return null;
-        }
-
-        byte[] pdf = interventionSubShareService.generateInterventionSharePdf(subShare, locale);
-
-        if (pdf == null) {
-            log.error("Error al generar el fichero pdf de la interención " + shareId + "/" + interventionId);
-            return null;
-        }
-
-
-        String shareIdStr = subShare.getInterventionShare().getId() + "/" + subShare.getOrderId();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData("attachment", messageSource.getMessage("shares.no.programmed.pdf.name", new Object[]{shareIdStr.replace("/", "-"), Utiles.getDateFormatted(subShare.getStartDate())}, locale) + ".pdf");
-
-        return new HttpEntity<>(pdf, headers);
-    }
-
-    @GetMapping(value = "/intervention/no-programmed/detail/{shareId}/{interventionId}/materials/pdf", produces = {"application/pdf"})
-    public HttpEntity<byte[]> exportMaterialsPdf(@PathVariable Long shareId, @PathVariable Long interventionId, Locale locale) {
-
-        log.info("Exportando el pdf de materiales del parte de intervención " + shareId + "/" + interventionId);
-
-        InterventionSubShare subShare = interventionSubShareService.getByShareAndOrder(shareId, interventionId);
-
-        if (subShare == null) {
-            log.error("No existe la intervención con id " + shareId + "/" + interventionId);
-            return null;
-        }
-
-        byte[] pdf = interventionSubShareService.generateInterventionShareMaterialsPdf(subShare, locale);
-
-        if (pdf == null) {
-            log.error("Error al generar el fichero pdf de materiales de la interención " + shareId + "/" + interventionId);
-            return null;
-        }
-
-        String shareIdStr = subShare.getInterventionShare().getId() + "/" + subShare.getOrderId();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData("attachment", messageSource.getMessage("shares.no.programmed.materials.pdf.name", new Object[]{shareIdStr.replace("/", "-"), Utiles.getDateFormatted(subShare.getStartDate())}, locale) + ".pdf");
-
-        return new HttpEntity<>(pdf, headers);
-    }
-
-    @ResponseBody
     @PostMapping("/intervention/programmed/create")
     public ResponseEntity<String> createProgrammedIntervention(@ModelAttribute InterventionPrDTO interventionPrDTO, Locale locale, Model model, HttpServletRequest request) {
         try {
@@ -437,7 +353,7 @@ public class ShareController {
             // Map Intervention share
             InterventionPrShare interventionPrShare = ShareMapper.mapDTOToInterventionPrShare(interventionPrDTO, user, project, interventionPrDTO.getDispShareId());
             interventionPrShare.setUserSigning(currentUserSigning);
-            interventionPrShare.setStartDate(new Timestamp(new Date().getTime()));
+            interventionPrShare.setStartDate(OffsetDateTime.now());
 
             // Save intervention
             interventionPrShare = interventionPrShareService.save(interventionPrShare);
@@ -507,7 +423,7 @@ public class ShareController {
 
             // Map Intervention share stepper
             InterventionPrShare interventionPrShare = interventionPrShareService.getInterventionPrShareById(interventionPrDTO.getId());
-            interventionPrShare.setEndDate(Timestamp.valueOf(interventionPrDTO.getEndDate()));
+            interventionPrShare.setEndDate(interventionPrDTO.getEndDate());
 
             if (!StringUtils.isNullOrEmpty(interventionPrDTO.getObservations())) {
                 interventionPrShare.setObservations(interventionPrDTO.getObservations());
@@ -565,8 +481,8 @@ public class ShareController {
             // Get
             InterventionPrShare interventionPrShare = interventionPrShareService.getInterventionPrShareById(interventionPrDTO.getId());
 
-            interventionPrShare.setStartDate(Timestamp.valueOf(interventionPrDTO.getStartDate()));
-            interventionPrShare.setEndDate(Timestamp.valueOf(interventionPrDTO.getEndDate()));
+            interventionPrShare.setStartDate(interventionPrDTO.getStartDate());
+            interventionPrShare.setEndDate(interventionPrDTO.getEndDate());
             interventionPrShare.setObservations(interventionPrDTO.getObservations());
 
             // Save intervention
@@ -670,7 +586,7 @@ public class ShareController {
             // Map Intervention share stepper
             ConstructionShare constructionShare = ShareMapper.mapDTOToConstructionShare(constructionDTO, user, project, constructionDTO.getDispShareId());
             constructionShare.setUserSigning(currentUserSigning);
-            constructionShare.setStartDate(new Timestamp(new Date().getTime()));
+            constructionShare.setStartDate(OffsetDateTime.now());
 
             // Save intervention
             constructionShare = constructionShareService.save(constructionShare);
@@ -711,7 +627,7 @@ public class ShareController {
 
             // Map Intervention share stepper
             ConstructionShare constructionShare = constructionShareService.getConstructionShareById(constructionDTO.getId());
-            constructionShare.setEndDate(Timestamp.valueOf(constructionDTO.getEndDate()));
+            constructionShare.setEndDate(OffsetDateTime.now());
             constructionShare.setObservations(constructionDTO.getObservations());
             constructionShare.setSignatureOp(constructionDTO.getSignatureOp());
 
@@ -759,8 +675,8 @@ public class ShareController {
             // Get
             ConstructionShare constructionShare = constructionShareService.getConstructionShareById(constructionDTO.getId());
 
-            constructionShare.setStartDate(Timestamp.valueOf(constructionDTO.getStartDate()));
-            constructionShare.setEndDate(Timestamp.valueOf(constructionDTO.getEndDate()));
+            constructionShare.setStartDate(constructionDTO.getStartDate());
+            constructionShare.setEndDate(constructionDTO.getEndDate());
             constructionShare.setObservations(constructionDTO.getObservations());
 
             // Save intervention
@@ -885,7 +801,7 @@ public class ShareController {
 
             // Map Intervention share stepper
             DisplacementShare displacementShare = ShareMapper.mapDTOToDisplacementShare(displacementShareDTO, user, project, displacement);
-            displacementShare.setOriginalDate(new Timestamp(new Date().getTime()));
+            displacementShare.setOriginalDate(OffsetDateTime.now());
 
             // Save intervention
             displacementShare = displacementShareService.save(displacementShare);
@@ -971,7 +887,7 @@ public class ShareController {
 
     @ResponseBody
     @GetMapping("/displacement/dt")
-    public String userDisplacementSharesDatatable(HttpServletRequest request, Locale locale) {
+    public DataTableResults<DisplacementShareTableDTO> userDisplacementSharesDatatable(HttpServletRequest request, Locale locale) {
 
         try {
 
@@ -988,7 +904,7 @@ public class ShareController {
 
             DataTableResults<DisplacementShareTableDTO> dataTableResult = new DataTableResults<>();
             dataTableResult.setDraw(dataTableInRQ.getDraw());
-            dataTableResult.setListOfDataObjects(displacementShares);
+            dataTableResult.setData(displacementShares);
             dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
             dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -997,11 +913,11 @@ public class ShareController {
                 dataTableResult.setRecordsFiltered(Integer.toString(displacementShares.size()));
             }
 
-            return dataTableResult.getJson();
+            return dataTableResult;
 
         } catch (InvalidUserSessionException e) {
             log.error(e);
-            return "redirect:/login";
+            return null;
         }
     }
 
@@ -1061,7 +977,7 @@ public class ShareController {
             // Map Intervention share stepper
             WorkShare workShare = ShareMapper.mapDTOToWorkShare(workShareDTO, user, project);
             workShare.setUserSigning(currentUserSigning);
-            workShare.setStartDate(new Timestamp(new Date().getTime()));
+            workShare.setStartDate(OffsetDateTime.now());
 
             // Save intervention
             workShare = workShareService.save(workShare);
@@ -1098,7 +1014,7 @@ public class ShareController {
 
             // Map Intervention share stepper
             WorkShare workShare = workShareService.getWorkShareById(workShareDTO.getId());
-            workShare.setEndDate(Timestamp.valueOf(workShareDTO.getEndDate()));
+            workShare.setEndDate(workShareDTO.getEndDate());
             workShare.setObservations(workShareDTO.getObservations());
             workShare.setSignatureOp(workShareDTO.getSignatureOp());
 
@@ -1163,8 +1079,8 @@ public class ShareController {
             // Map Intervention share stepper
             WorkShare workShare = workShareService.getWorkShareById(workShareDTO.getId());
 
-            workShare.setStartDate(Timestamp.valueOf(workShareDTO.getStartDate()));
-            workShare.setEndDate(Timestamp.valueOf(workShareDTO.getEndDate()));
+            workShare.setStartDate(workShareDTO.getStartDate());
+            workShare.setEndDate(workShareDTO.getEndDate());
             workShare.setObservations(workShareDTO.getObservations());
 
             // Save intervention
@@ -1232,7 +1148,7 @@ public class ShareController {
 
     @ResponseBody
     @GetMapping("/work/dt")
-    public String userWorkSharesDatatable(HttpServletRequest request, Locale locale) {
+    public DataTableResults<WorkShareTableDTO> userWorkSharesDatatable(HttpServletRequest request, Locale locale) {
 
         try {
 
@@ -1249,7 +1165,7 @@ public class ShareController {
 
             DataTableResults<WorkShareTableDTO> dataTableResult = new DataTableResults<>();
             dataTableResult.setDraw(dataTableInRQ.getDraw());
-            dataTableResult.setListOfDataObjects(workShares);
+            dataTableResult.setData(workShares);
             dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
             dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -1258,21 +1174,12 @@ public class ShareController {
                 dataTableResult.setRecordsFiltered(Integer.toString(workShares.size()));
             }
 
-            return dataTableResult.getJson();
+            return dataTableResult;
 
         } catch (InvalidUserSessionException e) {
             log.error(e);
-            return "redirect:/login";
+            return null;
         }
-    }
-
-    @ResponseBody
-    @GetMapping("/no-programmed/{shareId}/intervention/{interventionId}")
-    public InterventionFinalDto getIntervention(@PathVariable Long shareId, @PathVariable Long interventionId) {
-
-        final InterventionSubShare interventionSubShare = interventionSubShareService.getById(interventionId);
-
-        return getMapper(MapISSToInterventionFinalDto.class).from(interventionSubShare);
     }
 
     private List<PdfFileDTO> getConstructionSharesPdf(final List<ShareTableDTO> shareTableDTOs, final Locale locale) {
@@ -1355,36 +1262,31 @@ public class ShareController {
 
         for (ShareTableDTO noProgrammedShare : noProgrammedShares) {
 
-            final Long id = Long.parseLong(noProgrammedShare.getId().split("_")[0]);
+            final Integer noProgrammedShareId = Integer.parseInt(noProgrammedShare.getId().split("_")[0]);
 
-            final InterventionShare share = interventionShareService.getInterventionShareById(id);
+            final InspectionFilterDto filter = new InspectionFilterDto();
+            filter.setShareId(noProgrammedShareId);
 
-            List<InterventionSubShare> interventionSubShares = share.getInterventionSubShares();
-
-            interventionSubShares = interventionSubShares.stream().filter(f -> f.getEndDate() != null).collect(Collectors.toList());
+            final List<InspectionDto> inspections = this.inspectionService.list(filter)
+                    .stream().filter(inspection -> inspection.getEndDate() != null)
+                    .collect(Collectors.toList());
 
             byte[] zipContent = null;
 
-            if (!interventionSubShares.isEmpty()) {
+            if (CollectionUtils.isNotEmpty(inspections)) {
 
                 final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
                 try (ZipOutputStream zos = new ZipOutputStream(baos)) {
 
-                    for (InterventionSubShare subShare : interventionSubShares) {
+                    for (InspectionDto inspection : inspections) {
 
-                        final Long subShareId = subShare.getId();
+                        final byte[] pdf = this.inspectionExportService.generate(inspection);
 
-                        final byte[] pdf = interventionSubShareService.generateInterventionSharePdf(subShare, locale);
-
-                        if (pdf == null) {
-                            log.error("Error al generar el fichero pdf de la intervención " + id + "/" + subShareId);
-                            continue;
-                        }
-
-                        final String shareIdStr = subShare.getInterventionShare().getId() + "-" + subShare.getOrderId();
-
-                        final String fileName = messageSource.getMessage("shares.no.programmed.pdf.name", new Object[]{shareIdStr, Utiles.getDateFormatted(subShare.getStartDate())}, locale) + ".pdf";
+                        final String fileName = messageSource.getMessage("shares.no.programmed.pdf.name", new Object[] {
+                                inspection.getId(),
+                                Utiles.getDateFormatted(inspection.getStartDate())
+                        }, locale) + ".pdf";
 
                         final ZipEntry zipEntr = new ZipEntry(fileName);
 
@@ -1392,18 +1294,16 @@ public class ShareController {
                         zos.write(pdf);
                         zos.closeEntry();
 
-                        final byte[] pdfMaterials = interventionSubShareService.generateInterventionShareMaterialsPdf(subShare, locale);
+                        final byte[] pdfMaterials = this.inspectionExportService.generateMaterials(inspection);
 
-                        if (pdfMaterials == null) {
-                            log.error("Error al generar el fichero pdf de materiales de la intervención " + id + "/" + subShareId);
-                            continue;
-                        }
+                        final String fileNameMaterials = messageSource.getMessage("shares.no.programmed.materials.pdf.name", new Object[] {
+                                inspection.getId(),
+                                Utiles.getDateFormatted(inspection.getStartDate())
+                        }, locale) + ".pdf";
 
-                        final String fileNameMaterials = messageSource.getMessage("shares.no.programmed.materials.pdf.name", new Object[]{ shareIdStr, Utiles.getDateFormatted(subShare.getStartDate()) }, locale) + ".pdf";
+                        final ZipEntry zipEntryMat = new ZipEntry(fileNameMaterials);
 
-                        final ZipEntry zipEntrMat = new ZipEntry(fileNameMaterials);
-
-                        zos.putNextEntry(zipEntrMat);
+                        zos.putNextEntry(zipEntryMat);
                         zos.write(pdfMaterials);
                         zos.closeEntry();
                     }
@@ -1415,7 +1315,10 @@ public class ShareController {
                     e.printStackTrace();
                 }
 
-                final String fileName = messageSource.getMessage("shares.no.programmed.pdf.name", new Object[]{share.getId().toString(), Utiles.getDateFormatted(share.getNoticeDate())}, locale) + ".zip";
+                final String fileName = messageSource.getMessage("shares.no.programmed.pdf.name", new Object[] {
+                        noProgrammedShareId,
+                        Utiles.getDateFormatted(noProgrammedShare.getStartDate())
+                }, locale) + ".zip";
 
                 final PdfFileDTO pdfFileDTO = new PdfFileDTO();
                 pdfFileDTO.setFileName(fileName);

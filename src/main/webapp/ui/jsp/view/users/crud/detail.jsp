@@ -1026,7 +1026,7 @@
 				},
 				{  
 					"className": "text-right",
-				    "render": function ( data, type, row ) {
+				    "render": function ( data ) {
                         return parseStatus(data);
                 	},
                 	"targets": 3
@@ -1424,7 +1424,7 @@
 		} else if (type === 'ips') {
 			url = '/shares/intervention/programmed/' + id;
 		} else if (type === 'is') {
-			url = '/shares/intervention/no-programmed/' + id;
+			url = '/shares/no-programmed/' + id;
 		} else if (type === 'ps') {
 			url = '/signing/personal/' + id;
 		} else if (type === 'ws') {

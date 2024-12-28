@@ -31,7 +31,7 @@ public class SecurityAuthenticationManager implements AuthenticationManager  {
 			throw new BadCredentialsException("Debe introducir una contraseña");
 		}
 		
-		SingletonUtil singletonUtil = ApplicationContextProvider.getContext().getBean(SingletonUtil.class);
+		SingletonUtil singletonUtil = ApplicationContextProvider.getBean(SingletonUtil.class);
 		
 		User user = (User) authentication.getDetails();
 		

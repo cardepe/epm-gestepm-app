@@ -1,6 +1,8 @@
 package com.epm.gestepm.model.interventionshare.service.mapper;
 
+import com.epm.gestepm.lib.file.FileUtils;
 import com.epm.gestepm.model.displacement.service.mapper.DisplacementMapper;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionDTO;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.constructionsharefile.dto.ConstructionShareFile;
@@ -12,15 +14,7 @@ import com.epm.gestepm.modelapi.expense.dto.FileDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShareFile;
-import com.epm.gestepm.modelapi.interventionshare.dto.InterventionDTO;
-import com.epm.gestepm.modelapi.interventionshare.dto.InterventionNoPrDTO;
-import com.epm.gestepm.modelapi.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
-import com.epm.gestepm.modelapi.interventionsharefile.dto.InterventionShareFile;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionShareMaterial;
-import com.epm.gestepm.modelapi.interventionsubshare.dto.InterventionSubShare;
-import com.epm.gestepm.modelapi.interventionsubsharefile.dto.InterventionSubShareFile;
-import com.epm.gestepm.modelapi.materialrequired.dto.MaterialShareDTO;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningDTO;
 import com.epm.gestepm.modelapi.project.dto.Project;
@@ -31,17 +25,14 @@ import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShareDTO;
 import com.epm.gestepm.modelapi.worksharefile.dto.WorkShareFile;
-import com.epm.gestepm.lib.file.FileUtils;
-import com.epm.gestepm.modelapi.common.utils.Utiles;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.sql.Timestamp;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ShareMapper {
@@ -50,36 +41,12 @@ public class ShareMapper {
 		
 	}
 	
-	public static InterventionShare mapDTOToInterventionShare(InterventionNoPrDTO interventionNoPrDTO, User user, Project project) {
-		
-		InterventionShare interventionShare = new InterventionShare();
-		interventionShare.setUser(user);
-		interventionShare.setProject(project);
-		interventionShare.setNoticeDate(interventionNoPrDTO.getNoticeDate() != null ? Timestamp.valueOf(interventionNoPrDTO.getNoticeDate()) : null);
-
-		return interventionShare;
-	}
-	
-	public static InterventionShareFile mapMultipartFileToInterventionShareFile(MultipartFile file, InterventionShare interventionShare) throws IOException {
-		String fileName = file.getOriginalFilename();
-		String ext = FilenameUtils.getExtension(fileName);
-		byte[] data = FileUtils.compressBytes(FileUtils.compressImage(file));
-
-		InterventionShareFile interventionShareFile = new InterventionShareFile();
-		interventionShareFile.setName(fileName);
-		interventionShareFile.setExt(ext);
-		interventionShareFile.setContent(data);
-		interventionShareFile.setInterventionShare(interventionShare);
-
-		return interventionShareFile;
-	}
-	
 	public static DisplacementShare mapDTOToDisplacementShare(DisplacementShareDTO displacementShareDTO, User user, Project project, Displacement displacement) {
 		
 		DisplacementShare displacementShare = new DisplacementShare();
 		Boolean roundTrip = BooleanUtils.isTrue(displacementShareDTO.getRoundTrip());
 	
-		displacementShare.setDisplacementDate(Timestamp.valueOf(displacementShareDTO.getDisplacementDate()));
+		displacementShare.setDisplacementDate(displacementShareDTO.getDisplacementDate());
 		displacementShare.setManualHours(Utiles.hourTimeToMinutes(displacementShareDTO.getManualHours()));
 		
 		if (displacementShareDTO.getManualDisplacement() != null) {
@@ -99,7 +66,7 @@ public class ShareMapper {
 		
 		DisplacementShareDTO displacementShareDTO = new DisplacementShareDTO();
 		
-		displacementShareDTO.setDisplacementDate(Utiles.convertToLocalDateTimeViaInstant(displacementShare.getDisplacementDate()));
+		displacementShareDTO.setDisplacementDate(displacementShare.getDisplacementDate());
 		displacementShareDTO.setActivityCenter(displacementShare.getDisplacement().getId());
 		displacementShareDTO.setManualHours(Utiles.minutesToHoursAndMinutesString(displacementShare.getManualHours()));
 		displacementShareDTO.setObservations(displacementShare.getObservations());
@@ -117,8 +84,8 @@ public class ShareMapper {
 		
 		ConstructionShare constructionShare = new ConstructionShare();
 		
-		constructionShare.setStartDate(constructionDTO.getStartDate() != null ? Timestamp.valueOf(constructionDTO.getStartDate()) : null);
-		constructionShare.setEndDate(constructionDTO.getEndDate() != null ? Timestamp.valueOf(constructionDTO.getEndDate()) : null);
+		constructionShare.setStartDate(constructionDTO.getStartDate());
+		constructionShare.setEndDate(constructionDTO.getEndDate());
 		constructionShare.setObservations(constructionDTO.getObservations());
 		constructionShare.setProject(project);
 		constructionShare.setUser(user);
@@ -134,30 +101,19 @@ public class ShareMapper {
 		ConstructionDTO constructionDTO = new ConstructionDTO();
 		
 		constructionDTO.setId(constructionShare.getId());
-		constructionDTO.setStartDate(Utiles.convertToLocalDateTimeViaInstant(constructionShare.getStartDate()));
-		constructionDTO.setEndDate(Utiles.convertToLocalDateTimeViaInstant(constructionShare.getEndDate()));
+		constructionDTO.setStartDate(constructionShare.getStartDate());
+		constructionDTO.setEndDate(constructionShare.getEndDate());
 		constructionDTO.setObservations(constructionShare.getObservations());
 		
 		return constructionDTO;
-	}
-	
-	public static InterventionDTO mapInterventionShareToDTO(InterventionSubShare interventionShare) {
-		
-		InterventionDTO interventionDTO = new InterventionDTO();
-		
-		interventionDTO.setId(interventionShare.getId());
-		interventionDTO.setStartDate(interventionShare.getStartDate().toLocalDateTime());
-		interventionDTO.setEndDate(interventionShare.getEndDate().toLocalDateTime());
-		
-		return interventionDTO;
 	}
 
 	public static InterventionPrShare mapDTOToInterventionPrShare(InterventionPrDTO interventionPrDTO, User user, Project project, Long dispShareId) {
 		
 		InterventionPrShare interventionPrShare = new InterventionPrShare();
 		
-		interventionPrShare.setStartDate(interventionPrDTO.getStartDate() != null ? Timestamp.valueOf(interventionPrDTO.getStartDate()) : null);
-		interventionPrShare.setEndDate(interventionPrDTO.getEndDate() != null ? Timestamp.valueOf(interventionPrDTO.getEndDate()) : null);
+		interventionPrShare.setStartDate(interventionPrDTO.getStartDate());
+		interventionPrShare.setEndDate(interventionPrDTO.getEndDate());
 		interventionPrShare.setObservations(interventionPrDTO.getObservations());
 		interventionPrShare.setProject(project);
 		interventionPrShare.setUser(user);
@@ -174,8 +130,8 @@ public class ShareMapper {
 		
 		interventionPrDTO.setId(interventionPrShare.getId());
 		interventionPrDTO.setProjectId(interventionPrShare.getProject().getId());
-		interventionPrDTO.setStartDate(Utiles.convertToLocalDateTimeViaInstant(interventionPrShare.getStartDate()));
-		interventionPrDTO.setEndDate(Utiles.convertToLocalDateTimeViaInstant(interventionPrShare.getEndDate()));
+		interventionPrDTO.setStartDate(interventionPrShare.getStartDate());
+		interventionPrDTO.setEndDate(interventionPrShare.getEndDate());
 		interventionPrDTO.setObservations(interventionPrShare.getObservations());
 		interventionPrDTO.setSignature(interventionPrShare.getSignature());
 		interventionPrDTO.setSignatureOp(interventionPrShare.getSignatureOp());
@@ -188,8 +144,8 @@ public class ShareMapper {
 		PersonalSigningDTO personalSigningDTO = new PersonalSigningDTO();
 		
 		personalSigningDTO.setId(personalSigning.getId());
-		personalSigningDTO.setStartDate(Utiles.convertToLocalDateTimeViaInstant(personalSigning.getStartDate()));
-		personalSigningDTO.setEndDate(Utiles.convertToLocalDateTimeViaInstant(personalSigning.getEndDate()));
+		personalSigningDTO.setStartDate(personalSigning.getStartDate());
+		personalSigningDTO.setEndDate(personalSigning.getEndDate());
 		
 		return personalSigningDTO;
 	}
@@ -198,8 +154,8 @@ public class ShareMapper {
 		
 		WorkShare workShare = new WorkShare();
 		
-		workShare.setStartDate(workShareDTO.getStartDate() != null ? Timestamp.valueOf(workShareDTO.getStartDate()) : null);
-		workShare.setEndDate(workShareDTO.getEndDate() != null ? Timestamp.valueOf(workShareDTO.getEndDate()) : null);
+		workShare.setStartDate(workShareDTO.getStartDate());
+		workShare.setEndDate(workShareDTO.getEndDate());
 		workShare.setObservations(workShareDTO.getObservations());
 		workShare.setProject(project);
 		workShare.setUser(user);
@@ -214,8 +170,8 @@ public class ShareMapper {
 		PersonalSigningDTO userSigningShareDTO = new PersonalSigningDTO();
 		
 		userSigningShareDTO.setId(userSigning.getId());
-		userSigningShareDTO.setStartDate(Utiles.convertToLocalDateTimeViaInstant(userSigning.getStartDate()));
-		userSigningShareDTO.setEndDate(Utiles.convertToLocalDateTimeViaInstant(userSigning.getEndDate()));
+		userSigningShareDTO.setStartDate(userSigning.getStartDate());
+		userSigningShareDTO.setEndDate(userSigning.getEndDate());
 		userSigningShareDTO.setStartLocation(userSigning.getStartLocation());
 		userSigningShareDTO.setEndLocation(userSigning.getEndLocation());
 		
@@ -227,8 +183,8 @@ public class ShareMapper {
 		UserManualSigningDTO userManualSigningDTO = new UserManualSigningDTO();
 
 		userManualSigningDTO.setId(userManualSigning.getId());
-		userManualSigningDTO.setStartDate(Utiles.convertToLocalDateTimeViaInstant(userManualSigning.getStartDate()));
-		userManualSigningDTO.setEndDate(Utiles.convertToLocalDateTimeViaInstant(userManualSigning.getEndDate()));
+		userManualSigningDTO.setStartDate(userManualSigning.getStartDate());
+		userManualSigningDTO.setEndDate(userManualSigning.getEndDate());
 		userManualSigningDTO.setDescription(userManualSigning.getDescription());
 		userManualSigningDTO.setGeolocation(userManualSigning.getLocation());
 
@@ -239,10 +195,10 @@ public class ShareMapper {
 		
 		WorkShareDTO workShareDTO = new WorkShareDTO();
 		
-		workShareDTO.setEndDate(Utiles.convertToLocalDateTimeViaInstant(workShare.getEndDate()));
+		workShareDTO.setEndDate(workShare.getEndDate());
 		workShareDTO.setId(workShare.getId());
 		workShareDTO.setObservations(workShare.getObservations());
-		workShareDTO.setStartDate(Utiles.convertToLocalDateTimeViaInstant(workShare.getStartDate()));
+		workShareDTO.setStartDate(workShare.getStartDate());
 		workShareDTO.setProjectId(workShare.getProject().getId());
 		
 		return workShareDTO;
@@ -261,21 +217,6 @@ public class ShareMapper {
 		constructionShareFile.setConstructionShare(constructionShare);
 
 		return constructionShareFile;
-	}
-	
-	public static InterventionSubShareFile mapMultipartFileToInterventionSubShareFile(MultipartFile file, InterventionSubShare interventionSubShare) {
-		String fileName = file.getOriginalFilename();
-		String ext = FilenameUtils.getExtension(fileName);
-
-		byte[] data = FileUtils.compressBytes(FileUtils.compressImage(file));
-
-		InterventionSubShareFile interventionSubShareFile = new InterventionSubShareFile();
-		interventionSubShareFile.setName(fileName);
-		interventionSubShareFile.setExt(ext);
-		interventionSubShareFile.setContent(data);
-		interventionSubShareFile.setInterventionSubShare(interventionSubShare);
-
-		return interventionSubShareFile;
 	}
 	
 	public static InterventionPrShareFile mapMultipartFileToInterventionPrShareFile(MultipartFile file, InterventionPrShare interventionPrShare) {
@@ -330,25 +271,16 @@ public class ShareMapper {
 		return fileDTOs;
 	}
 	
-	public static InterventionShareMaterial mapMaterialDTOToEntity(MaterialShareDTO materialShareDTO, InterventionSubShare interventionSubShare) {
-		
-		InterventionShareMaterial entity = new InterventionShareMaterial();
-		entity.setInterventionSubShare(interventionSubShare);
-		entity.setDescription(materialShareDTO.getDescription());
-		entity.setUnits(materialShareDTO.getUnits());
-		entity.setReference(materialShareDTO.getReference());
-		
-		return entity;
-	}
-	
 	public static ShareTableDTO mapObjectToShareTableDTO(Object[] obj) {
-		
+
+		final Timestamp startDate = ((Timestamp) obj[2]);
+		final Timestamp endDate = ((Timestamp) obj[3]);
+
 		ShareTableDTO dto = new ShareTableDTO();
-		
-		dto.setId(String.valueOf(obj[0]) + "_" + (String) obj[5]); 
+		dto.setId(obj[0] + "_" + obj[5]);
 		dto.setProjectId(String.valueOf(obj[1]));
-		dto.setStartDate((Date) obj[2]);
-		dto.setEndDate((Date) obj[3]);
+		dto.setStartDate(startDate != null ? startDate.toInstant().atOffset(ZoneOffset.UTC) : null);
+		dto.setEndDate(endDate != null ? endDate.toInstant().atOffset(ZoneOffset.UTC) : null);
 		dto.setForumTitle((String) obj[4]);
 		dto.setShareType((String) obj[5]);
 		

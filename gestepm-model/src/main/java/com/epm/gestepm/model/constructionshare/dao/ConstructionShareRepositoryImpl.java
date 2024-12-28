@@ -3,7 +3,6 @@ package com.epm.gestepm.model.constructionshare.dao;
 import com.epm.gestepm.modelapi.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
-import com.epm.gestepm.modelapi.displacement.dto.Displacement;
 import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @Repository
@@ -161,7 +161,7 @@ public class ConstructionShareRepositoryImpl implements ConstructionShareReposit
 	}
 
 	@Override
-	public List<ConstructionShare> findWeekSigningsByProjectId(Date startDate, Date endDate, Long projectId) {
+	public List<ConstructionShare> findWeekSigningsByProjectId(OffsetDateTime startDate, OffsetDateTime endDate, Long projectId) {
 
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<ConstructionShare> cq = cb.createQuery(ConstructionShare.class);

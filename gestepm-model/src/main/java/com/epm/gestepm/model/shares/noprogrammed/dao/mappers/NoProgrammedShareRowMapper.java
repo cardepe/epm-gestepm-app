@@ -24,15 +24,15 @@ public class NoProgrammedShareRowMapper implements RowMapper<NoProgrammedShare> 
 
   public static final String COL_NPS_USER_SIGNING_ID = "user_signing_id";
 
-  public static final String COL_NPS_START_DATE = "notice_date";
+  public static final String COL_NPS_START_DATE = "start_date";
 
   public static final String COL_NPS_END_DATE = "end_date";
 
-  public static final String COL_NPS_DESCRIPTION = "intervention_description";
+  public static final String COL_NPS_DESCRIPTION = "description";
 
-  public static final String COL_NPS_FAMILY_ID = "family";
+  public static final String COL_NPS_FAMILY_ID = "family_id";
 
-  public static final String COL_NPS_SUB_FAMILY_ID = "sub_family";
+  public static final String COL_NPS_SUB_FAMILY_ID = "sub_family_id";
 
   public static final String COL_NPS_TOPIC_ID = "topic_id";
 
@@ -40,9 +40,7 @@ public class NoProgrammedShareRowMapper implements RowMapper<NoProgrammedShare> 
 
   public static final String COL_NPS_STATE = "state";
 
-  public static final String COL_NPS_LAST_DIAGNOSIS = "last_diagnosis";
-
-  public static final String COL_NPS_INTERVENTION_ID = "intervention_id";
+  public static final String COL_NPS_INSPECTION_ID = "inspection_id";
 
   public static final String COL_NPS_FILE_ID = "no_programmed_share_file_id";
 
@@ -63,12 +61,11 @@ public class NoProgrammedShareRowMapper implements RowMapper<NoProgrammedShare> 
     noProgrammedShare.setTopicId(nullableInt(rs, COL_NPS_TOPIC_ID));
     noProgrammedShare.setForumTitle(nullableString(rs, COL_NPS_FORUM_TITLE));
     noProgrammedShare.setState(NoProgrammedShareStateEnum.fromValue(rs.getInt(COL_NPS_STATE)));
-    noProgrammedShare.setLastDiagnosis(rs.getInt(COL_NPS_LAST_DIAGNOSIS));
 
     final List<Integer> inspectionIds = new ArrayList<>();
 
-    if (hasValue(rs, COL_NPS_INTERVENTION_ID)) {
-      inspectionIds.add(rs.getInt(COL_NPS_INTERVENTION_ID));
+    if (hasValue(rs, COL_NPS_INSPECTION_ID)) {
+      inspectionIds.add(rs.getInt(COL_NPS_INSPECTION_ID));
     }
 
     noProgrammedShare.setInspectionIds(inspectionIds);

@@ -35,7 +35,7 @@ public class ModelUtil {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) authentication.getDetails();
 
-		UserService userService = ApplicationContextProvider.getContext().getBean(UserService.class);
+		UserService userService = ApplicationContextProvider.getBean(UserService.class);
 
 		// Reload from DB
 		user = userService.getUserById(user.getId());

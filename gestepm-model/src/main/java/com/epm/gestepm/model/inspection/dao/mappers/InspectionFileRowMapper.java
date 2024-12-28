@@ -16,7 +16,7 @@ public class InspectionFileRowMapper implements RowMapper<InspectionFile> {
 
   public static final String COL_IF_NAME = "name";
 
-  public static final String COL_IF_EXTENSION = "ext";
+  public static final String COL_IF_EXTENSION = "extension";
 
   public static final String COL_IF_CONTENT = "content";
 

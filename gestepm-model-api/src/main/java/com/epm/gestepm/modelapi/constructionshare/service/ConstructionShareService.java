@@ -6,6 +6,7 @@ import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -21,9 +22,9 @@ public interface ConstructionShareService {
 	List<ShareTableDTO> getShareTableByUserSigningId(Long userSigning);
 	void deleteById(Long id);
 	List<ConstructionShare> getWeekSigningsByUserId(Date startDate, Date endDate, Long userId);
-	List<ConstructionShare> getWeekSigningsByProjectId(Date startDate, Date endDate, Long projectId);
+	List<ConstructionShare> getWeekSigningsByProjectId(OffsetDateTime startDate, OffsetDateTime endDate, Long projectId);
 	List<DailyPersonalSigningDTO> getDailyConstructionShareDTOByUserIdAndDate(Long userId, int month, int year);
 	byte[] generateConstructionSharePdf(ConstructionShare share, Locale locale);
 
-	List<PdfFileDTO> generateSharesByProjectAndInterval(Long projectId, Date startDate, Date endDate);
+	List<PdfFileDTO> generateSharesByProjectAndInterval(Long projectId, OffsetDateTime startDate, OffsetDateTime endDate);
 }

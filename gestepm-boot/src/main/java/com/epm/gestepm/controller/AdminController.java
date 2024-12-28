@@ -119,7 +119,7 @@ public class AdminController {
 	
 	@ResponseBody
 	@GetMapping("/holidays/dt")
-	public String holidaysDatatable(HttpServletRequest request, Locale locale) {
+	public DataTableResults<HolidayTableDTO> holidaysDatatable(HttpServletRequest request, Locale locale) {
 
 		DataTableRequest<Holiday> dataTableInRQ = new DataTableRequest<>(request);
 		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
@@ -130,7 +130,7 @@ public class AdminController {
 
 		DataTableResults<HolidayTableDTO> dataTableResult = new DataTableResults<>();
 		dataTableResult.setDraw(dataTableInRQ.getDraw());
-		dataTableResult.setListOfDataObjects(holidays);
+		dataTableResult.setData(holidays);
 		dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 		dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -138,7 +138,7 @@ public class AdminController {
 			dataTableResult.setRecordsFiltered(Integer.toString(holidays.size()));
 		}
 
-		return dataTableResult.getJson();
+		return dataTableResult;
 	}
 	
 	@ResponseBody
@@ -238,7 +238,7 @@ public class AdminController {
 	
 	@ResponseBody
 	@GetMapping("/families/dt")
-	public String familiesDatatable(HttpServletRequest request, Locale locale) {
+	public DataTableResults<FamilyTableDTO> familiesDatatable(HttpServletRequest request, Locale locale) {
 
 		DataTableRequest<Family> dataTableInRQ = new DataTableRequest<>(request);
 		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
@@ -249,7 +249,7 @@ public class AdminController {
 
 		DataTableResults<FamilyTableDTO> dataTableResult = new DataTableResults<>();
 		dataTableResult.setDraw(dataTableInRQ.getDraw());
-		dataTableResult.setListOfDataObjects(families);
+		dataTableResult.setData(families);
 		dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 		dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -257,7 +257,7 @@ public class AdminController {
 			dataTableResult.setRecordsFiltered(Integer.toString(families.size()));
 		}
 
-		return dataTableResult.getJson();
+		return dataTableResult;
 	}
 	
 	@GetMapping("/families/create")

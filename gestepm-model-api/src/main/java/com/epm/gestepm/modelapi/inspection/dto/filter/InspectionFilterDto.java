@@ -6,7 +6,7 @@ import com.epm.gestepm.lib.dto.OrderableDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotNull;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Data
@@ -15,8 +15,13 @@ public class InspectionFilterDto extends OrderableDto implements UsableAsCacheKe
 
   private List<Integer> ids;
 
-  @NotNull
   private Integer shareId;
+
+  private Integer projectId;
+
+  private OffsetDateTime startDate;
+
+  private OffsetDateTime endDate;
 
   @Override
   public String asCacheKey() {
@@ -25,6 +30,9 @@ public class InspectionFilterDto extends OrderableDto implements UsableAsCacheKe
 
     cacheKeyBuilder.addElement("ids", this.ids);
     cacheKeyBuilder.addElement("shareId", shareId);
+    cacheKeyBuilder.addElement("projectId", this.projectId);
+    cacheKeyBuilder.addElement("startDate", this.startDate);
+    cacheKeyBuilder.addElement("endDate", this.endDate);
 
     return cacheKeyBuilder.toString();
   }

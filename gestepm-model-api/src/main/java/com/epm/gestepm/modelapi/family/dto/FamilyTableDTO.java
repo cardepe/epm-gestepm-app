@@ -1,25 +1,27 @@
 package com.epm.gestepm.modelapi.family.dto;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
+@Data
 public class FamilyTableDTO {
 	
-	@SerializedName("fa_id")
+	@JsonProperty("fa_id")
 	private Long id;
 	
-	@SerializedName("fa_nameES")
+	@JsonProperty("fa_nameES")
 	private String nameES;
 	
-	@SerializedName("fa_nameFR")
+	@JsonProperty("fa_nameFR")
 	private String nameFR;
 	
-	@SerializedName("fa_brand")
+	@JsonProperty("fa_brand")
 	private String brand;
 	
-	@SerializedName("fa_model")
+	@JsonProperty("fa_model")
 	private String model;
 	
-	@SerializedName("fa_enrollment")
+	@JsonProperty("fa_enrollment")
 	private String enrollment;
 	
 	public FamilyTableDTO() {
@@ -43,51 +45,4 @@ public class FamilyTableDTO {
 		this.enrollment = enrollment;
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getNameES() {
-		return nameES;
-	}
-
-	public void setNameES(String nameES) {
-		this.nameES = nameES;
-	}
-
-	public String getNameFR() {
-		return nameFR;
-	}
-
-	public void setNameFR(String nameFR) {
-		this.nameFR = nameFR;
-	}
-
-	public String getBrand() {
-		return brand;
-	}
-
-	public void setBrand(String brand) {
-		this.brand = brand;
-	}
-
-	public String getModel() {
-		return model;
-	}
-
-	public void setModel(String model) {
-		this.model = model;
-	}
-
-	public String getEnrollment() {
-		return enrollment;
-	}
-
-	public void setEnrollment(String enrollment) {
-		this.enrollment = enrollment;
-	}
 }

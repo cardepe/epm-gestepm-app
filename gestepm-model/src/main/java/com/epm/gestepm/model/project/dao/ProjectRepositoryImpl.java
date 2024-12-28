@@ -38,26 +38,6 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 	@PersistenceContext
 	private EntityManager entityManager;
 	
-	@Override
-	public Project findByIdAndUserId(Long id, Long userId) {
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<Project> cQuery = cb.createQuery(Project.class);
-
-			Root<Project> root = cQuery.from(Project.class);
-			Join<Project, User> users = root.join("users");
-
-			cQuery.select(root)
-					.where(cb.and(cb.equal(root.get("id"), id), cb.equal(users.get("id"), userId)));
-
-			return entityManager.createQuery(cQuery).getSingleResult();
-
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	
 	@Override 
 	public Project findByIdAndBossId(Long id, Long bossId) {
 		try {
@@ -496,13 +476,6 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
 	public void deleteUserBoss(Long projectId, Long userId) {
 		
 		Query query = entityManager.createNativeQuery("DELETE FROM project_bosses WHERE user_id = " + userId +  " AND project_id = " + projectId);
-		query.executeUpdate();
-	}
-	
-	@Override
-	public void deleteAllUserBossByUserId(Long userId) {
-		
-		Query query = entityManager.createNativeQuery("DELETE FROM project_bosses WHERE user_id = " + userId);
 		query.executeUpdate();
 	}
 	

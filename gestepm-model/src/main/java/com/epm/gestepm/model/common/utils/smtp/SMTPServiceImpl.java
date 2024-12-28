@@ -4,12 +4,12 @@ import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseInspectionMailTemplateDto;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseNoProgrammedShareMailTemplateDto;
+import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenNoProgrammedShareMailTemplateDto;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
 import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.interventionsubshare.dto.InterventionSubShare;
 import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigning;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
@@ -99,22 +99,6 @@ public class SMTPServiceImpl implements SMTPService {
 	}
 	
 	@Async
-	public void sendOpenConstructionShareMail(String to, ConstructionShare share, Locale locale) {
-		
-		log.info("Preparando la plantilla de correo: construction_share_open_mail_template_" + locale.getLanguage() + ".html");
-		
-		String subject = messageSource.getMessage("smtp.mail.construction.share.open.subject", new Object[] { share.getId().toString() }, locale);
-		
-		Map<String, String> params = new HashMap<>();
-		params.put("id", share.getId().toString());
-		params.put("username", share.getUser().getName() + " " + share.getUser().getSurnames());
-		params.put("projectName", share.getProject().getName());
-		params.put("startDate", Utiles.transformFormattedDateToString(share.getStartDate()));
-		
-		loadTemplateAndSendMail(smtpMailFrom, to, subject, "construction_share_open_mail_template_" + locale.getLanguage() + ".html", params);
-	}
-	
-	@Async
 	public void sendCloseConstructionShareMail(String to, ConstructionShare share, byte[] pdfGenerated, Locale locale) {
 		
 		log.info("Preparando la plantilla de correo: construction_share_close_mail_template_" + locale.getLanguage() + ".html");
@@ -125,31 +109,38 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("id", share.getId().toString());
 		params.put("username", share.getUser().getName() + " " + share.getUser().getSurnames());
 		params.put("projectName", share.getProject().getName());
-		params.put("startDate", Utiles.transformFormattedDateToString(share.getStartDate()));
-		params.put("endDate", Utiles.transformFormattedDateToString(share.getEndDate()));
+		params.put("startDate", Utiles.transform(share.getStartDate(), DATE_FORMAT));
+		params.put("endDate", Utiles.transform(share.getEndDate(), DATE_FORMAT));
 
 		loadPDFTemplateAndSendMail(share, "cs", pdfGenerated, smtpMailFrom, to, subject, "construction_share_close_mail_template_" + locale.getLanguage() + ".html", params, locale);
 	}
 	
 	@Async
-	public void sendOpenInterventionShareMail(String to, NoProgrammedShareUpdateDto share, User user, Project project, Locale locale) {
-		
+	public void openNoProgrammedShareSendMail(final OpenNoProgrammedShareMailTemplateDto dto) {
+		final Locale locale = dto.getLocale();
+		final NoProgrammedShareUpdateDto noProgrammedShare = dto.getNoProgrammedShare();
+		final User user = dto.getUser();
+		final Project project = dto.getProject();
+
 		log.info("Preparando la plantilla de correo: intervention_share_open_mail_template_" + locale.getLanguage() + ".html");
 
-		String subject = messageSource.getMessage("smtp.mail.intervention.share.open.subject", new Object[] { share.getForumTitle(), project.getName() }, locale);
+		final String subject = messageSource.getMessage("smtp.mail.intervention.share.open.subject", new Object[] {
+				noProgrammedShare.getForumTitle(),
+				project.getName()
+		}, locale);
 		
-		Map<String, String> params = new HashMap<>();
-		params.put("id", share.getId().toString());
-		params.put("username", user.getName() + " " + user.getSurnames());
+		final Map<String, String> params = new HashMap<>();
+		params.put("id", noProgrammedShare.getId().toString());
+		params.put("username", user.getFullName());
 		params.put("projectName", project.getName());
-		params.put("startDate", Utiles.transformToString(share.getStartDate()));
-		params.put("description", share.getDescription());
-		params.put("idUrl", share.getId().toString());
-		params.put("forumUrl", project.getForumId() == null || share.getTopicId() == null
-				? "-" : "viewtopic.php?f=" + project.getForumId() + "&t=" + share.getTopicId().toString());
-		params.put("forumTitle", share.getForumTitle());
+		params.put("startDate", Utiles.transform(noProgrammedShare.getStartDate(), DATE_FORMAT));
+		params.put("description", noProgrammedShare.getDescription());
+		params.put("idUrl", noProgrammedShare.getId().toString());
+		params.put("forumUrl", project.getForumId() == null || noProgrammedShare.getTopicId() == null
+				? "-" : "viewtopic.php?f=" + project.getForumId() + "&t=" + noProgrammedShare.getTopicId().toString());
+		params.put("forumTitle", noProgrammedShare.getForumTitle());
 		
-		loadTemplateAndSendMail(smtpMailFrom, to, subject, "intervention_share_open_mail_template_" + locale.getLanguage() + ".html", params);
+		loadTemplateAndSendMail(smtpMailFrom, dto.getEmail(), subject, "intervention_share_open_mail_template_" + locale.getLanguage() + ".html", params);
 	}
 	
 	@Async
@@ -180,53 +171,23 @@ public class SMTPServiceImpl implements SMTPService {
 	}
 	
 	@Async
-	public void sendOpenInterventionSubShareMail(String to, InterventionSubShare share, Locale locale) {
-		
-		log.info("Preparando la plantilla de correo: intervention_sub_share_open_mail_template_" + locale.getLanguage() + ".html");
-
-		String subShareType = "";
-		if (share.getAction() == 1) {
-			subShareType = messageSource.getMessage("shares.intervention.detail.u.dia", new Object[] { }, locale);
-		} else if (share.getAction() == 2) {
-			subShareType = messageSource.getMessage("shares.intervention.detail.u.inc", new Object[] { }, locale);
-		} else if (share.getAction() == 3) {
-			subShareType = messageSource.getMessage("shares.intervention.detail.u.tra", new Object[] { }, locale);
-		}
-		
-		String subject = messageSource.getMessage("smtp.mail.intervention.sub.share.open.subject", new Object[] { share.getInterventionShare().getId() + "/" + share.getOrderId(), subShareType }, locale);
-		
-		Map<String, String> params = new HashMap<>();
-		params.put("id", share.getInterventionShare().getId().toString());
-		params.put("username", share.getInterventionShare().getUser().getName() + " " + share.getInterventionShare().getUser().getSurnames());
-		params.put("projectName", share.getInterventionShare().getProject().getName());
-		params.put("startDate", Utiles.transformToString(share.getStartDate()));
-		params.put("subShareType", subShareType);
-		params.put("idUrl", share.getId().toString());
-		params.put("forumUrl", "viewtopic.php?f=" + share.getInterventionShare().getProject().getForumId() + "&t=" + share.getInterventionShare().getTopicId().toString());
-		params.put("forumTitle", share.getInterventionShare().getForumTitle());
-		
-		loadTemplateAndSendMail(smtpMailFrom, to, subject, "intervention_sub_share_open_mail_template_" + locale.getLanguage() + ".html", params);
-	}
-	
-	@Async
 	public void closeInspectionSendMail(final CloseInspectionMailTemplateDto dto) {
 		final Locale locale = dto.getLocale();
 		final NoProgrammedShareDto noProgrammedShare = dto.getNoProgrammedShare();
 		final InspectionDto inspection = dto.getInspection();
 		final User user = dto.getUser();
 		final Project project = dto.getProject();
-		final Integer orderId = inspection.getOrder(noProgrammedShare.getInspectionIds());
 
 		log.info("Preparando la plantilla de correo: intervention_sub_share_close_mail_template_" + locale.getLanguage() + ".html");
 
 		final String action = this.messageSource.getMessage(dto.getInspection().getAction().toString().toLowerCase(), new Object[] {}, locale);
 		final String subject = messageSource.getMessage("smtp.mail.intervention.sub.share.close.subject", new Object[] {
-				noProgrammedShare.getId() + "/" + orderId,
+				inspection.getId(),
 				action
 		}, locale);
 		
 		final Map<String, String> params = new HashMap<>();
-		params.put("id", noProgrammedShare.getId() + "/" + orderId);
+		params.put("id", inspection.getId().toString());
 		params.put("username", user.getFullName());
 		params.put("projectName", project.getName());
 		params.put("startDate", Utiles.transform(inspection.getStartDate(), DATE_FORMAT));
@@ -240,22 +201,6 @@ public class SMTPServiceImpl implements SMTPService {
 	}
 	
 	@Async
-	public void sendOpenProgrammedShareMail(String to, InterventionPrShare share, Locale locale) {
-		
-		log.info("Preparando la plantilla de correo: programmed_share_open_mail_template_" + locale.getLanguage() + ".html");
-		
-		String subject = messageSource.getMessage("smtp.mail.programmed.share.open.subject", new Object[] { share.getId().toString() }, locale);
-		
-		Map<String, String> params = new HashMap<>();
-		params.put("id", share.getId().toString());
-		params.put("username", share.getUser().getName() + " " + share.getUser().getSurnames());
-		params.put("projectName", share.getProject().getName());
-		params.put("startDate", Utiles.transformFormattedDateToString(share.getStartDate()));
-
-		loadTemplateAndSendMail(smtpMailFrom, to, subject, "programmed_share_open_mail_template_" + locale.getLanguage() + ".html", params);
-	}	
-	
-	@Async
 	public void sendCloseProgrammedShareMail(String to, InterventionPrShare share, byte[] pdfGenerated, Locale locale) {
 		
 		log.info("Preparando la plantilla de correo: programmed_share_close_mail_template_" + locale.getLanguage() + ".html");
@@ -266,26 +211,10 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("id", share.getId().toString());
 		params.put("username", share.getUser().getName() + " " + share.getUser().getSurnames());
 		params.put("projectName", share.getProject().getName());
-		params.put("startDate", Utiles.transformFormattedDateToString(share.getStartDate()));
-		params.put("endDate", Utiles.transformFormattedDateToString(share.getEndDate()));
+		params.put("startDate", Utiles.transform(share.getStartDate(), DATE_FORMAT));
+		params.put("endDate", Utiles.transform(share.getEndDate(), DATE_FORMAT));
 
 		loadPDFTemplateAndSendMail(share, "ips", pdfGenerated, smtpMailFrom, to, subject, "programmed_share_close_mail_template_" + locale.getLanguage() + ".html", params, locale);
-	}	
-	
-	@Async
-	public void sendOpenWorkShareMail(String to, WorkShare share, Locale locale) {
-		
-		log.info("Preparando la plantilla de correo: work_share_open_mail_template_" + locale.getLanguage() + ".html");
-		
-		String subject = messageSource.getMessage("smtp.mail.work.share.open.subject", new Object[] { share.getId().toString() }, locale);
-		
-		Map<String, String> params = new HashMap<>();
-		params.put("id", share.getId().toString());
-		params.put("username", share.getUser().getName() + " " + share.getUser().getSurnames());
-		params.put("projectName", share.getProject().getName());
-		params.put("startDate", Utiles.transformFormattedDateToString(share.getStartDate()));
-
-		loadTemplateAndSendMail(smtpMailFrom, to, subject, "work_share_open_mail_template_" + locale.getLanguage() + ".html", params);
 	}
 	
 	@Async
@@ -299,8 +228,8 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("id", share.getId().toString());
 		params.put("username", share.getUser().getName() + " " + share.getUser().getSurnames());
 		params.put("projectName", share.getProject().getName());
-		params.put("startDate", Utiles.transformFormattedDateToString(share.getStartDate()));
-		params.put("endDate", Utiles.transformFormattedDateToString(share.getEndDate()));
+		params.put("startDate", Utiles.transform(share.getStartDate(), DATE_FORMAT));
+		params.put("endDate", Utiles.transform(share.getEndDate(), DATE_FORMAT));
 
 		loadPDFTemplateAndSendMail(share, "ws", pdfGenerated, smtpMailFrom, to, subject, "work_share_close_mail_template_" + locale.getLanguage() + ".html", params, locale);
 	}
@@ -380,8 +309,8 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("username", userManualSigning.getUser().getName() + " " + userManualSigning.getUser().getSurnames());
 		params.put("userId", userManualSigning.getUser().getId().toString());
 		params.put("manualSigningType", userManualSigning.getManualSigningType().getName());
-		params.put("startDate", Utiles.getDateTimeFormatted(userManualSigning.getStartDate()));
-		params.put("endDate", Utiles.getDateTimeFormatted(userManualSigning.getEndDate()));
+		params.put("startDate", Utiles.transform(userManualSigning.getStartDate(), DATE_FORMAT));
+		params.put("endDate", Utiles.transform(userManualSigning.getEndDate(), DATE_FORMAT));
 
 		loadTemplateAndSendMail(smtpMailFrom, to, subject, "signing_manual_mail_template_" + locale.getLanguage() + ".html", params);
 	}
@@ -398,8 +327,8 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("signingId", modifiedSigning.getSigningId().toString());
 		params.put("userId", modifiedSigning.getUser().getId().toString());
 		params.put("manualSigningType", modifiedSigning.getTypeId());
-		params.put("startDate", Utiles.getDateTimeFormatted(modifiedSigning.getStartDate()));
-		params.put("endDate", Utiles.getDateTimeFormatted(modifiedSigning.getEndDate()));
+		params.put("startDate", Utiles.transform(modifiedSigning.getStartDate(), DATE_FORMAT));
+		params.put("endDate", Utiles.transform(modifiedSigning.getEndDate(), DATE_FORMAT));
 
 		loadTemplateAndSendMail(smtpMailFrom, to, subject, "signing_modify_mail_template_" + locale.getLanguage() + ".html", params);
 	}

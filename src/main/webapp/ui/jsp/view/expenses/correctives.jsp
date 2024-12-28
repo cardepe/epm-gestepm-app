@@ -243,7 +243,7 @@
 				{ "data": "pr_projectName" },
 				{ "data": "ec_cost" },
 				{ "data": "ec_description" },
-				{ "data": "ec_creationDate" },				
+				{ "data": "ec_creationDate" },
 				{ "data": null }
 			],
 			"columnDefs": [

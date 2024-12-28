@@ -3,22 +3,22 @@ sql:
   qry-list-of-if: |
     
     SELECT
-      ifi.id AS id_pagination,
-      ifi.id AS inspection_file_id,
-      ifi.sub_share_id AS inspection_id,
+      ifi.inspection_file_id AS id_pagination,
+      ifi.inspection_file_id,
+      ifi.inspection_id,
       ifi.name,
       ifi.content,
-      ifi.ext
-    FROM ${sch-gestepm}.intervention_sub_share_files ifi
+      ifi.extension
+    FROM ${sch-gestepm}.inspection_file ifi
     
     #whereToken #filter
 
   qry-create-if: |
     
-    INSERT INTO ${sch-gestepm}.intervention_sub_share_files (
-      sub_share_id,
+    INSERT INTO ${sch-gestepm}.inspection_file (
+      inspection_id,
       name,
-      ext,
+      extension,
       content
     )
     VALUES (
@@ -43,12 +43,12 @@ sql:
 
   predicate-for-if-id: |
 
-    ifi.id = :attr_if_id
+    ifi.inspection_file_id = :attr_if_id
 
   predicate-for-if-ids: |
 
-    ifi.id IN (:attr_if_ids)
+    ifi.inspection_file_id IN (:attr_if_ids)
 
   predicate-for-if-inspection-id: |
 
-    ifi.sub_share_id = :attr_if_inspection_id
+    ifi.inspection_id = :attr_if_inspection_id

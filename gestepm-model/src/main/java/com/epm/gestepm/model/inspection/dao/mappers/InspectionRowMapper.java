@@ -17,11 +17,11 @@ import static com.epm.gestepm.lib.jdbc.utils.ResultSetMappingUtils.*;
 
 public class InspectionRowMapper implements RowMapper<Inspection> {
 
-    public static final String COL_I_ID = "intervention_id";
+    public static final String COL_I_ID = "inspection_id";
 
     public static final String COL_I_USER_SIGNING_ID = "user_signing_id";
 
-    public static final String COL_I_SHARE_ID = "share_id";
+    public static final String COL_I_SHARE_ID = "no_programmed_share_id";
 
     public static final String COL_I_ACTION = "action";
 
@@ -37,7 +37,7 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
 
     public static final String COL_I_SIGNATURE = "signature";
 
-    public static final String COL_I_OPERATOR_SIGNATURE = "signature_op";
+    public static final String COL_I_OPERATOR_SIGNATURE = "operator_signature";
 
     public static final String COL_I_CLIENT_NAME = "client_name";
 
@@ -51,13 +51,13 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
 
     public static final String COL_I_MATERIALS_FILE = "materials_file";
 
-    public static final String COL_I_MATERIALS_FILE_EXT = "materials_file_ext";
+    public static final String COL_I_MATERIALS_FILE_EXT = "materials_file_extension";
 
     public static final String COL_I_EQUIPMENT_HOURS = "equipment_hours";
 
     public static final String COL_I_TOPIC_ID = "topic_id";
 
-    public static final String COL_I_FILE_ID = "intervention_file_id";
+    public static final String COL_I_FILE_ID = "inspection_file_id";
 
     @Override
     public Inspection mapRow(ResultSet rs, int i) throws SQLException {
@@ -67,7 +67,7 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
         inspection.setId(rs.getInt(COL_I_ID));
         inspection.setUserSigningId(nullableInt(rs, COL_I_USER_SIGNING_ID));
         inspection.setShareId(rs.getInt(COL_I_SHARE_ID));
-        inspection.setAction(ActionEnum.fromValue(rs.getInt(COL_I_ACTION)));
+        inspection.setAction(ActionEnum.valueOf(rs.getString(COL_I_ACTION)));
         inspection.setStartDate(rs.getTimestamp(COL_I_START_DATE).toInstant().atOffset(ZoneOffset.UTC));
         inspection.setEndDate(nullableOffsetDateTime(rs, COL_I_END_DATE));
         inspection.setDescription(nullableString(rs, COL_I_DESCRIPTION));

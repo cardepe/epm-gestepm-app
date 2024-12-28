@@ -1,47 +1,20 @@
 package com.epm.gestepm.modelapi.role.dto;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
+@Data
+@AllArgsConstructor
 public class RoleTableDTO {
 
-	@SerializedName("sr_id")
+	@JsonProperty("sr_id")
 	private Long id;
 
-	@SerializedName("sr_rol")
+	@JsonProperty("sr_rol")
 	private String rol;
 
-	@SerializedName("sr_price")
+	@JsonProperty("sr_price")
 	private Double price;
-
-	public RoleTableDTO(Long id, String rol, Double price) {
-		super();
-		this.id = id;
-		this.rol = rol;
-		this.price = price;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getRol() {
-		return rol;
-	}
-
-	public void setRol(String rol) {
-		this.rol = rol;
-	}
-
-	public Double getPrice() {
-		return price;
-	}
-
-	public void setPrice(Double price) {
-		this.price = price;
-	}
 
 }

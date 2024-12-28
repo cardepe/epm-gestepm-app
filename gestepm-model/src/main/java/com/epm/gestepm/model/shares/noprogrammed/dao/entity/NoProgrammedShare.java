@@ -41,9 +41,6 @@ public class NoProgrammedShare implements Serializable {
   @NotNull
   private NoProgrammedShareStateEnum state;
 
-  @NotNull
-  private Integer lastDiagnosis;
-
   @Singular
   private List<Integer> inspectionIds;
 

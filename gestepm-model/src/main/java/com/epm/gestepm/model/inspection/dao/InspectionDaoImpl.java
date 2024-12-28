@@ -35,187 +35,200 @@ import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
 import static com.epm.gestepm.model.inspection.dao.constants.InspectionQueries.*;
 import static com.epm.gestepm.model.inspection.dao.constants.MaterialQueries.QRY_CREATE_M;
 import static com.epm.gestepm.model.inspection.dao.constants.MaterialQueries.QRY_DELETE_M;
-import static com.epm.gestepm.model.inspection.dao.mappers.InspectionRowMapper.COL_I_ID;
+import static com.epm.gestepm.model.inspection.dao.mappers.InspectionRowMapper.*;
 
 @Component("inspectionDao")
 @EnableExecutionLog(layerMarker = DAO)
 public class InspectionDaoImpl implements InspectionDao {
 
-  private final InspectionFileDao inspectionFileDao;
+    private final InspectionFileDao inspectionFileDao;
 
-  private final SQLDatasource sqlDatasource;
+    private final SQLDatasource sqlDatasource;
 
-  public InspectionDaoImpl(InspectionFileDao inspectionFileDao, SQLDatasource sqlDatasource) {
-      this.inspectionFileDao = inspectionFileDao;
-      this.sqlDatasource = sqlDatasource;
-  }
-
-  @Override
-  @LogExecution(operation = OP_READ,
-          debugOut = true,
-          msgIn = "Querying list of inspections",
-          msgOut = "Querying list of inspections OK",
-          errorMsg = "Failed to query list of inspections")
-  public List<Inspection> list(InspectionFilter filter) {
-
-    final SQLQueryFetchMany<Inspection> sqlQuery = new SQLQueryFetchMany<Inspection>()
-        .useRsExtractor(new InspectionRSManyExtractor())
-        .useQuery(QRY_LIST_OF_I)
-        .useFilter(FILTER_I_BY_PARAMS)
-        .withParams(filter.collectAttributes());
-
-    this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
-
-    return this.sqlDatasource.fetch(sqlQuery);
-  }
-
-  @Override
-  @LogExecution(operation = OP_READ,
-          debugOut = true,
-          msgIn = "Querying page of inspections",
-          msgOut = "Querying page of inspections OK",
-          errorMsg = "Failed to query page of inspections")
-  public Page<Inspection> list(InspectionFilter filter, Long offset, Long limit) {
-
-    final SQLQueryFetchPage<Inspection> sqlQuery = new SQLQueryFetchPage<Inspection>()
-        .useRsExtractor(new InspectionRSManyExtractor())
-        .useQuery(QRY_PAGE_OF_I)
-        .useCountQuery(QRY_COUNT_OF_I)
-        .useFilter(FILTER_I_BY_PARAMS)
-        .offset(offset)
-        .limit(limit)
-        .withParams(filter.collectAttributes());
-
-    this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
-
-    return this.sqlDatasource.fetch(sqlQuery);
-  }
-
-  @Override
-  @LogExecution(operation = OP_READ,
-          debugOut = true,
-          msgIn = "Querying to find inspection by ID",
-          msgOut = "Querying to find inspection by ID OK",
-          errorMsg = "Failed query to find inspection by ID")
-  public Optional<Inspection> find(InspectionByIdFinder finder) {
-
-    final SQLQueryFetchOne<Inspection> sqlQuery = new SQLQueryFetchOne<Inspection>()
-        .useRsExtractor(new InspectionRSOneExtractor())
-        .useQuery(QRY_LIST_OF_I)
-        .useFilter(FILTER_I_BY_ID)
-        .withParams(finder.collectAttributes());
-
-    return this.sqlDatasource.fetch(sqlQuery);
-  }
-
-  @Override
-  @LogExecution(operation = OP_CREATE,
-          debugOut = true,
-          msgIn = "Persisting new inspection",
-          msgOut = "New inspection persisted OK",
-          errorMsg = "Failed to persist new inspection")
-  public Inspection create(InspectionCreate create) {
-
-    final AttributeMap params = create.collectAttributes();
-
-    final InspectionByIdFinder finder = new InspectionByIdFinder();
-
-    final SQLInsert<BigInteger> sqlInsert = new SQLInsert<BigInteger>()
-            .useQuery(QRY_CREATE_I)
-            .withParams(params)
-            .onGeneratedKey(f -> finder.setId(f.intValue()));
-
-    this.sqlDatasource.insert(sqlInsert);
-
-    return this.find(finder).orElse(null);
-  }
-
-  @Override
-  @LogExecution(operation = OP_UPDATE,
-          debugOut = true,
-          msgIn = "Persisting update for inspection",
-          msgOut = "Update for inspection persisted OK",
-          errorMsg = "Failed to persist update for inspection")
-  public Inspection update(InspectionUpdate update) {
-
-    final Integer id = update.getId();
-    final AttributeMap params = update.collectAttributes();
-
-    final InspectionByIdFinder finder = new InspectionByIdFinder();
-    finder.setId(id);
-
-    final SQLQuery sqlQuery = new SQLQuery()
-            .useQuery(QRY_UPDATE_I)
-            .withParams(params);
-
-    this.sqlDatasource.execute(sqlQuery);
-
-    if (update.getMaterials() != null && !update.getMaterials().isEmpty()) {
-      this.deleteMaterials(update.getId());
-      this.createMaterials(update.getMaterials(), update.getId());
+    public InspectionDaoImpl(InspectionFileDao inspectionFileDao, SQLDatasource sqlDatasource) {
+        this.inspectionFileDao = inspectionFileDao;
+        this.sqlDatasource = sqlDatasource;
     }
 
-    if (update.getFiles() != null && !update.getFiles().isEmpty()) {
-      this.insertFiles(update.getFiles(), update.getId());
+    @Override
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Querying list of inspections",
+            msgOut = "Querying list of inspections OK",
+            errorMsg = "Failed to query list of inspections")
+    public List<Inspection> list(InspectionFilter filter) {
+
+        final SQLQueryFetchMany<Inspection> sqlQuery = new SQLQueryFetchMany<Inspection>()
+                .useRsExtractor(new InspectionRSManyExtractor())
+                .useQuery(QRY_LIST_OF_I)
+                .useFilter(FILTER_I_BY_PARAMS)
+                .withParams(filter.collectAttributes());
+
+        this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
+
+        return this.sqlDatasource.fetch(sqlQuery);
     }
 
-    return this.find(finder).orElse(null);
-  }
+    @Override
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Querying page of inspections",
+            msgOut = "Querying page of inspections OK",
+            errorMsg = "Failed to query page of inspections")
+    public Page<Inspection> list(InspectionFilter filter, Long offset, Long limit) {
 
-  @Override
-  @LogExecution(operation = OP_DELETE,
-          debugOut = true,
-          msgIn = "Persisting delete for inspection",
-          msgOut = "Delete for inspection persisted OK",
-          errorMsg = "Failed to persist delete for inspection")
-  public void delete(InspectionDelete delete) {
+        final SQLQueryFetchPage<Inspection> sqlQuery = new SQLQueryFetchPage<Inspection>()
+                .useRsExtractor(new InspectionRSManyExtractor())
+                .useQuery(QRY_PAGE_OF_I)
+                .useCountQuery(QRY_COUNT_OF_I)
+                .useFilter(FILTER_I_BY_PARAMS)
+                .offset(offset)
+                .limit(limit)
+                .withParams(filter.collectAttributes());
 
-    final AttributeMap params = delete.collectAttributes();
+        this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
 
-    final SQLQuery sqlQuery = new SQLQuery()
-            .useQuery(QRY_DELETE_I)
-            .withParams(params);
+        return this.sqlDatasource.fetch(sqlQuery);
+    }
 
-    this.sqlDatasource.execute(sqlQuery);
-  }
+    @Override
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Querying to find inspection by ID",
+            msgOut = "Querying to find inspection by ID OK",
+            errorMsg = "Failed query to find inspection by ID")
+    public Optional<Inspection> find(InspectionByIdFinder finder) {
 
-  private void createMaterials(final List<MaterialCreate> materials, final Integer inspectionId) {
-    materials.forEach(materialCreate -> {
-      materialCreate.setInspectionId(inspectionId);
+        final SQLQueryFetchOne<Inspection> sqlQuery = new SQLQueryFetchOne<Inspection>()
+                .useRsExtractor(new InspectionRSOneExtractor())
+                .useQuery(QRY_LIST_OF_I)
+                .useFilter(FILTER_I_BY_ID)
+                .withParams(finder.collectAttributes());
 
-      final AttributeMap params = materialCreate.collectAttributes();
+        return this.sqlDatasource.fetch(sqlQuery);
+    }
 
-      final SQLQuery sqlQuery = new SQLQuery()
-              .useQuery(QRY_CREATE_M)
-              .withParams(params);
+    @Override
+    @LogExecution(operation = OP_CREATE,
+            debugOut = true,
+            msgIn = "Persisting new inspection",
+            msgOut = "New inspection persisted OK",
+            errorMsg = "Failed to persist new inspection")
+    public Inspection create(InspectionCreate create) {
 
-      this.sqlDatasource.execute(sqlQuery);
-    });
-  }
+        final AttributeMap params = create.collectAttributes();
 
-  private void deleteMaterials(final Integer inspectionId) {
-    final MaterialDelete delete = new MaterialDelete();
-    delete.setInspectionId(inspectionId);
+        final InspectionByIdFinder finder = new InspectionByIdFinder();
 
-    final AttributeMap params = delete.collectAttributes();
+        final SQLInsert<BigInteger> sqlInsert = new SQLInsert<BigInteger>()
+                .useQuery(QRY_CREATE_I)
+                .withParams(params)
+                .onGeneratedKey(f -> finder.setId(f.intValue()));
 
-    final SQLQuery sqlQuery = new SQLQuery()
-            .useQuery(QRY_DELETE_M)
-            .withParams(params);
+        this.sqlDatasource.insert(sqlInsert);
 
-    this.sqlDatasource.execute(sqlQuery);
-  }
+        return this.find(finder).orElse(null);
+    }
 
-  private void insertFiles(final Set<InspectionFileCreate> files, final Integer inspectionId) {
-    files.forEach(fileCreate -> {
-      fileCreate.setInspectionId(inspectionId);
-      this.inspectionFileDao.create(fileCreate);
-    });
-  }
+    @Override
+    @LogExecution(operation = OP_UPDATE,
+            debugOut = true,
+            msgIn = "Persisting update for inspection",
+            msgOut = "Update for inspection persisted OK",
+            errorMsg = "Failed to persist update for inspection")
+    public Inspection update(InspectionUpdate update) {
 
-  private void setOrder(final SQLOrderByType order, final String orderBy, final SQLQueryFetchMany<Inspection> sqlQuery) {
-    final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id") ? orderBy : COL_I_ID;
-    final SQLOrderByType orderStatement = order != null ? order : SQLOrderByType.ASC;
-    sqlQuery.addOrderBy(orderByStatement, orderStatement);
-  }
+        final Integer id = update.getId();
+        final AttributeMap params = update.collectAttributes();
+
+        final InspectionByIdFinder finder = new InspectionByIdFinder();
+        finder.setId(id);
+
+        final SQLQuery sqlQuery = new SQLQuery()
+                .useQuery(QRY_UPDATE_I)
+                .withParams(params);
+
+        this.sqlDatasource.execute(sqlQuery);
+
+        if (update.getMaterials() != null && !update.getMaterials().isEmpty()) {
+            this.deleteMaterials(update.getId());
+            this.createMaterials(update.getMaterials(), update.getId());
+        }
+
+        if (update.getFiles() != null && !update.getFiles().isEmpty()) {
+            this.insertFiles(update.getFiles(), update.getId());
+        }
+
+        return this.find(finder).orElse(null);
+    }
+
+    @Override
+    @LogExecution(operation = OP_DELETE,
+            debugOut = true,
+            msgIn = "Persisting delete for inspection",
+            msgOut = "Delete for inspection persisted OK",
+            errorMsg = "Failed to persist delete for inspection")
+    public void delete(InspectionDelete delete) {
+
+        final AttributeMap params = delete.collectAttributes();
+
+        final SQLQuery sqlQuery = new SQLQuery()
+                .useQuery(QRY_DELETE_I)
+                .withParams(params);
+
+        this.sqlDatasource.execute(sqlQuery);
+    }
+
+    private void createMaterials(final List<MaterialCreate> materials, final Integer inspectionId) {
+        materials.forEach(materialCreate -> {
+            materialCreate.setInspectionId(inspectionId);
+
+            final AttributeMap params = materialCreate.collectAttributes();
+
+            final SQLQuery sqlQuery = new SQLQuery()
+                    .useQuery(QRY_CREATE_M)
+                    .withParams(params);
+
+            this.sqlDatasource.execute(sqlQuery);
+        });
+    }
+
+    private void deleteMaterials(final Integer inspectionId) {
+        final MaterialDelete delete = new MaterialDelete();
+        delete.setInspectionId(inspectionId);
+
+        final AttributeMap params = delete.collectAttributes();
+
+        final SQLQuery sqlQuery = new SQLQuery()
+                .useQuery(QRY_DELETE_M)
+                .withParams(params);
+
+        this.sqlDatasource.execute(sqlQuery);
+    }
+
+    private void insertFiles(final Set<InspectionFileCreate> files, final Integer inspectionId) {
+        files.forEach(fileCreate -> {
+            fileCreate.setInspectionId(inspectionId);
+            this.inspectionFileDao.create(fileCreate);
+        });
+    }
+
+    private void setOrder(final SQLOrderByType order, final String orderBy, final SQLQueryFetchMany<Inspection> sqlQuery) {
+        final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id")
+                ? this.getOrderColumn(orderBy)
+                : COL_I_ID;
+        final SQLOrderByType orderStatement = order != null
+                ? order
+                : SQLOrderByType.ASC;
+        sqlQuery.addOrderBy(orderByStatement, orderStatement);
+    }
+
+    private String getOrderColumn(final String orderBy) {
+        if ("startDate".equals(orderBy)) {
+            return COL_I_START_DATE;
+        } else if ("endDate".equals(orderBy)) {
+            return COL_I_END_DATE;
+        }
+        return orderBy;
+    }
 }

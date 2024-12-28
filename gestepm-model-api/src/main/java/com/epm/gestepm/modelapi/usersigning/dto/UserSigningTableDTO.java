@@ -1,64 +1,25 @@
 package com.epm.gestepm.modelapi.usersigning.dto;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-import com.google.gson.annotations.SerializedName;
+import java.time.OffsetDateTime;
 
+@Data
+@AllArgsConstructor
 public class UserSigningTableDTO {
 	
-	@SerializedName("si_id")
+	@JsonProperty("si_id")
 	private Long id;
 
-	@SerializedName("si_projectName")
+	@JsonProperty("si_projectName")
 	private String projectName;
 	
-	@SerializedName("si_startDate")
-	private Date startDate;
+	@JsonProperty("si_startDate")
+	private OffsetDateTime startDate;
 
-	@SerializedName("si_endDate")
-	private Date endDate;
+	@JsonProperty("si_endDate")
+	private OffsetDateTime endDate;
 
-	public UserSigningTableDTO() {
-
-	}
-
-	public UserSigningTableDTO(Long id, String projectName, Date startDate, Date endDate) {
-		super();
-		this.id = id;
-		this.projectName = projectName;
-		this.startDate = startDate;
-		this.endDate = endDate;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getProjectName() {
-		return projectName;
-	}
-
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
-
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	public Date getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Date endDate) {
-		this.endDate = endDate;
-	}
 }

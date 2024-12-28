@@ -277,6 +277,8 @@
         let endpoint = '/v1/displacements';
         let actions = [ { action: 'edit', permission: 'edit_displacements' }, { action: 'delete', permission: 'edit_displacements' }]
         let expand = [ 'activityCenter' ]
+        let filters = []
+        let orderable = [[0, 'ASC']]
         let columnsDef = [
             {
                 targets: 3,
@@ -292,7 +294,7 @@
             }
         ]
 
-        customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, null, null, columnsDef);
+        customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnsDef);
         createDataTable('#dTable', customDataTable, locale);
     });
 

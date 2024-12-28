@@ -1,10 +1,12 @@
 package com.epm.gestepm.modelapi.modifiedsigning.dto;
 
 import com.epm.gestepm.modelapi.user.dto.User;
+import lombok.Data;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 
+@Data
 @Entity
 @Table(name = "modified_signings")
 public class ModifiedSigning {
@@ -25,67 +27,12 @@ public class ModifiedSigning {
     private String typeId;
 
     @Column(name = "REQUEST_DATE", nullable = false)
-    private Timestamp requestDate;
+    private OffsetDateTime requestDate;
 
     @Column(name = "START_DATE", nullable = false)
-    private Timestamp startDate;
+    private OffsetDateTime startDate;
 
     @Column(name = "END_DATE", nullable = false)
-    private Timestamp endDate;
+    private OffsetDateTime endDate;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Long getSigningId() {
-        return signingId;
-    }
-
-    public void setSigningId(Long signingId) {
-        this.signingId = signingId;
-    }
-
-    public String getTypeId() {
-        return typeId;
-    }
-
-    public void setTypeId(String typeId) {
-        this.typeId = typeId;
-    }
-
-    public Timestamp getRequestDate() {
-        return requestDate;
-    }
-
-    public void setRequestDate(Timestamp requestDate) {
-        this.requestDate = requestDate;
-    }
-
-    public Timestamp getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Timestamp startDate) {
-        this.startDate = startDate;
-    }
-
-    public Timestamp getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Timestamp endDate) {
-        this.endDate = endDate;
-    }
 }

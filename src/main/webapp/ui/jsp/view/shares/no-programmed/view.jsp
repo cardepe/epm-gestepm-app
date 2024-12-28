@@ -2,6 +2,12 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<style>
+    .content {
+        height: auto;
+    }
+</style>
+
 <div class="breadcrumbs">
     <div class="breadcrumbs-inner">
         <div class="row m-0">
@@ -9,7 +15,7 @@
                 <div class="page-header float-left">
                     <div class="page-title">
                         <h1 id="title" class="text-uppercase p-0"></h1>
-                        <span id="forumTitle" class="page-sub-title"></span>
+                        <a id="forumTitle" class="page-sub-title p-0"></a>
                     </div>
                 </div>
             </div>
@@ -264,6 +270,10 @@
         const editForm = document.querySelector('#editForm');
 
         editBtn.click(async () => {
+            if (!validateForm('#editForm')) {
+                return;
+            }
+
             showLoading();
 
             const files = editForm.querySelector('[name="files"]').files;
@@ -292,6 +302,25 @@
             }).catch(error => showNotify(error, 'danger'))
                 .finally(() => hideLoading());
         })
+    }
+
+    function validateForm(formId) {
+        let isValid = true;
+        const $form = $(formId);
+
+        $form.find('[required]').each(function () {
+            const $field = $(this);
+            const value = $field.val().trim();
+
+            if (!value) {
+                isValid = false;
+                $field.addClass('is-invalid');
+            } else {
+                $field.removeClass('is-invalid');
+            }
+        });
+
+        return isValid;
     }
 
     function close(id) {
@@ -340,7 +369,10 @@
         }
 
         if (share.forumTitle) {
-            document.querySelector('#forumTitle').textContent = share.forumTitle;
+            const forumTitle = document.querySelector('#forumTitle');
+            forumTitle.textContent = share.forumTitle;
+            forumTitle.href = '${forumUrl}';
+            forumTitle.target = '_blank';
         }
 
         if (share.state === 'NEW') {
@@ -580,6 +612,8 @@
                 sessionStorage.setItem('sharesFilter', lastPageUrl);
             } else if (lastPagePath.startsWith('/shares/no-programmed/')) {
                 lastPageUrl = sessionStorage.getItem('sharesFilter');
+            } else {
+                lastPageUrl = '/shares/intervention';
             }
 
             returnBtn.attr('href', lastPageUrl);

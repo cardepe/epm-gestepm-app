@@ -206,7 +206,6 @@
 										<thead>
 											<tr>
 												<th id="id"><spring:message code="project.detail.signings.id" /></th>
-												<th id="orderId"><spring:message code="project.detail.signings.order.id" /></th>
 												<th id="username"><spring:message code="project.detail.signings.name" /></th>
 												<th id="startDate"><spring:message code="project.detail.signings.start.date" /></th>
 												<th id="endDate"><spring:message code="project.detail.signings.end.date" /></th>
@@ -1572,7 +1571,6 @@
 			},
 			"columns": [
 				{ "data": "st_id" },
-				{ "data": "st_orderId" },
 				{ "data": "st_username" },
 				{ "data": "st_startDate" },
 				{ "data": "st_endDate" },
@@ -1581,24 +1579,8 @@
 			],
 			"columnDefs": [
 				{ "className": "text-center", "orderable": false, "targets": "_all" },
-				{  
-				    "render": function ( data, type, row ) {
-					    if (data.split('_')[1] === 'is') {
-							return row.st_orderId;
-						} else {
-                        	return parseId(data);
-						}
-                	},
-                	"targets": 0
-                },
                 {
-                	"targets": [ 1 ],
-                    "visible": false,
-                    "searchable": false,
-                    "defaultContent": ""
-                },
-                {
-                	"render": function ( data, type, row ) {
+                	"render": function ( data ) {
                     	
                     	if(!data) {
 							return '-';
@@ -1606,18 +1588,18 @@
                         
                     	return moment(data).format('DD/MM/YYYY HH:mm');
                 	},
-            		"targets": [3, 4]
+            		"targets": [2, 3]
 				},
 				{  
 				    "render": function ( data, type, row ) {
                         return parseShareType(data);
                 	},
-                	"targets": 5
+                	"targets": 4
                 },
 				{ "defaultContent": "${tableShareActionButtons}", "orderable": false, "targets": -1 }
 			],
 			"dom": "<'top'i>rt<'bottom'p><'clear'>",
-			"drawCallback": function(settings, json) {
+			"drawCallback": function() {
 				parseSigningsActionButtons();
 			}
 		});
@@ -1718,10 +1700,6 @@
 			}
 		});
 		/* End Datatables */
-
-		function parseId(data) {
-			return data.split('_')[0];
-		}
 		
 		function parseShareType(data) {
 			if (data === 'cs') {
@@ -2100,21 +2078,18 @@
 		
 		tableRows.each(function() {
 			
-			var signingId = $(this).attr('id');
+			var id = $(this).attr('id');
 
-			if (!signingId) {
+			if (!id) {
 				return;
 			}
 
 			var data = table.row($(this)).data();
-			var orderId = data.st_orderId;
 			var action = data.st_action;
-			
-			var id = signingId.split('_')[0];
-			var shareType = signingId.split('_')[1];
+			var shareType = data.st_shareType;
 			
 			var lastColumn = $(this).children().last();
-			var emList = lastColumn.children();		
+			var emList = lastColumn.children();
 			
 			emList.each(function(index) {
 				
@@ -2133,7 +2108,7 @@
 							return $(this).remove();
 						}
 						
-						$(this).wrap('<a href="/shares/intervention/no-programmed/detail/' + orderId + '/pdf" target="_blank"></a>');
+						$(this).wrap('<a href="/v1/shares/no-programmed/0/inspections/' + id + '/export" target="_blank"></a>');
 						
 					} else if (shareType === 'ips') {
 						$(this).wrap('<a href="/shares/intervention/programmed/' + id + '/pdf" target="_blank"></a>');
@@ -2146,7 +2121,7 @@
 				} else if (index == 1) {
 
 					if (shareType == 'is') {
-						$(this).wrap('<a href="/shares/intervention/no-programmed/detail/' + orderId + '/materials/pdf" target="_blank"></a>');
+						$(this).wrap('<a href="/v1/shares/no-programmed/0/inspections/' + id + '/export-materials" target="_blank"></a>');
 					} else {
 						$(this).remove();
 					}
@@ -2255,7 +2230,7 @@
 
 	function getIsShare(id) {
 		return $.ajax({
-		    url: '/shares/intervention/no-programmed/' + id,
+		    url: '/shares/no-programmed/' + id,
 		    type: 'GET'
 		 });
 	}
@@ -2471,7 +2446,7 @@
 			
 			$.ajax({
 				type: "PUT",
-				url: "/shares/intervention/no-programmed/" + id,
+				url: "/shares/no-programmed/" + id,
 				data: $('#updateIntForm').serialize(),
 				success: function(msg) {
 					$('#dTableSignings').DataTable().ajax.reload();
@@ -2677,7 +2652,7 @@
 			} else if (shareType === 'ips') {
 				deleteUri = '/shares/intervention/programmed/delete/' + signingId;
 			} else if (shareType === 'is') {
-				deleteUri = '/shares/intervention/no-programmed/detail/' + signingId + '/delete';
+				deleteUri = '/shares/no-programmed/' + signingId;
 			} else if (shareType === 'ws') {
 				deleteUri = '/shares/work/' + signingId;
 			}

@@ -236,7 +236,6 @@
             const files = await parseFiles(editForm);
 
             axios.patch('/v1' + window.location.pathname, {
-                firstTechnicalId: ${user.id},
                 description: description ? description.value : null,
                 signature: !signaturePad.isEmpty() ? signaturePad.toDataURL() : null,
                 operatorSignature: !signaturePadOp.isEmpty() ? signaturePadOp.toDataURL() : null,
@@ -246,7 +245,6 @@
                 equipmentHours: equipmentHours ? equipmentHours.value : null,
                 files: files
             }).then((response) => {
-                console.log(files);
                 loadFiles(files, materialsFile);
                 inspection = response.data.data;
                 showNotify(messages.inspections.update.success.replace('{0}', inspection.id))
@@ -276,6 +274,10 @@
                 name: 'Material_file.' + inspection.materialsFileExtension,
                 content: materialsFile
             }
+        }
+
+        if (inspection.action === 'FOLLOWING') {
+            $('.visibility-id').hide();
         }
 
         loadFiles(inspection.files, materialsFile);

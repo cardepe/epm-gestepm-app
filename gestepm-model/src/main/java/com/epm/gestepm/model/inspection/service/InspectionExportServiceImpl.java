@@ -13,6 +13,8 @@ import com.epm.gestepm.modelapi.inspection.exception.InspectionExportException;
 import com.epm.gestepm.modelapi.inspection.exception.InspectionNotEndedException;
 import com.epm.gestepm.modelapi.inspection.service.InspectionExportService;
 import com.epm.gestepm.modelapi.inspection.service.InspectionFileService;
+import com.epm.gestepm.modelapi.inspection.service.InspectionMaterialsExportException;
+import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
@@ -50,6 +52,8 @@ import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
 public class InspectionExportServiceImpl implements InspectionExportService {
 
     private static final String TEMPLATE_PATH = "/templates/pdf/intervention_share_no_programmed_%s.pdf";
+
+    private static final String MATERIALS_TEMPLATE_PATH = "/templates/pdf/intervention_share_no_programmed_%s_materials.pdf";
 
     private static final String DATE_FORMAT = "dd-MM-yyyy HH:mm:ss";
 
@@ -161,6 +165,49 @@ public class InspectionExportServiceImpl implements InspectionExportService {
             return baos.toByteArray();
         } catch (IOException | DocumentException ex) {
             throw new InspectionExportException(inspection.getId());
+        }
+    }
+
+    @Override
+    public byte[] generateMaterials(InspectionDto inspection) {
+        try {
+            if (inspection.getEndDate() == null) {
+                throw new InspectionNotEndedException(inspection.getId());
+            }
+
+            final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(
+                    new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
+            final Project project = this.projectService.getProjectById(noProgrammedShare.getProjectId().longValue());
+
+            final String language = localeProvider.getLocale().orElse("es");
+            final Locale locale = new Locale(language);
+            final PdfReader pdfTemplate = new PdfReader(String.format(MATERIALS_TEMPLATE_PATH, language));
+            final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            final PdfStamper stamper = new PdfStamper(pdfTemplate, baos);
+            final AcroFields acroFields = stamper.getAcroFields();
+
+            stamper.getAcroFields().setField("faultNum", noProgrammedShare.getId().toString());
+            acroFields.setField("interventionText", this.messageSource.getMessage("inspection.type." + inspection.getAction().name().toLowerCase(), null, locale));
+            acroFields.setField("interventionNum", inspection.getInspectionTypeNumber(noProgrammedShare.getInspectionIds()).toString());
+            acroFields.setField("excelNum", "EXCEL: " + (inspection.getMaterialsFile() != null ? noProgrammedShare.getId() : "S/N"));
+
+            final List<MaterialRequired> materials = project.getMaterialsRequired().stream().limit(30).collect(Collectors.toList());
+
+            for (int i = 0; i < materials.size(); i++) {
+                acroFields.setField("reqMaterialDesc" + i, "es".equals(language) ? materials.get(i).getNameES() : materials.get(i).getNameFR());
+                acroFields.setField("reqMaterialRef" + i, "x");
+            }
+
+            stamper.getAcroFields().setGenerateAppearances(true);
+            stamper.setFormFlattening(true);
+
+            stamper.close();
+            pdfTemplate.close();
+
+            return baos.toByteArray();
+
+        } catch (IOException | DocumentException ex) {
+            throw new InspectionMaterialsExportException(inspection.getId());
         }
     }
 

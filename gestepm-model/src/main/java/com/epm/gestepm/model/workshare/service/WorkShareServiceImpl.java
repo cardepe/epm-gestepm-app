@@ -1,22 +1,24 @@
 package com.epm.gestepm.model.workshare.service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
+import com.epm.gestepm.lib.file.FileUtils;
 import com.epm.gestepm.model.interventionshare.service.mapper.ShareMapper;
-import com.epm.gestepm.model.worksharefile.dao.WorkShareFileRepository;
 import com.epm.gestepm.model.workshare.dao.WorkShareRepository;
+import com.epm.gestepm.model.worksharefile.dao.WorkShareFileRepository;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
-import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
+import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.interventionshare.dto.PdfFileDTO;
 import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShareTableDTO;
+import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
+import com.epm.gestepm.modelapi.worksharefile.dto.WorkShareFile;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfReader;
+import com.itextpdf.text.pdf.PdfStamper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -27,25 +29,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Image;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
-
-import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
-import com.epm.gestepm.modelapi.worksharefile.dto.WorkShareFile;
-import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
-import com.epm.gestepm.lib.file.FileUtils;
-import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 @Service
 @Transactional
 public class WorkShareServiceImpl implements WorkShareService {
 
 	private static final Log log = LogFactory.getLog(WorkShareServiceImpl.class);
+
+	private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm";
 
 	@Autowired
 	private MessageSource messageSource;
@@ -85,11 +84,6 @@ public class WorkShareServiceImpl implements WorkShareService {
 	public List<ShareTableDTO> getShareTableByActivityCenterId(Long id, Long activityCenterId, Long projectId, Integer progress) {
 		return workShareDao.findShareTableByActivityCenterId(id, activityCenterId, projectId, progress);
 	}
-
-	@Override
-	public List<ShareTableDTO> getShareTableByUserId(Long userId, Long projectId, Integer progress) {
-		return workShareDao.findShareTableByUserId(userId, projectId, progress);
-	}
 	
 	@Override
 	public void deleteById(Long shareId) {
@@ -122,13 +116,8 @@ public class WorkShareServiceImpl implements WorkShareService {
 	}
 
 	@Override
-	public List<WorkShare> getWeekSigningsByProjectId(Date startDate, Date endDate, Long projectId) {
+	public List<WorkShare> getWeekSigningsByProjectId(OffsetDateTime startDate, OffsetDateTime endDate, Long projectId) {
 		return workShareDao.findWeekSigningsByProjectId(startDate, endDate, projectId);
-	}
-
-	@Override
-	public List<ExpensesMonthDTO> getExpensesMonthDTOByProjectId(Long projectId, Integer year) {
-		return workShareDao.findExpensesMonthDTOByProjectId(projectId, year);
 	}
 	
 	@Override
@@ -141,8 +130,8 @@ public class WorkShareServiceImpl implements WorkShareService {
 	        PdfStamper stamper = new PdfStamper(pdfTemplate, (OutputStream) baos);
 	        
 	        stamper.getAcroFields().setField("idShare", share.getId().toString());
-	        stamper.getAcroFields().setField("startDate", Utiles.transformFormattedDateToString(share.getStartDate()));
-	        stamper.getAcroFields().setField("endDate", Utiles.transformFormattedDateToString(share.getEndDate()));
+	        stamper.getAcroFields().setField("startDate", Utiles.transform(share.getStartDate(), DATE_FORMAT));
+	        stamper.getAcroFields().setField("endDate", Utiles.transform(share.getEndDate(), DATE_FORMAT));
 	        stamper.getAcroFields().setField("observations", share.getObservations());
 	        stamper.getAcroFields().setField("opName", share.getUser().getName() + " " + share.getUser().getSurnames());
 	        
@@ -205,7 +194,7 @@ public class WorkShareServiceImpl implements WorkShareService {
 	}
 
 	@Override
-	public List<PdfFileDTO> generateSharesByProjectAndInterval(Long projectId, Date startDate, Date endDate) {
+	public List<PdfFileDTO> generateSharesByProjectAndInterval(Long projectId, OffsetDateTime startDate, OffsetDateTime endDate) {
 
 		final List<PdfFileDTO> pdfs = new ArrayList<>();
 

@@ -2,10 +2,12 @@ package com.epm.gestepm.modelapi.usermanualsigning.dto;
 
 import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
 import com.epm.gestepm.modelapi.user.dto.User;
+import lombok.Data;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.OffsetDateTime;
 
+@Data
 @Entity
 @Table(name = "user_manual_signings")
 public class UserManualSigning {
@@ -24,10 +26,10 @@ public class UserManualSigning {
     private ManualSigningType manualSigningType;
 
     @Column(name = "START_DATE", nullable = false)
-    private Timestamp startDate;
+    private OffsetDateTime startDate;
 
     @Column(name = "END_DATE")
-    private Timestamp endDate;
+    private OffsetDateTime endDate;
 
     @Column(name = "DESCRIPTION")
     private String description;
@@ -41,75 +43,4 @@ public class UserManualSigning {
     @Column(name = "LOCATION", length = 32)
     private String location;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public ManualSigningType getManualSigningType() {
-        return manualSigningType;
-    }
-
-    public void setManualSigningType(ManualSigningType manualSigningType) {
-        this.manualSigningType = manualSigningType;
-    }
-
-    public Timestamp getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Timestamp startDate) {
-        this.startDate = startDate;
-    }
-
-    public Timestamp getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(Timestamp endDate) {
-        this.endDate = endDate;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public byte[] getJustification() {
-        return justification;
-    }
-
-    public void setJustification(byte[] justification) {
-        this.justification = justification;
-    }
-
-    public String getJustificationExt() {
-        return justificationExt;
-    }
-
-    public void setJustificationExt(String justificationExt) {
-        this.justificationExt = justificationExt;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
 }

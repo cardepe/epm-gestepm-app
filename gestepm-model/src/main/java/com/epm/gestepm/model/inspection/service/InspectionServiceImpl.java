@@ -47,6 +47,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -89,6 +90,21 @@ public class InspectionServiceImpl implements InspectionService {
         this.topicService = topicService;
         this.userService = userService;
         this.userSigningService = userSigningService;
+    }
+
+    @Override
+    @RequirePermits(value = PRMT_READ_I, action = "List inspections")
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Listing inspections",
+            msgOut = "Listing inspections OK",
+            errorMsg = "Failed to list inspections")
+    public List<InspectionDto> list(InspectionFilterDto filterDto) {
+        final InspectionFilter filter = getMapper(MapIToInspectionFilter.class).from(filterDto);
+
+        final List<Inspection> page = this.inspectionDao.list(filter);
+
+        return getMapper(MapIToInspectionDto.class).from(page);
     }
 
     @Override
@@ -143,11 +159,10 @@ public class InspectionServiceImpl implements InspectionService {
             msgOut = "New country inspection OK",
             errorMsg = "Failed to create new inspection")
     public InspectionDto create(InspectionCreateDto createDto) {
-
-        this.checker(createDto.getFirstTechnicalId(), createDto);
-
         final NoProgrammedShareDto noProgrammedShare =
                 this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(createDto.getShareId()));
+
+        this.checker(createDto.getFirstTechnicalId(), createDto);
 
         final InspectionCreate create = getMapper(MapIToInspectionCreate.class).from(createDto);
         create.setStartDate(OffsetDateTime.now());
@@ -168,11 +183,11 @@ public class InspectionServiceImpl implements InspectionService {
             msgOut = "Intervention updated OK",
             errorMsg = "Failed to update inspection")
     public InspectionDto update(InspectionUpdateDto updateDto) {
-        this.checker(updateDto.getFirstTechnicalId(), updateDto);
-
         final InspectionDto inspection = findOrNotFound(new InspectionByIdFinderDto(updateDto.getId()));
         final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(
                 new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
+
+        this.checker(inspection.getFirstTechnicalId(), updateDto);
 
         if (updateDto.getEndDate() == null) {
             updateDto.setEndDate(OffsetDateTime.now());
@@ -183,10 +198,9 @@ public class InspectionServiceImpl implements InspectionService {
 
         final Inspection updated = this.inspectionDao.update(update);
 
-        this.createForumComment(updateDto, noProgrammedShare);
-
         final InspectionDto result = getMapper(MapIToInspectionDto.class).from(updated);
 
+        this.createForumComment(result, noProgrammedShare);
         this.sendMail(result, updateDto.getNotify());
 
         return result;
@@ -232,16 +246,16 @@ public class InspectionServiceImpl implements InspectionService {
         }
     }
 
-    private void createForumComment(InspectionUpdateDto update, NoProgrammedShareDto noProgrammedShare) {
+    private void createForumComment(InspectionDto inspection, NoProgrammedShareDto noProgrammedShare) {
 
         if (noProgrammedShare.getTopicId() != null) {
             final StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(update.getDescription().replace("\n", "<br/>"));
+            stringBuilder.append(inspection.getDescription().replace("\n", "<br/>"));
 
-            if (CollectionUtils.isNotEmpty(update.getMaterials())) {
+            if (CollectionUtils.isNotEmpty(inspection.getMaterials())) {
                 stringBuilder.append("<br/><br/>Materiales:<br/> <LIST><s>[list]</s>");
 
-                update.getMaterials().forEach(material -> {
+                inspection.getMaterials().forEach(material -> {
                     stringBuilder.append("<LI><s>[*]</s>").append(material.getDescription()).append("/").append(material.getUnits()).append(" uds (ref: ").append(material.getReference()).append(")</LI>");
                 });
 
@@ -254,14 +268,14 @@ public class InspectionServiceImpl implements InspectionService {
             final String content = stringBuilder.toString();
             final String ip = request.getLocalAddr();
 
-            final User user = this.userService.getUserById(Long.valueOf(update.getFirstTechnicalId()));
+            final User user = this.userService.getUserById(Long.valueOf(inspection.getFirstTechnicalId()));
 
             // TODO: same with files, now null.
 
             this.topicService.create(title, content, noProgrammedShare.getTopicId().longValue(), ip, user.getUsername(), null)
                     .thenApply(topic -> {
                         final InspectionUpdate inspectionUpdate = new InspectionUpdate();
-                        inspectionUpdate.setId(update.getId());
+                        inspectionUpdate.setId(inspection.getId());
                         inspectionUpdate.setTopicId(topic.getId().intValue());
 
                         return this.inspectionDao.update(inspectionUpdate);

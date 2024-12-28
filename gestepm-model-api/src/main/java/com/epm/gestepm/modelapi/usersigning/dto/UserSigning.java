@@ -6,21 +6,13 @@ import com.epm.gestepm.modelapi.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
+import lombok.Data;
 
-import java.sql.Timestamp;
+import javax.persistence.*;
+import java.time.OffsetDateTime;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
+@Data
 @Entity
 @Table(name = "user_signings")
 public class UserSigning {
@@ -39,10 +31,10 @@ public class UserSigning {
 	private Project project;
 
 	@Column(name = "START_DATE", nullable = false)
-	private Timestamp startDate;
+	private OffsetDateTime startDate;
 	
 	@Column(name = "END_DATE")
-	private Timestamp endDate;
+	private OffsetDateTime endDate;
 	
 	@Column(name = "MATERIALS", length = 100)
 	private String materials;
@@ -71,115 +63,4 @@ public class UserSigning {
 	@OneToMany(mappedBy = "userSigning", fetch = FetchType.LAZY)
 	private List<WorkShare> workShares;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public Project getProject() {
-		return project;
-	}
-
-	public void setProject(Project project) {
-		this.project = project;
-	}
-
-	public Timestamp getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(Timestamp startDate) {
-		this.startDate = startDate;
-	}
-
-	public Timestamp getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Timestamp endDate) {
-		this.endDate = endDate;
-	}
-
-	public String getMaterials() {
-		return materials;
-	}
-
-	public void setMaterials(String materials) {
-		this.materials = materials;
-	}
-
-	public String getMrSignature() {
-		return mrSignature;
-	}
-
-	public void setMrSignature(String mrSignature) {
-		this.mrSignature = mrSignature;
-	}
-
-	public Long getDisplacementShareId() {
-		return displacementShareId;
-	}
-
-	public void setDisplacementShareId(Long displacementShareId) {
-		this.displacementShareId = displacementShareId;
-	}
-
-	public String getStartLocation() {
-		return startLocation;
-	}
-
-	public void setStartLocation(String startLocation) {
-		this.startLocation = startLocation;
-	}
-
-	public String getEndLocation() {
-		return endLocation;
-	}
-
-	public void setEndLocation(String endLocation) {
-		this.endLocation = endLocation;
-	}
-
-	public List<ConstructionShare> getConstructionShares() {
-		return constructionShares;
-	}
-
-	public void setConstructionShares(List<ConstructionShare> constructionShares) {
-		this.constructionShares = constructionShares;
-	}
-
-	public List<InterventionShare> getInterventionShares() {
-		return interventionShares;
-	}
-
-	public void setInterventionShares(List<InterventionShare> interventionShares) {
-		this.interventionShares = interventionShares;
-	}
-
-	public List<InterventionPrShare> getInterventionPrShares() {
-		return interventionPrShares;
-	}
-
-	public void setInterventionPrShares(List<InterventionPrShare> interventionPrShares) {
-		this.interventionPrShares = interventionPrShares;
-	}
-
-	public List<WorkShare> getWorkShares() {
-		return workShares;
-	}
-
-	public void setWorkShares(List<WorkShare> workShares) {
-		this.workShares = workShares;
-	}
 }

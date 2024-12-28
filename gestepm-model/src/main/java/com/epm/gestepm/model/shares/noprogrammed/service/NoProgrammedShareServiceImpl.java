@@ -16,6 +16,7 @@ import com.epm.gestepm.model.shares.noprogrammed.service.mapper.*;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseNoProgrammedShareMailTemplateDto;
+import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenNoProgrammedShareMailTemplateDto;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
 import com.epm.gestepm.modelapi.project.dto.Project;
@@ -98,7 +99,22 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
     }
 
     @Override
-    @RequirePermits(value = PRMT_READ_NPS, action = "List countries")
+    @RequirePermits(value = PRMT_READ_NPS, action = "List no programmed shares")
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Listing no programmed shares",
+            msgOut = "Listing no programmed shares OK",
+            errorMsg = "Failed to list no programmed shares")
+    public List<NoProgrammedShareDto> list(NoProgrammedShareFilterDto filterDto) {
+        final NoProgrammedShareFilter filter = getMapper(MapNPSToNoProgrammedShareFilter.class).from(filterDto);
+
+        final List<NoProgrammedShare> list = this.noProgrammedShareDao.list(filter);
+
+        return getMapper(MapNPSToNoProgrammedShareDto.class).from(list);
+    }
+
+    @Override
+    @RequirePermits(value = PRMT_READ_NPS, action = "List no programmed shares")
     @LogExecution(operation = OP_READ,
             debugOut = true,
             msgIn = "Paginating no programmed shares",
@@ -182,9 +198,11 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
 
         final NoProgrammedShare updated = this.noProgrammedShareDao.update(update);
 
-        this.createForumEntryAndUpdate(noProgrammedShareDto, update);
-
         final NoProgrammedShareDto result = getMapper(MapNPSToNoProgrammedShareDto.class).from(updated);
+
+        if (result.getTopicId() == null) {
+            this.createForumEntryAndUpdate(result, update);
+        }
 
         if (NoProgrammedShareStateEnumDto.CLOSED.equals(updateDto.getState())) {
             this.sendMailFinal(result);
@@ -242,8 +260,8 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
         final String ip = request.getLocalAddr();
         final List<MultipartFile> files = CollectionUtils.isNotEmpty(update.getFiles())
                 ? update.getFiles().stream()
-                    .map(file -> convertToMultipartFile(file.getName() + "." + file.getExt(), Base64.decode(file.getContent()).getBytes()))
-                    .collect(Collectors.toList())
+                .map(file -> convertToMultipartFile(file.getName() + "." + file.getExt(), Base64.decode(file.getContent()).getBytes()))
+                .collect(Collectors.toList())
                 : new ArrayList<>();
 
         final User user = this.userService.getUserById(Long.valueOf(noProgrammedShare.getUserId()));
@@ -258,8 +276,15 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
                 });
 
         final NoProgrammedShareUpdateDto dto = getMapper(MapNPSToNoProgrammedShareUpdateDto.class).from(update);
-        
-        this.sendMail(dto, user, project);
+
+        final OpenNoProgrammedShareMailTemplateDto template = new OpenNoProgrammedShareMailTemplateDto();
+        template.setLocale(request.getLocale());
+        template.setNoProgrammedShare(getMapper(MapNPSToNoProgrammedShareUpdateDto.class).from(update));
+        template.setEmail(user.getEmail());
+        template.setUser(user);
+        template.setProject(project);
+
+        this.sendMail(template);
     }
 
     public static MultipartFile convertToMultipartFile(String fileName, byte[] content) {
@@ -279,13 +304,15 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
                 familyName, "es".equals(request.getLocale().getLanguage()) ? subFamily.getNameES() : subFamily.getNameFR());
     }
 
-    private void sendMail(final NoProgrammedShareUpdateDto share, final User user, final Project project) {
-        this.smtpService.sendOpenInterventionShareMail(user.getEmail(), share, user, project, request.getLocale());
+    private void sendMail(final OpenNoProgrammedShareMailTemplateDto template) {
+        this.smtpService.openNoProgrammedShareSendMail(template);
 
-        if (project.getResponsables() != null && !project.getResponsables().isEmpty()) {
-            for (User responsable : project.getResponsables()) {
-                smtpService.sendOpenInterventionShareMail(responsable.getEmail(), share, user, project, request.getLocale());
-            }
+        if (CollectionUtils.isNotEmpty(template.getProject().getResponsables())) {
+            template.getProject().getResponsables().forEach(responsible -> {
+                template.setEmail(responsible.getEmail());
+                template.setUser(responsible);
+                smtpService.openNoProgrammedShareSendMail(template);
+            });
         }
     }
 

@@ -35,7 +35,7 @@ public class InspectionCreate implements CollectableAttributes {
 
         map.put(ATTR_I_USER_SIGNING_ID, this.userSigningId);
         map.put(ATTR_I_SHARE_ID, this.shareId);
-        map.put(ATTR_I_ACTION, this.action.getId());
+        map.putEnum(ATTR_I_ACTION, this.action);
         map.put(ATTR_I_START_DATE, this.startDate);
         map.put(ATTR_I_FIRST_TECHNICAL_ID, this.firstTechnicalId);
         map.put(ATTR_I_SECOND_TECHNICAL_ID, this.secondTechnicalId);

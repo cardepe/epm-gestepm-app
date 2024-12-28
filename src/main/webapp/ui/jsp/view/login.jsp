@@ -3,14 +3,17 @@
 <%@ page import="java.util.Arrays" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Base64" %>
+<%@ page import="org.apache.commons.lang3.StringUtils" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%
 
-	final String mail;
-	final String password;
-	final boolean remember;
+	String mail = "";
+	String password = "";
+	boolean remember = false;
+
+	final String language = request.getLocale().getLanguage();
 
 	final List<Cookie> cookies = Arrays.asList(request.getCookies());
 
@@ -20,25 +23,24 @@
 			.orElse(null);
 
 	if (rememberCookie != null) {
-
 		final String value = new String(Base64.getDecoder().decode(rememberCookie.getValue()));
 
-		mail = value.split(":")[0];
-		password = value.split(":")[1];
-		remember = true;
+		if (StringUtils.isNoneEmpty(value)) {
+			final String[] parts = value.split(":");
 
-	} else {
-
-		mail = "";
-		password = "";
-		remember = false;
+			if (parts.length == 2) {
+				mail = parts[0];
+				password = parts[1];
+				remember = true;
+			}
+		}
 	}
 
 %>
 
 <body class="my-login-page">
 
-	<input id="lang" type="hidden" value="${ lang }" />
+	<input id="lang" type="hidden" value="<%=language%>" />
 	
 	<section class="h-100">
 		<div class="container h-100">

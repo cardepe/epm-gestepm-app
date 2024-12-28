@@ -1,20 +1,20 @@
 package com.epm.gestepm.modelapi.subfamily.dto;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.google.gson.annotations.SerializedName;
+import java.util.List;
 
 public class SubFamilyOldDTO {
 
 	private Long id;
 
-	@SerializedName("subFamilyNameES")
+	@JsonProperty("subFamilyNameES")
 	private String nameES;
 	
-	@SerializedName("subFamilyNameFR")
+	@JsonProperty("subFamilyNameFR")
 	private String nameFR;
 	
-	@SerializedName("subRoleNames")
+	@JsonProperty("subRoleNames")
 	private String subRoleNames;
 	
 	private List<Long> subRoles;

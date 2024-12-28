@@ -1,21 +1,36 @@
 package com.epm.gestepm.controller;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.epm.gestepm.model.common.utils.classes.SingletonUtil;
+import com.epm.gestepm.model.expense.service.ExpenseServiceImpl;
+import com.epm.gestepm.model.expense.service.mapper.ExpenseMapper;
+import com.epm.gestepm.model.expensecorrective.service.ExpenseCorrectiveServiceImpl;
+import com.epm.gestepm.model.expensecorrective.service.mapper.ExpenseCorrectiveMapper;
+import com.epm.gestepm.model.expensefile.service.ExpenseFileServiceImpl;
+import com.epm.gestepm.model.expensesheet.service.ExpenseSheetServiceImpl;
+import com.epm.gestepm.model.project.service.ProjectServiceImpl;
+import com.epm.gestepm.modelapi.common.utils.ModelUtil;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.common.utils.classes.Constants;
+import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
+import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
+import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
+import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
+import com.epm.gestepm.modelapi.expense.dto.Expense;
 import com.epm.gestepm.modelapi.expense.dto.ExpenseDTO;
 import com.epm.gestepm.modelapi.expense.dto.ExpenseTableDTO;
 import com.epm.gestepm.modelapi.expense.dto.FileDTO;
+import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrectiveDTO;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrectiveTableDTO;
+import com.epm.gestepm.modelapi.expensefile.dto.ExpenseFile;
+import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheetDTO;
 import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheetTableDTO;
+import com.epm.gestepm.modelapi.paymenttype.dto.PaymentType;
+import com.epm.gestepm.modelapi.pricetype.dto.PriceType;
+import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
+import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
 import org.apache.commons.lang3.StringUtils;
@@ -25,47 +40,18 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.epm.gestepm.model.expensecorrective.service.mapper.ExpenseCorrectiveMapper;
-import com.epm.gestepm.model.expense.service.mapper.ExpenseMapper;
-import com.epm.gestepm.modelapi.expense.dto.Expense;
-import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
-import com.epm.gestepm.modelapi.expensefile.dto.ExpenseFile;
-import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
-import com.epm.gestepm.modelapi.paymenttype.dto.PaymentType;
-import com.epm.gestepm.modelapi.pricetype.dto.PriceType;
-import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.role.dto.Role;
-import com.epm.gestepm.model.expensecorrective.service.ExpenseCorrectiveServiceImpl;
-import com.epm.gestepm.model.expensefile.service.ExpenseFileServiceImpl;
-import com.epm.gestepm.model.expense.service.ExpenseServiceImpl;
-import com.epm.gestepm.model.expensesheet.service.ExpenseSheetServiceImpl;
-import com.epm.gestepm.model.project.service.ProjectServiceImpl;
-import com.epm.gestepm.modelapi.common.utils.ModelUtil;
-import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.common.utils.classes.Constants;
-import com.epm.gestepm.model.common.utils.classes.SingletonUtil;
-import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
-import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
-import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
+import javax.servlet.http.HttpServletRequest;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/expenses")
@@ -185,7 +171,7 @@ public class ExpensesController {
 
 	@ResponseBody
 	@GetMapping("/personal/dt")
-	public String userExpensesDatatable(HttpServletRequest request, Locale locale) {
+	public DataTableResults<ExpenseSheetTableDTO> userExpensesDatatable(HttpServletRequest request, Locale locale) {
 
 		try {
 
@@ -202,7 +188,7 @@ public class ExpensesController {
 
 			DataTableResults<ExpenseSheetTableDTO> dataTableResult = new DataTableResults<>();
 			dataTableResult.setDraw(dataTableInRQ.getDraw());
-			dataTableResult.setListOfDataObjects(expenseSheets);
+			dataTableResult.setData(expenseSheets);
 			dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 			dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -211,17 +197,17 @@ public class ExpensesController {
 				dataTableResult.setRecordsFiltered(Integer.toString(expenseSheets.size()));
 			}
 
-			return dataTableResult.getJson();
+			return dataTableResult;
 
 		} catch (InvalidUserSessionException e) {
 			log.error(e);
-			return "redirect:/login";
+			return null;
 		}
 	}
 	
 	@ResponseBody
 	@GetMapping("/corrective/dt")
-	public String userCorrectivesDatatable(HttpServletRequest request, Locale locale) {
+	public DataTableResults<ExpenseCorrectiveTableDTO> userCorrectivesDatatable(HttpServletRequest request, Locale locale) {
 
 		try {
 
@@ -237,7 +223,7 @@ public class ExpensesController {
 
 			DataTableResults<ExpenseCorrectiveTableDTO> dataTableResult = new DataTableResults<>();
 			dataTableResult.setDraw(dataTableInRQ.getDraw());
-			dataTableResult.setListOfDataObjects(expenseSheets);
+			dataTableResult.setData(expenseSheets);
 			dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 			dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -246,11 +232,11 @@ public class ExpensesController {
 				dataTableResult.setRecordsFiltered(Integer.toString(expenseSheets.size()));
 			}
 
-			return dataTableResult.getJson();
+			return dataTableResult;
 
 		} catch (InvalidUserSessionException e) {
 			log.error(e);
-			return "redirect:/login";
+			return null;
 		}
 	}
 
@@ -329,7 +315,7 @@ public class ExpensesController {
 
 	@ResponseBody
 	@GetMapping("/personal/{sheetId}/dt")
-	public String userExpensesDatatable(@PathVariable("sheetId") Long sheetId, HttpServletRequest request,
+	public DataTableResults<ExpenseTableDTO> userExpensesDatatable(@PathVariable("sheetId") Long sheetId, HttpServletRequest request,
 			Locale locale) {
 
 		try {
@@ -343,7 +329,7 @@ public class ExpensesController {
 
 			DataTableResults<ExpenseTableDTO> dataTableResult = new DataTableResults<>();
 			dataTableResult.setDraw(dataTableInRQ.getDraw());
-			dataTableResult.setListOfDataObjects(expenses);
+			dataTableResult.setData(expenses);
 			dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 			dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -351,7 +337,7 @@ public class ExpensesController {
 				dataTableResult.setRecordsFiltered(Integer.toString(expenses.size()));
 			}
 
-			return dataTableResult.getJson();
+			return dataTableResult;
 
 		} catch (Exception e) {
 			log.error(e);

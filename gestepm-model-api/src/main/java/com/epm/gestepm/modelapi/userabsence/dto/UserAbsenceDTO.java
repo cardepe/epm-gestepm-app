@@ -1,18 +1,18 @@
 package com.epm.gestepm.modelapi.userabsence.dto;
 
+import com.epm.gestepm.modelapi.common.utils.JspUtil;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 
-import com.epm.gestepm.modelapi.common.utils.JspUtil;
-import com.google.gson.annotations.SerializedName;
-
 public class UserAbsenceDTO {
-	@SerializedName("ua_id")
+	@JsonProperty("ua_id")
 	private Long id;
 
-	@SerializedName("at_absenceType")
+	@JsonProperty("at_absenceType")
 	private String absenceType;
 
-	@SerializedName("ua_date")
+	@JsonProperty("ua_date")
 	private Date date;
 
 	public UserAbsenceDTO() {

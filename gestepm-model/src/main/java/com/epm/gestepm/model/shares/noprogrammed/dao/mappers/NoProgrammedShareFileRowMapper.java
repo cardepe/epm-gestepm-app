@@ -12,11 +12,11 @@ public class NoProgrammedShareFileRowMapper implements RowMapper<NoProgrammedSha
 
   public static final String COL_NPSF_ID = "no_programmed_share_file_id";
 
-  public static final String COL_NPSF_SHARE_ID = "share_id";
+  public static final String COL_NPSF_SHARE_ID = "no_programmed_share_id";
 
   public static final String COL_NPSF_NAME = "name";
 
-  public static final String COL_NPSF_EXTENSION = "ext";
+  public static final String COL_NPSF_EXTENSION = "extension";
 
   public static final String COL_NPSF_CONTENT = "content";
 

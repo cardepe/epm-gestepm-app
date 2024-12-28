@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class ProjectServiceImpl implements ProjectService {
 
 	@Value("${gestepm.displacements.project-ids}")
@@ -89,11 +87,6 @@ public class ProjectServiceImpl implements ProjectService {
 			displacementProjects.add(this.getProjectById(id));
 		});
 		return displacementProjects;
-	}
-
-	@Override
-	public Project getProjectByIdAndUserId(Long projectId, Long userid) {
-		return projectRepository.findByIdAndUserId(projectId, userid);
 	}
 	
 	@Override
@@ -187,13 +180,8 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	
 	@Override
-	public void deleteAllUserBossByUserId(Long userId) {
-		projectRepository.deleteAllUserBossByUserId(userId);
-	}
-	
-	@Override
 	public XSSFWorkbook generateProjectExcel(Long projectId, Long userId, Project project, Integer year, Locale locale) {
-		
+
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		
 		Sheet sheet = workbook.createSheet(messageSource.getMessage("project.excel.sheet.1", new Object[] {}, locale));

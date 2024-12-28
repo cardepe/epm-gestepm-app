@@ -3,10 +3,10 @@ sql:
   qry-list-of-i: |
     
     SELECT
-      i.id AS id_pagination,
-      i.id AS intervention_id,
+      i.inspection_id AS id_pagination,
+      i.inspection_id,
       i.user_signing_id,
-      i.intervention_id as share_id,
+      i.no_programmed_share_id,
       i.action,
       i.start_date,
       i.end_date,
@@ -14,21 +14,21 @@ sql:
       i.first_technical,
       i.second_technical,
       i.signature,
-      i.signature_op,
+      i.operator_signature,
       i.client_name,
-      i.materials,
       i.materials_file,
-      i.materials_file_ext,
+      i.materials_file_extension,
       i.equipment_hours,   
       i.topic_id,
-      ifi.id AS intervention_file_id,
-      im.id AS material_id,
+      ifi.inspection_file_id,
+      im.inspection_material_id AS material_id,
       im.units AS material_units,
       im.description AS material_description,
       im.reference AS material_reference
-    FROM ${sch-gestepm}.intervention_sub_shares i
-    LEFT JOIN ${sch-gestepm}.intervention_sub_share_files ifi ON i.id = ifi.sub_share_id
-    LEFT JOIN ${sch-gestepm}.intervention_share_materials im ON i.id = im.intervention_id
+    FROM ${sch-gestepm}.inspection i
+    LEFT JOIN ${sch-gestepm}.no_programmed_share nps ON i.no_programmed_share_id = nps.no_programmed_share_id
+    LEFT JOIN ${sch-gestepm}.inspection_file ifi ON i.inspection_id = ifi.inspection_id
+    LEFT JOIN ${sch-gestepm}.inspection_material im ON i.inspection_id = im.inspection_id
 
     #whereToken #filter
 
@@ -45,9 +45,9 @@ sql:
 
   qry-create-i: |
     
-    INSERT INTO ${sch-gestepm}.intervention_sub_shares (
+    INSERT INTO ${sch-gestepm}.inspection (
       user_signing_id,
-      intervention_id,
+      no_programmed_share_id,
       action,
       start_date,
       first_technical,
@@ -65,10 +65,10 @@ sql:
   qry-update-i: |
     
     UPDATE
-      ${sch-gestepm}.intervention_sub_shares
+      ${sch-gestepm}.inspection
     SET
       user_signing_id = :attr_i_user_signing_id, 
-      intervention_id = :attr_i_share_id, 
+      no_programmed_share_id = :attr_i_share_id, 
       action = :attr_i_action, 
       start_date = :attr_i_start_date, 
       end_date = :attr_i_end_date, 
@@ -76,24 +76,27 @@ sql:
       first_technical = :attr_i_first_technical_id, 
       second_technical = :attr_i_second_technical_id, 
       signature = :attr_i_signature, 
-      signature_op = :attr_i_operator_signature, 
+      operator_signature = :attr_i_operator_signature, 
       client_name = :attr_i_client_name, 
       materials_file = :attr_i_materials_file, 
-      materials_file_ext = :attr_i_materials_file_extension,
+      materials_file_extension = :attr_i_materials_file_extension,
       equipment_hours = :attr_i_equipment_hours,
       topic_id = :attr_i_topic_id
     WHERE
-      id = :attr_i_id
+      inspection_id = :attr_i_id
 
   qry-delete-i: |
 
-    DELETE FROM ${sch-gestepm}.intervention_sub_shares WHERE id = :attr_i_id
+    DELETE FROM ${sch-gestepm}.inspection WHERE inspection_id = :attr_i_id
 
   filter-i-by-params: |
 
     -- [AND
       -- ${sql.predicate-for-i-ids}
       -- ${sql.predicate-for-i-share-id}
+      -- ${sql.predicate-for-i-project-id}
+      -- ${sql.predicate-for-i-start-date}
+      -- ${sql.predicate-for-i-end-date}
     -- AND]
 
   filter-i-by-id: |
@@ -104,12 +107,24 @@ sql:
 
   predicate-for-i-id: |
 
-    i.id = :attr_i_id
+    i.inspection_id = :attr_i_id
 
   predicate-for-i-ids: |
 
-    i.id IN (:attr_i_ids)
+    i.inspection_id IN (:attr_i_ids)
 
   predicate-for-i-share-id: |
 
-    i.intervention_id = :attr_i_share_id
+    i.no_programmed_share_id = :attr_i_share_id
+
+  predicate-for-i-project-id: |
+    
+    nps.project_id = :attr_nps_p_id
+
+  predicate-for-i-start-date: |
+    
+    i.start_date > :attr_i_start_date
+
+  predicate-for-i-end-date: |
+    
+    i.end_date > :attr_i_end_date

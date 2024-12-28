@@ -1,7 +1,5 @@
 package com.epm.gestepm.controller;
 
-import java.util.Locale;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Controller;
@@ -15,15 +13,13 @@ public class LoginController {
 	private static final Log log = LogFactory.getLog(LoginController.class);
 
 	@GetMapping("/login")
-	public String loginMessage(@RequestParam(value = "error_type", required = false) Integer errorType, Locale locale, Model model) {
+	public String loginMessage(@RequestParam(value = "error_type", required = false) Integer errorType, Model model) {
 
 		log.info("Carga de la vista de autenticación (/login)");
 		
 		if (errorType != null) {
 			model.addAttribute("errorType", errorType);
 		}
-		
-		model.addAttribute("lang", locale.getLanguage());
 		
 		return "login";
 	}

@@ -2,6 +2,7 @@ package com.epm.gestepm.masterdata.activitycenter.dao;
 
 import com.epm.gestepm.lib.entity.AttributeMap;
 import com.epm.gestepm.lib.jdbc.api.datasource.SQLDatasource;
+import com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType;
 import com.epm.gestepm.lib.jdbc.api.query.SQLInsert;
 import com.epm.gestepm.lib.jdbc.api.query.SQLQuery;
 import com.epm.gestepm.lib.jdbc.api.query.fetch.SQLQueryFetchMany;
@@ -17,15 +18,18 @@ import com.epm.gestepm.masterdata.activitycenter.dao.entity.filter.ActivityCente
 import com.epm.gestepm.masterdata.activitycenter.dao.entity.finder.ActivityCenterByIdFinder;
 import com.epm.gestepm.masterdata.activitycenter.dao.entity.updater.ActivityCenterUpdate;
 import com.epm.gestepm.masterdata.activitycenter.dao.mappers.ActivityCenterRowMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
+import static com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType.ASC;
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
 import static com.epm.gestepm.masterdata.activitycenter.dao.constants.ActivityCenterQueries.*;
+import static com.epm.gestepm.masterdata.activitycenter.dao.mappers.ActivityCenterRowMapper.COL_AC_ID;
 
 @Component("activityCenterDao")
 @EnableExecutionLog(layerMarker = DAO)
@@ -49,8 +53,9 @@ public class ActivityCenterDaoImpl implements ActivityCenterDao {
                 .useRowMapper(new ActivityCenterRowMapper())
                 .useQuery(QRY_LIST_OF_AC)
                 .useFilter(FILTER_AC_BY_PARAMS)
-                .withParams(filter.collectAttributes())
-                .addOrderBy(filter.getOrderBy(), filter.getOrder());
+                .withParams(filter.collectAttributes());
+
+        this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
 
         return this.sqlDatasource.fetch(sqlQuery);
     }
@@ -70,8 +75,9 @@ public class ActivityCenterDaoImpl implements ActivityCenterDao {
                 .useFilter(FILTER_AC_BY_PARAMS)
                 .offset(offset)
                 .limit(limit)
-                .withParams(filter.collectAttributes())
-                .addOrderBy(filter.getOrderBy(), filter.getOrder());;
+                .withParams(filter.collectAttributes());
+
+        this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
 
         return this.sqlDatasource.fetch(sqlQuery);
     }
@@ -155,4 +161,11 @@ public class ActivityCenterDaoImpl implements ActivityCenterDao {
         this.sqlDatasource.execute(sqlQuery);
     }
 
+    private void setOrder(SQLOrderByType order, String orderBy, SQLQueryFetchMany<ActivityCenter> sqlQuery) {
+
+        final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id") ? orderBy : COL_AC_ID;
+        final SQLOrderByType orderStatement = order != null ? order : ASC;
+
+        sqlQuery.addOrderBy(orderByStatement, orderStatement);
+    }
 }

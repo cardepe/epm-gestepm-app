@@ -13,7 +13,7 @@ public class JspUtil {
 	
 	public String parseTagToText(String tag) {
 		
-		MessageSource messageSource = ApplicationContextProvider.getContext().getBean(MessageSource.class);
+		MessageSource messageSource = ApplicationContextProvider.getBean(MessageSource.class);
 		
 		if (StringUtils.isNotBlank(tag)) {
 			Locale locale = LocaleContextHolder.getLocale();

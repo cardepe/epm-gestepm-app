@@ -74,7 +74,7 @@ public class RoleController {
 
 	@ResponseBody
 	@GetMapping("/dt")
-	public String roleBossRolesDatatable(HttpServletRequest request, Locale locale) {
+	public DataTableResults<RoleTableDTO> roleBossRolesDatatable(HttpServletRequest request, Locale locale) {
 
 		DataTableRequest<Role> dataTableInRQ = new DataTableRequest<>(request);
 		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
@@ -85,7 +85,7 @@ public class RoleController {
 
 		DataTableResults<RoleTableDTO> dataTableResult = new DataTableResults<>();
 		dataTableResult.setDraw(dataTableInRQ.getDraw());
-		dataTableResult.setListOfDataObjects(roles);
+		dataTableResult.setData(roles);
 		dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 		dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -93,7 +93,7 @@ public class RoleController {
 			dataTableResult.setRecordsFiltered(Integer.toString(roles.size()));
 		}
 
-		return dataTableResult.getJson();
+		return dataTableResult;
 	}
 	
 	@ResponseBody

@@ -1,22 +1,22 @@
 package com.epm.gestepm.modelapi.holiday.dto;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class HolidayTableDTO {
 
-	@SerializedName("ho_id")
+	@JsonProperty("ho_id")
 	private Long id;
 	
-	@SerializedName("ho_name")
+	@JsonProperty("ho_name")
 	private String name;
 	
-	@SerializedName("ho_date")
+	@JsonProperty("ho_date")
 	private String date;
 	
-	@SerializedName("ho_activityCenter")
+	@JsonProperty("ho_activityCenter")
 	private String activityCenter;
 	
-	@SerializedName("ho_country")
+	@JsonProperty("ho_country")
 	private String country;
 	
 	public HolidayTableDTO() {

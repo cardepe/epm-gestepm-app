@@ -183,13 +183,18 @@ public class InspectionController extends BaseController implements InspectionV1
     @Override
     @RequirePermits(value = PRMT_READ_I, action = "Export inspection")
     @LogExecution(operation = OP_READ)
-    public ResponseEntity<Resource> exportInspectionV1(final Integer shareId, final Integer inspectionId) {
+    public ResponseEntity<Resource> exportInspectionV1(Integer shareId, final Integer inspectionId) {
 
         final String language = this.localeProvider.getLocale().orElse("es");
         final java.util.Locale locale = new java.util.Locale(language);
 
-        final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(shareId));
         final InspectionDto inspection = this.inspectionService.findOrNotFound(new InspectionByIdFinderDto(inspectionId));
+
+        if (shareId == 0) {
+            shareId = inspection.getShareId(); // FIXME: to remove when refactor projects/shares view
+        }
+
+        final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(shareId));
 
         final byte[] pdf = this.inspectionExportService.generate(inspection);
         final String dateFormat = "dd-MM-yyyy";

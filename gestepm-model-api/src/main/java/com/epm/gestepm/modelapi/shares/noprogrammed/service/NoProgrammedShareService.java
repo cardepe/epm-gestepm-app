@@ -9,9 +9,12 @@ import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShare
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.NoProgrammedShareUpdateDto;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 public interface NoProgrammedShareService {
+
+    List<@Valid NoProgrammedShareDto> list(@Valid NoProgrammedShareFilterDto filterDto);
 
     Page<@Valid NoProgrammedShareDto> list(@Valid NoProgrammedShareFilterDto filterDto, Long offset, Long limit);
     

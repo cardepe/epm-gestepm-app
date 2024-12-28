@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 @Data
 @Entity
-@Table(name = "intervention_sub_share_files")
+@Table(name = "inspection_file")
 public class InterventionSubShareFile {
 
 	@Id

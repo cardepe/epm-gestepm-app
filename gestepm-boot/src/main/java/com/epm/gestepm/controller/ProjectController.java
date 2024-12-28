@@ -5,6 +5,7 @@ import com.epm.gestepm.forum.model.api.service.UserForumService;
 import com.epm.gestepm.model.family.service.mapper.FamilyMapper;
 import com.epm.gestepm.model.materialrequired.service.mapper.MaterialRequiredMapper;
 import com.epm.gestepm.model.project.service.mapper.ProjectMapper;
+import com.epm.gestepm.model.shares.noprogrammed.mapper.MapIToShareTableDto;
 import com.epm.gestepm.modelapi.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.activitycenter.service.ActivityCenterService;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
@@ -28,9 +29,11 @@ import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
 import com.epm.gestepm.modelapi.family.dto.FamilyTableDTO;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
+import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
+import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
+import com.epm.gestepm.modelapi.inspection.service.InspectionService;
 import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
 import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
-import com.epm.gestepm.modelapi.interventionsubshare.service.InterventionSubShareService;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequiredDTO;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequiredTableDTO;
@@ -64,6 +67,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.mapstruct.factory.Mappers.getMapper;
+
 @Controller
 @RequestMapping("/projects")
 public class ProjectController {
@@ -81,12 +86,12 @@ public class ProjectController {
 	
 	@Autowired
 	private DisplacementShareService displacementShareService;
-	
+
+	@Autowired
+	private InspectionService inspectionService;
+
 	@Autowired
 	private InterventionPrShareService interventionPrShareService;
-	
-	@Autowired
-	private InterventionSubShareService interventionSubShareService;
 	
 	@Autowired
 	private WorkShareService workShareService;
@@ -183,7 +188,7 @@ public class ProjectController {
 
 	@ResponseBody
 	@GetMapping("/dt")
-	public String userBossProjectsDatatable(@RequestParam(required = false) Long projectId, @RequestParam(required = false) Long responsibleId, @RequestParam(required = false) Integer station, HttpServletRequest request) {
+	public DataTableResults<ProjectTableDTO> projectsDataTable(@RequestParam(required = false) Long projectId, @RequestParam(required = false) Long responsibleId, @RequestParam(required = false) Integer station, HttpServletRequest request) {
 
 		try {
 
@@ -211,7 +216,7 @@ public class ProjectController {
 
 			DataTableResults<ProjectTableDTO> dataTableResult = new DataTableResults<>();
 			dataTableResult.setDraw(dataTableInRQ.getDraw());
-			dataTableResult.setListOfDataObjects(projects);
+			dataTableResult.setData(projects);
 			dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 			dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -219,11 +224,11 @@ public class ProjectController {
 				dataTableResult.setRecordsFiltered(Integer.toString(projects.size()));
 			}
 
-			return dataTableResult.getJson();
+			return dataTableResult;
 
 		} catch (InvalidUserSessionException e) {
 			log.error(e);
-			return "redirect:/login";
+			return null;
 		}
 	}
 	
@@ -263,7 +268,7 @@ public class ProjectController {
 	
 	@ResponseBody
 	@GetMapping("/view/dt")
-	public String viewProjectsDatatable(@RequestParam(required = false) Long projectId, @RequestParam(required = false) Long responsableId, @RequestParam(required = false) Integer station, HttpServletRequest request, Locale locale) {
+	public DataTableResults<ProjectTableDTO> viewProjectsDatatable(@RequestParam(required = false) Long projectId, @RequestParam(required = false) Long responsableId, @RequestParam(required = false) Integer station, HttpServletRequest request, Locale locale) {
 
 		try {
 
@@ -286,7 +291,7 @@ public class ProjectController {
 
 			DataTableResults<ProjectTableDTO> dataTableResult = new DataTableResults<>();
 			dataTableResult.setDraw(dataTableInRQ.getDraw());
-			dataTableResult.setListOfDataObjects(projects);
+			dataTableResult.setData(projects);
 			dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 			dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -294,11 +299,11 @@ public class ProjectController {
 				dataTableResult.setRecordsFiltered(Integer.toString(projects.size()));
 			}
 
-			return dataTableResult.getJson();
+			return dataTableResult;
 
 		} catch (InvalidUserSessionException e) {
 			log.error(e);
-			return "redirect:/login";
+			return null;
 		}
 	}
 
@@ -666,7 +671,7 @@ public class ProjectController {
 
 	@ResponseBody
 	@GetMapping("/{id}/bosses/dt")
-	public String projectBossesDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
+	public DataTableResults<ProjectMemberDTO> projectBossesDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
 
 		DataTableRequest<Project> dataTableInRQ = new DataTableRequest<>(request);
 		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
@@ -677,7 +682,7 @@ public class ProjectController {
 
 		DataTableResults<ProjectMemberDTO> dataTableResult = new DataTableResults<>();
 		dataTableResult.setDraw(dataTableInRQ.getDraw());
-		dataTableResult.setListOfDataObjects(bosses);
+		dataTableResult.setData(bosses);
 		dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 		dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -685,12 +690,12 @@ public class ProjectController {
 			dataTableResult.setRecordsFiltered(Integer.toString(bosses.size()));
 		}
 
-		return dataTableResult.getJson();
+		return dataTableResult;
 	}
 	
 	@ResponseBody
 	@GetMapping("/{id}/displacements/dt")
-	public String projectDisplacementsDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
+	public DataTableResults<DisplacementTableDTO> projectDisplacementsDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
 
 		DataTableRequest<Displacement> dataTableInRQ = new DataTableRequest<>(request);
 		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
@@ -701,7 +706,7 @@ public class ProjectController {
 
 		DataTableResults<DisplacementTableDTO> dataTableResult = new DataTableResults<>();
 		dataTableResult.setDraw(dataTableInRQ.getDraw());
-		dataTableResult.setListOfDataObjects(displacements);
+		dataTableResult.setData(displacements);
 		dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 		dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -709,12 +714,12 @@ public class ProjectController {
 			dataTableResult.setRecordsFiltered(Integer.toString(displacements.size()));
 		}
 
-		return dataTableResult.getJson();
+		return dataTableResult;
 	}
 	
 	@ResponseBody
 	@GetMapping("/{id}/families/dt")
-	public String projectFamiliesDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
+	public DataTableResults<FamilyTableDTO> projectFamiliesDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
 
 		DataTableRequest<Project> dataTableInRQ = new DataTableRequest<>(request);
 		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
@@ -725,7 +730,7 @@ public class ProjectController {
 
 		DataTableResults<FamilyTableDTO> dataTableResult = new DataTableResults<>();
 		dataTableResult.setDraw(dataTableInRQ.getDraw());
-		dataTableResult.setListOfDataObjects(families);
+		dataTableResult.setData(families);
 		dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 		dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -733,12 +738,12 @@ public class ProjectController {
 			dataTableResult.setRecordsFiltered(Integer.toString(families.size()));
 		}
 
-		return dataTableResult.getJson();
+		return dataTableResult;
 	}
 	
 	@ResponseBody
 	@GetMapping("/{id}/materials-required/dt")
-	public String projectMaterialsRequiredDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
+	public DataTableResults<MaterialRequiredTableDTO> projectMaterialsRequiredDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
 
 		DataTableRequest<Project> dataTableInRQ = new DataTableRequest<>(request);
 		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
@@ -749,7 +754,7 @@ public class ProjectController {
 
 		DataTableResults<MaterialRequiredTableDTO> dataTableResult = new DataTableResults<>();
 		dataTableResult.setDraw(dataTableInRQ.getDraw());
-		dataTableResult.setListOfDataObjects(materialsRequired);
+		dataTableResult.setData(materialsRequired);
 		dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 		dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -757,13 +762,13 @@ public class ProjectController {
 			dataTableResult.setRecordsFiltered(Integer.toString(materialsRequired.size()));
 		}
 
-		return dataTableResult.getJson();
+		return dataTableResult;
 	}
 
 	@SuppressWarnings("unchecked")
 	@ResponseBody
 	@GetMapping("/{id}/signings/dt")
-	public String projectSigningsDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
+	public DataTableResults<ShareTableDTO> projectSigningsDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
 
 		DataTableRequest<Project> dataTableInRQ = new DataTableRequest<>(request);
 		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
@@ -775,7 +780,7 @@ public class ProjectController {
 
 		DataTableResults<ShareTableDTO> dataTableResult = new DataTableResults<>();
 		dataTableResult.setDraw(dataTableInRQ.getDraw());
-		dataTableResult.setListOfDataObjects(signings);
+		dataTableResult.setData(signings);
 		dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 		dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -783,12 +788,12 @@ public class ProjectController {
 			dataTableResult.setRecordsFiltered(Integer.toString(signings.size()));
 		}
 
-		return dataTableResult.getJson();
+		return dataTableResult;
 	}
 
 	@ResponseBody
 	@GetMapping("/{id}/members/dt")
-	public String projectMembersDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
+	public DataTableResults<ProjectMemberDTO> projectMembersDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
 		
 		DataTableRequest<Project> dataTableInRQ = new DataTableRequest<>(request);
 	    PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
@@ -799,7 +804,7 @@ public class ProjectController {
 
 	    DataTableResults<ProjectMemberDTO> dataTableResult = new DataTableResults<>();
 	    dataTableResult.setDraw(dataTableInRQ.getDraw());
-	    dataTableResult.setListOfDataObjects(members);
+	    dataTableResult.setData(members);
 	    dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 	    dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -807,7 +812,7 @@ public class ProjectController {
 			dataTableResult.setRecordsFiltered(Integer.toString(members.size()));
 		}
 
-	    return dataTableResult.getJson();
+	    return dataTableResult;
 	}
 	
 	@ResponseBody
@@ -910,7 +915,7 @@ public class ProjectController {
 
 	@ResponseBody
 	@GetMapping("/{id}/expenses/dt")
-	public String projectExpensesDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
+	public DataTableResults<ProjectExpenseSheetDTO> projectExpensesDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
 
 		DataTableRequest<Project> dataTableInRQ = new DataTableRequest<>(request);
 		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
@@ -922,7 +927,7 @@ public class ProjectController {
 
 		DataTableResults<ProjectExpenseSheetDTO> dataTableResult = new DataTableResults<>();
 		dataTableResult.setDraw(dataTableInRQ.getDraw());
-		dataTableResult.setListOfDataObjects(expenses);
+		dataTableResult.setData(expenses);
 		dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
 		dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
 
@@ -930,7 +935,7 @@ public class ProjectController {
 			dataTableResult.setRecordsFiltered(Integer.toString(expenses.size()));
 		}
 
-		return dataTableResult.getJson();
+		return dataTableResult;
 	}
 
 	@GetMapping("/{id}/expenses/{sheetId}/view")
@@ -1002,7 +1007,7 @@ public class ProjectController {
 			return new HttpEntity<>(new ByteArrayResource(excelContent), header);
 
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 		} finally {
 			if (workbook != null) {
 				workbook.close();
@@ -1333,14 +1338,14 @@ public class ProjectController {
 		return strText.toString();
 	}
 	
-	private Object[] filterByShare(long projectId, Integer pageNumber, Integer pageSize) {
+	private Object[] filterByShare(Long projectId, Integer pageNumber, Integer pageSize) {
 		
 		List<ShareTableDTO> shareTableDTOs = new ArrayList<>();
 
 		List<ShareTableDTO> csShareTableDTOs = constructionShareService.getShareTableByProjectId(projectId);
 		List<ShareTableDTO> dsShareTableDTOs = displacementShareService.getShareTableByProjectId(projectId);
 		List<ShareTableDTO> ipsShareTableDTOs = interventionPrShareService.getShareTableByProjectId(projectId);
-		List<ShareTableDTO> isShareTableDTOs = interventionSubShareService.getShareTableByProjectId(projectId);
+		List<ShareTableDTO> isShareTableDTOs = this.getInspections(projectId.intValue());
 		List<ShareTableDTO> wsShareTableDTOs = workShareService.getShareTableByProjectId(projectId);
 
 		shareTableDTOs.addAll(csShareTableDTOs);
@@ -1360,5 +1365,14 @@ public class ProjectController {
 		obj[1] = shareTableDTOs.subList(fromIndex, Math.min(fromIndex + pageSize, shareTableDTOs.size()));
 		
 		return obj;
+	}
+
+	private List<ShareTableDTO> getInspections(final Integer projectId) {
+		final InspectionFilterDto filter = new InspectionFilterDto();
+		filter.setProjectId(projectId);
+
+		final List<InspectionDto> inspections = this.inspectionService.list(filter);
+
+		return getMapper(MapIToShareTableDto.class).from(inspections);
 	}
 }

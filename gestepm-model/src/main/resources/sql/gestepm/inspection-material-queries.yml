@@ -1,0 +1,32 @@
+sql:
+
+  qry-create-m: |
+    
+    INSERT INTO ${sch-gestepm}.inspection_material (
+      inspection_material_id,
+      inspection_id,
+      units,
+      description,
+      reference
+    )
+    VALUES (
+      :attr_m_id,
+      :attr_m_inspection_id,
+      :attr_m_units,
+      :attr_m_description,
+      :attr_m_reference
+    )
+
+  qry-update-m: |
+
+    UPDATE 
+      ${sch-gestepm}.inspection_material
+    SET 
+      units = :attr_m_units,
+      description = :attr_m_description,
+      reference = :attr_m_reference
+    WHERE inspection_material_id = :attr_m_id
+
+  qry-delete-m: |
+    
+      DELETE FROM ${sch-gestepm}.inspection_material WHERE inspection_id = :attr_m_inspection_id

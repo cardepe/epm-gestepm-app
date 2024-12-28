@@ -1,36 +1,27 @@
 package com.epm.gestepm.model.expensesheet.dao;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
-
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
+import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
+import com.epm.gestepm.modelapi.expense.dto.Expense;
 import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
+import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheetTableDTO;
+import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectExpenseSheetDTO;
 import com.epm.gestepm.modelapi.user.dto.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
-import com.epm.gestepm.modelapi.expense.dto.Expense;
-import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
-import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 @Repository
 public class ExpenseSheetRepositoryImpl implements ExpenseSheetRepositoryCustom {
@@ -329,10 +320,14 @@ public class ExpenseSheetRepositoryImpl implements ExpenseSheetRepositoryCustom 
 			subquery.select(cb.sum(subExRoot.get("total")));
 			subquery.where(cb.equal(subExRoot.get("expenseSheet"), exRoot.get("id")));
 			
-			cq.multiselect(exRoot.get("id"), exRoot.get("name"),
+			cq.multiselect(
+					exRoot.get("id"),
+					exRoot.get("name"),
 					cb.concat(cb.concat(usRoot.get("name"), " "), usRoot.get("surnames")),
-					exRoot.get("status"), exRoot.get("creationDate"),
-					subquery.getSelection());
+					exRoot.get("status"),
+					exRoot.get("creationDate"),
+					subquery.getSelection()
+			);
 
 			/* END #BASE_QUERY */
 

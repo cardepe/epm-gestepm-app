@@ -136,7 +136,6 @@ a[disabled] {
 							<thead>
 								<tr>
 									<th id="thId"><spring:message code="signing.page.table.id" /></th>
-									<th id="thOrderId"><spring:message code="project.detail.signings.order.id" /></th>
 									<th id="thStartDate"><spring:message code="signing.page.table.start.date" /></th>
 									<th id="thEndDate"><spring:message code="signing.page.table.end.date" /></th>
 									<th id="thShareType"><spring:message code="signing.page.table.share.type" /></th>
@@ -173,7 +172,6 @@ a[disabled] {
 			},
 			"columns": [
 				{ "data": "st_id" },
-				{ "data": "st_orderId" },
 				{ "data": "st_startDate" },
 				{ "data": "st_endDate" },
 				{ "data": "st_shareType" },
@@ -182,12 +180,8 @@ a[disabled] {
 			"columnDefs": [
 				{ "className": "text-center", "orderable": false, "targets": "_all" },
 				{  
-				    "render": function ( data, type, row ) {
-					    if (data.split('_')[1] === 'is') {
-							return row.st_orderId;
-						} else {
-                        	return parseId(data);
-						}
+				    "render": function ( data ) {
+						return parseId(data);
                 	},
                 	"targets": 0
                 },
@@ -198,7 +192,7 @@ a[disabled] {
                     "defaultContent": ""
                 },
 				{  
-				    "render": function ( data, type, row ) {
+				    "render": function ( data ) {
 					    if (!data) { return '-'; } 
 					    else { return moment(data).format('DD/MM/YYYY HH:mm'); }
                 	},

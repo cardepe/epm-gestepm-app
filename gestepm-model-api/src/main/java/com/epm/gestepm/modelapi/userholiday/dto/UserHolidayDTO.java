@@ -1,19 +1,21 @@
 package com.epm.gestepm.modelapi.userholiday.dto;
 
 import com.epm.gestepm.modelapi.common.utils.JspUtil;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
 import java.util.Date;
 
+@Data
 public class UserHolidayDTO {
 
-	@SerializedName("uh_id")
+	@JsonProperty("uh_id")
 	private Long id;
 
-	@SerializedName("uh_date")
+	@JsonProperty("uh_date")
 	private Date date;
 	
-	@SerializedName("uh_status")
+	@JsonProperty("uh_status")
 	private String status;
 
 	public UserHolidayDTO() {
@@ -30,27 +32,4 @@ public class UserHolidayDTO {
 		this.status = jspUtil.parseTagToText(status);
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
 }

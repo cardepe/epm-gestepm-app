@@ -9,9 +9,12 @@ import com.epm.gestepm.modelapi.inspection.dto.finder.InspectionByIdFinderDto;
 import com.epm.gestepm.modelapi.inspection.dto.updater.InspectionUpdateDto;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 public interface InspectionService {
+
+    List<@Valid InspectionDto> list(@Valid InspectionFilterDto filterDto);
 
     Page<@Valid InspectionDto> list(@Valid InspectionFilterDto filterDto, Long offset, Long limit);
     

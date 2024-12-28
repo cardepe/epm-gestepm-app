@@ -9,11 +9,15 @@ import com.epm.gestepm.modelapi.inspection.dto.ActionEnumDto;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
 import com.epm.gestepm.modelapi.inspection.service.InspectionService;
+import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
+import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
 import com.epm.gestepm.modelapi.user.dto.UserDTO;
 import com.epm.gestepm.modelapi.user.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +29,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
@@ -33,18 +39,24 @@ import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
 @EnableExecutionLog(layerMarker = VIEW)
 public class NoProgrammedShareViewController {
 
+    @Value("${forum.url}")
+    private String forumUrl;
+
     private final FamilyService familyService;
 
     private final InspectionService inspectionService;
 
     private final NoProgrammedShareService noProgrammedShareService;
 
+    private final ProjectService projectService;
+
     private final UserService userService;
 
-    public NoProgrammedShareViewController(FamilyService familyService, InspectionService inspectionService, NoProgrammedShareService noProgrammedShareService, UserService userService) {
+    public NoProgrammedShareViewController(FamilyService familyService, InspectionService inspectionService, NoProgrammedShareService noProgrammedShareService, ProjectService projectService, UserService userService) {
         this.familyService = familyService;
         this.inspectionService = inspectionService;
         this.noProgrammedShareService = noProgrammedShareService;
+        this.projectService = projectService;
         this.userService = userService;
     }
 
@@ -63,6 +75,10 @@ public class NoProgrammedShareViewController {
 
         final NoProgrammedShareDto share = this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(id));
 
+        final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(share.getProjectId());
+        final Project project = Optional.ofNullable(this.projectService.getProjectById(share.getProjectId().longValue()))
+                .orElseThrow(projectNotFound);
+
         final InspectionFilterDto filterDto = new InspectionFilterDto();
         filterDto.setShareId(id);
         filterDto.setOrder("DESC");
@@ -78,6 +94,10 @@ public class NoProgrammedShareViewController {
         model.addAttribute("families", families);
         model.addAttribute("usersTeam", usersTeam);
         model.addAttribute("nextAction", ActionEnumDto.getNextAction(lastAction));
+
+        if (project.getForumId() != null && share.getTopicId() != null) {
+            model.addAttribute("forumUrl", forumUrl + "/viewtopic.php?f=" + project.getForumId() + "&t=" + share.getTopicId());
+        }
 
         return "no-programmed-share-detail";
     }

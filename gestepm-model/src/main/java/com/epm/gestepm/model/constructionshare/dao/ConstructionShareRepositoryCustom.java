@@ -4,6 +4,7 @@ import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
 
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +15,6 @@ public interface ConstructionShareRepositoryCustom {
 	List<ShareTableDTO> findShareTableByProjectId(Long projectId);
 	List<ShareTableDTO> findShareTableByUserSigningId(Long userSigningId);
 	List<ConstructionShare> findWeekSigningsByUserId(Date startDate, Date endDate, Long userId);
-	List<ConstructionShare> findWeekSigningsByProjectId(Date startDate, Date endDate, Long projectId);
+	List<ConstructionShare> findWeekSigningsByProjectId(OffsetDateTime startDate, OffsetDateTime endDate, Long projectId);
 	List<DailyPersonalSigningDTO> findDailyConstructionShareDTOByUserIdAndDate(final Long userId, final Integer month, final Integer year);
 }

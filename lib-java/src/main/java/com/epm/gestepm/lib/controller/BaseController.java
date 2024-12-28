@@ -13,6 +13,7 @@ import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.lib.types.PageCursor;
 import com.epm.gestepm.lib.utils.ObjectCopyUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 
@@ -66,7 +67,7 @@ public abstract class BaseController {
     }
 
     protected void setOrder(RestRequest req, String order, String orderBy) {
-        req.setOrder(order);
+        req.setOrder(StringUtils.isNoneEmpty(order) ? order.toUpperCase() : null);
         req.setOrderBy(orderBy);
     }
 

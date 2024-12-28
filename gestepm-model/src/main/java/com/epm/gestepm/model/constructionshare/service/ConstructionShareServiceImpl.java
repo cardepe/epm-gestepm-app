@@ -31,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -41,6 +42,8 @@ import java.util.Locale;
 public class ConstructionShareServiceImpl implements ConstructionShareService {
 	
 	private static final Log log = LogFactory.getLog(ConstructionShareServiceImpl.class);
+
+	private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm";
 	
 	@Autowired
 	private ConstructionShareRepository constructionShareDao;
@@ -107,7 +110,7 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
 	}
 
 	@Override
-	public List<ConstructionShare> getWeekSigningsByProjectId(Date startDate, Date endDate, Long projectId) {
+	public List<ConstructionShare> getWeekSigningsByProjectId(OffsetDateTime startDate, OffsetDateTime endDate, Long projectId) {
 		return constructionShareDao.findWeekSigningsByProjectId(startDate, endDate, projectId);
 	}
 	
@@ -126,8 +129,8 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
 	        PdfStamper stamper = new PdfStamper(pdfTemplate, (OutputStream) baos);
 	        
 	        stamper.getAcroFields().setField("idShare", share.getId().toString());
-	        stamper.getAcroFields().setField("startDate", Utiles.transformTimestampToString(share.getStartDate()));
-	        stamper.getAcroFields().setField("endDate", Utiles.transformTimestampToString(share.getEndDate()));
+	        stamper.getAcroFields().setField("startDate", Utiles.transform(share.getStartDate(), DATE_FORMAT));
+	        stamper.getAcroFields().setField("endDate", Utiles.transform(share.getEndDate(), DATE_FORMAT));
 	        stamper.getAcroFields().setField("observations", share.getObservations());
 	        stamper.getAcroFields().setField("opName", share.getUser().getName() + " " + share.getUser().getSurnames());
 
@@ -190,7 +193,7 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
 	}
 
 	@Override
-	public List<PdfFileDTO> generateSharesByProjectAndInterval(Long projectId, Date startDate, Date endDate) {
+	public List<PdfFileDTO> generateSharesByProjectAndInterval(Long projectId, OffsetDateTime startDate, OffsetDateTime endDate) {
 
 		final List<PdfFileDTO> pdfs = new ArrayList<>();
 

@@ -1,25 +1,25 @@
 package com.epm.gestepm.modelapi.expense.dto;
 
 import com.epm.gestepm.modelapi.common.utils.JspUtil;
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
 public class ExpenseTableDTO {
 
-	@SerializedName("ex_id")
+	@JsonProperty("ex_id")
 	private Long id;
 
-	@SerializedName("pi_description")
+	@JsonProperty("pi_description")
 	private String description;
 
-	@SerializedName("ex_justification")
+	@JsonProperty("ex_justification")
 	private String justification;
 
-	@SerializedName("ex_reportDate")
+	@JsonProperty("ex_reportDate")
 	private Date reportDate;
 
-	@SerializedName("ex_total")
+	@JsonProperty("ex_total")
 	private Double total;
 
 	public ExpenseTableDTO() {

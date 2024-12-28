@@ -22,14 +22,14 @@ function parseDate(date, format) {
 
 function parseStatus(data) {
 
-	if (data === 'Pendiente' || data === 'Approbation en attente') {
-		return '<div class="badge badge-secondary">' + data + '</div>';
-	} else if (data === 'Aprobado por administración' || data === 'Approuvé') {
-		return '<span class="badge badge-primary">' + data + '</span>';
-	} else if (data === 'Aprobado' || data === 'Payé') {
-		return '<span class="badge badge-success">' + data + '</span>';
-	} else if (data === 'Cancelado' || data === 'Rejeté') {
-		return '<span class="badge badge-danger">' + data + '</span>';
+	if (data === 'status.pending') {
+		return '<div class="badge badge-secondary">' + messages.status.pending + '</div>';
+	} else if (data === 'status.approved') {
+		return '<span class="badge badge-primary">' + messages.status.approved + '</span>';
+	} else if (data === 'status.paid') {
+		return '<span class="badge badge-success">' + messages.status.paid + '</span>';
+	} else if (data === 'status.rejected') {
+		return '<span class="badge badge-danger">' + messages.status.rejected + '</span>';
 	}
 	
 	return '';

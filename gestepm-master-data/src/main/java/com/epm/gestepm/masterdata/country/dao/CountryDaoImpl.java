@@ -2,6 +2,7 @@ package com.epm.gestepm.masterdata.country.dao;
 
 import com.epm.gestepm.lib.entity.AttributeMap;
 import com.epm.gestepm.lib.jdbc.api.datasource.SQLDatasource;
+import com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType;
 import com.epm.gestepm.lib.jdbc.api.query.SQLInsert;
 import com.epm.gestepm.lib.jdbc.api.query.SQLQuery;
 import com.epm.gestepm.lib.jdbc.api.query.fetch.SQLQueryFetchMany;
@@ -17,15 +18,18 @@ import com.epm.gestepm.masterdata.country.dao.entity.filter.CountryFilter;
 import com.epm.gestepm.masterdata.country.dao.entity.finder.CountryByIdFinder;
 import com.epm.gestepm.masterdata.country.dao.entity.updater.CountryUpdate;
 import com.epm.gestepm.masterdata.country.dao.mappers.CountryRowMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
+import static com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType.ASC;
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
 import static com.epm.gestepm.masterdata.country.dao.constants.CountryQueries.*;
+import static com.epm.gestepm.masterdata.country.dao.mappers.CountryRowMapper.COL_C_ID;
 
 @Component("countryDao")
 @EnableExecutionLog(layerMarker = DAO)
@@ -51,6 +55,8 @@ public class CountryDaoImpl implements CountryDao {
         .useFilter(FILTER_C_BY_PARAMS)
         .withParams(filter.collectAttributes());
 
+    this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
+
     return this.sqlDatasource.fetch(sqlQuery);
   }
 
@@ -70,6 +76,8 @@ public class CountryDaoImpl implements CountryDao {
         .offset(offset)
         .limit(limit)
         .withParams(filter.collectAttributes());
+
+    this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
 
     return this.sqlDatasource.fetch(sqlQuery);
   }
@@ -153,4 +161,11 @@ public class CountryDaoImpl implements CountryDao {
     this.sqlDatasource.execute(sqlQuery);
   }
 
+  private void setOrder(SQLOrderByType order, String orderBy, SQLQueryFetchMany<Country> sqlQuery) {
+
+    final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id") ? orderBy : COL_C_ID;
+    final SQLOrderByType orderStatement = order != null ? order : ASC;
+
+    sqlQuery.addOrderBy(orderByStatement, orderStatement);
+  }
 }

@@ -1,33 +1,24 @@
 package com.epm.gestepm.model.workshare.dao;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
+import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
+import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
+import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
+import com.epm.gestepm.modelapi.workshare.dto.WorkShareTableDTO;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
-import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
-import com.epm.gestepm.modelapi.workshare.dto.WorkShareTableDTO;
-import org.springframework.stereotype.Repository;
-
-import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
+import javax.persistence.criteria.*;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 @Repository
 public class WorkShareRepositoryImpl implements WorkShareRepositoryCustom {
@@ -76,43 +67,6 @@ public class WorkShareRepositoryImpl implements WorkShareRepositoryCustom {
 		}
 	}
 
-	@Override
-	public List<ShareTableDTO> findShareTableByUserId(Long userId, Long projectId, Integer progress) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<ShareTableDTO> cq = cb.createQuery(ShareTableDTO.class);
-			
-			Root<WorkShare> root = cq.from(WorkShare.class);
-
-			cq.multiselect(root.get("id"), root.get("project").get("name"), root.get("startDate"), root.get("endDate"), cb.literal("ws"));
-			
-			final List<Predicate> predicates = new ArrayList<>();
-			predicates.add(cb.equal(root.get("user"), userId));
-
-			if (progress != null) {
-
-				if (progress == 1) {
-					predicates.add(cb.isNull(root.get("endDate")));
-				} else {
-					predicates.add(cb.isNotNull(root.get("endDate")));
-				}
-			}
-			
-			if (projectId != null) {
-				predicates.add(cb.equal(root.get("project"), projectId));
-			}
-			
-			cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));	
-			
-			return entityManager.createQuery(cq).getResultList();
-			
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
-	}
-	
 	@Override
 	public Long findWorkSharesCountByUserId(Long userId) {
 		
@@ -242,7 +196,7 @@ public class WorkShareRepositoryImpl implements WorkShareRepositoryCustom {
 	}
 
 	@Override
-	public List<WorkShare> findWeekSigningsByProjectId(Date startDate, Date endDate, Long projectId) {
+	public List<WorkShare> findWeekSigningsByProjectId(OffsetDateTime startDate, OffsetDateTime endDate, Long projectId) {
 
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<WorkShare> cq = cb.createQuery(WorkShare.class);

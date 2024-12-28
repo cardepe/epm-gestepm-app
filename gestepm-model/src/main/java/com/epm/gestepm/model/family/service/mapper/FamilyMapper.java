@@ -49,7 +49,7 @@ public class  FamilyMapper {
 		if (subFamilyOldDTO.getSubRoleNames() != null && !subFamilyOldDTO.getSubRoleNames().isEmpty()) {
 			
 			List<SubRole> subRoles = new ArrayList<>();
-			SubRoleService subRoleService = ApplicationContextProvider.getContext().getBean(SubRoleService.class);
+			SubRoleService subRoleService = ApplicationContextProvider.getBean(SubRoleService.class);
 			
 			String[] subRoleNames = subFamilyOldDTO.getSubRoleNames().split(",");
 			

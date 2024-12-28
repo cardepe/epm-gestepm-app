@@ -1,30 +1,26 @@
 package com.epm.gestepm.model.displacementshare.dao;
 
-import java.util.*;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
+import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
+import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
+import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShareTableDTO;
+import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
+import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.JoinType;
-import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShareTableDTO;
-import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
-import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
-import org.springframework.stereotype.Repository;
-
-import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
-import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
+import javax.persistence.criteria.*;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 @Repository
 public class DisplacementShareRepositoryImpl implements DisplacementShareRepositoryCustom {
@@ -61,7 +57,14 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 			
 			Root<DisplacementShare> root = cq.from(DisplacementShare.class);
 
-			cq.multiselect(root.get("id"), root.get("project").get("name"), cb.concat(cb.concat(root.get("user").get("name"), " "), root.get("user").get("surnames")), root.get("displacementDate"), cb.function("date_add_minute", java.sql.Date.class, root.get("displacementDate"), root.get("manualHours")), cb.literal("ds")).where(cb.equal(root.get("project"), projectId));
+			cq.multiselect(
+					root.get("id"),
+					root.get("project").get("name"),
+					cb.concat(cb.concat(root.get("user").get("name"), " "), root.get("user").get("surnames")),
+					root.get("displacementDate"),
+					cb.function("date_add_minute", OffsetDateTime.class, root.get("displacementDate"), root.get("manualHours")),
+					cb.literal("ds")
+			).where(cb.equal(root.get("project"), projectId));
 			
 			return entityManager.createQuery(cq).getResultList();
 			
@@ -80,7 +83,7 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 			
 			Root<DisplacementShare> root = cq.from(DisplacementShare.class);
 
-			cq.multiselect(root.get("id"), root.get("project").get("name"), cb.concat(cb.concat(root.get("user").get("name"), " "), root.get("user").get("surnames")), root.get("displacementDate"), cb.function("date_add_minute", java.sql.Date.class, root.get("displacementDate"), root.get("manualHours")), cb.literal("ds")).where(cb.equal(root.get("userSigning"), userSigningId));
+			cq.multiselect(root.get("id"), root.get("project").get("name"), cb.concat(cb.concat(root.get("user").get("name"), " "), root.get("user").get("surnames")), root.get("displacementDate"), cb.function("date_add_minute", OffsetDateTime.class, root.get("displacementDate"), root.get("manualHours")), cb.literal("ds")).where(cb.equal(root.get("userSigning"), userSigningId));
 			
 			return entityManager.createQuery(cq).getResultList();
 			
@@ -159,13 +162,17 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 		cq.select(root);
 		
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(cb.and(cb.between(root.get("displacementDate"), startDate, endDate), cb.equal(root.get("user"), userId)));
+		predicates.add(cb.and(cb.between(
+				root.get("displacementDate").as(OffsetDateTime.class),
+				startDate.toInstant().atOffset(ZoneOffset.UTC),
+				endDate.toInstant().atOffset(ZoneOffset.UTC)
+		), cb.equal(root.get("user"), userId)));
 		
 		if (manual != null) {
 			predicates.add(cb.equal(root.get("manualDisplacement"), manual));
 		}
 		
-		cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+		cq.where(cb.and(predicates.toArray(new Predicate[0])));
 		
 		return entityManager.createQuery(cq).getResultList();
 	}
@@ -187,7 +194,7 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 			predicates.add(cb.equal(root.get("user"), userId));
 			predicates.add(cb.between(root.get("displacementDate"), yearStartDate, yearEndDate));
 					
-			Expression<java.sql.Time> timeDiff = cb.function("TIMEDIFF", java.sql.Time.class, cb.function("date_add_minute", java.sql.Date.class, root.get("displacementDate"), root.get("manualHours")), root.get("displacementDate"));
+			Expression<java.sql.Time> timeDiff = cb.function("TIMEDIFF", java.sql.Time.class, cb.function("date_add_minute", OffsetDateTime.class, root.get("displacementDate"), root.get("manualHours")), root.get("displacementDate"));
 			Expression<Integer> timeToSec = cb.function("TIME_TO_SEC", Integer.class, timeDiff);
 			
 			cq.multiselect(cb.sum(timeToSec), root.get("displacementDate"));

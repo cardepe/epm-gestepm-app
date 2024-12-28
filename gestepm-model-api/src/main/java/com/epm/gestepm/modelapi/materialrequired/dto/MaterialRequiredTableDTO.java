@@ -1,19 +1,19 @@
 package com.epm.gestepm.modelapi.materialrequired.dto;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class MaterialRequiredTableDTO {
 	
-	@SerializedName("mr_id")
+	@JsonProperty("mr_id")
 	private Long id;
 	
-	@SerializedName("mr_nameES")
+	@JsonProperty("mr_nameES")
 	private String nameES;
 	
-	@SerializedName("mr_nameFR")
+	@JsonProperty("mr_nameFR")
 	private String nameFR;
 	
-	@SerializedName("mr_required")
+	@JsonProperty("mr_required")
 	private Integer required;
 	
 	public MaterialRequiredTableDTO() {

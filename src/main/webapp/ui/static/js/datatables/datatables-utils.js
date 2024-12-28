@@ -141,15 +141,11 @@ function generateColumnDefs(customDataTable) {
     columnDefs.push(
         {
             targets: '_all',
-            className: 'text-center'
-        },
-        {
-            targets: countToArray(customDataTable.columns.length),
+            className: 'text-center',
             defaultContent: '-'
         },
         {
             targets: -1,
-            data: null,
             orderable: false,
             render: function(data, type, row) {
                 return printActions(customDataTable.actions, row.id)

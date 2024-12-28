@@ -4,21 +4,13 @@ import com.epm.gestepm.modelapi.constructionsharefile.dto.ConstructionShareFile;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
+import lombok.Data;
 
-import java.sql.Timestamp;
+import javax.persistence.*;
+import java.time.OffsetDateTime;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
+@Data
 @Entity
 @Table(name = "construction_shares")
 public class ConstructionShare {
@@ -29,10 +21,10 @@ public class ConstructionShare {
 	private Long id;
 	
 	@Column(name = "START_DATE", nullable = false)
-	private Timestamp startDate;
+	private OffsetDateTime startDate;
 
 	@Column(name = "END_DATE")
-	private Timestamp endDate;
+	private OffsetDateTime endDate;
 	
 	@Column(name="OBSERVATIONS")
     private String observations;
@@ -64,99 +56,4 @@ public class ConstructionShare {
 	@OneToMany(mappedBy = "constructionShare")
 	private List<ConstructionShareFile> constructionShareFiles;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Timestamp getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(Timestamp startDate) {
-		this.startDate = startDate;
-	}
-
-	public Timestamp getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(Timestamp endDate) {
-		this.endDate = endDate;
-	}
-
-	public String getObservations() {
-		return observations;
-	}
-
-	public void setObservations(String observations) {
-		this.observations = observations;
-	}
-
-	public Project getProject() {
-		return project;
-	}
-
-	public void setProject(Project project) {
-		this.project = project;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public UserSigning getUserSigning() {
-		return userSigning;
-	}
-
-	public void setUserSigning(UserSigning userSigning) {
-		this.userSigning = userSigning;
-	}
-
-	public String getSignatureOp() {
-		return signatureOp;
-	}
-
-	public void setSignatureOp(String signatureOp) {
-		this.signatureOp = signatureOp;
-	}
-
-	public String getMaterials() {
-		return materials;
-	}
-
-	public void setMaterials(String materials) {
-		this.materials = materials;
-	}
-
-	public String getMrSignature() {
-		return mrSignature;
-	}
-
-	public void setMrSignature(String mrSignature) {
-		this.mrSignature = mrSignature;
-	}
-
-	public Long getDisplacementShareId() {
-		return displacementShareId;
-	}
-
-	public void setDisplacementShareId(Long displacementShareId) {
-		this.displacementShareId = displacementShareId;
-	}
-
-	public List<ConstructionShareFile> getConstructionShareFiles() {
-		return constructionShareFiles;
-	}
-
-	public void setConstructionShareFiles(List<ConstructionShareFile> constructionShareFiles) {
-		this.constructionShareFiles = constructionShareFiles;
-	}
 }

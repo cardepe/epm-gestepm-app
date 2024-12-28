@@ -3,25 +3,24 @@ sql:
   qry-list-of-nps: |
     
     SELECT
-      nps.id AS id_pagination,
-      nps.id AS no_programmed_share_id,
+      nps.no_programmed_share_id AS id_pagination,
+      nps.no_programmed_share_id,
       nps.user_id,
       nps.project_id,
       nps.user_signing_id,
-      nps.notice_date,
+      nps.start_date,
       nps.end_date,
-      nps.intervention_description,
-      nps.family,
-      nps.sub_family,
+      nps.description,
+      nps.family_id,
+      nps.sub_family_id,
       nps.topic_id,
       nps.forum_title,
       nps.state,
-      nps.last_diagnosis,
-      i.id AS intervention_id,
-      npsf.id AS no_programmed_share_file_id
-    FROM ${sch-gestepm}.intervention_shares nps
-    LEFT JOIN ${sch-gestepm}.intervention_sub_shares i ON i.intervention_id = nps.id
-    LEFT JOIN ${sch-gestepm}.intervention_share_files npsf ON npsf.share_id = nps.id
+      i.inspection_id,
+      npsf.no_programmed_share_file_id
+    FROM ${sch-gestepm}.no_programmed_share nps
+    LEFT JOIN ${sch-gestepm}.inspection i ON i.no_programmed_share_id = nps.no_programmed_share_id
+    LEFT JOIN ${sch-gestepm}.no_programmed_share_file npsf ON npsf.no_programmed_share_id = nps.no_programmed_share_id
 
     #whereToken #filter
 
@@ -38,42 +37,40 @@ sql:
 
   qry-create-nps: |
     
-    INSERT INTO ${sch-gestepm}.intervention_shares (
+    INSERT INTO ${sch-gestepm}.no_programmed_share (
       user_id,
       project_id,
       user_signing_id,
-      notice_date,
-      state,
-      last_diagnosis
+      start_date,
+      state
     )
     VALUES (
       :attr_nps_u_id,
       :attr_nps_p_id,
       :attr_nps_us_id,
       :attr_nps_start_date,
-      1,
-      0
+      1
     )
 
   qry-update-nps: |
     
     UPDATE
-      ${sch-gestepm}.intervention_shares
+      ${sch-gestepm}.no_programmed_share
     SET
-      notice_date = :attr_nps_start_date,
+      start_date = :attr_nps_start_date,
       end_date = :attr_nps_end_date,
-      intervention_description = :attr_nps_description,
+      description = :attr_nps_description,
       family = :attr_nps_f_id,
       sub_family = :attr_nps_sf_id,
       topic_id = :attr_nps_topic_id,
       forum_title = :attr_nps_forum_title,
       state = :attr_nps_state
     WHERE
-      id = :attr_nps_id
+      no_programmed_share_id = :attr_nps_id
 
   qry-delete-nps: |
     
-    DELETE FROM ${sch-gestepm}.intervention_shares WHERE id = :attr_nps_id
+    DELETE FROM ${sch-gestepm}.no_programmed_share WHERE id = :attr_nps_id
 
   filter-nps-by-params: |
 
@@ -89,8 +86,8 @@ sql:
 
   predicate-for-nps-id: |
 
-    nps.id = :attr_nps_id
+    nps.no_programmed_share_id = :attr_nps_id
 
   predicate-for-nps-ids: |
 
-    nps.id IN (:attr_nps_ids)
+    nps.no_programmed_share_id IN (:attr_nps_ids)

@@ -100,18 +100,12 @@
 							<caption class="d-none">NO SONAR</caption>
 							<thead>
 								<tr>
-									<th id="expense"><spring:message
-											code="expenses.personal.view.table.id" /></th>
-									<th id="description"><spring:message
-											code="expenses.personal.view.table.description" /></th>
-									<th id="justification"><spring:message
-											code="expenses.personal.view.table.justification" /></th>
-									<th id="date"><spring:message
-											code="expenses.personal.view.table.date" /></th>
-									<th id="amount"><spring:message
-											code="expenses.personal.view.table.amount" /></th>
-									<th id="actions" class="all"><spring:message
-											code="expenses.personal.view.table.actions" /></th>
+									<th id="expense"><spring:message code="expenses.personal.view.table.id" /></th>
+									<th id="description"><spring:message code="expenses.personal.view.table.description" /></th>
+									<th id="justification"><spring:message code="expenses.personal.view.table.justification" /></th>
+									<th id="date"><spring:message code="expenses.personal.view.table.date" /></th>
+									<th id="amount"><spring:message code="expenses.personal.view.table.amount" /></th>
+									<th id="actions" class="all"><spring:message code="expenses.personal.view.table.actions" /></th>
 								</tr>
 							</thead>
 						</table>
@@ -133,7 +127,6 @@
 		var table = $('#dTable').DataTable({
 			"lengthChange": false,
 			"searching": false,
-			"responsive": true,
 			"processing": true,
 			"serverSide": true,
 			"pageLength": 7,
@@ -155,9 +148,15 @@
 					"className": "text-center", 
 					"targets": [ 0, 1, 2, 3, 4, 5 ]
 				},
+				{
+					"render": function ( data ) {
+						return moment(data).format('DD-MM-YYYY');
+					},
+					"targets": 3
+				},
 			    {  
 					"className": "text-right",
-				    "render": function ( data, type, row ) {
+				    "render": function ( data ) {
                     	return data + ' €';
                 	},
                 	"targets": 4 
@@ -170,7 +169,7 @@
     			}
 			],
 			"dom": "<'top'i>rt<'bottom'p><'clear'>",
-			"drawCallback": function(settings, json) {
+			"drawCallback": function() {
 				parseActionButtons();
 			}
 		});

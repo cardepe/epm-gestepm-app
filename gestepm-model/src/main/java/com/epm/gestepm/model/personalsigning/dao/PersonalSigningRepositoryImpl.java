@@ -1,23 +1,19 @@
 package com.epm.gestepm.model.personalsigning.dao;
 
+import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
+import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
+import org.springframework.stereotype.Repository;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.*;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-
-import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
-import org.springframework.stereotype.Repository;
-
-import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 
 @Repository
 public class PersonalSigningRepositoryImpl implements PersonalSigningRepositoryCustom {
@@ -52,7 +48,10 @@ public class PersonalSigningRepositoryImpl implements PersonalSigningRepositoryC
 		
 		Root<PersonalSigning> root = cq.from(PersonalSigning.class);
 		
-		cq.select(root).where(cb.and(cb.between(root.get("endDate"), startDate, endDate), cb.equal(root.get("user"), userId)));
+		cq.select(root).where(cb.and(cb.between(root.get("endDate").as(OffsetDateTime.class),
+				startDate.toInstant().atOffset(ZoneOffset.UTC),
+				endDate.toInstant().atOffset(ZoneOffset.UTC)
+		), cb.equal(root.get("user"), userId)));
 		
 		return entityManager.createQuery(cq).getResultList();
 	}

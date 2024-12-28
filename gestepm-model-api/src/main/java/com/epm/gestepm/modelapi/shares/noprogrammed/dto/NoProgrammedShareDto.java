@@ -41,9 +41,6 @@ public class NoProgrammedShareDto implements Serializable {
     @NotNull
     private NoProgrammedShareStateEnumDto state;
 
-    @NotNull
-    private Integer lastDiagnosis;
-
     @Singular
     private List<Integer> inspectionIds;
 

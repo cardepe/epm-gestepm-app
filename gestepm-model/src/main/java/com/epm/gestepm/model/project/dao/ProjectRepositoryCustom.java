@@ -9,7 +9,6 @@ import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectTableDTO;
 
 public interface ProjectRepositoryCustom {
-	Project findByIdAndUserId(Long id, Long userId);
 	Project findByIdAndBossId(Long id, Long bossId);
 	List<ProjectListDTO> findAllProjectsDTOs();
 	List<ProjectListDTO> findProjectsDTOByUserId(Long userId);
@@ -26,5 +25,4 @@ public interface ProjectRepositoryCustom {
 	void deleteMember(Long projectId, Long userId);
 	void createUserBoss(Long projectId, Long userId);
 	void deleteUserBoss(Long projectId, Long userId);
-	void deleteAllUserBossByUserId(Long userId);
 }

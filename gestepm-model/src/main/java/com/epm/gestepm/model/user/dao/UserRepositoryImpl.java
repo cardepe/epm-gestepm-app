@@ -235,7 +235,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 			List<Predicate> predicates = new ArrayList<>();
 
-			cq.multiselect(usRoot.get("id"), cb.concat(cb.concat(usRoot.get("name"), " "), usRoot.get("surnames")));
+			cq.multiselect(usRoot.get("id"), cb.concat(cb.concat(usRoot.get("name"), " "), usRoot.get("surnames")), null);
 
 			/* END #BASE_QUERY */
 

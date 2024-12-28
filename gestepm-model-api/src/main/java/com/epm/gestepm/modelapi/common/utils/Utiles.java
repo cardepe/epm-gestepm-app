@@ -372,7 +372,7 @@ public class Utiles {
 		}
 		
 		// Load Service
-		UserService userService = ApplicationContextProvider.getContext().getBean(UserService.class);
+		UserService userService = ApplicationContextProvider.getBean(UserService.class);
 		
 		// Reload from DB
 		return userService.getUserById(user.getId());

@@ -1,30 +1,30 @@
 package com.epm.gestepm.model.personalsigning.service;
 
 import com.epm.gestepm.model.constructionshare.dao.ConstructionShareRepository;
-import com.epm.gestepm.model.user.service.mapper.SigningMapper;
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.model.displacementshare.dao.DisplacementShareRepository;
-import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
 import com.epm.gestepm.model.interventionprshare.dao.InterventionPrShareRepository;
 import com.epm.gestepm.model.interventionshare.dao.InterventionShareRepository;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.interventionshare.dto.InterventionShare;
-import com.epm.gestepm.modelapi.common.helpers.DatesModel;
 import com.epm.gestepm.model.personalsigning.dao.PersonalSigningRepository;
-import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
+import com.epm.gestepm.model.user.service.mapper.SigningMapper;
 import com.epm.gestepm.model.usersigning.dao.UserSigningRepository;
 import com.epm.gestepm.model.workshare.dao.WorkShareRepository;
+import com.epm.gestepm.modelapi.common.helpers.DatesModel;
+import com.epm.gestepm.modelapi.common.utils.ExcelUtils;
+import com.epm.gestepm.modelapi.common.utils.PixelUtils;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
+import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
+import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
+import com.epm.gestepm.modelapi.interventionshare.dto.InterventionShare;
+import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningResumeDTO;
+import com.epm.gestepm.modelapi.personalsigning.service.PersonalSigningService;
 import com.epm.gestepm.modelapi.timecontrol.dto.TimeControlTableDTO;
+import com.epm.gestepm.modelapi.timecontrol.service.TimeControlService;
 import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
-import com.epm.gestepm.modelapi.personalsigning.service.PersonalSigningService;
-import com.epm.gestepm.modelapi.timecontrol.service.TimeControlService;
-import com.epm.gestepm.modelapi.common.utils.ExcelUtils;
-import com.epm.gestepm.modelapi.common.utils.PixelUtils;
-import com.epm.gestepm.modelapi.common.utils.Utiles;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.poi.ss.usermodel.*;
@@ -36,6 +36,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DateFormatSymbols;
+import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -43,6 +45,12 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class PersonalSigningServiceImpl implements PersonalSigningService {
+
+	private static final String DATE_TIME_FORMAT = "dd-MM-yyyy HH:mm:ss";
+
+	private static final String DATE_FORMAT = "dd/MM/yyyy";
+
+	private static final String TIME_FORMAT = "HH:mm:ss";
 
 	@Autowired
 	private MessageSource messageSource;
@@ -88,7 +96,9 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 
 		if (isNewSigning(lastSigning)) {
 
-			PersonalSigning personalSigning = new PersonalSigning(null, user, new Date(), null);
+			PersonalSigning personalSigning = new PersonalSigning();
+			personalSigning.setUser(user);
+			personalSigning.setStartDate(OffsetDateTime.now());
 
 			personalSigning = personalSigingRepository.save(personalSigning);
 			
@@ -96,7 +106,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 						
 		} else {
 
-			lastSigning.setEndDate(new Date());
+			lastSigning.setEndDate(OffsetDateTime.now());
 
 			personalSigingRepository.save(lastSigning);
 		
@@ -408,7 +418,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 				final List<ConstructionShare> dailyConstructionList = monthlyConstructionSigningList.stream().filter(s -> {
 
 					final Calendar filterCalendar = Calendar.getInstance();
-					filterCalendar.setTime(s.getStartDate());
+					filterCalendar.setTime(Date.from(s.getStartDate().toInstant()));
 					Utiles.setStartDay(filterCalendar);
 
 					return Utiles.getStartDayDate(selectedCal).equals(filterCalendar.getTime());
@@ -418,7 +428,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 				final List<DisplacementShare> dailyDisplacementList = monthlyDisplacementSigningList.stream().filter(s -> {
 
 					final Calendar filterCalendar = Calendar.getInstance();
-					filterCalendar.setTime(s.getDisplacementDate());
+					filterCalendar.setTime(Date.from(s.getDisplacementDate().toInstant()));
 					Utiles.setStartDay(filterCalendar);
 
 					return Utiles.getStartDayDate(selectedCal).equals(filterCalendar.getTime());
@@ -428,7 +438,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 				final List<InterventionShare> dailyInterventionList = monthlyInterventionSigningList.stream().filter(s -> {
 
 					final Calendar filterCalendar = Calendar.getInstance();
-					filterCalendar.setTime(s.getNoticeDate());
+					filterCalendar.setTime(Date.from(s.getNoticeDate().toInstant()));
 					Utiles.setStartDay(filterCalendar);
 
 					return Utiles.getStartDayDate(selectedCal).equals(filterCalendar.getTime());
@@ -438,7 +448,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 				final List<InterventionPrShare> dailyInterventionPrList = monthlyInterventionPrSigningList.stream().filter(s -> {
 
 					final Calendar filterCalendar = Calendar.getInstance();
-					filterCalendar.setTime(s.getStartDate());
+					filterCalendar.setTime(Date.from(s.getStartDate().toInstant()));
 					Utiles.setStartDay(filterCalendar);
 
 					return Utiles.getStartDayDate(selectedCal).equals(filterCalendar.getTime());
@@ -448,7 +458,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 				final List<PersonalSigning> dailyPersonalList = monthlyPersonalSigningList.stream().filter(s -> {
 
 					final Calendar filterCalendar = Calendar.getInstance();
-					filterCalendar.setTime(s.getStartDate());
+					filterCalendar.setTime(Date.from(s.getStartDate().toInstant()));
 					Utiles.setStartDay(filterCalendar);
 
 					return Utiles.getStartDayDate(selectedCal).equals(filterCalendar.getTime());
@@ -458,7 +468,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 				final List<WorkShare> dailyWorkList = monthlyWorkSigningList.stream().filter(s -> {
 
 					final Calendar filterCalendar = Calendar.getInstance();
-					filterCalendar.setTime(s.getStartDate());
+					filterCalendar.setTime(Date.from(s.getStartDate().toInstant()));
 					Utiles.setStartDay(filterCalendar);
 
 					return Utiles.getStartDayDate(selectedCal).equals(filterCalendar.getTime());
@@ -504,14 +514,13 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 
 					final Cell startDateCell = signingRow.createCell(i++);
 					startDateCell.setCellStyle(i % 2 != 0 ? dayHoursBlueRightStyle : dayHoursGreenRightStyle);
-					startDateCell.setCellValue(Utiles.getDateTimeFormatted(psrDTO.getStartDate()));
+					startDateCell.setCellValue(Utiles.transform(psrDTO.getStartDate(), DATE_TIME_FORMAT));
 
 					final Cell endDateCell = signingRow.createCell(i++);
 					endDateCell.setCellStyle(i % 2 != 0 ? dayHoursBlueRightStyle : dayHoursGreenRightStyle);
-					endDateCell.setCellValue(Utiles.getDateTimeFormatted(psrDTO.getEndDate()));
+					endDateCell.setCellValue(Utiles.transform(psrDTO.getEndDate(), DATE_TIME_FORMAT));
 
-					final long duration  = psrDTO.getEndDate().getTime() - psrDTO.getStartDate().getTime();
-					final Long diffInSeconds = TimeUnit.MILLISECONDS.toSeconds(duration);
+					final Long diffInSeconds = Duration.between(psrDTO.getStartDate(), psrDTO.getEndDate()).toSeconds();
 					final String totalTimeText = Utiles.secondsToHoursAndMinutesAndSecondsString(diffInSeconds.intValue());
 
 					final Cell totalTimeCell = signingRow.createCell(i++);
@@ -624,7 +633,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 			final Row row = sheet.createRow(rowNumber++);
 
 			Cell cell = row.createCell(0);
-			cell.setCellValue(Utiles.getDateFormattedESP(timeControl.getDate()));
+			cell.setCellValue(Utiles.transform(timeControl.getDate(), DATE_FORMAT));
 
 			cell = row.createCell(1);
 			cell.setCellValue(user.getName());
@@ -653,19 +662,19 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 			if (timeControl.getStartHour() != null) {
 
 				cell = row.createCell(7);
-				cell.setCellValue(Utiles.getTimeFullFormatted(timeControl.getStartHour()));
+				cell.setCellValue(Utiles.transform(timeControl.getStartHour(), TIME_FORMAT));
 
 				cell = row.createCell(8);
-				cell.setCellValue(Utiles.getTimeFullFormatted(timeControl.getStartHour()));
+				cell.setCellValue(Utiles.transform(timeControl.getStartHour(), TIME_FORMAT));
 			}
 
 			if (timeControl.getEndHour() != null) {
 
 				cell = row.createCell(9);
-				cell.setCellValue(Utiles.getTimeFullFormatted(timeControl.getEndHour()));
+				cell.setCellValue(Utiles.transform(timeControl.getEndHour(), TIME_FORMAT));
 
 				cell = row.createCell(10);
-				cell.setCellValue(Utiles.getTimeFullFormatted(timeControl.getEndHour()));
+				cell.setCellValue(Utiles.transform(timeControl.getEndHour(), TIME_FORMAT));
 			}
 
 			cell = row.createCell(11);
@@ -689,11 +698,11 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 			cell.setCellValue(difference);
 
 			final List<DatesModel> todaySignings = signingDates.stream()
-					.filter(s -> DateUtils.isSameDay(s.getStartDate(), timeControl.getDate())).collect(Collectors.toList());
+                    .filter(s -> DateUtils.isSameDay(Date.from(s.getStartDate().toInstant()), Date.from(timeControl.getDate().toInstant())))
+					.sorted(Comparator.comparing(DatesModel::getStartDate))
+					.collect(Collectors.toList());
 
-			todaySignings.sort(Comparator.comparing(DatesModel::getStartDate));
-
-			String signingsText = "";
+            String signingsText = "";
 
 			for (DatesModel dm : todaySignings) {
 				signingsText += Utiles.getTimeFormatted(dm.getStartDate()) + "•" + Utiles.getTimeFormatted(dm.getEndDate()) + " ";
@@ -740,13 +749,13 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 		displacementShares.forEach(ds -> {
 
 			final Calendar date = Calendar.getInstance();
-			date.setTime(ds.getDisplacementDate());
+			date.setTime(Date.from(ds.getDisplacementDate().toInstant()));
 
 			final long t = date.getTimeInMillis();
 			final Date afterAddingMins = new Date(t + (ds.getManualHours() * 60000));
 
 			final DatesModel dm = new DatesModel();
-			dm.setStartDate(ds.getDisplacementDate());
+			dm.setStartDate(Date.from(ds.getDisplacementDate().toInstant()));
 			dm.setEndDate(afterAddingMins);
 
 			todayDates.add(dm);
@@ -755,8 +764,8 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 		personalSignings.forEach(ps -> {
 
 			final DatesModel dm = new DatesModel();
-			dm.setStartDate(ps.getStartDate());
-			dm.setEndDate(ps.getEndDate());
+			dm.setStartDate(Date.from(ps.getStartDate().toInstant()));
+			dm.setEndDate(Date.from(ps.getEndDate().toInstant()));
 
 			todayDates.add(dm);
 		});
@@ -764,8 +773,8 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 		userSignings.forEach(us -> {
 
 			final DatesModel dm = new DatesModel();
-			dm.setStartDate(us.getStartDate());
-			dm.setEndDate(us.getEndDate());
+			dm.setStartDate(Date.from(us.getStartDate().toInstant()));
+			dm.setEndDate(Date.from(us.getEndDate().toInstant()));
 
 			todayDates.add(dm);
 		});
