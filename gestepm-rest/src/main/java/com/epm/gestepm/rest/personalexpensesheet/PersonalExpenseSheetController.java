@@ -62,10 +62,11 @@ public class PersonalExpenseSheetController extends BaseController implements Pe
     @RequirePermits(value = PRMT_READ_PES, action = "Get personal expense sheet list")
     @LogExecution(operation = OP_READ)
     public ResponseEntity<ListPersonalExpenseSheetsV1200Response> listPersonalExpenseSheetsV1(final List<String> meta,
-                                                                          final Boolean links, final Set<String> expand,
-                                                                          final Long offset, final Long limit, final String order,
-                                                                          final String orderBy, final List<Integer> ids, final Integer projectId) {
-        final PersonalExpenseSheetListRestRequest req = new PersonalExpenseSheetListRestRequest(ids, projectId);
+                                                                                              final Boolean links, final Set<String> expand,
+                                                                                              final Long offset, final Long limit, final String order,
+                                                                                              final String orderBy, final List<Integer> ids, final Integer projectId,
+                                                                                              final Integer userId) {
+        final PersonalExpenseSheetListRestRequest req = new PersonalExpenseSheetListRestRequest(ids, projectId, userId);
 
         this.setCommon(req, meta, links, expand);
         this.setDefaults(req);
