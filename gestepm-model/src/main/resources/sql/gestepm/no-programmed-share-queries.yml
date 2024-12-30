@@ -60,8 +60,8 @@ sql:
       start_date = :attr_nps_start_date,
       end_date = :attr_nps_end_date,
       description = :attr_nps_description,
-      family = :attr_nps_f_id,
-      sub_family = :attr_nps_sf_id,
+      family_id = :attr_nps_f_id,
+      sub_family_id = :attr_nps_sf_id,
       topic_id = :attr_nps_topic_id,
       forum_title = :attr_nps_forum_title,
       state = :attr_nps_state
