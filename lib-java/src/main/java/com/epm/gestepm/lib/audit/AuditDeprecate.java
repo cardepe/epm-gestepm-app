@@ -1,14 +1,14 @@
 package com.epm.gestepm.lib.audit;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 public interface AuditDeprecate extends Auditable {
 
-    default OffsetDateTime getDeprecatedAt() {
+    default LocalDateTime getDeprecatedAt() {
         return null;
     }
 
-    default void setDeprecatedAt(OffsetDateTime deprecatedAt) {
+    default void setDeprecatedAt(LocalDateTime deprecatedAt) {
         // skips
     }
 

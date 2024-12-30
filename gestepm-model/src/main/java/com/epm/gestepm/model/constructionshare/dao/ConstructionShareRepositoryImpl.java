@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Repository
@@ -161,7 +161,7 @@ public class ConstructionShareRepositoryImpl implements ConstructionShareReposit
 	}
 
 	@Override
-	public List<ConstructionShare> findWeekSigningsByProjectId(OffsetDateTime startDate, OffsetDateTime endDate, Long projectId) {
+	public List<ConstructionShare> findWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId) {
 
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<ConstructionShare> cq = cb.createQuery(ConstructionShare.class);

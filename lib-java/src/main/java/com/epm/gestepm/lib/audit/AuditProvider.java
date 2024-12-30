@@ -1,6 +1,6 @@
 package com.epm.gestepm.lib.audit;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 public interface AuditProvider {
 
@@ -66,6 +66,6 @@ public interface AuditProvider {
 
     String login();
 
-    OffsetDateTime time();
+    LocalDateTime time();
 
 }

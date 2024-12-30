@@ -5,7 +5,7 @@ import lombok.Singular;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,9 +24,9 @@ public class Inspection implements Serializable {
   private ActionEnum action;
 
   @NotNull
-  private OffsetDateTime startDate;
+  private LocalDateTime startDate;
 
-  private OffsetDateTime endDate;
+  private LocalDateTime endDate;
 
   private String description;
 

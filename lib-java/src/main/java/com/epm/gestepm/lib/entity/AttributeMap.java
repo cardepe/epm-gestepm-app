@@ -1,7 +1,7 @@
 package com.epm.gestepm.lib.entity;
 
 import java.sql.Timestamp;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -57,9 +57,9 @@ public class AttributeMap extends HashMap<String, Object> {
         put(attrKey, valueToPut);
     }
 
-    public void putTimestamp(String attrKey, OffsetDateTime dateTime) {
+    public void putTimestamp(String attrKey, LocalDateTime dateTime) {
 
-        final Timestamp valueToPut = dateTime != null ? Timestamp.valueOf(dateTime.toLocalDateTime()) : null;
+        final Timestamp valueToPut = dateTime != null ? Timestamp.valueOf(dateTime) : null;
         put(attrKey, valueToPut);
     }
 

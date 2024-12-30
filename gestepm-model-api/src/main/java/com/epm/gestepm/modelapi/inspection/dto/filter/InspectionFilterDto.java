@@ -6,7 +6,7 @@ import com.epm.gestepm.lib.dto.OrderableDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -19,9 +19,9 @@ public class InspectionFilterDto extends OrderableDto implements UsableAsCacheKe
 
   private Integer projectId;
 
-  private OffsetDateTime startDate;
+  private LocalDateTime startDate;
 
-  private OffsetDateTime endDate;
+  private LocalDateTime endDate;
 
   @Override
   public String asCacheKey() {

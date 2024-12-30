@@ -4,7 +4,7 @@ import com.epm.gestepm.modelapi.inspection.dto.ActionEnumDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Data
 public class ShareTableDTO {
@@ -22,10 +22,10 @@ public class ShareTableDTO {
 	private String username;
 
 	@JsonProperty("st_startDate")
-	private OffsetDateTime startDate;
+	private LocalDateTime startDate;
 
 	@JsonProperty("st_endDate")
-	private OffsetDateTime endDate;
+	private LocalDateTime endDate;
 
 	@JsonProperty("st_shareType")
 	private String shareType;
@@ -37,7 +37,7 @@ public class ShareTableDTO {
 
 	}
 
-	public ShareTableDTO(long id, String projectId, String username, OffsetDateTime startDate, OffsetDateTime endDate, String shareType) {
+	public ShareTableDTO(long id, String projectId, String username, LocalDateTime startDate, LocalDateTime endDate, String shareType) {
 		this.id = id + "_" + shareType;
 		this.projectId = projectId;
 		this.username = username;
@@ -46,7 +46,7 @@ public class ShareTableDTO {
 		this.shareType = shareType;
 	}
 
-	public ShareTableDTO(long id, String projectId, OffsetDateTime startDate, OffsetDateTime endDate, String shareType) {
+	public ShareTableDTO(long id, String projectId, LocalDateTime startDate, LocalDateTime endDate, String shareType) {
 		this.id = id + "_" + shareType;
 		this.projectId = projectId;
 		this.startDate = startDate;
@@ -57,7 +57,7 @@ public class ShareTableDTO {
 	/*
 	 * findShareTableByUserId(Long userId, Integer progress)
 	 */
-	public ShareTableDTO(long id, String projectId, OffsetDateTime startDate, OffsetDateTime endDate, String shareType, String forumTitle) {
+	public ShareTableDTO(long id, String projectId, LocalDateTime startDate, LocalDateTime endDate, String shareType, String forumTitle) {
 		this.id = id + "_" + shareType;
 		this.projectId = projectId;
 		this.forumTitle = forumTitle;
@@ -66,7 +66,7 @@ public class ShareTableDTO {
 		this.shareType = shareType;
 	}
 
-	public ShareTableDTO(long id, String projectId, String username, OffsetDateTime startDate, OffsetDateTime endDate,
+	public ShareTableDTO(long id, String projectId, String username, LocalDateTime startDate, LocalDateTime endDate,
 						 String shareType, ActionEnumDto action) {
 		this.id = id + "_" + shareType;
 		this.projectId = projectId;
@@ -77,7 +77,7 @@ public class ShareTableDTO {
 		this.action = action;
 	}
 
-	public ShareTableDTO(long id, String projectId, String username, OffsetDateTime startDate, OffsetDateTime endDate,
+	public ShareTableDTO(long id, String projectId, String username, LocalDateTime startDate, LocalDateTime endDate,
 						 String shareType, String action) {
 		this.id = id + "_" + shareType;
 		this.projectId = projectId;

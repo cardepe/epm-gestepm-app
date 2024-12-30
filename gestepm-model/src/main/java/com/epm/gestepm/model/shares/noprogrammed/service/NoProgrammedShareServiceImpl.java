@@ -50,7 +50,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -168,7 +168,7 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
         this.checker(createDto.getUserId(), createDto.getProjectId(), createDto);
 
         final NoProgrammedShareCreate create = getMapper(MapNPSToNoProgrammedShareCreate.class).from(createDto);
-        create.setStartDate(OffsetDateTime.now());
+        create.setStartDate(LocalDateTime.now());
 
         final NoProgrammedShare result = this.noProgrammedShareDao.create(create);
 
@@ -190,7 +190,7 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
         this.checker(noProgrammedShareDto.getUserId(), noProgrammedShareDto.getProjectId(), null);
 
         if (NoProgrammedShareStateEnumDto.CLOSED.equals(updateDto.getState())) {
-            updateDto.setEndDate(OffsetDateTime.now());
+            updateDto.setEndDate(LocalDateTime.now());
         }
 
         final NoProgrammedShareUpdate update = getMapper(MapNPSToNoProgrammedShareUpdate.class).from(updateDto,

@@ -15,7 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +62,7 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 					root.get("project").get("name"),
 					cb.concat(cb.concat(root.get("user").get("name"), " "), root.get("user").get("surnames")),
 					root.get("displacementDate"),
-					cb.function("date_add_minute", OffsetDateTime.class, root.get("displacementDate"), root.get("manualHours")),
+					cb.function("date_add_minute", LocalDateTime.class, root.get("displacementDate"), root.get("manualHours")),
 					cb.literal("ds")
 			).where(cb.equal(root.get("project"), projectId));
 			
@@ -83,7 +83,7 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 			
 			Root<DisplacementShare> root = cq.from(DisplacementShare.class);
 
-			cq.multiselect(root.get("id"), root.get("project").get("name"), cb.concat(cb.concat(root.get("user").get("name"), " "), root.get("user").get("surnames")), root.get("displacementDate"), cb.function("date_add_minute", OffsetDateTime.class, root.get("displacementDate"), root.get("manualHours")), cb.literal("ds")).where(cb.equal(root.get("userSigning"), userSigningId));
+			cq.multiselect(root.get("id"), root.get("project").get("name"), cb.concat(cb.concat(root.get("user").get("name"), " "), root.get("user").get("surnames")), root.get("displacementDate"), cb.function("date_add_minute", LocalDateTime.class, root.get("displacementDate"), root.get("manualHours")), cb.literal("ds")).where(cb.equal(root.get("userSigning"), userSigningId));
 			
 			return entityManager.createQuery(cq).getResultList();
 			
@@ -163,9 +163,9 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 		
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(cb.and(cb.between(
-				root.get("displacementDate").as(OffsetDateTime.class),
-				startDate.toInstant().atOffset(ZoneOffset.UTC),
-				endDate.toInstant().atOffset(ZoneOffset.UTC)
+				root.get("displacementDate").as(LocalDateTime.class),
+				LocalDateTime.from(startDate.toInstant().atOffset(ZoneOffset.UTC)),
+				LocalDateTime.from(endDate.toInstant().atOffset(ZoneOffset.UTC))
 		), cb.equal(root.get("user"), userId)));
 		
 		if (manual != null) {
@@ -194,7 +194,7 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 			predicates.add(cb.equal(root.get("user"), userId));
 			predicates.add(cb.between(root.get("displacementDate"), yearStartDate, yearEndDate));
 					
-			Expression<java.sql.Time> timeDiff = cb.function("TIMEDIFF", java.sql.Time.class, cb.function("date_add_minute", OffsetDateTime.class, root.get("displacementDate"), root.get("manualHours")), root.get("displacementDate"));
+			Expression<java.sql.Time> timeDiff = cb.function("TIMEDIFF", java.sql.Time.class, cb.function("date_add_minute", LocalDateTime.class, root.get("displacementDate"), root.get("manualHours")), root.get("displacementDate"));
 			Expression<Integer> timeToSec = cb.function("TIME_TO_SEC", Integer.class, timeDiff);
 			
 			cq.multiselect(cb.sum(timeToSec), root.get("displacementDate"));

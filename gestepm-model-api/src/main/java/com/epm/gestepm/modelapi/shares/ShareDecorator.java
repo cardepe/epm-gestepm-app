@@ -2,11 +2,11 @@ package com.epm.gestepm.modelapi.shares;
 
 import com.epm.gestepm.modelapi.interventionshare.dto.PdfFileDTO;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ShareDecorator {
 
-    List<PdfFileDTO> exportShares(Integer projectId, OffsetDateTime startDate, OffsetDateTime endDate);
+    List<PdfFileDTO> exportShares(Integer projectId, LocalDateTime startDate, LocalDateTime endDate);
 
 }

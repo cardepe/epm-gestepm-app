@@ -4,7 +4,7 @@ import com.epm.gestepm.modelapi.user.dto.User;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -27,12 +27,12 @@ public class ModifiedSigning {
     private String typeId;
 
     @Column(name = "REQUEST_DATE", nullable = false)
-    private OffsetDateTime requestDate;
+    private LocalDateTime requestDate;
 
     @Column(name = "START_DATE", nullable = false)
-    private OffsetDateTime startDate;
+    private LocalDateTime startDate;
 
     @Column(name = "END_DATE", nullable = false)
-    private OffsetDateTime endDate;
+    private LocalDateTime endDate;
 
 }

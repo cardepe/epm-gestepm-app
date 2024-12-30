@@ -6,7 +6,7 @@ import com.epm.gestepm.modelapi.user.dto.User;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -30,10 +30,10 @@ public class DisplacementShare {
 	private int manualDisplacement;
 	
 	@Column(name = "ORIGINAL_DATE", nullable = false)
-	private OffsetDateTime originalDate;
+	private LocalDateTime originalDate;
 	
 	@Column(name = "DISPLACEMENT_DATE", nullable = false)
-	private OffsetDateTime displacementDate;
+	private LocalDateTime displacementDate;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DISPLACEMENT_ID", referencedColumnName = "displacement_id", nullable = false)

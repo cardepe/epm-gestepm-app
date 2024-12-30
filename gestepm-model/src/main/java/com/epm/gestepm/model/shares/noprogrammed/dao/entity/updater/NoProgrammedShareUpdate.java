@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.Singular;
 
 import javax.validation.constraints.NotNull;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
@@ -18,9 +18,9 @@ public class NoProgrammedShareUpdate implements CollectableAttributes {
     @NotNull
     private Integer id;
 
-    private OffsetDateTime startDate;
+    private LocalDateTime startDate;
 
-    private OffsetDateTime endDate;
+    private LocalDateTime endDate;
 
     private String description;
 

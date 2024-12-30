@@ -1,14 +1,14 @@
 package com.epm.gestepm.lib.audit;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 public interface AuditUpdate extends Auditable {
 
-    default OffsetDateTime getUpdatedAt() {
+    default LocalDateTime getUpdatedAt() {
         return null;
     }
 
-    default void setUpdatedAt(OffsetDateTime updatedAt) {
+    default void setUpdatedAt(LocalDateTime updatedAt) {
         // skips
     }
 
@@ -27,8 +27,8 @@ public interface AuditUpdate extends Auditable {
 
         if (hasCreation) {
 
-            final OffsetDateTime createdAt = ((AuditCreate) this).getCreatedAt();
-            final OffsetDateTime updatedAt = getUpdatedAt();
+            final LocalDateTime createdAt = ((AuditCreate) this).getCreatedAt();
+            final LocalDateTime updatedAt = getUpdatedAt();
 
             if (createdAt != null && updatedAt != null) {
                 hasBeenUpdated = !createdAt.isEqual(updatedAt);

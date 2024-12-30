@@ -5,7 +5,7 @@ import com.epm.gestepm.lib.entity.CollectableAttributes;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import static com.epm.gestepm.model.shares.noprogrammed.dao.constants.NoProgrammedShareAttributes.*;
 
@@ -21,7 +21,7 @@ public class NoProgrammedShareCreate implements CollectableAttributes {
     private Integer userSigningId;
 
     @NotNull
-    private OffsetDateTime startDate;
+    private LocalDateTime startDate;
 
     @Override
     public AttributeMap collectAttributes() {

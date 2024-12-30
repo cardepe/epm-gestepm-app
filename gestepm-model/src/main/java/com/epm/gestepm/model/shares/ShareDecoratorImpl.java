@@ -15,7 +15,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -49,7 +49,7 @@ public class ShareDecoratorImpl implements ShareDecorator {
     }
 
     @Override
-    public List<PdfFileDTO> exportShares(Integer projectId, OffsetDateTime startDate, OffsetDateTime endDate) {
+    public List<PdfFileDTO> exportShares(Integer projectId, LocalDateTime startDate, LocalDateTime endDate) {
         final List<PdfFileDTO> pdfs = new ArrayList<>();
 
         final List<PdfFileDTO> csPdfs = this.constructionShareService.generateSharesByProjectAndInterval(projectId.longValue(), startDate, endDate);

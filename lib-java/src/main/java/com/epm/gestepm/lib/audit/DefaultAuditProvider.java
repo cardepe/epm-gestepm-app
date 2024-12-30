@@ -1,7 +1,7 @@
 package com.epm.gestepm.lib.audit;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import com.epm.gestepm.lib.executiontrace.ExecutionTimeProvider;
 import com.epm.gestepm.lib.user.UserProvider;
@@ -27,9 +27,9 @@ public class DefaultAuditProvider implements AuditProvider {
     }
 
     @Override
-    public OffsetDateTime time() {
+    public LocalDateTime time() {
         final Long millis = executionTimeProvider.getStartExecutionTime();
-        return OffsetDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault());
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneId.systemDefault());
     }
 
 }

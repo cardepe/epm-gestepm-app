@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -23,9 +23,9 @@ public class PersonalSigning {
 	private User user;
 
 	@Column(name = "START_DATE", nullable = false)
-	private OffsetDateTime startDate;
+	private LocalDateTime startDate;
 
 	@Column(name = "END_DATE")
-	private OffsetDateTime endDate;
+	private LocalDateTime endDate;
 
 }

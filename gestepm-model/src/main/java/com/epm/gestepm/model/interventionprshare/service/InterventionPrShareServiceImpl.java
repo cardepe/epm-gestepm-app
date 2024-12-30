@@ -31,7 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -110,7 +110,7 @@ public class InterventionPrShareServiceImpl implements InterventionPrShareServic
 	}
 
 	@Override
-	public List<InterventionPrShare> getWeekSigningsByProjectId(OffsetDateTime startDate, OffsetDateTime endDate, Long projectId) {
+	public List<InterventionPrShare> getWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId) {
 		return interventionPrShareDao.findWeekSigningsByProjectId(startDate, endDate, projectId);
 	}
 	
@@ -210,7 +210,7 @@ public class InterventionPrShareServiceImpl implements InterventionPrShareServic
 	}
 
 	@Override
-	public List<PdfFileDTO> generateSharesByProjectAndInterval(Long projectId, OffsetDateTime startDate, OffsetDateTime endDate) {
+	public List<PdfFileDTO> generateSharesByProjectAndInterval(Long projectId, LocalDateTime startDate, LocalDateTime endDate) {
 
 		final List<PdfFileDTO> pdfs = new ArrayList<>();
 

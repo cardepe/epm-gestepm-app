@@ -5,7 +5,7 @@ import com.epm.gestepm.lib.cache.UsableAsCacheKey;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -20,9 +20,9 @@ public class ConstructionShareFilterDto implements UsableAsCacheKey {
 
     private Integer userSigningId;
 
-    private OffsetDateTime startDate;
+    private LocalDateTime startDate;
 
-    private OffsetDateTime endDate;
+    private LocalDateTime endDate;
 
     private Integer progress;
 

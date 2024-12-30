@@ -5,7 +5,7 @@ import com.epm.gestepm.lib.entity.CollectableAttributes;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.epm.gestepm.model.constructionshare.dao.constants.ConstructionShareAttributes.*;
@@ -22,9 +22,9 @@ public class ConstructionShareFilter implements CollectableAttributes {
 
     private Integer userSigningId;
 
-    private OffsetDateTime startDate;
+    private LocalDateTime startDate;
 
-    private OffsetDateTime endDate;
+    private LocalDateTime endDate;
 
     private Integer progress;
 

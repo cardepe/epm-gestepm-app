@@ -6,7 +6,7 @@ import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -32,10 +32,10 @@ public class InterventionPrShare {
 	private UserSigning userSigning;
 	
 	@Column(name = "START_DATE", nullable = false)
-	private OffsetDateTime startDate;
+	private LocalDateTime startDate;
 	
 	@Column(name = "END_DATE")
-	private OffsetDateTime endDate;
+	private LocalDateTime endDate;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SECOND_TECHNICAL_ID", referencedColumnName = "ID", nullable = false)

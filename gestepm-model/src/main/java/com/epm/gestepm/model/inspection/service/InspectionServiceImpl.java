@@ -46,7 +46,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -165,7 +165,7 @@ public class InspectionServiceImpl implements InspectionService {
         this.checker(createDto.getFirstTechnicalId(), createDto);
 
         final InspectionCreate create = getMapper(MapIToInspectionCreate.class).from(createDto);
-        create.setStartDate(OffsetDateTime.now());
+        create.setStartDate(LocalDateTime.now());
 
         final Inspection result = this.inspectionDao.create(create);
 
@@ -190,7 +190,7 @@ public class InspectionServiceImpl implements InspectionService {
         this.checker(inspection.getFirstTechnicalId(), updateDto);
 
         if (updateDto.getEndDate() == null) {
-            updateDto.setEndDate(OffsetDateTime.now());
+            updateDto.setEndDate(LocalDateTime.now());
         }
 
         final InspectionUpdate update = getMapper(MapIToInspectionUpdate.class).from(updateDto,

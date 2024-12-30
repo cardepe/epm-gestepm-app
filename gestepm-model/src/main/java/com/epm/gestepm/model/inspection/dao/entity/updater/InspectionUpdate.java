@@ -11,7 +11,7 @@ import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotNull;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Set;
@@ -31,9 +31,9 @@ public class InspectionUpdate implements CollectableAttributes {
     private ActionEnum action;
 
     @NotNull
-    private OffsetDateTime startDate;
+    private LocalDateTime startDate;
 
-    private OffsetDateTime endDate;
+    private LocalDateTime endDate;
 
     @NotNull
     private String description;

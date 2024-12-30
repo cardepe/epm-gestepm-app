@@ -1,6 +1,6 @@
 package com.epm.gestepm.lib.audit;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 public interface Auditable {
 
@@ -15,36 +15,36 @@ public interface Auditable {
 
         if (hasCreation) {
 
-            final OffsetDateTime createdAt = ((AuditCreate) this).getCreatedAt();
+            final LocalDateTime createdAt = ((AuditCreate) this).getCreatedAt();
 
-            if (createdAt != null && createdAt.isAfter(OffsetDateTime.now())) {
+            if (createdAt != null && createdAt.isAfter(LocalDateTime.now())) {
                 liveStatus = LiveStatus.NOT_ACTIVE_YET;
             }
         }
 
         if (hasDeprecate) {
 
-            final OffsetDateTime deprecatedAt = ((AuditDeprecate) this).getDeprecatedAt();
+            final LocalDateTime deprecatedAt = ((AuditDeprecate) this).getDeprecatedAt();
 
-            if (deprecatedAt != null && deprecatedAt.isBefore(OffsetDateTime.now())) {
+            if (deprecatedAt != null && deprecatedAt.isBefore(LocalDateTime.now())) {
                 liveStatus = LiveStatus.DEPRECATED;
             }
         }
 
         if (hasDischarge) {
 
-            final OffsetDateTime dischargedAt = ((AuditDischarge) this).getDischargedAt();
+            final LocalDateTime dischargedAt = ((AuditDischarge) this).getDischargedAt();
 
-            if (dischargedAt != null && dischargedAt.isBefore(OffsetDateTime.now())) {
+            if (dischargedAt != null && dischargedAt.isBefore(LocalDateTime.now())) {
                 liveStatus = LiveStatus.DISCHARGED;
             }
         }
 
         if (hasDelete) {
 
-            final OffsetDateTime deletedAt = ((AuditDelete) this).getDeletedAt();
+            final LocalDateTime deletedAt = ((AuditDelete) this).getDeletedAt();
 
-            if (deletedAt != null && deletedAt.isBefore(OffsetDateTime.now())) {
+            if (deletedAt != null && deletedAt.isBefore(LocalDateTime.now())) {
                 liveStatus = LiveStatus.DELETED;
             }
         }
