@@ -8,6 +8,216 @@ info:
 servers:
   - url: 'http://localhost:8080'
 paths:
+  /v1/expenses/personal/sheets:
+    get:
+      summary: V1 - List personal expense sheets
+      responses:
+        '200':
+          $ref: '#/components/responses/PersonalExpenseSheetList'
+      operationId: list-personal-expense-sheets-v1
+      description: list-personal-expense-sheets-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Personal expense sheet identificator.
+        - schema:
+            type: integer
+          in: query
+          name: projectId
+          description: Project identificator.
+        - schema:
+            type: integer
+          in: query
+          name: userId
+          description: User identificator.
+      tags:
+        - personal-expense-sheet-v1
+    post:
+      summary: V1 - Create personal expense sheet
+      operationId: create-personal-expense-sheet-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/PersonalExpenseSheet'
+      description: create-personal-expense-sheet-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreatePersonalExpenseSheet'
+      tags:
+        - personal-expense-sheet-v1
+    parameters: []
+  '/v1/expenses/personal/sheets/{personalExpenseSheetId}':
+    parameters:
+      - name: personalExpenseSheetId
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Personal expense sheet identificator.
+    get:
+      summary: V1 - Find personal expense sheet
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+      responses:
+        '200':
+          $ref: '#/components/responses/PersonalExpenseSheet'
+        '404':
+          description: personal-expense-sheet-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-personal-expense-sheet-by-id-v1
+      description: find-personal-expense-sheet-by-id-v1
+      tags:
+        - personal-expense-sheet-v1
+    put:
+      summary: V1 - Update personal expense sheet
+      operationId: update-personal-expense-sheet-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/PersonalExpenseSheet'
+        '404':
+          description: personal-expense-sheet-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: update-personal-expense-sheet-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdatePersonalExpenseSheet'
+      tags:
+        - personal-expense-sheet-v1
+    delete:
+      summary: V1 - Delete personal expense sheet
+      operationId: delete-personal-expense-sheet-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: personal-expense-sheet-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: delete-personal-expense-sheet-v1
+      tags:
+        - personal-expense-sheet-v1
+  '/v1/expenses/personal/sheets/{personalExpenseSheetId}/expenses':
+    parameters:
+      - $ref: '#/components/parameters/Personal-Expense-Sheet-Id'
+    get:
+      summary: V1 - List personal expenses
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+      tags:
+        - personal-expense-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/PersonalExpenseList'
+        '404':
+          description: personal-expense-sheet-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: list-personal-expenses-v1
+      description: list-personal-expenses-v1
+    post:
+      summary: V1 - Create personal expense
+      operationId: create-personal-expense-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/PersonalExpense'
+        '404':
+          description: personal-expense-sheet-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - personal-expense-v1
+      description: create-personal-expense-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreatePersonalExpense'
+  '/v1/expenses/personal/sheets/{personalExpenseSheetId}/expenses/{personalExpenseId}':
+    parameters:
+      - $ref: '#/components/parameters/Personal-Expense-Sheet-Id'
+      - $ref: '#/components/parameters/Personal-Expense-Id'
+    get:
+      summary: V1 - Find personal expense
+      tags:
+        - personal-expense-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/PersonalExpense'
+        '404':
+          description: personal-expense-sheet-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-personal-expense-by-id-v1
+      description: find-personal-expense-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+    put:
+      summary: V1 - Update personal expense
+      operationId: update-personal-expense-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/PersonalExpense'
+        '404':
+          description: personal-expense-sheet-not-found | personal-expense-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - personal-expense-v1
+      description: update-personal-expense-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdatePersonalExpense'
+    delete:
+      summary: V1 - Delete personal expense
+      operationId: delete-personal-expense-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: personal-expense-sheet-not-found | personal-expense-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - personal-expense-v1
+      description: delete-personal-expense-v1
   /v1/shares/no-programmed:
     get:
       summary: V1 - List no programmed shares
@@ -568,6 +778,114 @@ components:
           type: string
           x-stoplight:
             id: 7lqm8m6y0f4ih
+    PersonalExpense:
+      title: PersonalExpense
+      x-stoplight:
+        id: 7p8m5tu2ab85y
+      type: object
+      properties:
+        id:
+          type: integer
+        personalExpenseSheet:
+          $ref: '#/components/schemas/PersonalExpenseSheet'
+        startDate:
+          type: string
+          x-stoplight:
+            id: f26og93fmf8dv
+          format: date-time
+        description:
+          type: string
+          x-stoplight:
+            id: 5j1v4qg9q277g
+        priceType:
+          type: string
+          x-stoplight:
+            id: v7q4oyubde0ej
+          enum:
+            - FLY
+            - FOOD
+            - GAS
+            - GASOLINE
+            - HOTEL
+            - KMS
+            - OTHER
+            - PARKING
+        quantity:
+          type: number
+          x-stoplight:
+            id: 86j812wl5fqd1
+        totalPrice:
+          type: number
+          x-stoplight:
+            id: nidm8dwglw7r9
+        paymentType:
+          type: string
+          x-stoplight:
+            id: dbahvttmqd5z1
+          enum:
+            - EPM_TARGET
+            - OTHER
+        files:
+          type: array
+          x-stoplight:
+            id: qh487u932xzh9
+          items:
+            x-stoplight:
+              id: e8gkuzlyziej6
+            type: object
+            properties:
+              name:
+                type: string
+                x-stoplight:
+                  id: 0y1crcjhdxeve
+              content:
+                type: string
+                x-stoplight:
+                  id: mwaxhejv31s0i
+      required:
+        - id
+        - personalExpenseSheet
+        - startDate
+        - description
+        - priceType
+        - quantity
+        - totalPrice
+        - paymentType
+    PersonalExpenseSheet:
+      title: PersonalExpenseSheet
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        project:
+          $ref: '#/components/schemas/Project'
+        description:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum:
+            - PENDING
+            - APPROVED
+            - PAID
+            - REJECTED
+        observations:
+          type: string
+        personalExpenses:
+          type: array
+          x-stoplight:
+            id: pnf39k0lwbaaw
+          items:
+            $ref: '#/components/schemas/PersonalExpense'
+      required:
+        - id
+        - description
+        - startDate
+        - status
   securitySchemes:
     bearerAuth:
       type: http
@@ -589,6 +907,7 @@ components:
       content:
         application/json:
           schema:
+            type: object
             properties:
               metadata:
                 $ref: ../../base-api-spec.yaml#/components/schemas/Meta
@@ -642,6 +961,54 @@ components:
           schema:
             type: string
             format: binary
+    PersonalExpenseSheetList:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonalExpenseSheet'
+    PersonalExpenseSheet:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                $ref: '#/components/schemas/PersonalExpenseSheet'
+    PersonalExpense:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                $ref: '#/components/schemas/PersonalExpense'
+    PersonalExpenseList:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonalExpense'
   requestBodies:
     CreateNoProgrammedShare:
       content:
@@ -811,6 +1178,186 @@ components:
                 type: boolean
                 x-stoplight:
                   id: c5vq4d1j24aah
+    CreatePersonalExpenseSheet:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              projectId:
+                type: integer
+                x-stoplight:
+                  id: 8r3uvh864fh5u
+              description:
+                type: string
+                x-stoplight:
+                  id: 2iejghsz0stp6
+            required:
+              - projectId
+              - description
+    UpdatePersonalExpenseSheet:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              projectId:
+                type: integer
+                x-stoplight:
+                  id: jbtm19r0f7glr
+              description:
+                type: string
+                x-stoplight:
+                  id: 8tvej36gttj3t
+              startDate:
+                type: string
+                x-stoplight:
+                  id: ii5jgz1zka70a
+                format: date-time
+              status:
+                type: string
+                x-stoplight:
+                  id: n0uz1qwuliuyo
+                enum:
+                  - PENDING
+                  - APPROVED
+                  - PAID
+                  - REJECTED
+              observations:
+                type: string
+                x-stoplight:
+                  id: hxnxfm3hss0lb
+                  required:
+                    - projectId
+                    - description
+            required:
+              - projectId
+              - description
+              - startDate
+              - status
+              - observations
+    CreatePersonalExpense:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              description:
+                type: string
+                x-stoplight:
+                  id: jr6v1cexzkcdo
+              priceType:
+                type: string
+                x-stoplight:
+                  id: qg6k2yibwynol
+                enum:
+                  - FLY
+                  - FOOD
+                  - GAS
+                  - GASOLINE
+                  - HOTEL
+                  - KMS
+                  - OTHER
+                  - PARKING
+              quantity:
+                type: number
+                x-stoplight:
+                  id: mic9rzefz663g
+              totalPrice:
+                type: number
+                x-stoplight:
+                  id: cyl57o1sot4ct
+              paymentType:
+                type: string
+                x-stoplight:
+                  id: 3yob56ej9ahd5
+                enum:
+                  - EPM_TARGET
+                  - OTHER
+              files:
+                type: array
+                x-stoplight:
+                  id: ykxch5kd37mzn
+                items:
+                  x-stoplight:
+                    id: rucejqspgkan2
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      x-stoplight:
+                        id: 5ihf6r4q7fmq6
+                    content:
+                      type: string
+                      x-stoplight:
+                        id: g8zehn74u5to8
+            required:
+              - description
+              - priceType
+              - quantity
+              - totalPrice
+              - paymentType
+    UpdatePersonalExpense:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              description:
+                type: string
+                x-stoplight:
+                  id: uou5wue0hjufo
+              priceType:
+                type: string
+                x-stoplight:
+                  id: illekvxb08mpl
+                enum:
+                  - FLY
+                  - FOOD
+                  - GAS
+                  - GASOLINE
+                  - HOTEL
+                  - KMS
+                  - OTHER
+                  - PARKING
+              quantity:
+                type: number
+                x-stoplight:
+                  id: 8tcpvfpb8flkh
+              totalPrice:
+                type: number
+                x-stoplight:
+                  id: 0ji21j8m32j50
+              paymentType:
+                type: string
+                x-stoplight:
+                  id: edle6xvid8apo
+                enum:
+                  - EPM_TARGET
+                  - OTHER
+              files:
+                type: array
+                x-stoplight:
+                  id: ab8ztkw5dllg9
+                items:
+                  x-stoplight:
+                    id: co481575metaf
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      x-stoplight:
+                        id: 4y19docf4oq0i
+                    content:
+                      type: string
+                      x-stoplight:
+                        id: 04lxf4x5d5z2q
+            required:
+              - description
+              - priceType
+              - quantity
+              - totalPrice
+              - paymentType
   parameters:
     Share-Id:
       name: shareId
@@ -826,7 +1373,25 @@ components:
       schema:
         type: integer
       description: Inspection identificator.
+    Personal-Expense-Sheet-Id:
+      name: personalExpenseSheetId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Personal expense sheet identificator.
+    Personal-Expense-Id:
+      name: personalExpenseId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Personal expense identificator.
 tags:
+  - name: personal-expense-sheet-v1
+    description: V1 - Personal Expense Sheets
+  - name: personal-expense-v1
+    description: V1 - Personal Expenses
   - name: inspection-v1
     description: V1 - Inspection
   - name: no-programmed-share-v1

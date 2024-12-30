@@ -61,6 +61,10 @@
     </definition>
     
     <!-- Expenses -->
+    <definition name="personal-expense-sheets" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/expenses/personal/sheets/view.jsp" />
+    </definition>
+
     <definition name="personal-expenses" extends="fullFrameLayaout">
         <put-attribute name="body" value="/ui/jsp/view/expenses/personal.jsp" />
     </definition>

@@ -1,0 +1,111 @@
+sql:
+
+  qry-list-of-pes: |
+    
+    SELECT
+      i.inspection_id AS id_pagination,
+      i.inspection_id,
+      i.action,
+      i.start_date,
+      i.description,
+    FROM ${sch-gestepm}.personal_expense_sheet pes
+    LEFT JOIN ${sch-gestepm}.no_programmed_share nps ON i.no_programmed_share_id = nps.no_programmed_share_id
+
+    #whereToken #filter
+
+  qry-page-of-pes: |
+
+    ${sql.paginated-query-group-prefix}
+    ${sql.qry-list-of-pes}
+    ${sql.paginated-query-suffix}
+
+  qry-count-of-pes: |
+
+    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    FROM (${sql.qry-list-of-pes}) final
+
+  qry-create-pes: |
+    
+    INSERT INTO ${sch-gestepm}.inspection (
+      user_signing_id,
+      no_programmed_share_id,
+      action,
+      start_date,
+      first_technical,
+      second_technical
+    )
+    VALUES (
+      :attr_i_user_signing_id,
+      :attr_i_share_id,
+      :attr_i_action,
+      :attr_i_start_date,
+      :attr_i_first_technical_id,
+      :attr_i_second_technical_id
+    )
+
+  qry-update-pes: |
+    
+    UPDATE
+      ${sch-gestepm}.inspection
+    SET
+      user_signing_id = :attr_i_user_signing_id, 
+      no_programmed_share_id = :attr_i_share_id, 
+      action = :attr_i_action, 
+      start_date = :attr_i_start_date, 
+      end_date = :attr_i_end_date, 
+      description = :attr_i_description, 
+      first_technical = :attr_i_first_technical_id, 
+      second_technical = :attr_i_second_technical_id, 
+      signature = :attr_i_signature, 
+      operator_signature = :attr_i_operator_signature, 
+      client_name = :attr_i_client_name, 
+      materials_file = :attr_i_materials_file, 
+      materials_file_extension = :attr_i_materials_file_extension,
+      equipment_hours = :attr_i_equipment_hours,
+      topic_id = :attr_i_topic_id
+    WHERE
+      inspection_id = :attr_i_id
+
+  qry-delete-pes: |
+
+    DELETE FROM ${sch-gestepm}.inspection WHERE inspection_id = :attr_i_id
+
+  filter-pes-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-pes-pesds}
+      -- ${sql.predicate-for-pes-share-pesd}
+      -- ${sql.predicate-for-pes-project-pesd}
+      -- ${sql.predicate-for-pes-start-date}
+      -- ${sql.predicate-for-pes-end-date}
+    -- AND]
+
+  filter-pes-by-pesd: |
+
+    -- [AND
+      -- ${sql.predicate-for-pes-pesd}
+    -- AND]
+
+  predicate-for-pes-pesd: |
+
+    i.inspection_id = :attr_i_id
+
+  predicate-for-pes-pesds: |
+
+    i.inspection_id IN (:attr_i_ids)
+
+  predicate-for-pes-share-pesd: |
+
+    i.no_programmed_share_id = :attr_i_share_id
+
+  predicate-for-pes-project-pesd: |
+    
+    nps.project_id = :attr_nps_p_id
+
+  predicate-for-pes-start-date: |
+    
+    i.start_date > :attr_i_start_date
+
+  predicate-for-pes-end-date: |
+    
+    i.end_date > :attr_i_end_date
