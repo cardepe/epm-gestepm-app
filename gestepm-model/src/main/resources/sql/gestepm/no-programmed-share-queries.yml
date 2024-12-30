@@ -70,7 +70,7 @@ sql:
 
   qry-delete-nps: |
     
-    DELETE FROM ${sch-gestepm}.no_programmed_share WHERE id = :attr_nps_id
+    DELETE FROM ${sch-gestepm}.no_programmed_share WHERE no_programmed_share_id = :attr_nps_id
 
   filter-nps-by-params: |
 
