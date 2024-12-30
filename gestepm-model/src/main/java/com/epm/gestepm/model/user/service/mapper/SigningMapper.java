@@ -19,6 +19,7 @@ import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 
@@ -35,11 +36,11 @@ public class SigningMapper {
 			String id = displacementShare.getId() + "_ds";
 			
 			Calendar datee = Calendar.getInstance();
-			datee.setTime(Date.from(displacementShare.getDisplacementDate().toInstant()));
+			datee.setTime(Date.from(displacementShare.getDisplacementDate().toInstant(ZoneOffset.UTC)));
 			long t = datee.getTimeInMillis();
 			Date afterAddingMins = new Date(t + (displacementShare.getManualHours() * 60000));
 			
-			String startDate = Utiles.transformDateToString(Date.from(displacementShare.getDisplacementDate().toInstant()));
+			String startDate = Utiles.transformDateToString(Date.from(displacementShare.getDisplacementDate().toInstant(ZoneOffset.UTC)));
 			String endDate = Utiles.transformDateToString(afterAddingMins);
 			
 			CalendarDTO calendarDTO = new CalendarDTO(id, messageSource.getMessage("shares.displacement.title", null, locale), startDate, endDate, Constants.SIGNIN_DISPLACEMENT_COLOR, "#ffffff");
@@ -149,14 +150,14 @@ public class SigningMapper {
 		list.stream().forEach(l -> {
 
 			final Calendar displacementCalendar = Calendar.getInstance();
-			displacementCalendar.setTime(Date.from(l.getDisplacementDate().toInstant()));
+			displacementCalendar.setTime(Date.from(l.getDisplacementDate().toInstant(ZoneOffset.UTC)));
 			displacementCalendar.add(Calendar.MINUTE, l.getManualHours());
 
 			final PersonalSigningResumeDTO dto = new PersonalSigningResumeDTO();
 			dto.setProjectName(l.getProject().getName());
 			dto.setType("ds");
 			dto.setStartDate(l.getDisplacementDate());
-			dto.setEndDate(displacementCalendar.getTime().toInstant().atOffset(ZoneOffset.UTC));
+			dto.setEndDate(LocalDateTime.from(displacementCalendar.getTime().toInstant().atOffset(ZoneOffset.UTC)));
 
 			listDto.add(dto);
 		});
@@ -243,8 +244,8 @@ public class SigningMapper {
 		list.stream().forEach(l -> {
 
 			final DatesModel dm = new DatesModel();
-			dm.setStartDate(Date.from(l.getStartDate().toInstant()));
-			dm.setEndDate(Date.from(l.getEndDate().toInstant()));
+			dm.setStartDate(Date.from(l.getStartDate().toInstant(ZoneOffset.UTC)));
+			dm.setEndDate(Date.from(l.getEndDate().toInstant(ZoneOffset.UTC)));
 
 			listDto.add(dm);
 		});

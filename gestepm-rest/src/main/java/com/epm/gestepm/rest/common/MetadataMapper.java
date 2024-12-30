@@ -7,15 +7,15 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 @Mapper
 public interface MetadataMapper {
 
   @Named("longToTime")
-  static OffsetDateTime longToTime(Long value) {
-    return OffsetDateTime.ofInstant(Instant.ofEpochMilli(value), ZoneId.systemDefault());
+  static LocalDateTime longToTime(Long value) {
+    return LocalDateTime.ofInstant(Instant.ofEpochMilli(value), ZoneId.systemDefault());
   }
 
   @Mapping(source = "request.requestTimestamp", target = "request.requestTimestamp", qualifiedByName = "longToTime")

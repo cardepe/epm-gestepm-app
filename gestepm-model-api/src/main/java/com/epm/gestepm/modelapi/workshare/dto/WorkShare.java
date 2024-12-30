@@ -7,7 +7,7 @@ import com.epm.gestepm.modelapi.worksharefile.dto.WorkShareFile;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -33,10 +33,10 @@ public class WorkShare {
 	private UserSigning userSigning;
 	
 	@Column(name = "START_DATE", nullable = false)
-	private OffsetDateTime startDate;
+	private LocalDateTime startDate;
 	
 	@Column(name = "END_DATE")
-	private OffsetDateTime endDate;
+	private LocalDateTime endDate;
 	
 	@Column(name="OBSERVATIONS")
     private String observations;

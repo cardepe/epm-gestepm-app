@@ -3,12 +3,12 @@ package com.epm.gestepm.modelapi.displacementshare.dto;
 import com.epm.gestepm.modelapi.displacement.dto.DisplacementDTO;
 import lombok.Data;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Data
 public class DisplacementShareDTO {
 
-	private OffsetDateTime displacementDate;
+	private LocalDateTime displacementDate;
 
 	private Long activityCenter;
 

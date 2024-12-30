@@ -6,7 +6,7 @@ import com.epm.gestepm.modelapi.interventionshare.dto.PdfFileDTO;
 import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -23,9 +23,9 @@ public interface InterventionPrShareService {
 	List<ShareTableDTO> getShareTableByUserSigningId(Long userSigning);
 	void deleteById(Long id);
 	List<InterventionPrShare> getWeekSigningsByUserId(Date startDate, Date endDate, Long userId);
-	List<InterventionPrShare> getWeekSigningsByProjectId(OffsetDateTime startDate, OffsetDateTime endDate, Long projectId);
+	List<InterventionPrShare> getWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId);
 	List<ExpensesMonthDTO> getExpensesMonthDTOByProjectId(Long projectId, Integer year);
 	byte[] generateInterventionSharePdf(InterventionPrShare share, Locale locale);
 
-	List<PdfFileDTO> generateSharesByProjectAndInterval(Long projectId, OffsetDateTime startDate, OffsetDateTime endDate);
+	List<PdfFileDTO> generateSharesByProjectAndInterval(Long projectId, LocalDateTime startDate, LocalDateTime endDate);
 }

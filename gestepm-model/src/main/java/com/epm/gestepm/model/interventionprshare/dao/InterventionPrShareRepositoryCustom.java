@@ -5,7 +5,7 @@ import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -16,7 +16,7 @@ public interface InterventionPrShareRepositoryCustom {
 	List<ShareTableDTO> findShareTableByProjectId(Long projectId);
 	List<ShareTableDTO> findShareTableByUserSigningId(Long userSigningId);
 	List<InterventionPrShare> findWeekSigningsByUserId(Date startDate, Date endDate, Long userId);
-	List<InterventionPrShare> findWeekSigningsByProjectId(OffsetDateTime startDate, OffsetDateTime endDate, Long projectId);
+	List<InterventionPrShare> findWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId);
 	List<DailyPersonalSigningDTO> findDailyInterventionPrShareDTOByUserIdAndYear(Long userId, int year);
 	List<ExpensesMonthDTO> findExpensesMonthDTOByProjectId(Long projectId, Integer year);
 }

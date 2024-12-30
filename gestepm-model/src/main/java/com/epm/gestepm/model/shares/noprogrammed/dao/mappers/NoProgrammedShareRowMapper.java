@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -53,8 +54,8 @@ public class NoProgrammedShareRowMapper implements RowMapper<NoProgrammedShare> 
     noProgrammedShare.setUserId(rs.getInt(COL_NPS_USER_ID));
     noProgrammedShare.setProjectId(rs.getInt(COL_NPS_PROJECT_ID));
     noProgrammedShare.setUserSigningId(nullableInt(rs, COL_NPS_USER_SIGNING_ID));
-    noProgrammedShare.setStartDate(rs.getTimestamp(COL_NPS_START_DATE).toInstant().atOffset(ZoneOffset.UTC));
-    noProgrammedShare.setEndDate(nullableOffsetDateTime(rs, COL_NPS_END_DATE));
+    noProgrammedShare.setStartDate(rs.getTimestamp(COL_NPS_START_DATE).toLocalDateTime());
+    noProgrammedShare.setEndDate(nullableLocalDateTime(rs, COL_NPS_END_DATE));
     noProgrammedShare.setDescription(nullableString(rs, COL_NPS_DESCRIPTION));
     noProgrammedShare.setFamilyId(nullableInt(rs, COL_NPS_FAMILY_ID));
     noProgrammedShare.setSubFamilyId(nullableInt(rs, COL_NPS_SUB_FAMILY_ID));

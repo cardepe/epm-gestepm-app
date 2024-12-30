@@ -1,6 +1,6 @@
 package com.epm.gestepm.lib.jdbc.impl.rowmapper;
 
-import static com.epm.gestepm.lib.jdbc.utils.ResultSetMappingUtils.nullableOffsetDateTime;
+import static com.epm.gestepm.lib.jdbc.utils.ResultSetMappingUtils.nullableLocalDateTime;
 import static com.epm.gestepm.lib.jdbc.utils.ResultSetMappingUtils.nullableString;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -44,7 +44,7 @@ public abstract class CommonRowMapper {
 
     protected void setCommonAudit(AuditCreate result, final ResultSet resultSet) throws SQLException {
 
-        result.setCreatedAt(nullableOffsetDateTime(resultSet, COL_CREATED_AT));
+        result.setCreatedAt(nullableLocalDateTime(resultSet, COL_CREATED_AT));
         result.setCreatedBy(nullableString(resultSet, COL_CREATED_BY));
     }
 
@@ -81,27 +81,27 @@ public abstract class CommonRowMapper {
     }
 
     protected void setCommonAudit(AuditDelete result, final ResultSet resultSet) throws SQLException {
-        result.setDeletedAt(nullableOffsetDateTime(resultSet, COL_DELETED_AT));
+        result.setDeletedAt(nullableLocalDateTime(resultSet, COL_DELETED_AT));
         result.setDeletedBy(nullableString(resultSet, COL_DELETED_BY));
     }
 
     protected void setCommonAudit(AuditDeprecate result, final ResultSet resultSet) throws SQLException {
-        result.setDeprecatedAt(nullableOffsetDateTime(resultSet, COL_DEPRECATED_AT));
+        result.setDeprecatedAt(nullableLocalDateTime(resultSet, COL_DEPRECATED_AT));
         result.setDeprecatedBy(nullableString(resultSet, COL_DEPRECATED_BY));
     }
 
     protected void setCommonAudit(AuditDischarge result, final ResultSet resultSet) throws SQLException {
-        result.setDischargedAt(nullableOffsetDateTime(resultSet, COL_DISCHARGE_AT));
+        result.setDischargedAt(nullableLocalDateTime(resultSet, COL_DISCHARGE_AT));
         result.setDischargedBy(nullableString(resultSet, COL_DISCHARGE_BY));
     }
 
     protected void setCommonAudit(AuditLastAccess result, final ResultSet resultSet) throws SQLException {
-        result.setLastAccessedAt(nullableOffsetDateTime(resultSet, COL_LAST_ACCESS_AT));
+        result.setLastAccessedAt(nullableLocalDateTime(resultSet, COL_LAST_ACCESS_AT));
         result.setLastAccessedBy(nullableString(resultSet, COL_LAST_ACCESS_BY));
     }
 
     protected void setCommonAudit(AuditUpdate result, final ResultSet resultSet) throws SQLException {
-        result.setUpdatedAt(nullableOffsetDateTime(resultSet, COL_MODIFY_AT));
+        result.setUpdatedAt(nullableLocalDateTime(resultSet, COL_MODIFY_AT));
         result.setUpdatedBy(nullableString(resultSet, COL_MODIFY_BY));
     }
 

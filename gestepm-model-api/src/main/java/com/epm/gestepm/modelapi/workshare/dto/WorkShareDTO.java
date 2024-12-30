@@ -1,9 +1,10 @@
 package com.epm.gestepm.modelapi.workshare.dto;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,9 +16,11 @@ public class WorkShareDTO {
 	
 	private Long dispShareId;
 
-	private OffsetDateTime startDate;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	private LocalDateTime startDate;
 
-	private OffsetDateTime endDate;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	private LocalDateTime endDate;
 	
 	private String observations;
 	

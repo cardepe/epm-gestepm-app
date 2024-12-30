@@ -6,7 +6,7 @@ import com.epm.gestepm.model.inspection.dao.entity.ActionEnum;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 import static com.epm.gestepm.model.inspection.dao.constants.InspectionAttributes.*;
 
@@ -22,7 +22,7 @@ public class InspectionCreate implements CollectableAttributes {
     private ActionEnum action;
 
     @NotNull
-    private OffsetDateTime startDate;
+    private LocalDateTime startDate;
 
     @NotNull
     private Integer firstTechnicalId;

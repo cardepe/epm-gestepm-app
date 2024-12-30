@@ -1,14 +1,14 @@
 package com.epm.gestepm.lib.audit;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 public interface AuditDelete extends Auditable {
 
-    default OffsetDateTime getDeletedAt() {
+    default LocalDateTime getDeletedAt() {
         return null;
     }
 
-    default void setDeletedAt(OffsetDateTime deletedAt) {
+    default void setDeletedAt(LocalDateTime deletedAt) {
         // skips
     }
 

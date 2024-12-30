@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -98,7 +99,7 @@ public class TimeControlServiceImpl implements TimeControlService {
 			
 			TimeControlTableDTO timeControl = new TimeControlTableDTO();
 			timeControl.setCustomId(userId, timeControlDate);
-			timeControl.setDate(timeControlDate.toInstant().atOffset(ZoneOffset.UTC));
+			timeControl.setDate(LocalDateTime.from(timeControlDate.toInstant().atOffset(ZoneOffset.UTC)));
 			timeControl.setUsername(username);
 
 			UserManualSigning userManualFullDay = isUserManualFullDay(timeControlDate, userManualSignings);
@@ -118,16 +119,16 @@ public class TimeControlServiceImpl implements TimeControlService {
 			timeControl.setJourney(user.getWorkingHours());
 			
 			List<DisplacementShare> todayDisplacementShares = displacementShares.stream()
-					.filter(s -> DateUtils.isSameDay(Date.from(s.getDisplacementDate().toInstant()), timeControlDate)).collect(Collectors.toList());
+					.filter(s -> DateUtils.isSameDay(Date.from(s.getDisplacementDate().toInstant(ZoneOffset.UTC)), timeControlDate)).collect(Collectors.toList());
 			
 			List<PersonalSigning> todayPersonalSignings = personalSignings.stream()
-					.filter(s -> DateUtils.isSameDay(Date.from(s.getStartDate().toInstant()), timeControlDate)).collect(Collectors.toList());
+					.filter(s -> DateUtils.isSameDay(Date.from(s.getStartDate().toInstant(ZoneOffset.UTC)), timeControlDate)).collect(Collectors.toList());
 			
 			List<UserSigning> todayUserSignings = userSignings.stream()
-					.filter(s -> DateUtils.isSameDay(Date.from(s.getStartDate().toInstant()), timeControlDate)).collect(Collectors.toList());
+					.filter(s -> DateUtils.isSameDay(Date.from(s.getStartDate().toInstant(ZoneOffset.UTC)), timeControlDate)).collect(Collectors.toList());
 
 			List<UserManualSigning> todayUserManualSignings = userManualSignings.stream()
-					.filter(s -> DateUtils.isSameDay(Date.from(s.getStartDate().toInstant()), timeControlDate)).collect(Collectors.toList());
+					.filter(s -> DateUtils.isSameDay(Date.from(s.getStartDate().toInstant(ZoneOffset.UTC)), timeControlDate)).collect(Collectors.toList());
 			
 			Date checkInDate = null;
 			Date checkOutDate = null;
@@ -140,12 +141,12 @@ public class TimeControlServiceImpl implements TimeControlService {
 			for (DisplacementShare ds : todayDisplacementShares) {
 				
 				Calendar date = Calendar.getInstance();
-				date.setTime(Date.from(ds.getDisplacementDate().toInstant()));
+				date.setTime(Date.from(ds.getDisplacementDate().toInstant(ZoneOffset.UTC)));
 				long t = date.getTimeInMillis();
 				Date afterAddingMins = new Date(t + (ds.getManualHours() * 60000));
 				
 				DatesModel dm = new DatesModel();
-				dm.setStartDate(Date.from(ds.getDisplacementDate().toInstant()));
+				dm.setStartDate(Date.from(ds.getDisplacementDate().toInstant(ZoneOffset.UTC)));
 				dm.setEndDate(afterAddingMins);
 
 				todayDates.add(dm);
@@ -153,16 +154,16 @@ public class TimeControlServiceImpl implements TimeControlService {
 			
 			for (PersonalSigning ps : todayPersonalSignings) {
 				DatesModel dm = new DatesModel();
-				dm.setStartDate(Date.from(ps.getStartDate().toInstant()));
-				dm.setEndDate(Date.from(ps.getEndDate().toInstant()));
+				dm.setStartDate(Date.from(ps.getStartDate().toInstant(ZoneOffset.UTC)));
+				dm.setEndDate(Date.from(ps.getEndDate().toInstant(ZoneOffset.UTC)));
 
 				todayDates.add(dm);
 			}
 			
 			for (UserSigning ps : todayUserSignings) {
 				DatesModel dm = new DatesModel();
-				dm.setStartDate(Date.from(ps.getStartDate().toInstant()));
-				dm.setEndDate(Date.from(ps.getEndDate().toInstant()));
+				dm.setStartDate(Date.from(ps.getStartDate().toInstant(ZoneOffset.UTC)));
+				dm.setEndDate(Date.from(ps.getEndDate().toInstant(ZoneOffset.UTC)));
 
 				todayDates.add(dm);
 			}
@@ -228,8 +229,8 @@ public class TimeControlServiceImpl implements TimeControlService {
 				lastEndDate = dm.getEndDate();
 			}
 
-			timeControl.setStartHour(checkInDate.toInstant().atOffset(ZoneOffset.UTC));
-			timeControl.setEndHour(checkOutDate.toInstant().atOffset(ZoneOffset.UTC));
+			timeControl.setStartHour(LocalDateTime.from(checkInDate.toInstant().atOffset(ZoneOffset.UTC)));
+			timeControl.setEndHour(LocalDateTime.from(checkOutDate.toInstant().atOffset(ZoneOffset.UTC)));
 			
 			if (timeControl.getReason().startsWith("2")) {
 				timeControl.setBreaks(Utiles.getStringDateWithMillis(breaks));
@@ -249,7 +250,7 @@ public class TimeControlServiceImpl implements TimeControlService {
 
 					TimeControlTableDTO manualTimeControl = new TimeControlTableDTO();
 					manualTimeControl.setCustomId(userId, timeControlDate);
-					manualTimeControl.setDate(timeControlDate.toInstant().atOffset(ZoneOffset.UTC));
+					manualTimeControl.setDate(LocalDateTime.from(timeControlDate.toInstant().atOffset(ZoneOffset.UTC)));
 					manualTimeControl.setUsername(username);
 					manualTimeControl.setReason("1" + ums.getManualSigningType().getName());
 					manualTimeControl.setStartHour(ums.getStartDate());
@@ -275,7 +276,7 @@ public class TimeControlServiceImpl implements TimeControlService {
 		final List<UserSigning> userSignings = userSigningRepository.findWeekSigningsByUserId(date, endDate, userId);
 
 		final TimeControlTableDTO timeControl = new TimeControlTableDTO();
-		timeControl.setDate(date.toInstant().atOffset(ZoneOffset.UTC));
+		timeControl.setDate(LocalDateTime.from(date.toInstant().atOffset(ZoneOffset.UTC)));
 		timeControl.setUsername(user.getName() + " " + user.getSurnames());
 		timeControl.setJourney(user.getWorkingHours());
 
@@ -292,13 +293,13 @@ public class TimeControlServiceImpl implements TimeControlService {
 		for (DisplacementShare ds : displacementShares) {
 
 			final Calendar datee = Calendar.getInstance();
-			datee.setTime(Date.from(ds.getDisplacementDate().toInstant()));
+			datee.setTime(Date.from(ds.getDisplacementDate().toInstant(ZoneOffset.UTC)));
 
 			final long t = datee.getTimeInMillis();
 			final Date afterAddingMins = new Date(t + (ds.getManualHours() * 60000));
 
 			final DatesModel dm = new DatesModel();
-			dm.setStartDate(Date.from(ds.getDisplacementDate().toInstant()));
+			dm.setStartDate(Date.from(ds.getDisplacementDate().toInstant(ZoneOffset.UTC)));
 			dm.setEndDate(afterAddingMins);
 
 			todayDates.add(dm);
@@ -307,8 +308,8 @@ public class TimeControlServiceImpl implements TimeControlService {
 		for (PersonalSigning ps : personalSignings) {
 
 			final DatesModel dm = new DatesModel();
-			dm.setStartDate(Date.from(ps.getStartDate().toInstant()));
-			dm.setEndDate(Date.from(ps.getEndDate().toInstant()));
+			dm.setStartDate(Date.from(ps.getStartDate().toInstant(ZoneOffset.UTC)));
+			dm.setEndDate(Date.from(ps.getEndDate().toInstant(ZoneOffset.UTC)));
 
 			todayDates.add(dm);
 		}
@@ -316,8 +317,8 @@ public class TimeControlServiceImpl implements TimeControlService {
 		for (UserSigning ps : userSignings) {
 
 			final DatesModel dm = new DatesModel();
-			dm.setStartDate(Date.from(ps.getStartDate().toInstant()));
-			dm.setEndDate(Date.from(ps.getEndDate().toInstant()));
+			dm.setStartDate(Date.from(ps.getStartDate().toInstant(ZoneOffset.UTC)));
+			dm.setEndDate(Date.from(ps.getEndDate().toInstant(ZoneOffset.UTC)));
 
 			todayDates.add(dm);
 		}
@@ -383,8 +384,8 @@ public class TimeControlServiceImpl implements TimeControlService {
 			lastEndDate = dm.getEndDate();
 		}
 
-		timeControl.setStartHour(checkInDate != null ? checkInDate.toInstant().atOffset(ZoneOffset.UTC) : null);
-		timeControl.setEndHour(checkOutDate != null ? checkOutDate.toInstant().atOffset(ZoneOffset.UTC) : null);
+		timeControl.setStartHour(checkInDate != null ? LocalDateTime.from(checkInDate.toInstant().atOffset(ZoneOffset.UTC)) : null);
+		timeControl.setEndHour(checkOutDate != null ? LocalDateTime.from(checkOutDate.toInstant().atOffset(ZoneOffset.UTC)) : null);
 		timeControl.setBreaks(Utiles.getStringDateWithMillis(breaks));
 		timeControl.setDifference(Utiles.getStringDateWithMillis(totalHours - journeyMillis));
 		timeControl.setTotalHours(Utiles.getStringDateWithMillis(totalHours));
@@ -407,12 +408,12 @@ public class TimeControlServiceImpl implements TimeControlService {
 		for (DisplacementShare ds : displacementShares) {
 			
 			Calendar datee = Calendar.getInstance();
-			datee.setTime(Date.from(ds.getDisplacementDate().toInstant()));
+			datee.setTime(Date.from(ds.getDisplacementDate().toInstant(ZoneOffset.UTC)));
 			long t = datee.getTimeInMillis();
 			Date afterAddingMins = new Date(t + (ds.getManualHours() * 60000));
 			
 			TimeControlDetailTableDTO tcDTO = new TimeControlDetailTableDTO();
-			tcDTO.setStartHour(Date.from(ds.getDisplacementDate().toInstant()));
+			tcDTO.setStartHour(Date.from(ds.getDisplacementDate().toInstant(ZoneOffset.UTC)));
 			tcDTO.setEndHour(afterAddingMins);
 			tcDTO.setType(messageSource.getMessage("shares.displacement.title", null, locale));
 			
@@ -421,8 +422,8 @@ public class TimeControlServiceImpl implements TimeControlService {
 		
 		for (PersonalSigning ps : personalSignings) {
 			TimeControlDetailTableDTO tcDTO = new TimeControlDetailTableDTO();
-			tcDTO.setStartHour(Date.from(ps.getStartDate().toInstant()));
-			tcDTO.setEndHour(Date.from(ps.getEndDate().toInstant()));
+			tcDTO.setStartHour(Date.from(ps.getStartDate().toInstant(ZoneOffset.UTC)));
+			tcDTO.setEndHour(Date.from(ps.getEndDate().toInstant(ZoneOffset.UTC)));
 			tcDTO.setType(messageSource.getMessage("signing.personal.title", null, locale));
 			
 			registers.add(tcDTO);
@@ -430,8 +431,8 @@ public class TimeControlServiceImpl implements TimeControlService {
 		
 		for (UserSigning ps : userSignings) {
 			TimeControlDetailTableDTO tcDTO = new TimeControlDetailTableDTO();
-			tcDTO.setStartHour(Date.from(ps.getStartDate().toInstant()));
-			tcDTO.setEndHour(Date.from(ps.getEndDate().toInstant()));
+			tcDTO.setStartHour(Date.from(ps.getStartDate().toInstant(ZoneOffset.UTC)));
+			tcDTO.setEndHour(Date.from(ps.getEndDate().toInstant(ZoneOffset.UTC)));
 			tcDTO.setType(messageSource.getMessage("signing.calendar.title", null, locale));
 			
 			registers.add(tcDTO);
@@ -440,8 +441,8 @@ public class TimeControlServiceImpl implements TimeControlService {
 		for (UserManualSigning ums : userManualSignings) {
 
 			final TimeControlDetailTableDTO tcDTO = new TimeControlDetailTableDTO();
-			tcDTO.setStartHour(Date.from(ums.getStartDate().toInstant()));
-			tcDTO.setEndHour(Date.from(ums.getEndDate().toInstant()));
+			tcDTO.setStartHour(Date.from(ums.getStartDate().toInstant(ZoneOffset.UTC)));
+			tcDTO.setEndHour(Date.from(ums.getEndDate().toInstant(ZoneOffset.UTC)));
 			tcDTO.setType(ums.getManualSigningType().getName());
 
 			registers.add(tcDTO);
@@ -464,7 +465,7 @@ public class TimeControlServiceImpl implements TimeControlService {
 
 		for (UserManualSigning ums : userManualSignings) {
 
-			final Date startDate = Date.from(ums.getStartDate().toInstant());
+			final Date startDate = Date.from(ums.getStartDate().toInstant(ZoneOffset.UTC));
 
 			final Calendar cal1 = Calendar.getInstance();
 			final Calendar cal2 = Calendar.getInstance();

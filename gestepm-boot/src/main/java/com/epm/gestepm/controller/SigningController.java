@@ -80,7 +80,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.Duration;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
@@ -251,7 +251,7 @@ public class SigningController {
 
 				// Create new signing
 				if (userSigningDTO.getStartDate() == null) {
-					userSigningDTO.setStartDate(OffsetDateTime.now());
+					userSigningDTO.setStartDate(LocalDateTime.now());
 				}
 
 				if (userSigningDTO.getUserId() != null) {
@@ -274,7 +274,7 @@ public class SigningController {
 			} else if (userSigningDTO.getState() == 1) {
 				
 				// Set endDate to current signing
-				currentUserSigning.setEndDate(OffsetDateTime.now());
+				currentUserSigning.setEndDate(LocalDateTime.now());
 				currentUserSigning.setEndLocation(userSigningDTO.getGeolocation());
 
 				currentUserSigning = userSigningService.save(currentUserSigning);
@@ -422,10 +422,10 @@ public class SigningController {
 			log.info("Exportando partes de proyecto " + projectId + " de forma semanal");
 
 			final ZoneOffset zoneOffset = ZoneOffset.UTC;
-			final OffsetDateTime startOfWeek = OffsetDateTime.now(zoneOffset)
+			final LocalDateTime startOfWeek = LocalDateTime.now(zoneOffset)
 					.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
 					.withHour(0).withMinute(0).withSecond(0);
-			final OffsetDateTime endOfWeek = OffsetDateTime.now(zoneOffset)
+			final LocalDateTime endOfWeek = LocalDateTime.now(zoneOffset)
 					.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
 					.withHour(23).withMinute(59).withSecond(59);
 
@@ -1141,8 +1141,8 @@ public class SigningController {
 
 			final Long signingId = modifiedSigning.getSigningId();
 			final String signingType = modifiedSigning.getTypeId();
-			final OffsetDateTime startDate = modifiedSigning.getStartDate();
-			final OffsetDateTime endDate = modifiedSigning.getEndDate();
+			final LocalDateTime startDate = modifiedSigning.getStartDate();
+			final LocalDateTime endDate = modifiedSigning.getEndDate();
 
 			boolean isValidType = true;
 
@@ -1153,7 +1153,7 @@ public class SigningController {
 					long diffInMinutes = Duration.between(startDate, endDate).toMinutes();
 
 					final DisplacementShare displacementShare = this.displacementShareService.getDisplacementShareById(signingId);
-					displacementShare.setDisplacementDate(startDate.toInstant().atOffset(ZoneOffset.UTC));
+					displacementShare.setDisplacementDate(startDate);
 					displacementShare.setManualHours(Math.toIntExact(diffInMinutes));
 
 					displacementShareService.save(displacementShare);
@@ -1232,9 +1232,9 @@ public class SigningController {
 			final User user = Utiles.getUsuario();
 
 			final List<User> projectManagers = new ArrayList<>();
-			final OffsetDateTime ts = OffsetDateTime.now();
-			final OffsetDateTime startDate = userSigningShareDTO.getStartDate();
-			final OffsetDateTime endDate = userSigningShareDTO.getEndDate();
+			final LocalDateTime ts = LocalDateTime.now();
+			final LocalDateTime startDate = userSigningShareDTO.getStartDate();
+			final LocalDateTime endDate = userSigningShareDTO.getEndDate();
 
 			switch (userSigningShareDTO.getShareType()) {
 
@@ -1331,8 +1331,8 @@ public class SigningController {
 			// Recover user
 			User user = Utiles.getUsuario();
 						
-			final OffsetDateTime startDate = OffsetDateTime.from(userSigningShareDTO.getStartDate());
-			final OffsetDateTime endDate = OffsetDateTime.from(userSigningShareDTO.getEndDate());
+			final LocalDateTime startDate = userSigningShareDTO.getStartDate();
+			final LocalDateTime endDate = userSigningShareDTO.getEndDate();
 			
 			switch (userSigningShareDTO.getShareType()) {
 

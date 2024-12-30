@@ -23,7 +23,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -189,7 +189,7 @@ public class SigningScheduled {
 											
 											log.info("Registrado el fichaje " + personalSigning.getId() + " por parte del usuario " + user.getId());
 
-											final Date endDate = Date.from(personalSigning.getEndDate().toInstant());
+											final Date endDate = Date.from(personalSigning.getEndDate().toInstant(ZoneOffset.UTC));
 											final boolean isLunchInterval = endDate.after(lunchIntervalStart) && endDate.before(lunchIntervalEnd);
 
 											if (isLunchInterval) {
@@ -209,13 +209,13 @@ public class SigningScheduled {
 										if (personalSigning == null) {
 											personalSigning = new PersonalSigning();
 											personalSigning.setUser(user);
-											personalSigning.setStartDate(startDate.toInstant().atOffset(ZoneOffset.UTC));
+											personalSigning.setStartDate(LocalDateTime.from(startDate.toInstant().atOffset(ZoneOffset.UTC)));
 										}
 										
 									} else if (signing.getValue() == 1) {
 
 										if (personalSigning != null) {
-											personalSigning.setEndDate(signing.getDate().toInstant().atOffset(ZoneOffset.UTC));
+											personalSigning.setEndDate(LocalDateTime.from(signing.getDate().toInstant().atOffset(ZoneOffset.UTC)));
 										} else {
 											log.info("El usuario " + signing.getUserSigningId() + " ha imputado una salida sin entrada previa a las " + signing.getDate());
 										}
@@ -224,7 +224,7 @@ public class SigningScheduled {
 									if (i == signingLists.size() && personalSigning != null) {
 										
 										if (personalSigning.getEndDate() == null) {
-											personalSigning.setEndDate(OffsetDateTime.now());
+											personalSigning.setEndDate(LocalDateTime.now());
 										}
 										
 										personalSigning = personalSigningService.save(personalSigning);

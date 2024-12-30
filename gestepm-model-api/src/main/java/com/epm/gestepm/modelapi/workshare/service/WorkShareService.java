@@ -7,7 +7,7 @@ import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShareTableDTO;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -24,8 +24,8 @@ public interface WorkShareService {
 	Long getWorkSharesCountByUser(Long userId);
 	List<WorkShareTableDTO> getWorkSharesByUserDataTables(Long userId, PaginationCriteria pagination);
 	List<WorkShare> getWeekSigningsByUserId(Date startDate, Date endDate, Long userId);
-	List<WorkShare> getWeekSigningsByProjectId(OffsetDateTime startDate, OffsetDateTime endDate, Long projectId);
+	List<WorkShare> getWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId);
 	byte[] generateWorkSharePdf(WorkShare share, Locale locale);
 
-	List<PdfFileDTO> generateSharesByProjectAndInterval(Long projectId, OffsetDateTime startDate, OffsetDateTime endDate);
+	List<PdfFileDTO> generateSharesByProjectAndInterval(Long projectId, LocalDateTime startDate, LocalDateTime endDate);
 }

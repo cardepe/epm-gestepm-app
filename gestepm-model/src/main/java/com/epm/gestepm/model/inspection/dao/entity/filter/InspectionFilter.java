@@ -6,7 +6,7 @@ import com.epm.gestepm.lib.entity.Orderable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.epm.gestepm.model.inspection.dao.constants.InspectionAttributes.*;
@@ -22,9 +22,9 @@ public class InspectionFilter extends Orderable implements CollectableAttributes
 
   private Integer projectId;
 
-  private OffsetDateTime startDate;
+  private LocalDateTime startDate;
 
-  private OffsetDateTime endDate;
+  private LocalDateTime endDate;
 
   @Override
   public AttributeMap collectAttributes() {

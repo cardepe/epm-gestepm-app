@@ -1,8 +1,9 @@
 package com.epm.gestepm.modelapi.usersigning.dto;
 
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Data
 public class UserSigningDTO {
@@ -17,9 +18,11 @@ public class UserSigningDTO {
 
 	private Integer state;
 
-	private OffsetDateTime startDate;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	private LocalDateTime startDate;
 
-	private OffsetDateTime endDate;
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	private LocalDateTime endDate;
 	
 	private String materials;
 	

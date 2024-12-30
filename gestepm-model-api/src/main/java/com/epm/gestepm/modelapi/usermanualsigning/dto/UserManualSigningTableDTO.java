@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -17,10 +17,10 @@ public class UserManualSigningTableDTO {
 	private String manualTypeId;
 
 	@JsonProperty("ums_startDate")
-	private OffsetDateTime startDate;
+	private LocalDateTime startDate;
 
 	@JsonProperty("ums_endDate")
-	private OffsetDateTime endDate;
+	private LocalDateTime endDate;
 
 	@JsonProperty("ums_hasFile")
 	private Boolean hasFile;

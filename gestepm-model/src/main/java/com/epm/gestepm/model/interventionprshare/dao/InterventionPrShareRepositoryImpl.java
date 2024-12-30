@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -160,7 +160,7 @@ public class InterventionPrShareRepositoryImpl implements InterventionPrShareRep
 	}
 
 	@Override
-	public List<InterventionPrShare> findWeekSigningsByProjectId(OffsetDateTime startDate, OffsetDateTime endDate, Long projectId) {
+	public List<InterventionPrShare> findWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId) {
 
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<InterventionPrShare> cq = cb.createQuery(InterventionPrShare.class);

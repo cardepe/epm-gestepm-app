@@ -37,7 +37,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DateFormatSymbols;
 import java.time.Duration;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -98,7 +99,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 
 			PersonalSigning personalSigning = new PersonalSigning();
 			personalSigning.setUser(user);
-			personalSigning.setStartDate(OffsetDateTime.now());
+			personalSigning.setStartDate(LocalDateTime.now());
 
 			personalSigning = personalSigingRepository.save(personalSigning);
 			
@@ -106,7 +107,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 						
 		} else {
 
-			lastSigning.setEndDate(OffsetDateTime.now());
+			lastSigning.setEndDate(LocalDateTime.now());
 
 			personalSigingRepository.save(lastSigning);
 		
@@ -418,7 +419,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 				final List<ConstructionShare> dailyConstructionList = monthlyConstructionSigningList.stream().filter(s -> {
 
 					final Calendar filterCalendar = Calendar.getInstance();
-					filterCalendar.setTime(Date.from(s.getStartDate().toInstant()));
+					filterCalendar.setTime(Date.from(s.getStartDate().toInstant(ZoneOffset.UTC)));
 					Utiles.setStartDay(filterCalendar);
 
 					return Utiles.getStartDayDate(selectedCal).equals(filterCalendar.getTime());
@@ -428,7 +429,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 				final List<DisplacementShare> dailyDisplacementList = monthlyDisplacementSigningList.stream().filter(s -> {
 
 					final Calendar filterCalendar = Calendar.getInstance();
-					filterCalendar.setTime(Date.from(s.getDisplacementDate().toInstant()));
+					filterCalendar.setTime(Date.from(s.getDisplacementDate().toInstant(ZoneOffset.UTC)));
 					Utiles.setStartDay(filterCalendar);
 
 					return Utiles.getStartDayDate(selectedCal).equals(filterCalendar.getTime());
@@ -438,7 +439,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 				final List<InterventionShare> dailyInterventionList = monthlyInterventionSigningList.stream().filter(s -> {
 
 					final Calendar filterCalendar = Calendar.getInstance();
-					filterCalendar.setTime(Date.from(s.getNoticeDate().toInstant()));
+					filterCalendar.setTime(Date.from(s.getNoticeDate().toInstant(ZoneOffset.UTC)));
 					Utiles.setStartDay(filterCalendar);
 
 					return Utiles.getStartDayDate(selectedCal).equals(filterCalendar.getTime());
@@ -448,7 +449,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 				final List<InterventionPrShare> dailyInterventionPrList = monthlyInterventionPrSigningList.stream().filter(s -> {
 
 					final Calendar filterCalendar = Calendar.getInstance();
-					filterCalendar.setTime(Date.from(s.getStartDate().toInstant()));
+					filterCalendar.setTime(Date.from(s.getStartDate().toInstant(ZoneOffset.UTC)));
 					Utiles.setStartDay(filterCalendar);
 
 					return Utiles.getStartDayDate(selectedCal).equals(filterCalendar.getTime());
@@ -458,7 +459,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 				final List<PersonalSigning> dailyPersonalList = monthlyPersonalSigningList.stream().filter(s -> {
 
 					final Calendar filterCalendar = Calendar.getInstance();
-					filterCalendar.setTime(Date.from(s.getStartDate().toInstant()));
+					filterCalendar.setTime(Date.from(s.getStartDate().toInstant(ZoneOffset.UTC)));
 					Utiles.setStartDay(filterCalendar);
 
 					return Utiles.getStartDayDate(selectedCal).equals(filterCalendar.getTime());
@@ -468,7 +469,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 				final List<WorkShare> dailyWorkList = monthlyWorkSigningList.stream().filter(s -> {
 
 					final Calendar filterCalendar = Calendar.getInstance();
-					filterCalendar.setTime(Date.from(s.getStartDate().toInstant()));
+					filterCalendar.setTime(Date.from(s.getStartDate().toInstant(ZoneOffset.UTC)));
 					Utiles.setStartDay(filterCalendar);
 
 					return Utiles.getStartDayDate(selectedCal).equals(filterCalendar.getTime());
@@ -698,7 +699,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 			cell.setCellValue(difference);
 
 			final List<DatesModel> todaySignings = signingDates.stream()
-                    .filter(s -> DateUtils.isSameDay(Date.from(s.getStartDate().toInstant()), Date.from(timeControl.getDate().toInstant())))
+                    .filter(s -> DateUtils.isSameDay(Date.from(s.getStartDate().toInstant()), Date.from(timeControl.getDate().toInstant(ZoneOffset.UTC))))
 					.sorted(Comparator.comparing(DatesModel::getStartDate))
 					.collect(Collectors.toList());
 
@@ -749,13 +750,13 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 		displacementShares.forEach(ds -> {
 
 			final Calendar date = Calendar.getInstance();
-			date.setTime(Date.from(ds.getDisplacementDate().toInstant()));
+			date.setTime(Date.from(ds.getDisplacementDate().toInstant(ZoneOffset.UTC)));
 
 			final long t = date.getTimeInMillis();
 			final Date afterAddingMins = new Date(t + (ds.getManualHours() * 60000));
 
 			final DatesModel dm = new DatesModel();
-			dm.setStartDate(Date.from(ds.getDisplacementDate().toInstant()));
+			dm.setStartDate(Date.from(ds.getDisplacementDate().toInstant(ZoneOffset.UTC)));
 			dm.setEndDate(afterAddingMins);
 
 			todayDates.add(dm);
@@ -764,8 +765,8 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 		personalSignings.forEach(ps -> {
 
 			final DatesModel dm = new DatesModel();
-			dm.setStartDate(Date.from(ps.getStartDate().toInstant()));
-			dm.setEndDate(Date.from(ps.getEndDate().toInstant()));
+			dm.setStartDate(Date.from(ps.getStartDate().toInstant(ZoneOffset.UTC)));
+			dm.setEndDate(Date.from(ps.getEndDate().toInstant(ZoneOffset.UTC)));
 
 			todayDates.add(dm);
 		});
@@ -773,8 +774,8 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 		userSignings.forEach(us -> {
 
 			final DatesModel dm = new DatesModel();
-			dm.setStartDate(Date.from(us.getStartDate().toInstant()));
-			dm.setEndDate(Date.from(us.getEndDate().toInstant()));
+			dm.setStartDate(Date.from(us.getStartDate().toInstant(ZoneOffset.UTC)));
+			dm.setEndDate(Date.from(us.getEndDate().toInstant(ZoneOffset.UTC)));
 
 			todayDates.add(dm);
 		});

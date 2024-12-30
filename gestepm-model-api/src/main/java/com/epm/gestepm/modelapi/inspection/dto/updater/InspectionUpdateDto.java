@@ -6,7 +6,7 @@ import com.epm.gestepm.modelapi.inspection.dto.creator.MaterialCreateDto;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -22,9 +22,9 @@ public class InspectionUpdateDto {
 
     private ActionEnumDto action;
 
-    private OffsetDateTime startDate;
+    private LocalDateTime startDate;
 
-    private OffsetDateTime endDate;
+    private LocalDateTime endDate;
 
     private String description;
 

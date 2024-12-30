@@ -66,7 +66,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -353,7 +353,7 @@ public class ShareController {
             // Map Intervention share
             InterventionPrShare interventionPrShare = ShareMapper.mapDTOToInterventionPrShare(interventionPrDTO, user, project, interventionPrDTO.getDispShareId());
             interventionPrShare.setUserSigning(currentUserSigning);
-            interventionPrShare.setStartDate(OffsetDateTime.now());
+            interventionPrShare.setStartDate(LocalDateTime.now());
 
             // Save intervention
             interventionPrShare = interventionPrShareService.save(interventionPrShare);
@@ -586,7 +586,7 @@ public class ShareController {
             // Map Intervention share stepper
             ConstructionShare constructionShare = ShareMapper.mapDTOToConstructionShare(constructionDTO, user, project, constructionDTO.getDispShareId());
             constructionShare.setUserSigning(currentUserSigning);
-            constructionShare.setStartDate(OffsetDateTime.now());
+            constructionShare.setStartDate(LocalDateTime.now());
 
             // Save intervention
             constructionShare = constructionShareService.save(constructionShare);
@@ -627,7 +627,7 @@ public class ShareController {
 
             // Map Intervention share stepper
             ConstructionShare constructionShare = constructionShareService.getConstructionShareById(constructionDTO.getId());
-            constructionShare.setEndDate(OffsetDateTime.now());
+            constructionShare.setEndDate(LocalDateTime.now());
             constructionShare.setObservations(constructionDTO.getObservations());
             constructionShare.setSignatureOp(constructionDTO.getSignatureOp());
 
@@ -801,7 +801,7 @@ public class ShareController {
 
             // Map Intervention share stepper
             DisplacementShare displacementShare = ShareMapper.mapDTOToDisplacementShare(displacementShareDTO, user, project, displacement);
-            displacementShare.setOriginalDate(OffsetDateTime.now());
+            displacementShare.setOriginalDate(LocalDateTime.now());
 
             // Save intervention
             displacementShare = displacementShareService.save(displacementShare);
@@ -977,7 +977,7 @@ public class ShareController {
             // Map Intervention share stepper
             WorkShare workShare = ShareMapper.mapDTOToWorkShare(workShareDTO, user, project);
             workShare.setUserSigning(currentUserSigning);
-            workShare.setStartDate(OffsetDateTime.now());
+            workShare.setStartDate(LocalDateTime.now());
 
             // Save intervention
             workShare = workShareService.save(workShare);

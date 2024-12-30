@@ -10,7 +10,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,9 +114,9 @@ public class UserManualSigningRepositoryImpl implements UserManualSigningReposit
 		Root<UserManualSigning> root = cq.from(UserManualSigning.class);
 
 		cq.select(root).where(cb.and(cb.between(
-				root.get("endDate").as(OffsetDateTime.class),
-				startDate.toInstant().atOffset(ZoneOffset.UTC),
-				endDate.toInstant().atOffset(ZoneOffset.UTC)
+				root.get("endDate").as(LocalDateTime.class),
+				LocalDateTime.from(startDate.toInstant().atOffset(ZoneOffset.UTC)),
+				LocalDateTime.from(endDate.toInstant().atOffset(ZoneOffset.UTC))
 		), cb.equal(root.get("user"), userId)));
 
 		return entityManager.createQuery(cq).getResultList();

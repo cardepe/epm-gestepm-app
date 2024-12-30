@@ -1,14 +1,14 @@
 package com.epm.gestepm.lib.audit;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 public interface AuditDischarge extends Auditable {
 
-    default OffsetDateTime getDischargedAt() {
+    default LocalDateTime getDischargedAt() {
         return null;
     }
 
-    default void setDischargedAt(OffsetDateTime dischargedAt) {
+    default void setDischargedAt(LocalDateTime dischargedAt) {
         // skips
     }
 

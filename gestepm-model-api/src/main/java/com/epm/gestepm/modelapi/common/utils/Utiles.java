@@ -127,11 +127,11 @@ public class Utiles {
 		return dateFormat.format(date);
 	}
 
-	public static String transformToString(final OffsetDateTime offsetDateTime) {
+	public static String transformToString(final LocalDateTime offsetDateTime) {
 		return offsetDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
 	}
 
-	public static String transform(final OffsetDateTime offsetDateTime, final String format) {
+	public static String transform(final LocalDateTime offsetDateTime, final String format) {
 		return offsetDateTime.format(DateTimeFormatter.ofPattern(format));
 	}
 	
@@ -151,8 +151,8 @@ public class Utiles {
 	 * @return
 	 */
 	public static Date transformStringToDate(String date) {
-		OffsetDateTime odt = OffsetDateTime.parse(date);
-		Instant instant = odt.toInstant();
+		LocalDateTime odt = LocalDateTime.parse(date);
+		Instant instant = odt.toInstant(ZoneOffset.UTC);
 		return Date.from(instant);
 	}
 	
@@ -220,11 +220,11 @@ public class Utiles {
 		return dateFormat.format(date);  
 	}
 
-	public static String getDateFormatted(final OffsetDateTime offsetDateTime) {
+	public static String getDateFormatted(final LocalDateTime offsetDateTime) {
 		return offsetDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 	}
 
-	public static String getDateFormatted(final OffsetDateTime offsetDateTime, String pattern) {
+	public static String getDateFormatted(final LocalDateTime offsetDateTime, String pattern) {
 		return offsetDateTime.format(DateTimeFormatter.ofPattern(pattern));
 	}
 	

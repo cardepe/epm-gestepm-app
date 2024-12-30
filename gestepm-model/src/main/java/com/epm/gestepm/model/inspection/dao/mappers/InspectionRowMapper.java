@@ -68,8 +68,8 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
         inspection.setUserSigningId(nullableInt(rs, COL_I_USER_SIGNING_ID));
         inspection.setShareId(rs.getInt(COL_I_SHARE_ID));
         inspection.setAction(ActionEnum.valueOf(rs.getString(COL_I_ACTION)));
-        inspection.setStartDate(rs.getTimestamp(COL_I_START_DATE).toInstant().atOffset(ZoneOffset.UTC));
-        inspection.setEndDate(nullableOffsetDateTime(rs, COL_I_END_DATE));
+        inspection.setStartDate(rs.getTimestamp(COL_I_START_DATE).toLocalDateTime());
+        inspection.setEndDate(nullableLocalDateTime(rs, COL_I_END_DATE));
         inspection.setDescription(nullableString(rs, COL_I_DESCRIPTION));
         inspection.setFirstTechnicalId(rs.getInt(COL_I_FIRST_TECHNICAL));
         inspection.setSecondTechnicalId(nullableInt(rs, COL_I_SECOND_TECHNICAL));

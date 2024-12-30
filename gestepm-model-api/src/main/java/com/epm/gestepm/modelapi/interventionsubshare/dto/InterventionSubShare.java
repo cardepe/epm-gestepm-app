@@ -9,7 +9,7 @@ import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -34,10 +34,10 @@ public class InterventionSubShare {
 	private ActionEnumDto action;
 	
 	@Column(name = "START_DATE", nullable = false)
-	private OffsetDateTime startDate;
+	private LocalDateTime startDate;
 	
 	@Column(name = "END_DATE")
-	private OffsetDateTime endDate;
+	private LocalDateTime endDate;
 	
 	@Column(name = "DESCRIPTION")
 	private String description;

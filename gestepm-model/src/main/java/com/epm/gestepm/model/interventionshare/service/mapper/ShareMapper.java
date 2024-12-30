@@ -31,6 +31,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
@@ -279,8 +280,8 @@ public class ShareMapper {
 		ShareTableDTO dto = new ShareTableDTO();
 		dto.setId(obj[0] + "_" + obj[5]);
 		dto.setProjectId(String.valueOf(obj[1]));
-		dto.setStartDate(startDate != null ? startDate.toInstant().atOffset(ZoneOffset.UTC) : null);
-		dto.setEndDate(endDate != null ? endDate.toInstant().atOffset(ZoneOffset.UTC) : null);
+		dto.setStartDate(startDate != null ? startDate.toLocalDateTime() : null);
+		dto.setEndDate(endDate != null ? endDate.toLocalDateTime() : null);
 		dto.setForumTitle((String) obj[4]);
 		dto.setShareType((String) obj[5]);
 		

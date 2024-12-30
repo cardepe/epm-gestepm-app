@@ -5,7 +5,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.TimeZone;
 import java.util.stream.IntStream;
 
@@ -28,7 +28,7 @@ public class ResultSetMappingUtils {
         }
     }
 
-    public static OffsetDateTime nullableOffsetDateTime(final ResultSet resultSet, final String col)
+    public static LocalDateTime nullableLocalDateTime(final ResultSet resultSet, final String col)
             throws SQLException {
 
         if (hasColumn(resultSet, col)) {
@@ -36,15 +36,10 @@ public class ResultSetMappingUtils {
             final Timestamp timestamp = resultSet.getTimestamp(col);
 
             if (timestamp != null) {
-
-                final long millisSinceEpoch = timestamp.getTime();
-
-                final Instant instant = Instant.ofEpochMilli(millisSinceEpoch);
-
-                return OffsetDateTime.ofInstant(instant, TimeZone.getDefault().toZoneId());
+                return timestamp.toLocalDateTime();
             }
-
         }
+
         return null;
 
     }

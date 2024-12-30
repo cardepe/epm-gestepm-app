@@ -1,6 +1,6 @@
 package com.epm.gestepm.lib.testutils;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import com.epm.gestepm.lib.audit.AuditProvider;
 
 public class MockedAuditProvider implements AuditProvider {
@@ -11,8 +11,8 @@ public class MockedAuditProvider implements AuditProvider {
     }
 
     @Override
-    public OffsetDateTime time() {
-        return OffsetDateTime.parse("2007-12-03T10:15:30+01:00");
+    public LocalDateTime time() {
+        return LocalDateTime.parse("2007-12-03T10:15:30+01:00");
     }
 
 }

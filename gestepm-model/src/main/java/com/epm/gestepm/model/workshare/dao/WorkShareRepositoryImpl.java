@@ -14,7 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -196,7 +196,7 @@ public class WorkShareRepositoryImpl implements WorkShareRepositoryCustom {
 	}
 
 	@Override
-	public List<WorkShare> findWeekSigningsByProjectId(OffsetDateTime startDate, OffsetDateTime endDate, Long projectId) {
+	public List<WorkShare> findWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId) {
 
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<WorkShare> cq = cb.createQuery(WorkShare.class);

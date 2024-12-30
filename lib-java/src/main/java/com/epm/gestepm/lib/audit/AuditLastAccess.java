@@ -1,14 +1,14 @@
 package com.epm.gestepm.lib.audit;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 public interface AuditLastAccess extends Auditable {
 
-    default OffsetDateTime getLastAccessedAt() {
+    default LocalDateTime getLastAccessedAt() {
         return null;
     }
 
-    default void setLastAccessedAt(OffsetDateTime lastAccessedAt) {
+    default void setLastAccessedAt(LocalDateTime lastAccessedAt) {
         // skips
     }
 

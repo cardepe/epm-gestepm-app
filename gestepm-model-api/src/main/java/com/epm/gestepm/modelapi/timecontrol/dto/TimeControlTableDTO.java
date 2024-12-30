@@ -4,7 +4,7 @@ import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -14,7 +14,7 @@ public class TimeControlTableDTO {
 	private String id;
 	
 	@JsonProperty("tc_date")
-	private OffsetDateTime date;
+	private LocalDateTime date;
 	
 	@JsonProperty("tc_username")
 	private String username;
@@ -23,10 +23,10 @@ public class TimeControlTableDTO {
 	private String reason;
 	
 	@JsonProperty("tc_startHour")
-	private OffsetDateTime startHour;
+	private LocalDateTime startHour;
 	
 	@JsonProperty("tc_endHour")
-	private OffsetDateTime endHour;
+	private LocalDateTime endHour;
 	
 	@JsonProperty("tc_breaks")
 	private String breaks;
