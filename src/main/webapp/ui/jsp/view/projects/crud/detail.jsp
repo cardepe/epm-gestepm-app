@@ -1417,8 +1417,6 @@
 </div>
 
 <script>
-	var $=jQuery.noConflict();
-
 	$(document).ready(function() {
 
 		/* Select 2 */

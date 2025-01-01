@@ -22,7 +22,7 @@
 	                <li class="menu-item-has-children dropdown <c:if test="${fn:startsWith(pageName, '/expenses')}">active</c:if>">
 	                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-coins"></i><spring:message code="sidebar.expenses" /></a>
 	                    <ul class="sub-menu children dropdown-menu">                            
-	                    	<li><i class="fa fa-user"></i><a href="/expenses/personal"><spring:message code="sidebar.expenses.personal" /></a></li>
+	                    	<li><i class="fa fa-user"></i><a href="/expenses/personal/sheets"><spring:message code="sidebar.expenses.personal" /></a></li>
 
 	                    	<sec:authorize access="hasAuthority('ROLE_ADMINISTRACION')">
 	                    		<li><i class="fa fa-check-circle"></i><a href="/expenses/corrective"><spring:message code="sidebar.expenses.correctives" /></a></li>

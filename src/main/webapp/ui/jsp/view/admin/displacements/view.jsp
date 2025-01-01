@@ -269,7 +269,6 @@
 <script>
 
     let locale = '${locale}';
-    let $ = jQuery.noConflict();
 
     $(document).ready(function() {
 

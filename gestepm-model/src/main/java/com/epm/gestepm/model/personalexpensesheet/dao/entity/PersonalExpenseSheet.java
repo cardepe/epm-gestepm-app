@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -23,12 +24,14 @@ public class PersonalExpenseSheet implements Serializable {
   private String description;
 
   @NotNull
-  private OffsetDateTime startDate;
+  private LocalDateTime startDate;
 
   @NotNull
   private PersonalExpenseSheetStatusEnum status;
 
   private String observations;
+
+  private Double amount;
 
   private List<Integer> personalExpenseIds;
 

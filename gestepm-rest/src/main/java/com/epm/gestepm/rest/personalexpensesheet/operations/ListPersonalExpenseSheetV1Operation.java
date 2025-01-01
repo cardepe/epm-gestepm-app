@@ -10,7 +10,8 @@ public class ListPersonalExpenseSheetV1Operation extends APIOperation<PersonalEx
         super("listPersonalExpenseSheetV1");
 
         this.generateLinksWith((apiClass, req) -> apiClass.listPersonalExpenseSheetsV1(req.getMeta(),
-                req.getLinks(), req.getExpand(), req.getOffset(), req.getLimit(), req.getOrder(), req.getOrderBy(), req.getIds(), req.getProjectId(), req.getUserId()));
+                req.getLinks(), req.getExpand(), req.getOffset(), req.getLimit(), req.getOrder(), req.getOrderBy(), req.getIds(), req.getProjectId(), req.getUserId(),
+                req.getDescription(), req.getStartDate(), req.getStatus(), req.getObservations()));
     }
 
 }

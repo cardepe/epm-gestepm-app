@@ -53,6 +53,11 @@
             "success": "Revisión nº {0} eliminada con éxito."
         }
     },
+    "personalExpenseSheet": {
+        "update": {
+            "success": "Se ha actualizado la hoja de gasto personal con éxito."
+        }
+    },
     "shares": {
         "noprogrammed": {
             "delete": {
@@ -84,10 +89,13 @@
         "yes": "Sí",
         "no": "No"
     },
+    "select": {
+        "placeholder": "Seleccione un elemento..."
+    },
     "status": {
         "pending": "Pendiente",
         "approved": "Aprobado por administración",
-        "paid": "Aprobado",
+        "paid": "Pagado",
         "rejected": "Cancelado"
     }
 }

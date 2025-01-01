@@ -2,7 +2,7 @@ package com.epm.gestepm.model.shares.noprogrammed.mapper;
 
 import com.epm.gestepm.model.shares.noprogrammed.mapper.decorator.ShareTableDecorator;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 import org.mapstruct.Mapper;
 
 import java.util.List;

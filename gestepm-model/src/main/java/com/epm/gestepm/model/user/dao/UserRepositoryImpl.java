@@ -6,7 +6,7 @@ import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
 import com.epm.gestepm.modelapi.expense.dto.ExpenseUserValidateDTO;
 import com.epm.gestepm.modelapi.expense.dto.ExpenseValidateDTO;
 import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
-import com.epm.gestepm.modelapi.interventionshare.dto.InterventionShare;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectMemberDTO;
 import com.epm.gestepm.modelapi.role.dto.Role;

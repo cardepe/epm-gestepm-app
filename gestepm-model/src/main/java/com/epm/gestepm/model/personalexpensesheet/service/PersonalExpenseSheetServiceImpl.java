@@ -4,8 +4,11 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.model.inspection.dao.entity.updater.InspectionUpdate;
+import com.epm.gestepm.model.inspection.service.mapper.MapIToInspectionUpdate;
 import com.epm.gestepm.model.personalexpensesheet.dao.PersonalExpenseSheetDao;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.PersonalExpenseSheet;
+import com.epm.gestepm.model.personalexpensesheet.dao.entity.PersonalExpenseSheetStatusEnum;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.creator.PersonalExpenseSheetCreate;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.deleter.PersonalExpenseSheetDelete;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.filter.PersonalExpenseSheetFilter;
@@ -23,6 +26,7 @@ import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseShee
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -116,6 +120,8 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
   public PersonalExpenseSheetDto create(PersonalExpenseSheetCreateDto createDto) {
 
     final PersonalExpenseSheetCreate create = getMapper(MapPESToPersonalExpenseSheetCreate.class).from(createDto);
+    create.setStartDate(LocalDateTime.now());
+    create.setStatus(PersonalExpenseSheetStatusEnum.PENDING);
 
     final PersonalExpenseSheet result = this.personalExpenseSheetDao.create(create);
 
@@ -134,9 +140,10 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
     final PersonalExpenseSheetByIdFinderDto finderDto = new PersonalExpenseSheetByIdFinderDto();
     finderDto.setId(updateDto.getId());
 
-    findOrNotFound(finderDto);
+    final PersonalExpenseSheetDto sheet = findOrNotFound(finderDto);
 
-    final PersonalExpenseSheetUpdate update = getMapper(MapPESToPersonalExpenseSheetUpdate.class).from(updateDto);
+    final PersonalExpenseSheetUpdate update = getMapper(MapPESToPersonalExpenseSheetUpdate.class).from(updateDto,
+            getMapper(MapPESToPersonalExpenseSheetUpdate.class).from(sheet));
 
     final PersonalExpenseSheet updated = this.personalExpenseSheetDao.update(update);
 

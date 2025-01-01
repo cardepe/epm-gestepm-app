@@ -4,8 +4,8 @@ import com.epm.gestepm.model.constructionsharefile.dao.ConstructionShareFileRepo
 import com.epm.gestepm.model.constructionshare.dao.ConstructionShareRepository;
 import com.epm.gestepm.model.interventionshare.service.mapper.ShareMapper;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.interventionshare.dto.PdfFileDTO;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;

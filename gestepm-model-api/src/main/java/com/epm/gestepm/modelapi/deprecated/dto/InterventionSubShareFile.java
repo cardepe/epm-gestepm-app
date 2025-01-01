@@ -1,6 +1,6 @@
-package com.epm.gestepm.modelapi.interventionsubsharefile.dto;
+package com.epm.gestepm.modelapi.deprecated.dto;
 
-import com.epm.gestepm.modelapi.interventionsubshare.dto.InterventionSubShare;
+import com.epm.gestepm.modelapi.deprecated.interventionsubshare.dto.InterventionSubShare;
 import lombok.Data;
 
 import javax.persistence.Column;

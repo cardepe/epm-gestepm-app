@@ -23,7 +23,7 @@ public class ModelUtil {
 		
 	}
 
-	public static void loadConstants(Locale locale, Model model, HttpServletRequest request) {
+	public static User loadConstants(Locale locale, Model model, HttpServletRequest request) {
 		
 		// Identicicaciones del organismo al modelo
 		model.addAttribute("locale", locale.getLanguage());
@@ -56,6 +56,8 @@ public class ModelUtil {
 				model.addAttribute("expensesPending", expensesPending);
 			}
 		}
+
+		return user;
 	}
 
 	public static String getTableFileAndTrashActionButtons() {

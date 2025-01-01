@@ -3,13 +3,18 @@ sql:
   qry-list-of-pes: |
     
     SELECT
-      i.inspection_id AS id_pagination,
-      i.inspection_id,
-      i.action,
-      i.start_date,
-      i.description,
+      pes.personal_expense_sheet_id AS id_pagination,
+      pes.personal_expense_sheet_id,
+      pes.user_id,
+      pes.project_id,
+      pes.description,
+      pes.start_date,
+      pes.status,
+      pes.observations,
+      pe.personal_expense_id,
+      pe.amount
     FROM ${sch-gestepm}.personal_expense_sheet pes
-    LEFT JOIN ${sch-gestepm}.no_programmed_share nps ON i.no_programmed_share_id = nps.no_programmed_share_id
+    LEFT JOIN ${sch-gestepm}.personal_expense pe ON pes.personal_expense_sheet_id = pe.personal_expense_sheet_id
 
     #whereToken #filter
 
@@ -26,86 +31,84 @@ sql:
 
   qry-create-pes: |
     
-    INSERT INTO ${sch-gestepm}.inspection (
-      user_signing_id,
-      no_programmed_share_id,
-      action,
+    INSERT INTO ${sch-gestepm}.personal_expense_sheet (
+      user_id,
+      project_id,
+      description,
       start_date,
-      first_technical,
-      second_technical
+      status
     )
     VALUES (
-      :attr_i_user_signing_id,
-      :attr_i_share_id,
-      :attr_i_action,
-      :attr_i_start_date,
-      :attr_i_first_technical_id,
-      :attr_i_second_technical_id
+      :attr_pes_user_id,
+      :attr_pes_project_id,
+      :attr_pes_description,
+      :attr_pes_start_date,
+      :attr_pes_status
     )
 
   qry-update-pes: |
     
     UPDATE
-      ${sch-gestepm}.inspection
+      ${sch-gestepm}.personal_expense_sheet
     SET
-      user_signing_id = :attr_i_user_signing_id, 
-      no_programmed_share_id = :attr_i_share_id, 
-      action = :attr_i_action, 
-      start_date = :attr_i_start_date, 
-      end_date = :attr_i_end_date, 
-      description = :attr_i_description, 
-      first_technical = :attr_i_first_technical_id, 
-      second_technical = :attr_i_second_technical_id, 
-      signature = :attr_i_signature, 
-      operator_signature = :attr_i_operator_signature, 
-      client_name = :attr_i_client_name, 
-      materials_file = :attr_i_materials_file, 
-      materials_file_extension = :attr_i_materials_file_extension,
-      equipment_hours = :attr_i_equipment_hours,
-      topic_id = :attr_i_topic_id
+      project_id = :attr_pes_project_id,
+      description = :attr_pes_description,
+      start_date = :attr_pes_start_date,
+      status = :attr_pes_status,
+      observations = :attr_pes_observations
     WHERE
-      inspection_id = :attr_i_id
+      personal_expense_sheet_id = :attr_pes_id
 
   qry-delete-pes: |
 
-    DELETE FROM ${sch-gestepm}.inspection WHERE inspection_id = :attr_i_id
+    DELETE FROM ${sch-gestepm}.personal_expense_sheet WHERE personal_expense_sheet_id = :attr_pes_id
 
   filter-pes-by-params: |
 
     -- [AND
-      -- ${sql.predicate-for-pes-pesds}
-      -- ${sql.predicate-for-pes-share-pesd}
-      -- ${sql.predicate-for-pes-project-pesd}
+      -- ${sql.predicate-for-pes-ids}
+      -- ${sql.predicate-for-pes-user-id}
+      -- ${sql.predicate-for-pes-project-id}
+      -- ${sql.predicate-for-pes-description}
       -- ${sql.predicate-for-pes-start-date}
-      -- ${sql.predicate-for-pes-end-date}
+      -- ${sql.predicate-for-pes-status}
+      -- ${sql.predicate-for-pes-observations}
     -- AND]
 
-  filter-pes-by-pesd: |
+  filter-pes-by-id: |
 
     -- [AND
-      -- ${sql.predicate-for-pes-pesd}
+      -- ${sql.predicate-for-pes-id}
     -- AND]
 
-  predicate-for-pes-pesd: |
+  predicate-for-pes-id: |
 
-    i.inspection_id = :attr_i_id
+    pes.personal_expense_sheet_id = :attr_pes_id
 
-  predicate-for-pes-pesds: |
+  predicate-for-pes-ids: |
 
-    i.inspection_id IN (:attr_i_ids)
+    pes.personal_expense_sheet_id IN (:attr_pes_ids)
 
-  predicate-for-pes-share-pesd: |
+  predicate-for-pes-user-id: |
 
-    i.no_programmed_share_id = :attr_i_share_id
+    pes.user_id = :attr_pes_user_id
 
-  predicate-for-pes-project-pesd: |
+  predicate-for-pes-project-id: |
     
-    nps.project_id = :attr_nps_p_id
+    pes.project_id = :attr_pes_project_id
+
+  predicate-for-pes-description: |
+    
+    pes.description LIKE :attr_pes_description
 
   predicate-for-pes-start-date: |
     
-    i.start_date > :attr_i_start_date
+    pes.start_date > :attr_pes_start_date
 
-  predicate-for-pes-end-date: |
-    
-    i.end_date > :attr_i_end_date
+  predicate-for-pes-status: |
+
+    pes.status = :attr_pes_status
+
+  predicate-for-pes-observations: |
+
+    pes.observations LIKE :attr_pes_observations

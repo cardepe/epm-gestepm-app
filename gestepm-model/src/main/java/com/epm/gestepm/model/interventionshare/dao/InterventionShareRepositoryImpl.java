@@ -1,8 +1,8 @@
 package com.epm.gestepm.model.interventionshare.dao;
 
 import com.epm.gestepm.model.interventionshare.service.mapper.ShareMapper;
-import com.epm.gestepm.modelapi.interventionshare.dto.InterventionShare;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;

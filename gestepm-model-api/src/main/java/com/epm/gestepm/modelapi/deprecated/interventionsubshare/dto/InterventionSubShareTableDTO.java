@@ -1,4 +1,4 @@
-package com.epm.gestepm.modelapi.interventionsubshare.dto;
+package com.epm.gestepm.modelapi.deprecated.interventionsubshare.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

@@ -249,14 +249,14 @@ function printActions(actions, id) {
 
         if (a.action === 'view') { // FIXME: && a.permission && authentication.permissions.includes(a.permission)) {
             buttonHtml += '<a href="' + a.url.replace('{id}', id) + '" class="menu-link">' +
-                '<em class="far fa-eye" onclick="edit(' + id + ')"></em>' +
+                '<em class="far fa-eye"></em>' +
                 '</a>';
         }
 
         if (a.action === 'edit') { // FIXME: } && a.permission && authentication.permissions.includes(a.permission)) {
             if (a.type === 'redirect') {
                 buttonHtml += '<a href="' + a.url.replace('{id}', id) + '" class="menu-link">' +
-                    '<em class="fas fa-edit" onclick="edit(' + id + ')"></em>' +
+                    '<em class="fas fa-edit"></em>' +
                     '</a>';
             } else {
                 buttonHtml += '<em class="fas fa-edit" onclick="edit(' + id + ')"></em>';

@@ -2,8 +2,8 @@ package com.epm.gestepm.modelapi.interventionprshare.service;
 
 import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.interventionshare.dto.PdfFileDTO;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;

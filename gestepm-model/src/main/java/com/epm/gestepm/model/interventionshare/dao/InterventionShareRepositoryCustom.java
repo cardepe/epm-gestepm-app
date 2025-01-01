@@ -1,7 +1,7 @@
 package com.epm.gestepm.model.interventionshare.dao;
 
-import com.epm.gestepm.modelapi.interventionshare.dto.InterventionShare;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 
 import java.util.Date;
 import java.util.List;

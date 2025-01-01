@@ -3,7 +3,7 @@ package com.epm.gestepm.model.interventionprshare.dao;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

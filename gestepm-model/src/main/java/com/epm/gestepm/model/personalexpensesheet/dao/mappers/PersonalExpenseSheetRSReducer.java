@@ -16,6 +16,10 @@ public class PersonalExpenseSheetRSReducer implements BinaryOperator<PersonalExp
       return current;
     }
 
+    if (current.getAmount() != null) {
+      total.setAmount(total.getAmount() + current.getAmount());
+    }
+
     if (!CollectionUtils.isEmpty(total.getPersonalExpenseIds()) && !CollectionUtils.isEmpty(current.getPersonalExpenseIds())) {
 
       final List<Integer> personalExpenseIds = new ArrayList<>();

@@ -1,0 +1,10 @@
+.content {
+    height: auto;
+}
+
+#filterForm {
+    top: 100% !important;
+    left: auto !important;
+    right: 0;
+    min-width: 20rem;
+}

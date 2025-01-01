@@ -41,6 +41,32 @@ paths:
           in: query
           name: userId
           description: User identificator.
+        - schema:
+            type: string
+          in: query
+          name: description
+          description: Personal expense sheet contains description.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: startDate
+          description: Date when personal expense sheet was created.
+        - schema:
+            type: string
+            enum:
+              - PENDING
+              - APPROVED
+              - PAID
+              - REJECTED
+          in: query
+          name: status
+          description: Current personal expense sheet status.
+        - schema:
+            type: string
+          in: query
+          name: observations
+          description: Personal expense sheet contains observations.
       tags:
         - personal-expense-sheet-v1
     post:
@@ -82,7 +108,7 @@ paths:
       description: find-personal-expense-sheet-by-id-v1
       tags:
         - personal-expense-sheet-v1
-    put:
+    patch:
       summary: V1 - Update personal expense sheet
       operationId: update-personal-expense-sheet-v1
       responses:
@@ -814,7 +840,7 @@ components:
           type: number
           x-stoplight:
             id: 86j812wl5fqd1
-        totalPrice:
+        amount:
           type: number
           x-stoplight:
             id: nidm8dwglw7r9
@@ -849,7 +875,7 @@ components:
         - description
         - priceType
         - quantity
-        - totalPrice
+        - amount
         - paymentType
     PersonalExpenseSheet:
       title: PersonalExpenseSheet
@@ -1184,6 +1210,10 @@ components:
           schema:
             type: object
             properties:
+              userId:
+                type: integer
+                x-stoplight:
+                  id: nf30p870lw04d
               projectId:
                 type: integer
                 x-stoplight:
@@ -1193,6 +1223,7 @@ components:
                 x-stoplight:
                   id: 2iejghsz0stp6
             required:
+              - userId
               - projectId
               - description
     UpdatePersonalExpenseSheet:
@@ -1230,12 +1261,6 @@ components:
                   required:
                     - projectId
                     - description
-            required:
-              - projectId
-              - description
-              - startDate
-              - status
-              - observations
     CreatePersonalExpense:
       content:
         application/json:

@@ -266,8 +266,6 @@
 <jsp:useBean id="jspUtil" class="com.epm.gestepm.modelapi.common.utils.JspUtil"/>
 
 <script>
-	let $ = jQuery.noConflict();
-
 	let dropdowns = [
 		{ id: '#usersDropdown', placeholder: '${jspUtil.parseTagToText('user.selectable')}' },
 		{ id: '#stateFilterDropdown', placeholder: '${jspUtil.parseTagToText('user.state.selectable')}' }

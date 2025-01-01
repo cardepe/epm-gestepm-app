@@ -127,7 +127,6 @@
 </div>
 
 <script>
-	var $=jQuery.noConflict();
 	var calendar;
 	
 	document.addEventListener('DOMContentLoaded', function() {

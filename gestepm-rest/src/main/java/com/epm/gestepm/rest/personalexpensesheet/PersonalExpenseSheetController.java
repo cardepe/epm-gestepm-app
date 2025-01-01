@@ -26,12 +26,19 @@ import com.epm.gestepm.rest.personalexpensesheet.request.PersonalExpenseSheetFin
 import com.epm.gestepm.rest.personalexpensesheet.request.PersonalExpenseSheetListRestRequest;
 import com.epm.gestepm.rest.personalexpensesheet.response.ResponsesForPersonalExpenseSheet;
 import com.epm.gestepm.rest.personalexpensesheet.response.ResponsesForPersonalExpenseSheetList;
+import com.epm.gestepm.rest.shares.noprogrammed.decorators.NoProgrammedShareResponseDecorator;
 import com.epm.gestepm.restapi.openapi.api.PersonalExpenseSheetV1Api;
 import com.epm.gestepm.restapi.openapi.model.*;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import org.springframework.context.ApplicationContext;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -65,8 +72,9 @@ public class PersonalExpenseSheetController extends BaseController implements Pe
                                                                                               final Boolean links, final Set<String> expand,
                                                                                               final Long offset, final Long limit, final String order,
                                                                                               final String orderBy, final List<Integer> ids, final Integer projectId,
-                                                                                              final Integer userId) {
-        final PersonalExpenseSheetListRestRequest req = new PersonalExpenseSheetListRestRequest(ids, projectId, userId);
+                                                                                              final Integer userId, final String description, final LocalDateTime startDate,
+                                                                                              final String status, final String observations) {
+        final PersonalExpenseSheetListRestRequest req = new PersonalExpenseSheetListRestRequest(ids, projectId, userId, description, startDate, status, observations);
 
         this.setCommon(req, meta, links, expand);
         this.setDefaults(req);
@@ -78,6 +86,8 @@ public class PersonalExpenseSheetController extends BaseController implements Pe
 
         final APIMetadata metadata = this.getMetadata(req, page, new ListPersonalExpenseSheetV1Operation());
         final List<PersonalExpenseSheet> data = getMapper(MapPESToPersonalExpenseSheetResponse.class).from(page);
+
+        this.decorate(req, data, PersonalExpenseSheetResponseDecorator.class);
 
         return toListPersonalExpenseSheetsV1200Response(metadata, data, page.hashCode());
     }
@@ -127,6 +137,7 @@ public class PersonalExpenseSheetController extends BaseController implements Pe
     public ResponseEntity<CreatePersonalExpenseSheetV1200Response> updatePersonalExpenseSheetV1(final Integer id, final UpdatePersonalExpenseSheetV1Request reqUpdatePersonalExpenseSheet) {
 
         final PersonalExpenseSheetUpdateDto updateDto = getMapper(MapPESToPersonalExpenseSheetUpdateDto.class).from(reqUpdatePersonalExpenseSheet);
+        updateDto.setId(id);
 
         final PersonalExpenseSheetDto personalExpenseSheet = this.personalExpenseSheetService.update(updateDto);
 

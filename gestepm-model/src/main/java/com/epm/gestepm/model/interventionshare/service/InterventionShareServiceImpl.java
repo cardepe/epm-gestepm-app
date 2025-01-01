@@ -1,8 +1,8 @@
 package com.epm.gestepm.model.interventionshare.service;
 
 import com.epm.gestepm.model.interventionshare.dao.InterventionShareRepository;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
-import com.epm.gestepm.modelapi.interventionshare.service.InterventionShareService;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.service.InterventionShareService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

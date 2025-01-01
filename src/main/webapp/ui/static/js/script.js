@@ -1,4 +1,5 @@
 let messages;
+let $ = jQuery.noConflict();
 
 function getI18n(locale) {
 
@@ -79,8 +80,24 @@ function loadDisplacements(activityCenterId, callback) {
 	});
 }
 
-window.addEventListener("load", function(){
+$(document).ready(function () {
 	messages = getI18n('es');
 	hideLoading();
 });
 
+/* NEW */
+
+function disableForm(formId) {
+	const form = document.querySelector(formId);
+	const files = form.querySelector('[name="files"]');
+
+	if (files) {
+		files.remove();
+	}
+
+	const elements = form.querySelectorAll('input, textarea, select');
+	elements.forEach(element => element.disabled = true);
+
+	const selects = form.querySelectorAll('select');
+	selects.forEach(select => $(select).selectpicker('refresh'));
+}

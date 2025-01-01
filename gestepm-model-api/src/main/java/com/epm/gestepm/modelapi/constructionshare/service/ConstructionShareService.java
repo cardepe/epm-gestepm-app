@@ -1,8 +1,8 @@
 package com.epm.gestepm.modelapi.constructionshare.service;
 
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
-import com.epm.gestepm.modelapi.interventionshare.dto.PdfFileDTO;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
 import org.springframework.web.multipart.MultipartFile;
 

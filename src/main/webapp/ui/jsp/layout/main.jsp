@@ -64,7 +64,7 @@
 	<link rel="stylesheet" href="/ui/static/css/table.css">
 	<link rel="stylesheet" href="/ui/static/css/widget.css">
     <link rel="stylesheet" href="/ui/static/css/style.css">
-    
+
     <!-- JS Libs -->
     <script type="text/javascript" src="/webjars/jquery/3.4.1/jquery.min.js"></script>
     <script type="text/javascript" src="/webjars/matchHeight/dist/jquery.matchHeight-min.js"></script>
@@ -135,7 +135,7 @@
 	<!-- JS Custom -->
 	<script type="text/javascript" src="/ui/static/js/elaadmin.js"></script>
 	<script type="text/javascript" src="/ui/static/js/script.js"></script>
-	
+
 	<!-- JS PageName -->
 	<script type="text/javascript" src="/ui/static/js/pages${pageName}.js"></script>
 </head>

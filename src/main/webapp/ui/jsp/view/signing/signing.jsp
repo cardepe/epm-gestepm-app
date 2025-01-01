@@ -298,8 +298,6 @@
 
 <script>
 
-	var $=jQuery.noConflict();
-
 	var dispShareId;
 	
 	$(document).ready(function() {

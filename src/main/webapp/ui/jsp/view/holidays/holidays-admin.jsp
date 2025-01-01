@@ -120,8 +120,6 @@
 
 <script>
 
-	let $ = jQuery.noConflict();
-
 	let calendar;
 
 	let selectedDayColor = '#FFAE00';

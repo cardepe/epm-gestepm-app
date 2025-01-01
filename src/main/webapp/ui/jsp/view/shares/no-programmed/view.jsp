@@ -223,7 +223,6 @@
 <script>
 
     let locale = '${locale}';
-    let $ = jQuery.noConflict();
 
     let lastPageUrl;
     let returnBtn = $('#returnBtn');
@@ -416,7 +415,7 @@
         document.querySelector('#finishBtn').classList.remove('d-none');
         document.querySelector('#createInspectionBtn').classList.remove('d-none');
 
-        disableEditForm();
+        disableForm('#editForm');
         showFiles();
 
         currentMode = 'WORKING';
@@ -431,23 +430,11 @@
         document.querySelector('#createInspectionBtn').remove();
 
         if (currentMode !== 'WORKING') {
-            disableEditForm();
+            disableForm('#editForm');
             showFiles();
         }
 
         currentMode = 'COMPLETED';
-    }
-
-    function disableEditForm() {
-        const form = document.querySelector('#editForm');
-        const files = form.querySelector('[name="files"]');
-
-        if (files) {
-            files.remove();
-        }
-
-        const elements = form.querySelectorAll('input, textarea, select');
-        elements.forEach(element => element.disabled = true);
     }
 
     function toBase64(file) {

@@ -67,7 +67,7 @@
                                 <typeMapping>OffsetDateTime=LocalDateTime</typeMapping>
                             </typeMappings>
                             <importMappings>
-                                <importMapping>java.time.OffsetDateTime=java.time.LocalDateTime</importMapping>
+                                <importMapping>OffsetDateTime=java.time.LocalDateTime</importMapping>
                             </importMappings>
                         </configuration>
                     </execution>
@@ -95,7 +95,7 @@
                                 <typeMapping>OffsetDateTime=LocalDateTime</typeMapping>
                             </typeMappings>
                             <importMappings>
-                                <importMapping>java.time.OffsetDateTime=java.time.LocalDateTime</importMapping>
+                                <importMapping>OffsetDateTime=java.time.LocalDateTime</importMapping>
                             </importMappings>
                         </configuration>
                     </execution>
@@ -120,7 +120,7 @@
                                 <typeMapping>OffsetDateTime=LocalDateTime</typeMapping>
                             </typeMappings>
                             <importMappings>
-                                <importMapping>java.time.OffsetDateTime=java.time.LocalDateTime</importMapping>
+                                <importMapping>OffsetDateTime=java.time.LocalDateTime</importMapping>
                             </importMappings>
                         </configuration>
                     </execution>
@@ -145,7 +145,7 @@
                                 <typeMapping>OffsetDateTime=LocalDateTime</typeMapping>
                             </typeMappings>
                             <importMappings>
-                                <importMapping>java.time.OffsetDateTime=java.time.LocalDateTime</importMapping>
+                                <importMapping>OffsetDateTime=java.time.LocalDateTime</importMapping>
                             </importMappings>
                         </configuration>
                     </execution>
@@ -170,7 +170,7 @@
                                 <typeMapping>OffsetDateTime=LocalDateTime</typeMapping>
                             </typeMappings>
                             <importMappings>
-                                <importMapping>java.time.OffsetDateTime=java.time.LocalDateTime</importMapping>
+                                <importMapping>OffsetDateTime=java.time.LocalDateTime</importMapping>
                             </importMappings>
                         </configuration>
                     </execution>

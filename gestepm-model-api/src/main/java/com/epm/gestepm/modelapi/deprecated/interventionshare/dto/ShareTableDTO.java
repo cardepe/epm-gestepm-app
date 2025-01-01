@@ -1,4 +1,4 @@
-package com.epm.gestepm.modelapi.interventionshare.dto;
+package com.epm.gestepm.modelapi.deprecated.interventionshare.dto;
 
 import com.epm.gestepm.modelapi.inspection.dto.ActionEnumDto;
 import com.fasterxml.jackson.annotation.JsonProperty;

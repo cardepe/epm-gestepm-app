@@ -17,10 +17,15 @@ public class ExpenseDTO {
 	private Date endDate;
 
 	private String justification;
+
 	private Double kms;
+
 	private double total;
+
 	private Long priceType;
+
 	private Long paymentType;
+
 	private List<FileDTO> files;
 
 	public ExpenseDTO() {
