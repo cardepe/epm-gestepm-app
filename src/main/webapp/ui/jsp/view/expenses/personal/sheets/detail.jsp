@@ -90,8 +90,17 @@
 
     <div class="card">
         <div class="card-body">
-            <div class="title mb-0">
-                <spring:message code="personal.expenses"/>
+            <div class="row">
+                <div class="col">
+                    <div class="title mb-0">
+                        <spring:message code="personal.expenses"/>
+                    </div>
+                </div>
+                <div class="col text-right">
+                    <button id="createInspectionBtn" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#createModal">
+                        <spring:message code="personal.expense.add"/>
+                    </button>
+                </div>
             </div>
 
             <div class="table-responsive">

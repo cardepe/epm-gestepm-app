@@ -98,6 +98,8 @@ function disableForm(formId) {
 	const elements = form.querySelectorAll('input, textarea, select');
 	elements.forEach(element => element.disabled = true);
 
-	const selects = form.querySelectorAll('select');
-	selects.forEach(select => $(select).selectpicker('refresh'));
+	if (typeof $.fn.selectpicker === 'function') {
+		const selects = form.querySelectorAll('select');
+		selects.forEach(select => $(select).selectpicker('refresh'));
+	}
 }

@@ -370,7 +370,6 @@
 <jsp:useBean id="jspUtil" class="com.epm.gestepm.modelapi.common.utils.JspUtil"/>
 
 <script>
-	var $ = jQuery.noConflict();
 	var expenseType = $('#expenseType');
 	var modalTitle = $("#modalTitle");
 	var modalFooter = $(".modal-footer");

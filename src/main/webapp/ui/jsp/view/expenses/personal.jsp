@@ -210,7 +210,6 @@
 <jsp:useBean id="jspUtil" class="com.epm.gestepm.modelapi.common.utils.JspUtil" />
 
 <script>
-	var $ = jQuery.noConflict();
 	var file;
 
 	$(document).ready(function() {

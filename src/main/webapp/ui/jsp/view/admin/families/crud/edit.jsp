@@ -218,7 +218,6 @@
 <jsp:useBean id="jspUtil" class="com.epm.gestepm.modelapi.common.utils.JspUtil"/>
 
 <script>
-	var $ = jQuery.noConflict();
 	var modalTitle = $("#modalTitle");
 	
 	$(document).ready(function() {
