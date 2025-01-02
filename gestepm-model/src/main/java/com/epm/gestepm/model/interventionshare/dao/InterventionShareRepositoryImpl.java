@@ -14,9 +14,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.*;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -115,7 +115,7 @@ public class InterventionShareRepositoryImpl implements InterventionShareReposit
 	}
 
 	@Override
-	public List<InterventionShare> findWeekSigningsByUserId(Date startDate, Date endDate, Long userId) {
+	public List<InterventionShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
 
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<InterventionShare> cq = cb.createQuery(InterventionShare.class);

@@ -3,8 +3,7 @@ package com.epm.gestepm.model.interventionprshare.dao;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
-import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
+import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
@@ -69,44 +68,6 @@ public class InterventionPrShareRepositoryImpl implements InterventionPrShareRep
 	}
 
 	@Override
-	public List<ShareTableDTO> findShareTableByUserId(Long userId, Long projectId, Integer progress) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<ShareTableDTO> cq = cb.createQuery(ShareTableDTO.class);
-			
-			Root<InterventionPrShare> root = cq.from(InterventionPrShare.class);
-
-			cq.multiselect(root.get("id"), root.get("project").get("name"), root.get("startDate"), root.get("endDate"), cb.literal("ips"));
-			
-			List<Predicate> predicates = new ArrayList<>();
-			predicates.add(cb.equal(root.get("user"), userId));
-
-			if (progress != null) {
-				
-				if (progress == 1) {
-					predicates.add(cb.isNull(root.get("endDate")));
-				} else {
-					predicates.add(cb.isNotNull(root.get("endDate")));
-				}
-			}
-			
-			if (projectId != null) {
-				predicates.add(cb.equal(root.get("project"), projectId));
-			}
-			
-			cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));		
-			
-			return entityManager.createQuery(cq).getResultList();
-			
-		} catch (Exception e) {
-			log.error(e);
-			return Collections.emptyList();
-		}
-	}
-	
-	@Override
 	public List<ShareTableDTO> findShareTableByProjectId(Long projectId) {
 
 		try {
@@ -147,7 +108,7 @@ public class InterventionPrShareRepositoryImpl implements InterventionPrShareRep
 	}
 	
 	@Override
-	public List<InterventionPrShare> findWeekSigningsByUserId(Date startDate, Date endDate, Long userId) {
+	public List<InterventionPrShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
 		
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<InterventionPrShare> cq = cb.createQuery(InterventionPrShare.class);
@@ -170,41 +131,6 @@ public class InterventionPrShareRepositoryImpl implements InterventionPrShareRep
 		cq.select(root).where(cb.and(cb.between(root.get("endDate"), startDate, endDate), cb.equal(root.get("project"), projectId)));
 
 		return entityManager.createQuery(cq).getResultList();
-	}
-	
-	@Override
-	public List<DailyPersonalSigningDTO> findDailyInterventionPrShareDTOByUserIdAndYear(Long userId, int year) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<DailyPersonalSigningDTO> cq = cb.createQuery(DailyPersonalSigningDTO.class);
-
-			Root<InterventionPrShare> root = cq.from(InterventionPrShare.class);
-			
-			Date yearStartDate = Utiles.transformSimpleStringToDate("01-01-" + year);
-			Date yearEndDate = Utiles.transformSimpleStringToDate("31-12-" + year);
-			
-			List<Predicate> predicates = new ArrayList<>();
-			predicates.add(cb.equal(root.get("user"), userId));
-			predicates.add(cb.between(root.get("startDate"), yearStartDate, yearEndDate));
-			
-			Expression<java.sql.Time> timeDiff = cb.function("TIMEDIFF", java.sql.Time.class, root.get("endDate"), root.get("startDate"));
-			Expression<Integer> timeToSec = cb.function("TIME_TO_SEC", Integer.class, timeDiff);
-			
-			cq.multiselect(cb.sum(timeToSec), root.get("startDate"));
-			cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-
-			Expression<Integer> gbYear = cb.function("YEAR", Integer.class, root.get("startDate"));
-			Expression<Integer> gbMonth = cb.function("MONTH", Integer.class, root.get("startDate"));
-			Expression<Integer> gbDay = cb.function("DAY", Integer.class, root.get("startDate"));
-			cq.groupBy(gbYear, gbMonth, gbDay);
-			
-			return entityManager.createQuery(cq).getResultList();
-
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
 	}
 	
 	@Override

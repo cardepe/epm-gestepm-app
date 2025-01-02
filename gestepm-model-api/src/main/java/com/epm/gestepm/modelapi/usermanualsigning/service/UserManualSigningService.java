@@ -4,7 +4,7 @@ import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningTableDTO;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface UserManualSigningService {
@@ -19,6 +19,6 @@ public interface UserManualSigningService {
 
     Long getUserManualSigningCountByUser(Long userId);
 
-    List<UserManualSigning> getWeekManualSigningsByUserId(Date startDate, Date endDate, Long userId);
+    List<UserManualSigning> getWeekManualSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId);
 
 }

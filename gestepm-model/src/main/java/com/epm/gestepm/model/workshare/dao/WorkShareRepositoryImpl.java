@@ -183,7 +183,7 @@ public class WorkShareRepositoryImpl implements WorkShareRepositoryCustom {
 	}
 	
 	@Override
-	public List<WorkShare> findWeekSigningsByUserId(Date startDate, Date endDate, Long userId) {
+	public List<WorkShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
 		
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<WorkShare> cq = cb.createQuery(WorkShare.class);

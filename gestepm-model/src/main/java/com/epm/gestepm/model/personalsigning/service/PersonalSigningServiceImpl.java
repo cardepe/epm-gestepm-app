@@ -21,7 +21,6 @@ import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningResumeDTO;
 import com.epm.gestepm.modelapi.personalsigning.service.PersonalSigningService;
 import com.epm.gestepm.modelapi.timecontrol.dto.TimeControlTableDTO;
 import com.epm.gestepm.modelapi.timecontrol.service.TimeControlService;
-import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
@@ -38,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.text.DateFormatSymbols;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -91,48 +91,8 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 	}
 	
 	@Override
-	public PersonalSigning createPersonalSigning(User user) {
-		
-		final PersonalSigning lastSigning = getLastSigning(user.getId());
-
-		if (isNewSigning(lastSigning)) {
-
-			PersonalSigning personalSigning = new PersonalSigning();
-			personalSigning.setUser(user);
-			personalSigning.setStartDate(LocalDateTime.now());
-
-			personalSigning = personalSigingRepository.save(personalSigning);
-			
-			return personalSigning;
-						
-		} else {
-
-			lastSigning.setEndDate(LocalDateTime.now());
-
-			personalSigingRepository.save(lastSigning);
-		
-			return lastSigning;
-		}
-	}
-	
-	@Override
-	public PersonalSigning getLastSigning(Long userId) {
-		return personalSigingRepository.findLastSigningByUserId(userId);
-	}
-	
-	@Override
-	public boolean isNewSigning(PersonalSigning personalSigning) {
-		return personalSigning == null || personalSigning.getEndDate() != null;
-	}
-	
-	@Override
-	public List<PersonalSigning> getWeekSigningsByUserId(Date startDate, Date endDate, Long userId) {
+	public List<PersonalSigning> getWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
 		return personalSigingRepository.findWeekSigningsByUserId(startDate, endDate, userId);
-	}
-	
-	@Override
-	public List<DailyPersonalSigningDTO> getDailyPersonalSigningDTOByUserIdAndYear(Long userId, int year) {
-		return personalSigingRepository.findDailyPersonalSigningDTOByUserIdAndYear(userId, year);
 	}
 	
 	@Override
@@ -318,14 +278,17 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 		endCalendar.set(Calendar.DAY_OF_MONTH, lastDayOfMonth);
 		Utiles.setEndDay(startCalendar);
 
+		final LocalDateTime startDate = LocalDateTime.ofInstant(startCalendar.toInstant(), ZoneId.systemDefault());
+		final LocalDateTime endDate = LocalDateTime.ofInstant(endCalendar.toInstant(), ZoneId.systemDefault());
+
 		final Integer numberOfWeeks = selectedCal.getActualMaximum(Calendar.WEEK_OF_MONTH);
 
-		final List<ConstructionShare> monthlyConstructionSigningList = constructionShareRepository.findWeekSigningsByUserId(startCalendar.getTime(), endCalendar.getTime(), user.getId());
-		final List<DisplacementShare> monthlyDisplacementSigningList = displacementShareRepository.findWeekSigningsByUserId(startCalendar.getTime(), endCalendar.getTime(), user.getId(), null);
-		final List<InterventionShare> monthlyInterventionSigningList = interventionShareRepository.findWeekSigningsByUserId(startCalendar.getTime(), endCalendar.getTime(), user.getId());
-		final List<InterventionPrShare> monthlyInterventionPrSigningList = interventionPrShareRepository.findWeekSigningsByUserId(startCalendar.getTime(), endCalendar.getTime(), user.getId());
-		final List<PersonalSigning> monthlyPersonalSigningList = personalSigingRepository.findWeekSigningsByUserId(startCalendar.getTime(), endCalendar.getTime(), user.getId());
-		final List<WorkShare> monthlyWorkSigningList = workShareRepository.findWeekSigningsByUserId(startCalendar.getTime(), endCalendar.getTime(), user.getId());
+		final List<ConstructionShare> monthlyConstructionSigningList = constructionShareRepository.findWeekSigningsByUserId(startDate, endDate, user.getId());
+		final List<DisplacementShare> monthlyDisplacementSigningList = displacementShareRepository.findWeekSigningsByUserId(startDate, endDate, user.getId(), null);
+		final List<InterventionShare> monthlyInterventionSigningList = interventionShareRepository.findWeekSigningsByUserId(startDate, endDate, user.getId());
+		final List<InterventionPrShare> monthlyInterventionPrSigningList = interventionPrShareRepository.findWeekSigningsByUserId(startDate, endDate, user.getId());
+		final List<PersonalSigning> monthlyPersonalSigningList = personalSigingRepository.findWeekSigningsByUserId(startDate, endDate, user.getId());
+		final List<WorkShare> monthlyWorkSigningList = workShareRepository.findWeekSigningsByUserId(startDate, endDate, user.getId());
 
 		final CellStyle trimesterTitleStyle = ExcelUtils.getStyle(workbook, null, VerticalAlignment.CENTER, false, false, false, false, null, null, IndexedColors.LIME.getIndex(), null, 11, true, false);
 		final CellStyle weekInfoTitleStyle = ExcelUtils.getStyle(workbook, null, null, true, false, false, false, BorderStyle.MEDIUM, IndexedColors.WHITE.getIndex(), IndexedColors.AQUA.getIndex(), IndexedColors.WHITE.getIndex(), 10, false, false);
@@ -738,8 +701,8 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 		final int minDay = 1;
 		final int maxDay = Utiles.getDaysOfMonth(month, year);
 
-		final Date startDate = Utiles.transformSimpleStringToDate((minDay < 10 ? "0" : "") + minDay + "-" + (month < 10 ? "0" : "") + month + "-" + year);
-		final Date endDate = Utiles.transformSimpleStringToDate((maxDay < 10 ? "0" : "") + maxDay + "-" + (month < 10 ? "0" : "") + month + "-" + year);
+		final LocalDateTime startDate = LocalDateTime.of(year, month, minDay, 0, 0, 0);
+		final LocalDateTime endDate = LocalDateTime.of(year, month, maxDay, 23, 59, 59);
 
 		final List<DisplacementShare> displacementShares = displacementShareRepository.findWeekSigningsByUserId(startDate, endDate, userId, 1);
 		List<PersonalSigning> personalSignings = personalSigingRepository.findWeekSigningsByUserId(startDate, endDate, userId);

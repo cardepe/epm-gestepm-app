@@ -1,17 +1,17 @@
 package com.epm.gestepm.model.usersigning.service;
 
-import java.util.Date;
-import java.util.List;
-
 import com.epm.gestepm.model.usersigning.dao.UserSigningRepository;
+import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
+import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.usersigning.dto.UserSigningTableDTO;
+import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
-import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
-import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 @Service
 @Transactional
@@ -51,7 +51,7 @@ public class UserSigningServiceImpl implements UserSigningService {
 	}
 	
 	@Override
-	public List<UserSigning> getWeekSigningsByUserId(Date startDate, Date endDate, Long userId) {
+	public List<UserSigning> getWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
 		return userSigningRepository.findWeekSigningsByUserId(startDate, endDate, userId);
 	}
 }

@@ -14,7 +14,6 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.sql.Time;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -103,7 +102,7 @@ public class UserSigningRepositoryImpl implements UserSigningRepositoryCustom {
 	}
 	
 	@Override
-	public List<UserSigning> findWeekSigningsByUserId(Date startDate, Date endDate, Long userId) {
+	public List<UserSigning> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
 		
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<UserSigning> cq = cb.createQuery(UserSigning.class);
@@ -112,8 +111,8 @@ public class UserSigningRepositoryImpl implements UserSigningRepositoryCustom {
 		
 		cq.select(root).where(cb.and(cb.between(
 				root.get("endDate").as(LocalDateTime.class),
-				LocalDateTime.from(startDate.toInstant().atOffset(ZoneOffset.UTC)),
-				LocalDateTime.from(endDate.toInstant().atOffset(ZoneOffset.UTC))
+				startDate,
+				endDate
 		), cb.equal(root.get("user"), userId)));
 		
 		return entityManager.createQuery(cq).getResultList();

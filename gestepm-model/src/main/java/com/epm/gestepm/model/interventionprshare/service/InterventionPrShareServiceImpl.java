@@ -5,7 +5,6 @@ import com.epm.gestepm.model.interventionprshare.dao.InterventionPrShareReposito
 import com.epm.gestepm.model.interventionprsharefile.dao.InterventionPrShareFileRepository;
 import com.epm.gestepm.model.interventionshare.service.mapper.ShareMapper;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShareFile;
 import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
@@ -33,7 +32,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -88,11 +86,6 @@ public class InterventionPrShareServiceImpl implements InterventionPrShareServic
 	public List<ShareTableDTO> getShareTableByActivityCenterId(Long id, Long activityCenterId, Long projectId, Integer progress) {
 		return interventionPrShareDao.findShareTableByActivityCenterId(id, activityCenterId, projectId, progress);
 	}
-
-	@Override
-	public List<ShareTableDTO> getShareTableByUserId(Long userId, Long projectId, Integer progress) {
-		return interventionPrShareDao.findShareTableByUserId(userId, projectId, progress);
-	}
 	
 	@Override
 	public List<ShareTableDTO> getShareTableByProjectId(Long projectId) {
@@ -105,18 +98,13 @@ public class InterventionPrShareServiceImpl implements InterventionPrShareServic
 	}
 	
 	@Override
-	public List<InterventionPrShare> getWeekSigningsByUserId(Date startDate, Date endDate, Long userId) {
+	public List<InterventionPrShare> getWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
 		return interventionPrShareDao.findWeekSigningsByUserId(startDate, endDate, userId);
 	}
 
 	@Override
 	public List<InterventionPrShare> getWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId) {
 		return interventionPrShareDao.findWeekSigningsByProjectId(startDate, endDate, projectId);
-	}
-	
-	@Override
-	public List<ExpensesMonthDTO> getExpensesMonthDTOByProjectId(Long projectId, Integer year) {
-		return interventionPrShareDao.findExpensesMonthDTOByProjectId(projectId, year);
 	}
 	
 	@Override

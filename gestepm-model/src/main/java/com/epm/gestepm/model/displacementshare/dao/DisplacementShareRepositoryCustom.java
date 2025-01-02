@@ -1,14 +1,13 @@
 package com.epm.gestepm.model.displacementshare.dao;
 
-import java.util.Date;
-import java.util.List;
-
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShareTableDTO;
 import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
-import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
-import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
+import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 public interface DisplacementShareRepositoryCustom {
 
@@ -16,8 +15,7 @@ public interface DisplacementShareRepositoryCustom {
 	List<ShareTableDTO> findShareTableByProjectId(Long projectId);
 	List<ShareTableDTO> findShareTableByUserSigningId(Long userSigningId);
 	List<DisplacementShareTableDTO> findDisplacementSharesByUserDataTables(Long userId, PaginationCriteria pagination);
-	List<DisplacementShare> findWeekSigningsByUserId(Date startDate, Date endDate, Long userId, Integer manual);
-	List<DailyPersonalSigningDTO> findDailyDisplacementShareDTOByUserIdAndYear(Long userId, int year);
+	List<DisplacementShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId, Integer manual);
 	List<ExpensesMonthDTO> findTimeMonthDTOByProjectId(Long projectId, Integer year);
 
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class UserManualSigningServiceImpl implements UserManualSigningService {
     }
 
     @Override
-    public List<UserManualSigning> getWeekManualSigningsByUserId(Date startDate, Date endDate, Long userId) {
+    public List<UserManualSigning> getWeekManualSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
         return this.userManualSigningRepository.findWeekManualSigningsByUserId(startDate, endDate, userId);
     }
 }
