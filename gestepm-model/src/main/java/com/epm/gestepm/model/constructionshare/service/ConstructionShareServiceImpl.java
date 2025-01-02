@@ -1,12 +1,15 @@
 package com.epm.gestepm.model.constructionshare.service;
 
-import com.epm.gestepm.model.constructionsharefile.dao.ConstructionShareFileRepository;
+import com.epm.gestepm.lib.file.FileUtils;
 import com.epm.gestepm.model.constructionshare.dao.ConstructionShareRepository;
+import com.epm.gestepm.model.constructionsharefile.dao.ConstructionShareFileRepository;
 import com.epm.gestepm.model.interventionshare.service.mapper.ShareMapper;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
+import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareService;
+import com.epm.gestepm.modelapi.constructionsharefile.dto.ConstructionShareFile;
 import com.epm.gestepm.modelapi.interventionshare.dto.PdfFileDTO;
 import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
-import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
@@ -14,10 +17,6 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
-import com.epm.gestepm.modelapi.constructionsharefile.dto.ConstructionShareFile;
-import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareService;
-import com.epm.gestepm.lib.file.FileUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -33,7 +32,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -88,11 +86,6 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
 	public List<ShareTableDTO> getShareTableByActivityCenterId(Long id, Long activityCenterId, Long projectId, Integer progress) {
 		return constructionShareDao.findShareTableByActivityCenterId(id, activityCenterId, projectId, progress);
 	}
-
-	@Override
-	public List<ShareTableDTO> getShareTableByUserId(Long userId, Long projectId, Integer progress) {
-		return constructionShareDao.findShareTableByUserId(userId, projectId, progress);
-	}
 	
 	@Override
 	public List<ShareTableDTO> getShareTableByProjectId(Long projectId) {
@@ -105,18 +98,13 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
 	}
 	
 	@Override
-	public List<ConstructionShare> getWeekSigningsByUserId(Date startDate, Date endDate, Long userId) {
+	public List<ConstructionShare> getWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
 		return constructionShareDao.findWeekSigningsByUserId(startDate, endDate, userId);
 	}
 
 	@Override
 	public List<ConstructionShare> getWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId) {
 		return constructionShareDao.findWeekSigningsByProjectId(startDate, endDate, projectId);
-	}
-	
-	@Override
-	public List<DailyPersonalSigningDTO> getDailyConstructionShareDTOByUserIdAndDate(Long userId, int month, int year) {
-		return constructionShareDao.findDailyConstructionShareDTOByUserIdAndDate(userId, month, year);
 	}
 	
 	@Override

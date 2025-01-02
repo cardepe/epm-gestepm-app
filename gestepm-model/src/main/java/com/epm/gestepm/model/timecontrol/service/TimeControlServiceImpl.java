@@ -64,12 +64,9 @@ public class TimeControlServiceImpl implements TimeControlService {
 		
 		int minDay = 1;
 		int maxDay = Utiles.getDaysOfMonth(month, year);
-		
-		Date startDate = Utiles.transformSimpleStringToDate((minDay < 10 ? "0" : "") + minDay + "-" + (month < 10 ? "0" : "") + month + "-" + year);
-		Date endDate = Utiles.transformSimpleStringToDate((maxDay < 10 ? "0" : "") + maxDay + "-" + (month < 10 ? "0" : "") + month + "-" + year);
-		
-		// Set to end of the day (23:59)
-		endDate = Utiles.getEndDayDate(endDate);
+
+		final LocalDateTime startDate = LocalDateTime.of(year, month, minDay, 0, 0, 0);
+		final LocalDateTime endDate = LocalDateTime.of(year, month, maxDay, 23, 59, 59);
 
 		User user = userRepository.findById(userId).get();
 		String username = user.getName() + " " + user.getSurnames();
@@ -229,8 +226,12 @@ public class TimeControlServiceImpl implements TimeControlService {
 				lastEndDate = dm.getEndDate();
 			}
 
-			timeControl.setStartHour(LocalDateTime.from(checkInDate.toInstant().atOffset(ZoneOffset.UTC)));
-			timeControl.setEndHour(LocalDateTime.from(checkOutDate.toInstant().atOffset(ZoneOffset.UTC)));
+			timeControl.setStartHour(checkInDate != null
+					? LocalDateTime.from(checkInDate.toInstant().atOffset(ZoneOffset.UTC))
+					: null);
+			timeControl.setEndHour(checkOutDate != null
+					? LocalDateTime.from(checkOutDate.toInstant().atOffset(ZoneOffset.UTC))
+					: null);
 			
 			if (timeControl.getReason().startsWith("2")) {
 				timeControl.setBreaks(Utiles.getStringDateWithMillis(breaks));
@@ -265,18 +266,17 @@ public class TimeControlServiceImpl implements TimeControlService {
 	}
 	
 	@Override
-	public TimeControlTableDTO getTimeControlDetail(Date date, Long userId) {
+	public TimeControlTableDTO getTimeControlDetail(LocalDateTime startDate, Long userId) {
 		
 		final User user = userRepository.findById(userId).get();
-		
-		final Date endDate = Utiles.getEndDayDate(date);
+		final LocalDateTime endDate = startDate.withHour(23).withMinute(59).withSecond(59);
 
-		final List<DisplacementShare> displacementShares = displacementShareRepository.findWeekSigningsByUserId(date, endDate, userId, 1);
-		final List<PersonalSigning> personalSignings = personalSigingRepository.findWeekSigningsByUserId(date, endDate, userId);
-		final List<UserSigning> userSignings = userSigningRepository.findWeekSigningsByUserId(date, endDate, userId);
+		final List<DisplacementShare> displacementShares = displacementShareRepository.findWeekSigningsByUserId(startDate, endDate, userId, 1);
+		final List<PersonalSigning> personalSignings = personalSigingRepository.findWeekSigningsByUserId(startDate, endDate, userId);
+		final List<UserSigning> userSignings = userSigningRepository.findWeekSigningsByUserId(startDate, endDate, userId);
 
 		final TimeControlTableDTO timeControl = new TimeControlTableDTO();
-		timeControl.setDate(LocalDateTime.from(date.toInstant().atOffset(ZoneOffset.UTC)));
+		timeControl.setDate(startDate);
 		timeControl.setUsername(user.getName() + " " + user.getSurnames());
 		timeControl.setJourney(user.getWorkingHours());
 
@@ -394,16 +394,16 @@ public class TimeControlServiceImpl implements TimeControlService {
 	}
 	
 	@Override
-	public List<TimeControlDetailTableDTO> getTimeControlDetailTableDTOByDateAndUser(Date date, Long userId, Locale locale) {
-		
-		Date endDate = Utiles.getEndDayDate(date);
+	public List<TimeControlDetailTableDTO> getTimeControlDetailTableDTOByDateAndUser(LocalDateTime startDate, Long userId, Locale locale) {
+
+		final LocalDateTime endDate = startDate.withHour(23).withMinute(59).withSecond(59);
 		
 		List<TimeControlDetailTableDTO> registers = new ArrayList<>();
 
-		List<DisplacementShare> displacementShares = displacementShareRepository.findWeekSigningsByUserId(date, endDate, userId, 1);
-		List<PersonalSigning> personalSignings = personalSigingRepository.findWeekSigningsByUserId(date, endDate, userId);
-		List<UserSigning> userSignings = userSigningRepository.findWeekSigningsByUserId(date, endDate, userId);
-		List<UserManualSigning> userManualSignings = userManualSigningRepository.findWeekManualSigningsByUserId(date, endDate, userId);
+		List<DisplacementShare> displacementShares = displacementShareRepository.findWeekSigningsByUserId(startDate, endDate, userId, 1);
+		List<PersonalSigning> personalSignings = personalSigingRepository.findWeekSigningsByUserId(startDate, endDate, userId);
+		List<UserSigning> userSignings = userSigningRepository.findWeekSigningsByUserId(startDate, endDate, userId);
+		List<UserManualSigning> userManualSignings = userManualSigningRepository.findWeekManualSigningsByUserId(startDate, endDate, userId);
 		
 		for (DisplacementShare ds : displacementShares) {
 			

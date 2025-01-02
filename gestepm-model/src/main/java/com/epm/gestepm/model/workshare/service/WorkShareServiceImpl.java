@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -111,7 +110,7 @@ public class WorkShareServiceImpl implements WorkShareService {
 	}
 	
 	@Override
-	public List<WorkShare> getWeekSigningsByUserId(Date startDate, Date endDate, Long userId) {
+	public List<WorkShare> getWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
 		return workShareDao.findWeekSigningsByUserId(startDate, endDate, userId);
 	}
 

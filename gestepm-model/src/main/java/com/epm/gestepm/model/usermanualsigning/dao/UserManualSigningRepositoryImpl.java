@@ -1,8 +1,8 @@
 package com.epm.gestepm.model.usermanualsigning.dao;
 
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
 import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
+import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningTableDTO;
 import org.springframework.stereotype.Repository;
 
@@ -11,10 +11,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -67,7 +65,7 @@ public class UserManualSigningRepositoryImpl implements UserManualSigningReposit
 			predicates.add(predicateUser);
 
 			// Appending all Predicates
-			cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
+			cq.where(cb.and(predicates.toArray(new Predicate[0])));
 
 			TypedQuery<UserManualSigningTableDTO> criteriaQuery = entityManager.createQuery(cq);
 
@@ -106,7 +104,7 @@ public class UserManualSigningRepositoryImpl implements UserManualSigningReposit
 	}
 
 	@Override
-	public List<UserManualSigning> findWeekManualSigningsByUserId(Date startDate, Date endDate, Long userId) {
+	public List<UserManualSigning> findWeekManualSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
 
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<UserManualSigning> cq = cb.createQuery(UserManualSigning.class);
@@ -115,8 +113,8 @@ public class UserManualSigningRepositoryImpl implements UserManualSigningReposit
 
 		cq.select(root).where(cb.and(cb.between(
 				root.get("endDate").as(LocalDateTime.class),
-				LocalDateTime.from(startDate.toInstant().atOffset(ZoneOffset.UTC)),
-				LocalDateTime.from(endDate.toInstant().atOffset(ZoneOffset.UTC))
+				startDate,
+				endDate
 		), cb.equal(root.get("user"), userId)));
 
 		return entityManager.createQuery(cq).getResultList();

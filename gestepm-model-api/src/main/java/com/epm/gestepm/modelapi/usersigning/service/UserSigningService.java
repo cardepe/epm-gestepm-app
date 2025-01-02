@@ -1,11 +1,12 @@
 package com.epm.gestepm.modelapi.usersigning.service;
 
-import java.util.Date;
-import java.util.List;
-
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.usersigning.dto.UserSigningTableDTO;
+
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 public interface UserSigningService {
 
@@ -21,5 +22,5 @@ public interface UserSigningService {
 
 	UserSigning getByUserIdAndEndDate(Long userId, Date endDate);
 	
-	List<UserSigning> getWeekSigningsByUserId(Date startDate, Date endDate, Long userId);
+	List<UserSigning> getWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId);
 }

@@ -8,7 +8,6 @@ import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShareTableDTO;
 import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
 import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.user.dto.DailyPersonalSigningDTO;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -16,7 +15,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -152,7 +150,7 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 	}
 	
 	@Override
-	public List<DisplacementShare> findWeekSigningsByUserId(Date startDate, Date endDate, Long userId, Integer manual) {
+	public List<DisplacementShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId, Integer manual) {
 		
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<DisplacementShare> cq = cb.createQuery(DisplacementShare.class);
@@ -164,8 +162,8 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(cb.and(cb.between(
 				root.get("displacementDate").as(LocalDateTime.class),
-				LocalDateTime.from(startDate.toInstant().atOffset(ZoneOffset.UTC)),
-				LocalDateTime.from(endDate.toInstant().atOffset(ZoneOffset.UTC))
+				startDate,
+				endDate
 		), cb.equal(root.get("user"), userId)));
 		
 		if (manual != null) {
@@ -175,41 +173,6 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 		cq.where(cb.and(predicates.toArray(new Predicate[0])));
 		
 		return entityManager.createQuery(cq).getResultList();
-	}
-	
-	@Override
-	public List<DailyPersonalSigningDTO> findDailyDisplacementShareDTOByUserIdAndYear(Long userId, int year) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<DailyPersonalSigningDTO> cq = cb.createQuery(DailyPersonalSigningDTO.class);
-
-			Root<DisplacementShare> root = cq.from(DisplacementShare.class);
-			
-			Date yearStartDate = Utiles.transformSimpleStringToDate("01-01-" + year);
-			Date yearEndDate = Utiles.transformSimpleStringToDate("31-12-" + year);
-			
-			List<Predicate> predicates = new ArrayList<>();
-			predicates.add(cb.equal(root.get("user"), userId));
-			predicates.add(cb.between(root.get("displacementDate"), yearStartDate, yearEndDate));
-					
-			Expression<java.sql.Time> timeDiff = cb.function("TIMEDIFF", java.sql.Time.class, cb.function("date_add_minute", LocalDateTime.class, root.get("displacementDate"), root.get("manualHours")), root.get("displacementDate"));
-			Expression<Integer> timeToSec = cb.function("TIME_TO_SEC", Integer.class, timeDiff);
-			
-			cq.multiselect(cb.sum(timeToSec), root.get("displacementDate"));
-			cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-
-			Expression<Integer> gbYear = cb.function("YEAR", Integer.class, root.get("displacementDate"));
-			Expression<Integer> gbMonth = cb.function("MONTH", Integer.class, root.get("displacementDate"));
-			Expression<Integer> gbDay = cb.function("DAY", Integer.class, root.get("displacementDate"));
-			cq.groupBy(gbYear, gbMonth, gbDay);
-			
-			return entityManager.createQuery(cq).getResultList();
-
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
 	}
 
 	@Override

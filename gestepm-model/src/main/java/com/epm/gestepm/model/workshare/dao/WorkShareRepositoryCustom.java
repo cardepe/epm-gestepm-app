@@ -7,7 +7,6 @@ import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShareTableDTO;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 public interface WorkShareRepositoryCustom {
@@ -17,7 +16,7 @@ public interface WorkShareRepositoryCustom {
 	List<ShareTableDTO> findShareTableByProjectId(Long projectId);
 	List<ShareTableDTO> findShareTableByUserSigningId(Long userSigningId);
 	List<WorkShareTableDTO> findWorkSharesByUserDataTables(Long userId, PaginationCriteria pagination);
-	List<WorkShare> findWeekSigningsByUserId(Date startDate, Date endDate, Long userId);
+	List<WorkShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId);
 	List<WorkShare> findWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId);
 	List<ExpensesMonthDTO> findExpensesMonthDTOByProjectId(Long projectId, Integer year);
 
