@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -26,9 +26,9 @@ public class ModifiedSigningTableDTO {
     private String surnames;
 
     @JsonProperty("ms_startDate")
-    private Date startDate;
+    private LocalDateTime startDate;
 
     @JsonProperty("ms_endDate")
-    private Date endDate;
+    private LocalDateTime endDate;
 
 }
