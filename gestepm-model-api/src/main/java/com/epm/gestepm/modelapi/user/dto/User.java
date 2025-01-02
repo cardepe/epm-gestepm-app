@@ -1,6 +1,6 @@
 package com.epm.gestepm.modelapi.user.dto;
 
-import com.epm.gestepm.modelapi.activitycenter.dto.ActivityCenter;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
 import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;

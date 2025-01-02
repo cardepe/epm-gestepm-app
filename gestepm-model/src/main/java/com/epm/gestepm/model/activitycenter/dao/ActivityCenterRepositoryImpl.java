@@ -1,7 +1,7 @@
 package com.epm.gestepm.model.activitycenter.dao;
 
 import com.epm.gestepm.modelapi.absencetype.dto.ActivityCenterTableDTO;
-import com.epm.gestepm.modelapi.activitycenter.dto.ActivityCenter;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
 import org.springframework.stereotype.Repository;

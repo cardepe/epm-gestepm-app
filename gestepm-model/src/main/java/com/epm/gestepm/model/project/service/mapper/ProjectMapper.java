@@ -3,7 +3,7 @@ package com.epm.gestepm.model.project.service.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.epm.gestepm.modelapi.activitycenter.dto.ActivityCenter;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectDTO;
 import com.epm.gestepm.modelapi.user.dto.User;

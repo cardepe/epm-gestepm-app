@@ -51,7 +51,7 @@ public class InspectionDto implements Serializable {
 
     private Integer topicId;
 
-    private Set<Integer> fileIds;
+    private List<Integer> fileIds;
 
     public Integer getOrder(final List<Integer> inspectionIds) {
         return inspectionIds.indexOf(this.id) + 1;

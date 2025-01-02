@@ -121,8 +121,8 @@
         </div>
     </div>
 
-    <div class="row h-100">
-        <div class="col h-100">
+    <div class="row">
+        <div class="col">
             <div class="card">
                 <div class="card-body">
                     <div class="title mb-0">

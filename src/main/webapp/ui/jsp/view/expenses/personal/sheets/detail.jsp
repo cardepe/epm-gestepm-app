@@ -64,7 +64,7 @@
                     <div class="col">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100"><spring:message code="start.date"/>
-                                <input name="startDate" type="datetime-local" class="form-control mt-1" disabled />
+                                <input name="startDate" type="datetime-local" class="form-control mt-1" />
                             </label>
                         </div>
                     </div>
@@ -100,9 +100,11 @@
                     <tr>
                         <th><spring:message code="id"/></th>
                         <th><spring:message code="description"/></th>
+                        <th><spring:message code="date"/></th>
                         <th><spring:message code="type"/></th>
-                        <th><spring:message code="start.date"/></th>
+                        <th><spring:message code="quantity"/></th>
                         <th><spring:message code="amount"/></th>
+                        <th><spring:message code="payment.type"/></th>
                         <th><spring:message code="actions"/></th>
                     </tr>
                     </thead>
@@ -125,7 +127,7 @@
     function init() {
         loadHeader();
         initializeSelects();
-        // initializeDataTables();
+        initializeDataTables();
     }
 
     function loadHeader() {
@@ -159,7 +161,7 @@
     }
 
     function initializeDataTables() {
-        let columns = ['id', 'description', 'priceType', 'startDate', 'amount', 'id']
+        let columns = ['id', 'description', 'startDate', 'priceType', 'quantity', 'amount', 'paymentType', 'id']
         let endpoint = '/v1/expenses/personal/sheets/' + personalExpenseSheet.id + '/expenses';
         let actions = [
             {
@@ -172,19 +174,31 @@
             }
         ]
         let expand = []
-        let filters = []
+        let filters = [{'personalExpenseSheetId': personalExpenseSheet.id}]
         let orderable = [[0, 'DESC']]
         let columnDefs = [
-            /*{
-                targets: 3,
+            {
+                targets: 2,
                 render: function (data) {
-                    return parseStatusToBadge(data);
+                    return moment(data).format('DD-MM-YYYY');
                 }
-            },*/
+            },
             {
                 targets: 3,
                 render: function (data) {
-                    return moment(data).format('DD-MM-YYYY HH:mm');
+                    return parseTypeToBadge(data);
+                }
+            },
+            {
+                targets: 5,
+                render: function (data) {
+                    return data + '€';
+                }
+            },
+            {
+                targets: 6,
+                render: function (data) {
+                    return parsePaymentTypeToBadge(data);
                 }
             }
         ]
@@ -219,20 +233,55 @@
         const editForm = document.querySelector('#editForm');
 
         editBtn.click(async () => {
+            if (personalExpenseSheet.status != 'PENDING') {
+                showNotify(messages.personalExpenseSheet.invalidStatus, 'info');
+                return;
+            }
+
             showLoading();
 
             const description = editForm.querySelector('[name="description"]');
             const projectId = editForm.querySelector('[name="projectId"]');
+            const startDate = editForm.querySelector('[name="startDate"]');
 
             axios.patch('/v1' + window.location.pathname, {
                 description: description ? description.value : null,
-                projectId: projectId ? projectId.value : null
+                projectId: projectId ? projectId.value : null,
+                startDate: startDate ? startDate.value : null
             }).then((response) => {
                 personalExpenseSheet = response.data.data;
                 showNotify(messages.personalExpenseSheet.update.success.replace('{0}', personalExpenseSheet.id))
             }).catch(error => showNotify(error, 'danger'))
                 .finally(() => hideLoading());
         })
+    }
+
+    function parseTypeToBadge(priceType) {
+        if (priceType === 'FLY') {
+            return '<div class="badge badge-primary">' + messages.priceType.fly + '</div>';
+        } else if (priceType === 'FOOD') {
+            return '<div class="badge badge-warning">' + messages.priceType.food + '</div>';
+        } else if (priceType === 'GAS') {
+            return '<div class="badge badge-muted">' + messages.priceType.gas + '</div>';
+        } else if (priceType === 'GASOLINE') {
+            return '<div class="badge badge-secondary">' + messages.priceType.gasoline + '</div>';
+        } else if (priceType === 'HOTEL') {
+            return '<div class="badge badge-success">' + messages.priceType.hotel + '</div>';
+        } else if (priceType === 'KMS') {
+            return '<div class="badge badge-info">' + messages.priceType.kms + '</div>';
+        } else if (priceType === 'OTHER') {
+            return '<div class="badge badge-danger">' + messages.priceType.other + '</div>';
+        } else if (priceType === 'PARKING') {
+            return '<div class="badge badge-dark">' + messages.priceType.parking + '</div>';
+        }
+    }
+
+    function parsePaymentTypeToBadge(paymentType) {
+        if (paymentType === 'EPM_TARGET') {
+            return '<div class="badge badge-success">' + messages.paymentType.epmTarget + '</div>';
+        } else if (paymentType === 'OTHER') {
+            return '<div class="badge badge-danger">' + messages.paymentType.other + '</div>';
+        }
     }
 
     $(document).ready(async function () {

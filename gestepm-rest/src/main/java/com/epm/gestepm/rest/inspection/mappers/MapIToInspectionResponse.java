@@ -7,7 +7,6 @@ import com.epm.gestepm.restapi.openapi.model.ShareFile;
 import org.mapstruct.*;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper
@@ -23,16 +22,10 @@ public interface MapIToInspectionResponse {
   List<Inspection> from(Page<InspectionDto> list);
 
   @Named("mapFiles")
-  static Set<ShareFile> mapFiles(final Set<Integer> fileIds) {
-
-    return fileIds.stream().map(id -> {
-
-      final ShareFile shareFile = new ShareFile();
-      shareFile.setId(id);
-
-      return shareFile;
-
-    }).collect(Collectors.toSet());
+  static List<ShareFile> mapFiles(final List<Integer> fileIds) {
+    return fileIds.stream()
+            .map(id -> new ShareFile().id(id))
+            .collect(Collectors.toList());
   }
 
   @AfterMapping

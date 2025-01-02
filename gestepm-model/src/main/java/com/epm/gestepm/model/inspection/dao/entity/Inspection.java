@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -52,6 +53,6 @@ public class Inspection implements Serializable {
   private Integer topicId;
 
   @Singular
-  private Set<Integer> fileIds;
+  private List<Integer> fileIds;
 
 }

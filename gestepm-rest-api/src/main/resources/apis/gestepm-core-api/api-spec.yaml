@@ -144,6 +144,30 @@ paths:
       description: delete-personal-expense-sheet-v1
       tags:
         - personal-expense-sheet-v1
+  '/v1/expenses/personal/sheets/{personalExpenseSheetId}/export':
+    parameters:
+      - name: personalExpenseSheetId
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Personal expense sheet identificator.
+    get:
+      summary: V1 - Export personal expense sheet
+      responses:
+        '200':
+          $ref: '#/components/responses/InspectionExport'
+        '404':
+          description: inspection-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: export-personal-expense-sheet-v1
+      description: export-personal-expense-sheet-v1
+      parameters: []
+      tags:
+        - personal-expense-sheet-v1
   '/v1/expenses/personal/sheets/{personalExpenseSheetId}/expenses':
     parameters:
       - $ref: '#/components/parameters/Personal-Expense-Sheet-Id'
@@ -155,6 +179,8 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
       tags:
         - personal-expense-v1
       responses:
@@ -208,7 +234,7 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
-    put:
+    patch:
       summary: V1 - Update personal expense
       operationId: update-personal-expense-v1
       responses:
@@ -605,7 +631,6 @@ components:
           type: array
           x-stoplight:
             id: lxtp67qj9tr4z
-          uniqueItems: true
           items:
             $ref: '#/components/schemas/ShareFile'
       required:
@@ -819,6 +844,11 @@ components:
           x-stoplight:
             id: f26og93fmf8dv
           format: date-time
+        endDate:
+          type: string
+          x-stoplight:
+            id: useudmoqcnkkz
+          format: date-time
         description:
           type: string
           x-stoplight:
@@ -852,22 +882,11 @@ components:
             - EPM_TARGET
             - OTHER
         files:
-          type: array
           x-stoplight:
             id: qh487u932xzh9
+          type: array
           items:
-            x-stoplight:
-              id: e8gkuzlyziej6
-            type: object
-            properties:
-              name:
-                type: string
-                x-stoplight:
-                  id: 0y1crcjhdxeve
-              content:
-                type: string
-                x-stoplight:
-                  id: mwaxhejv31s0i
+            $ref: '#/components/schemas/ShareFile'
       required:
         - id
         - personalExpenseSheet

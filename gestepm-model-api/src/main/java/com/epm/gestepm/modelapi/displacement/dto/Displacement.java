@@ -1,6 +1,6 @@
 package com.epm.gestepm.modelapi.displacement.dto;
 
-import com.epm.gestepm.modelapi.activitycenter.dto.ActivityCenter;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import lombok.Data;

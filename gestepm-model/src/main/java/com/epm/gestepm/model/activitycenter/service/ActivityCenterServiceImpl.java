@@ -1,8 +1,8 @@
 package com.epm.gestepm.model.activitycenter.service;
 
 import com.epm.gestepm.model.activitycenter.dao.ActivityCenterRepository;
-import com.epm.gestepm.modelapi.activitycenter.dto.ActivityCenter;
-import com.epm.gestepm.modelapi.activitycenter.service.ActivityCenterService;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.service.ActivityCenterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

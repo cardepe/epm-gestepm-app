@@ -1,8 +1,8 @@
 package com.epm.gestepm.scheduled;
 
 import com.epm.gestepm.lib.ftp.FtpClient;
-import com.epm.gestepm.modelapi.activitycenter.dto.ActivityCenter;
-import com.epm.gestepm.modelapi.activitycenter.service.ActivityCenterService;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.service.ActivityCenterService;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.holiday.service.HolidayService;

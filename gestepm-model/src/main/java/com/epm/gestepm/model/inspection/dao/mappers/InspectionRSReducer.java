@@ -4,9 +4,7 @@ import com.epm.gestepm.model.inspection.dao.entity.Inspection;
 import com.epm.gestepm.model.inspection.dao.entity.Material;
 import org.springframework.util.CollectionUtils;
 
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BinaryOperator;
 
 public class InspectionRSReducer implements BinaryOperator<Inspection> {
@@ -29,7 +27,7 @@ public class InspectionRSReducer implements BinaryOperator<Inspection> {
 
     if (!CollectionUtils.isEmpty(total.getFileIds()) && !CollectionUtils.isEmpty(current.getFileIds())) {
 
-      final Set<Integer> fileIds = new LinkedHashSet<>();
+      final List<Integer> fileIds = new ArrayList<>();
       fileIds.addAll(total.getFileIds());
       fileIds.addAll(current.getFileIds());
 

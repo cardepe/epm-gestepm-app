@@ -1,0 +1,51 @@
+sql:
+
+  qry-list-of-if: |
+    
+    SELECT
+      pef.personal_expense_file_id AS id_pagination,
+      pef.personal_expense_file_id,
+      pef.personal_expense_id,
+      pef.name,
+      pef.content
+    FROM ${sch-gestepm}.personal_expense_file pef
+    
+    #whereToken #filter
+
+  qry-create-if: |
+    
+    INSERT INTO ${sch-gestepm}.personal_expense_file (
+      personal_expense_id,
+      name,
+      content
+    )
+    VALUES (
+      :attr_if_personal_expense_id,
+      :attr_if_name,
+      :attr_if_content
+    )
+
+  filter-if-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-if-ids}
+      -- ${sql.predicate-for-if-personal_expense-id}
+    -- AND]
+
+  filter-if-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-if-id}
+    -- AND]
+
+  predicate-for-if-id: |
+
+    pef.personal_expense_file_id = :attr_if_id
+
+  predicate-for-if-ids: |
+
+    pef.personal_expense_file_id IN (:attr_if_ids)
+
+  predicate-for-if-personal_expense-id: |
+
+    pef.personal_expense_id = :attr_if_personal_expense_id

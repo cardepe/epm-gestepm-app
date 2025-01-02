@@ -8,10 +8,9 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import static com.epm.gestepm.lib.jdbc.utils.ResultSetMappingUtils.*;
 
@@ -93,7 +92,7 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
             inspection.getMaterials().add(material);
         }
 
-        final Set<Integer> fileIds = new HashSet<>();
+        final List<Integer> fileIds = new ArrayList<>();
 
         if (hasValue(rs, COL_I_FILE_ID)) {
             fileIds.add(rs.getInt(COL_I_FILE_ID));

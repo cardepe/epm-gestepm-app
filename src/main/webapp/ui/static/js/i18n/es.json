@@ -54,8 +54,14 @@
         }
     },
     "personalExpenseSheet": {
+        "invalidStatus": "La hoja de gastos no está en estado pendiente y no se puede modificar.",
         "update": {
-            "success": "Se ha actualizado la hoja de gasto personal con éxito."
+            "success": "Se ha actualizado la hoja de gasto personal {0} con éxito."
+        }
+    },
+    "personalExpense": {
+        "update": {
+            "success": "Se ha actualizado el gasto personal {0} con éxito."
         }
     },
     "shares": {
@@ -77,6 +83,20 @@
             },
             "postForumUrl": "Puede ver la entrada en el foro clicando aquí."
         }
+    },
+    "priceType": {
+        "fly": "Vuelos",
+        "food": "Comida",
+        "gas": "Gas",
+        "gasoline": "Gasolina",
+        "hotel": "Hotel",
+        "kms": "Kilómetros",
+        "other": "Otros",
+        "parking": "Parking"
+    },
+    "paymentType": {
+        "epmTarget": "Tarjeta EPM",
+        "other": "Otro"
     },
     "actions": {
         "label": "Acciones",

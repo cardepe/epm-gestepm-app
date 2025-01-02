@@ -35,7 +35,7 @@ public class PersonalExpenseSheetResponseDecorator extends BaseResponseDataDecor
     @Override
     @LogExecution(operation = OP_PROCESS,
             msgIn = "Decorating personal expense sheet response",
-            msgOut = "Personal e xpense sheet decorated OK",
+            msgOut = "Personal expense sheet decorated OK",
             errorMsg = "Error decorating personal expense sheet response")
     public void decorate(RestRequest request, PersonalExpenseSheet data) {
 

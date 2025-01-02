@@ -19,8 +19,8 @@ import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.holiday.dto.HolidayTableDTO;
 import org.springframework.stereotype.Repository;
 
-import com.epm.gestepm.modelapi.activitycenter.dto.ActivityCenter;
-import com.epm.gestepm.modelapi.country.dto.Country;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
+import com.epm.gestepm.modelapi.deprecated.country.dto.Country;
 import com.epm.gestepm.modelapi.holiday.dto.Holiday;
 import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
 
