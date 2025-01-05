@@ -1,5 +1,3 @@
-const $ = jQuery.noConflict();
-
 function parseActionButtons() {
 	const tableRows = $('#dTable tbody tr');
 

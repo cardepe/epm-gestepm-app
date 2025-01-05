@@ -14,7 +14,12 @@ function initializeDataTables() {
         },
         {
             action: 'delete',
-            permission: 'edit_personal_expenses_sheet'
+            permission: 'edit_personal_expenses_sheet',
+            condition: {
+                key: 'status',
+                value: [ 'PENDING' ],
+                operation: '==='
+            }
         }
     ]
     let expand = ['project']
@@ -36,7 +41,7 @@ function initializeDataTables() {
     ]
 
     customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
-    createDataTable('#dTable', customDataTable, locale);
+    dTable = createDataTable('#dTable', customDataTable, locale);
 }
 
 function initializeSelects() {
@@ -82,4 +87,19 @@ function createPersonalExpenseSheet() {
             hideLoading();
             $('#createModal').modal('hide');
         });
+}
+
+function remove(id) {
+    const alertMessage = messages.personalExpenseSheet.delete.alert.replace('{0}', id);
+    if (confirm(alertMessage)) {
+
+        showLoading();
+
+        axios.delete('/v1/expenses/personal/sheets/' + id).then(() => {
+            dTable.ajax.reload();
+            const successMessage = messages.personalExpenseSheet.delete.success.replace('{0}', id);
+            showNotify(successMessage);
+        }).catch(error => showNotify(error, 'danger'))
+            .finally(() => hideLoading());
+    }
 }

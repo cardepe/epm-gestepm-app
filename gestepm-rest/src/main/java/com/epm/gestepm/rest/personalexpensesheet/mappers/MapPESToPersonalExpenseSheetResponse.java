@@ -9,6 +9,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Mapper
@@ -22,12 +23,12 @@ public interface MapPESToPersonalExpenseSheetResponse {
   List<PersonalExpenseSheet> from(Page<PersonalExpenseSheetDto> list);
 
   @Named("mapPersonalExpenses")
-  static List<PersonalExpense> mapPersonalExpenses(final List<Integer> personalExpenseIds) {
+  static Set<PersonalExpense> mapPersonalExpenses(final Set<Integer> personalExpenseIds) {
     return personalExpenseIds.stream().map(id -> {
       final PersonalExpense personalExpense = new PersonalExpense();
       personalExpense.setId(id);
       return personalExpense;
 
-    }).collect(Collectors.toList());
+    }).collect(Collectors.toSet());
   }
 }

@@ -54,12 +54,23 @@
         }
     },
     "personalExpenseSheet": {
+        "delete": {
+            "alert": "¿Está seguro que desea eliminar la hoja de gastos personales {0}?",
+            "success": "Hoja de gastos personales {0} eliminado con éxito"
+        },
         "invalidStatus": "La hoja de gastos no está en estado pendiente y no se puede modificar.",
         "update": {
             "success": "Se ha actualizado la hoja de gasto personal {0} con éxito."
         }
     },
     "personalExpense": {
+        "create": {
+            "success": "Se ha creado el gasto personal {0} con éxito."
+        },
+        "delete": {
+            "alert": "¿Está seguro que desea eliminar el gasto personal {0}?",
+            "success": "Gasto personal {0} eliminado con éxito"
+        },
         "update": {
             "success": "Se ha actualizado el gasto personal {0} con éxito."
         }

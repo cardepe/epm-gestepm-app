@@ -437,15 +437,6 @@
         currentMode = 'COMPLETED';
     }
 
-    function toBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result.split(",")[1]);
-            reader.onerror = (error) => reject(error);
-            reader.readAsDataURL(file);
-        });
-    }
-
     function appendElementToList(element, list) {
         const newOption = document.createElement('option');
         newOption.value = element.id;
@@ -481,7 +472,7 @@
         ]
 
         customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
-        createDataTable('#dTable', customDataTable, locale);
+        dTable = createDataTable('#dTable', customDataTable, locale);
     }
 
     function parseTypeToBadge(data) {

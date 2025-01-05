@@ -6,13 +6,13 @@ import com.epm.gestepm.lib.dto.OrderableDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PersonalExpenseFilterDto extends OrderableDto implements UsableAsCacheKey {
 
-  private List<Integer> ids;
+  private Set<Integer> ids;
 
   private Integer personalExpenseSheetId;
 

@@ -64,14 +64,15 @@
                     <div class="col">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100"><spring:message code="start.date"/>
-                                <input name="startDate" type="datetime-local" class="form-control mt-1" />
+                                <input name="startDate" type="datetime-local" class="form-control mt-1"/>
                             </label>
                         </div>
                     </div>
 
                     <div class="col">
                         <div class="form-group mb-1">
-                            <label class="col-form-label w-100"><spring:message code="shares.displacement.observations"/>
+                            <label class="col-form-label w-100"><spring:message
+                                    code="shares.displacement.observations"/>
                                 <textarea name="observations" type="text" class="form-control mt-1" disabled></textarea>
                             </label>
                         </div>
@@ -97,7 +98,8 @@
                     </div>
                 </div>
                 <div class="col text-right">
-                    <button id="createInspectionBtn" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#createModal">
+                    <button id="createBtn" type="button" class="btn btn-default btn-sm" data-toggle="modal"
+                            data-target="#personalExpenseModal">
                         <spring:message code="personal.expense.add"/>
                     </button>
                 </div>
@@ -123,6 +125,8 @@
     </div>
 </div>
 
+<jsp:include page="personal-expense-modal.jsp"/>
+
 <script>
     let locale = '${locale}';
     let personalExpenseSheet;
@@ -137,13 +141,17 @@
         loadHeader();
         initializeSelects();
         initializeDataTables();
+
+        if (personalExpenseSheet.status !== 'PENDING') {
+            document.querySelector('#createBtn').remove();
+        }
     }
 
     function loadHeader() {
         const actionBadge = document.querySelector('#action-badge');
 
         if (personalExpenseSheet.status === 'PENDING') {
-            actionBadge.classList.add('badge-info');
+            actionBadge.classList.add('badge-warning');
             actionBadge.textContent = messages.status.pending;
         } else if (personalExpenseSheet.status === 'APPROVED') {
             actionBadge.classList.add('badge-primary');
@@ -172,7 +180,7 @@
     function initializeDataTables() {
         let columns = ['id', 'description', 'startDate', 'priceType', 'quantity', 'amount', 'paymentType', 'id']
         let endpoint = '/v1/expenses/personal/sheets/' + personalExpenseSheet.id + '/expenses';
-        let actions = [
+        let actions = personalExpenseSheet.status === 'PENDING' ? [
             {
                 action: 'edit',
                 permission: 'edit_personal_expense'
@@ -181,7 +189,7 @@
                 action: 'delete',
                 permission: 'edit_personal_expense'
             }
-        ]
+        ] : []
         let expand = []
         let filters = [{'personalExpenseSheetId': personalExpenseSheet.id}]
         let orderable = [[0, 'DESC']]
@@ -213,7 +221,7 @@
         ]
 
         customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
-        createDataTable('#dTable', customDataTable, locale);
+        dTable = createDataTable('#dTable', customDataTable, locale);
     }
 
     function update() {
@@ -263,6 +271,21 @@
             }).catch(error => showNotify(error, 'danger'))
                 .finally(() => hideLoading());
         })
+    }
+
+    function remove(id) {
+        const alertMessage = messages.personalExpense.delete.alert.replace('{0}', id);
+        if (confirm(alertMessage)) {
+
+            showLoading();
+
+            axios.delete('/v1/expenses/personal/sheets/' + personalExpenseSheet.id + '/expenses/' + id).then(() => {
+                dTable.ajax.reload();
+                const successMessage = messages.personalExpense.delete.success.replace('{0}', id);
+                showNotify(successMessage);
+            }).catch(error => showNotify(error, 'danger'))
+                .finally(() => hideLoading());
+        }
     }
 
     function parseTypeToBadge(priceType) {

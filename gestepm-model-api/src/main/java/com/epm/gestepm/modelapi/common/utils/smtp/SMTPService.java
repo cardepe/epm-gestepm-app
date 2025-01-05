@@ -3,11 +3,13 @@ package com.epm.gestepm.modelapi.common.utils.smtp;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseInspectionMailTemplateDto;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseNoProgrammedShareMailTemplateDto;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenNoProgrammedShareMailTemplateDto;
+import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenPersonalExpenseSheetMailTemplateDto;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
 import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigning;
+import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetDto;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
@@ -31,7 +33,7 @@ public interface SMTPService {
 
 	void sendCloseWorkShareMail(String to, WorkShare share, byte[] pdfGenerated, Locale locale);
 	
-	void sendExpenseUserMail(String to, ExpenseSheet expenseSheet, Locale locale);
+	void openPersonalExpenseSheetSendMail(final OpenPersonalExpenseSheetMailTemplateDto dto);
 	void sendExpenseTeamLeaderMail(String to, User teamLeader, ExpenseSheet expenseSheet, Locale locale);
 	void sendExpenseRRHHMail(String to, User rrhh, ExpenseSheet expenseSheet, Locale locale);
 	

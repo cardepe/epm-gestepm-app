@@ -110,6 +110,7 @@ public class PersonalExpenseController extends BaseController implements Persona
     public ResponseEntity<CreatePersonalExpenseV1200Response> createPersonalExpenseV1(final Integer personalExpenseSheetId, final CreatePersonalExpenseV1Request reqCreatePersonalExpense) {
 
         final PersonalExpenseCreateDto createDto = getMapper(MapPEToPersonalExpenseCreateDto.class).from(reqCreatePersonalExpense);
+        createDto.setPersonalExpenseSheetId(personalExpenseSheetId);
 
         final PersonalExpenseDto personalExpense = this.personalExpenseService.create(createDto);
 

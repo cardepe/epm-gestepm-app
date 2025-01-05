@@ -5,6 +5,7 @@ import com.epm.gestepm.lib.entity.CollectableAttributes;
 import lombok.Data;
 
 import static com.epm.gestepm.model.personalexpense.dao.constants.PersonalExpenseAttributes.ATTR_PE_ID;
+import static com.epm.gestepm.model.personalexpense.dao.constants.PersonalExpenseFileAttributes.ATTR_PEF_ID;
 
 @Data
 public class PersonalExpenseFileByIdFinder implements CollectableAttributes {
@@ -16,7 +17,7 @@ public class PersonalExpenseFileByIdFinder implements CollectableAttributes {
 
     final AttributeMap map = new AttributeMap();
 
-    map.put(ATTR_PE_ID, this.id);
+    map.put(ATTR_PEF_ID, this.id);
 
     return map;
   }

@@ -225,22 +225,18 @@
 										</div>
 									</div>
 								</div>
-						  	
-						  		<div class="table-responsive">
-								  	<table id="dTableExpenses" class="table table-striped table-borderer dataTable w-100">
-										<caption class="d-none">
-											NO SONAR
-										</caption>
+
+								<div class="table-responsive">
+									<table id="dTableExpenses" class="table table-striped table-borderer dataTable w-100">
 										<thead>
-											<tr>
-												<th id="id"><spring:message code="project.detail.expenses.id" /></th>
-												<th id="description"><spring:message code="project.detail.expenses.description" /></th>
-												<th id="fullName"><spring:message code="project.detail.expenses.fullname" /></th>
-												<th id="status"><spring:message code="project.detail.expenses.status" /></th>
-												<th id="reportDate"><spring:message code="project.detail.expenses.reportdate" /></th>
-												<th id="total"><spring:message code="project.detail.expenses.total" /></th>
-												<th id="actions" class="all"><spring:message code="project.detail.members.actions" /></th>
-											</tr>
+										<tr>
+											<th><spring:message code="id"/></th>
+											<th><spring:message code="description"/></th>
+											<th><spring:message code="project"/></th>
+											<th><spring:message code="status"/></th>
+											<th><spring:message code="date"/></th>
+											<th><spring:message code="actions"/></th>
+										</tr>
 										</thead>
 									</table>
 								</div>
@@ -1501,59 +1497,7 @@
 			}
 		});
 
-		var dTableExpenses = $('#dTableExpenses').DataTable({
-			"lengthChange": false,
-			"searching": false,
-			"responsive": true,
-			"processing": true,
-			"serverSide": true,
-			"pageLength": 7,
-			"ajax": "/projects/${project.id}/expenses/dt",
-			"rowId": "es_id",
-			"language": {
-				"url": "/ui/static/lang/datatables/${locale}.json"
-			},
-			"order": [[4, "desc"]],
-			"columns": [
-				{ "data": "es_id" },
-				{ "data": "es_name" },
-				{ "data": "us_fullName" },
-				{ "data": "es_status" },
-				{ "data": "es_creationDate" },
-				{ "data": "es_total" },
-				{ "data": null }
-			],
-			"columnDefs": [
-				{ "targets": [0], "visible": false },
-				{ "className": "text-center", "targets": "_all" },
-				{  
-					"className": "text-right",
-				    "render": function ( data, type, row ) {
-                        return parseStatus(data);
-                	},
-                	"targets": 3
-                },
-                {  
-				    "render": function ( data, type, row ) {
-                    	return moment(data).format('DD/MM/YYYY');
-                	},
-                	"targets": 4 
-                },
-                {  
-					"className": "text-right",
-				    "render": function ( data, type, row ) {
-                    	return data + ' €';
-                	},
-                	"targets": -2 
-                },
-// 				{ "orderable": false, "targets": 2 },
-				{ "defaultContent": "${tableExpenseActionButtons}", "orderable": false, "targets": -1 }
-			],
-			"dom": "<'top'i>rt<'bottom'p><'clear'>",
-			"drawCallback": function(settings, json) {
-				parseExpenseActionButtons();
-			}
-		});
+		initializePersonalExpensesDataTables();
 
 		var dTableSignings = $('#dTableSignings').DataTable({
 			"lengthChange": false,
@@ -2174,7 +2118,9 @@
 	function parseExpenseActionButtons() {
 		var tableRows = $('#dTableExpenses tbody tr');
 
-		tableRows.each(function() {
+		tableRows.each(function(row) {
+
+			console.log(row)
 			
 			var expenseId = $(this).attr('id');
 			var status = jQuery($(this).children().get(2));
@@ -2461,26 +2407,6 @@
 		});
 	}
 
-	function validateExpense(expenseId) {
-		
-		showLoading();
-		
-		$.ajax({
-			type: "POST",
-			url: "/expenses/validate/" + expenseId,
-			data: { },
-			success: function(msg) {
-				$('#dTableExpenses').DataTable().ajax.reload();
-				hideLoading();
-				showNotify(msg, 'success');
-			},
-			error: function(e) {
-				hideLoading();
-				showNotify(e.responseText, 'danger');
-			}
-		});
-	}
-
 	function openDeclineExpenseModal(expenseId) {
 
 		$('#deExpenseId').val(expenseId);
@@ -2762,6 +2688,9 @@
 </script>
 
 <script>
+	let locale = '${locale}';
+	let dTableExpenses = null;
+
 	document.addEventListener("DOMContentLoaded", function() {
 		setReturnButtonUrl();
 	});
@@ -2778,4 +2707,111 @@
 			}
 		}
 	}
+
+	function initializePersonalExpensesDataTables() {
+		let columns = ['id', 'description', 'project.name', 'status', 'startDate', 'id']
+		let endpoint = '/v1/expenses/personal/sheets';
+		let actions = [
+			{
+				action: 'file-pdf',
+				url: '/v1/expenses/personal/sheets/{id}/export',
+				permission: 'edit_personal_expenses_sheet'
+			},
+			{
+				action: 'validate',
+				permission: 'edit_personal_expenses_sheet',
+				condition: {
+					key: 'status',
+					value: [ 'PENDING', 'APPROVED' ],
+					operation: '==='
+				}
+			},
+			{
+				action: 'decline',
+				permission: 'edit_personal_expenses_sheet',
+				condition: {
+					key: 'status',
+					value: [ 'PENDING', 'APPROVED' ],
+					operation: '==='
+				}
+			},
+			{
+				action: 'view',
+				url: '/expenses/personal/sheets/{id}',
+				permission: 'edit_personal_expenses_sheet'
+			}
+		]
+		let expand = ['project']
+		let filters = [{'projectId': ${project.id}}]
+		let orderable = [[0, 'DESC']]
+		let columnDefs = [
+			{
+				targets: 3,
+				render: function (data) {
+					return parseStatusToBadge(data);
+				}
+			},
+			{
+				targets: 4,
+				render: function (data) {
+					return moment(data).format('DD-MM-YYYY HH:mm');
+				}
+			}
+		]
+
+		customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
+		dTableExpenses = createDataTable('#dTableExpenses', customDataTable, locale);
+	}
+
+	function parseStatusToBadge(status) {
+		if (status === 'PENDING') {
+			return '<div class="badge badge-warning">' + messages.status.pending + '</div>';
+		} else if (status === 'APPROVED') {
+			return '<span class="badge badge-primary">' + messages.status.approved + '</span>';
+		} else if (status === 'PAID') {
+			return '<span class="badge badge-success">' + messages.status.paid + '</span>';
+		} else if (status === 'REJECTED') {
+			return '<span class="badge badge-danger">' + messages.status.rejected + '</span>';
+		}
+	}
+
+	function validate(personalExpenseSheetId) {
+
+		showLoading();
+
+		const data = dTableExpenses.row("#" + personalExpenseSheetId).data();
+		const nextStatus = getNextStatus(data.status);
+
+		if (nextStatus) {
+			axios.patch('/v1/expenses/personal/sheets/' + personalExpenseSheetId, {
+				status: nextStatus
+			}).then(() => {
+				dTableExpenses.ajax.reload();
+				showNotify(messages.personalExpenseSheet.update.success.replace('{0}', personalExpenseSheetId))
+			}).catch(error => showNotify(error, 'danger'))
+					.finally(() => hideLoading());
+		}
+	}
+
+	function decline(personalExpenseSheetId) {
+		showLoading();
+
+		axios.patch('/v1/expenses/personal/sheets/' + personalExpenseSheetId, {
+			status: 'REJECTED'
+		}).then(() => {
+			dTableExpenses.ajax.reload();
+			showNotify(messages.personalExpenseSheet.update.success.replace('{0}', personalExpenseSheetId))
+		}).catch(error => showNotify(error, 'danger'))
+				.finally(() => hideLoading());
+	}
+
+	function getNextStatus(status) {
+		if (status === 'PENDING') {
+			return 'APPROVED';
+		} else if (status === 'APPROVED') {
+			return 'PAID';
+		}
+		return null;
+	}
+
 </script>

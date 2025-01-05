@@ -924,6 +924,7 @@ components:
           type: array
           x-stoplight:
             id: pnf39k0lwbaaw
+          uniqueItems: true
           items:
             $ref: '#/components/schemas/PersonalExpense'
       required:
@@ -1303,11 +1304,16 @@ components:
                   - KMS
                   - OTHER
                   - PARKING
+              startDate:
+                type: string
+                x-stoplight:
+                  id: sjz5o16wsimwj
+                format: date-time
               quantity:
                 type: number
                 x-stoplight:
                   id: mic9rzefz663g
-              totalPrice:
+              amount:
                 type: number
                 x-stoplight:
                   id: cyl57o1sot4ct
@@ -1339,7 +1345,7 @@ components:
               - description
               - priceType
               - quantity
-              - totalPrice
+              - amount
               - paymentType
     UpdatePersonalExpense:
       content:
@@ -1364,11 +1370,16 @@ components:
                   - KMS
                   - OTHER
                   - PARKING
+              startDate:
+                type: string
+                x-stoplight:
+                  id: 4sihv8jtqxl01
+                format: date-time
               quantity:
                 type: number
                 x-stoplight:
                   id: 8tcpvfpb8flkh
-              totalPrice:
+              amount:
                 type: number
                 x-stoplight:
                   id: 0ji21j8m32j50
@@ -1400,7 +1411,7 @@ components:
               - description
               - priceType
               - quantity
-              - totalPrice
+              - amount
               - paymentType
   parameters:
     Share-Id:

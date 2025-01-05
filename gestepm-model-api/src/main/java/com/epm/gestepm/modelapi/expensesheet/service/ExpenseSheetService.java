@@ -24,12 +24,6 @@ public interface ExpenseSheetService {
 	
 	ExpenseSheet getExpenseSheetById(Long expenseSheetId);
 	
-	List<ExpenseSheet> getExpenseSheetsByProjectId(Long projectId);
-	
-	List<ExpenseSheet> getExpenseSheetsByUser(Long userId);
-	
-	List<ExpenseSheet> getExpenseSheetsByUserAndStatus(Long userId, String status);
-	
 	Long getExpenseSheetsCountByUser(Long userId);
 	
 	Long getExpenseSheetsCountByRRHH(Long userId);
@@ -43,18 +37,5 @@ public interface ExpenseSheetService {
 	List<ProjectExpenseSheetDTO> getProjectExpenseSheetDTOsByProjectId(Long projectId, PaginationCriteria pagination);
 	
 	Long getProjectExpenseSheetDTOsCountByProjectId(Long projectId);
-	
-	List<ExpensesMonthDTO> getExpensesMonthDTOByProjectId(Long projectId, Integer year);
-	
-	Double getTotalYearExpensesByProjectId(Long projectId, Integer year);
-	
-	XSSFWorkbook generateExpenseSheetExcel(Long expenseId, Long userId, ExpenseSheet expenseSheet, Locale locale);
-	
-	List<ExpenseSheet> getFilteredExpenseSheetsByStatus(List<ExpenseSheet> expenseSheets, String status);
-	
-	double getTotalPendingAmount(List<ExpenseSheet> expenseSheets);
-	
-	Date getLastExpenseSheetDate (List<ExpenseSheet> expenseSheets);
-	
-	byte[] generateExpensePdf(ExpenseSheet expenseSheet, Locale locale);
+
 }

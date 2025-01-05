@@ -31,6 +31,6 @@ public class PersonalExpenseCreateDto {
     @NotNull
     private PaymentTypeEnumDto paymentType;
 
-    private List<Integer> fileIds;
+    private List<PersonalExpenseFileCreateDto> files;
 
 }

@@ -132,14 +132,14 @@
                     <div class="table-responsive">
                         <table id="dTable" class="table table-striped table-borderer dataTable w-100">
                             <thead>
-                            <tr>
-                                <th><spring:message code="id"/></th>
-                                <th><spring:message code="description"/></th>
-                                <th><spring:message code="project"/></th>
-                                <th><spring:message code="status"/></th>
-                                <th><spring:message code="date"/></th>
-                                <th><spring:message code="actions"/></th>
-                            </tr>
+                                <tr>
+                                    <th><spring:message code="id"/></th>
+                                    <th><spring:message code="description"/></th>
+                                    <th><spring:message code="project"/></th>
+                                    <th><spring:message code="status"/></th>
+                                    <th><spring:message code="date"/></th>
+                                    <th><spring:message code="actions"/></th>
+                                </tr>
                             </thead>
                         </table>
                     </div>

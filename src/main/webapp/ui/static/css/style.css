@@ -344,6 +344,11 @@ img.idioma {
   	animation: spin 2s linear infinite;
 }
 
+.inline-column {
+	white-space: nowrap;
+	padding: 0 !important;
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }

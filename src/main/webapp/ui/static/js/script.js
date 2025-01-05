@@ -103,3 +103,12 @@ function disableForm(formId) {
 		selects.forEach(select => $(select).selectpicker('refresh'));
 	}
 }
+
+function toBase64(file) {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.onload = () => resolve(reader.result.split(",")[1]);
+		reader.onerror = (error) => reject(error);
+		reader.readAsDataURL(file);
+	});
+}

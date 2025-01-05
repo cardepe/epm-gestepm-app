@@ -11,8 +11,10 @@ import com.epm.gestepm.lib.jdbc.api.query.fetch.SQLQueryFetchPage;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.model.inspection.dao.entity.creator.InspectionFileCreate;
 import com.epm.gestepm.model.personalexpense.dao.entity.PersonalExpense;
 import com.epm.gestepm.model.personalexpense.dao.entity.creator.PersonalExpenseCreate;
+import com.epm.gestepm.model.personalexpense.dao.entity.creator.PersonalExpenseFileCreate;
 import com.epm.gestepm.model.personalexpense.dao.entity.deleter.PersonalExpenseDelete;
 import com.epm.gestepm.model.personalexpense.dao.entity.filter.PersonalExpenseFilter;
 import com.epm.gestepm.model.personalexpense.dao.entity.finder.PersonalExpenseByIdFinder;
@@ -25,10 +27,12 @@ import org.springframework.stereotype.Component;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType.ASC;
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
+import static com.epm.gestepm.model.inspection.dao.mappers.InspectionRowMapper.COL_I_START_DATE;
 import static com.epm.gestepm.model.personalexpense.dao.constants.PersonalExpenseQueries.*;
 import static com.epm.gestepm.model.personalexpense.dao.mappers.PersonalExpenseRowMapper.COL_PE_ID;
 
@@ -36,9 +40,12 @@ import static com.epm.gestepm.model.personalexpense.dao.mappers.PersonalExpenseR
 @EnableExecutionLog(layerMarker = DAO)
 public class PersonalExpenseDaoImpl implements PersonalExpenseDao {
 
+    private final PersonalExpenseFileDao personalExpenseFileDao;
+
     private final SQLDatasource sqlDatasource;
 
-    public PersonalExpenseDaoImpl(SQLDatasource sqlDatasource) {
+    public PersonalExpenseDaoImpl(PersonalExpenseFileDao personalExpenseFileDao, SQLDatasource sqlDatasource) {
+        this.personalExpenseFileDao = personalExpenseFileDao;
         this.sqlDatasource = sqlDatasource;
     }
 
@@ -119,6 +126,10 @@ public class PersonalExpenseDaoImpl implements PersonalExpenseDao {
 
         this.sqlDatasource.insert(sqlInsert);
 
+        if (create.getFiles() != null && !create.getFiles().isEmpty()) {
+            this.insertFiles(create.getFiles(), finder.getId());
+        }
+
         return this.find(finder).orElse(null);
     }
 
@@ -142,6 +153,10 @@ public class PersonalExpenseDaoImpl implements PersonalExpenseDao {
 
         this.sqlDatasource.execute(sqlQuery);
 
+        if (update.getFiles() != null && !update.getFiles().isEmpty()) {
+            this.insertFiles(update.getFiles(), id);
+        }
+
         return this.find(finder).orElse(null);
     }
 
@@ -157,16 +172,33 @@ public class PersonalExpenseDaoImpl implements PersonalExpenseDao {
 
         final SQLQuery sqlQuery = new SQLQuery()
                 .useQuery(QRY_DELETE_PE)
+                .useFilter(FILTER_PE_BY_PARAMS)
                 .withParams(params);
 
         this.sqlDatasource.execute(sqlQuery);
     }
 
     private void setOrder(SQLOrderByType order, String orderBy, SQLQueryFetchMany<PersonalExpense> sqlQuery) {
-
-        final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id") ? orderBy : COL_PE_ID;
-        final SQLOrderByType orderStatement = order != null ? order : ASC;
-
+        final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id")
+                ? this.getOrderColumn(orderBy)
+                : COL_PE_ID;
+        final SQLOrderByType orderStatement = order != null
+                ? order
+                : SQLOrderByType.ASC;
         sqlQuery.addOrderBy(orderByStatement, orderStatement);
+    }
+
+    private String getOrderColumn(final String orderBy) {
+        if ("startDate".equals(orderBy)) {
+            return COL_I_START_DATE;
+        }
+        return orderBy;
+    }
+
+    private void insertFiles(final List<PersonalExpenseFileCreate> files, final Integer personalExpenseId) {
+        files.forEach(fileCreate -> {
+            fileCreate.setPersonalExpenseId(personalExpenseId);
+            this.personalExpenseFileDao.create(fileCreate);
+        });
     }
 }

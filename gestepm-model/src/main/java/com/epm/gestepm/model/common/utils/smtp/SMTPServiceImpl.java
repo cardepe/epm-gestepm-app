@@ -5,6 +5,7 @@ import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseInspectionMailTemplateDto;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseNoProgrammedShareMailTemplateDto;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenNoProgrammedShareMailTemplateDto;
+import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenPersonalExpenseSheetMailTemplateDto;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
 import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
@@ -30,6 +31,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ConcurrentModel;
+import org.springframework.ui.Model;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -39,7 +44,11 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
+import javax.servlet.ServletContext;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,7 +60,7 @@ public class SMTPServiceImpl implements SMTPService {
 	
 	private static final Log log = LogFactory.getLog(SMTPServiceImpl.class);
 
-	private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm:ss";
+	private static final String DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm:ss";
 	
 	@Value("${base.url}")
 	private String appUrlBase;
@@ -109,8 +118,8 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("id", share.getId().toString());
 		params.put("username", share.getUser().getName() + " " + share.getUser().getSurnames());
 		params.put("projectName", share.getProject().getName());
-		params.put("startDate", Utiles.transform(share.getStartDate(), DATE_FORMAT));
-		params.put("endDate", Utiles.transform(share.getEndDate(), DATE_FORMAT));
+		params.put("startDate", Utiles.transform(share.getStartDate(), DATE_TIME_FORMAT));
+		params.put("endDate", Utiles.transform(share.getEndDate(), DATE_TIME_FORMAT));
 
 		loadPDFTemplateAndSendMail(share, "cs", pdfGenerated, smtpMailFrom, to, subject, "construction_share_close_mail_template_" + locale.getLanguage() + ".html", params, locale);
 	}
@@ -133,7 +142,7 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("id", noProgrammedShare.getId().toString());
 		params.put("username", user.getFullName());
 		params.put("projectName", project.getName());
-		params.put("startDate", Utiles.transform(noProgrammedShare.getStartDate(), DATE_FORMAT));
+		params.put("startDate", Utiles.transform(noProgrammedShare.getStartDate(), DATE_TIME_FORMAT));
 		params.put("description", noProgrammedShare.getDescription());
 		params.put("idUrl", noProgrammedShare.getId().toString());
 		params.put("forumUrl", project.getForumId() == null || noProgrammedShare.getTopicId() == null
@@ -161,8 +170,8 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("id", noProgrammedShare.getId().toString());
 		params.put("username", user.getFullName());
 		params.put("projectName", project.getName());
-		params.put("startDate", Utiles.transform(noProgrammedShare.getStartDate(), DATE_FORMAT));
-		params.put("endDate", Utiles.transform(noProgrammedShare.getEndDate(), DATE_FORMAT));
+		params.put("startDate", Utiles.transform(noProgrammedShare.getStartDate(), DATE_TIME_FORMAT));
+		params.put("endDate", Utiles.transform(noProgrammedShare.getEndDate(), DATE_TIME_FORMAT));
 		params.put("idUrl", noProgrammedShare.getId().toString());
 		params.put("forumUrl", "viewtopic.php?f=" + project.getForumId() + "&t=" + noProgrammedShare.getTopicId());
 		params.put("forumTitle", noProgrammedShare.getForumTitle());
@@ -190,8 +199,8 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("id", inspection.getId().toString());
 		params.put("username", user.getFullName());
 		params.put("projectName", project.getName());
-		params.put("startDate", Utiles.transform(inspection.getStartDate(), DATE_FORMAT));
-		params.put("endDate", Utiles.transform(inspection.getEndDate(), DATE_FORMAT));
+		params.put("startDate", Utiles.transform(inspection.getStartDate(), DATE_TIME_FORMAT));
+		params.put("endDate", Utiles.transform(inspection.getEndDate(), DATE_TIME_FORMAT));
 		params.put("subShareType", action);
 		params.put("idUrl", noProgrammedShare.getId().toString());
 		params.put("forumUrl", "viewtopic.php?f=" + project.getForumId() + "&t=" + noProgrammedShare.getTopicId());
@@ -211,8 +220,8 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("id", share.getId().toString());
 		params.put("username", share.getUser().getName() + " " + share.getUser().getSurnames());
 		params.put("projectName", share.getProject().getName());
-		params.put("startDate", Utiles.transform(share.getStartDate(), DATE_FORMAT));
-		params.put("endDate", Utiles.transform(share.getEndDate(), DATE_FORMAT));
+		params.put("startDate", Utiles.transform(share.getStartDate(), DATE_TIME_FORMAT));
+		params.put("endDate", Utiles.transform(share.getEndDate(), DATE_TIME_FORMAT));
 
 		loadPDFTemplateAndSendMail(share, "ips", pdfGenerated, smtpMailFrom, to, subject, "programmed_share_close_mail_template_" + locale.getLanguage() + ".html", params, locale);
 	}
@@ -228,27 +237,27 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("id", share.getId().toString());
 		params.put("username", share.getUser().getName() + " " + share.getUser().getSurnames());
 		params.put("projectName", share.getProject().getName());
-		params.put("startDate", Utiles.transform(share.getStartDate(), DATE_FORMAT));
-		params.put("endDate", Utiles.transform(share.getEndDate(), DATE_FORMAT));
+		params.put("startDate", Utiles.transform(share.getStartDate(), DATE_TIME_FORMAT));
+		params.put("endDate", Utiles.transform(share.getEndDate(), DATE_TIME_FORMAT));
 
 		loadPDFTemplateAndSendMail(share, "ws", pdfGenerated, smtpMailFrom, to, subject, "work_share_close_mail_template_" + locale.getLanguage() + ".html", params, locale);
 	}
-	
+
 	@Async
-	public void sendExpenseUserMail(String to, ExpenseSheet expenseSheet, Locale locale) {
+	public void openPersonalExpenseSheetSendMail(final OpenPersonalExpenseSheetMailTemplateDto dto) {
 		
-		log.info("Preparando la plantilla de correo: expense_user_mail_template_" + locale.getLanguage() + ".html");
+		log.info("Preparando la plantilla de correo: expense_user_mail_template_" + dto.getLocale().getLanguage() + ".html");
 		
-		String subject = messageSource.getMessage("smtp.mail.expense.user.subject", new Object[] { }, locale);
+		String subject = messageSource.getMessage("smtp.mail.expense.user.subject", new Object[] { }, dto.getLocale());
 		
 		Map<String, String> params = new HashMap<>();
-		params.put("projectId", expenseSheet.getProject().getId().toString());
-		params.put("username", expenseSheet.getUser().getName() + " " + expenseSheet.getUser().getSurnames());
-		params.put("projectName", expenseSheet.getProject().getName());
-		params.put("noticeDate", Utiles.transformFormattedDateToString(expenseSheet.getCreationDate()));
-		params.put("description", expenseSheet.getName());
+		params.put("projectId", dto.getProject().getId().toString());
+		params.put("username", dto.getUser().getFullName());
+		params.put("projectName", dto.getProject().getName());
+		params.put("noticeDate", Utiles.transform(dto.getPersonalExpenseSheetDto().getStartDate(), DATE_TIME_FORMAT));
+		params.put("description", dto.getPersonalExpenseSheetDto().getDescription());
 		
-		loadTemplateAndSendMail(smtpMailFrom, to, subject, "expense_user_mail_template_" + locale.getLanguage() + ".html", params);
+		loadTemplateAndSendMail(smtpMailFrom, dto.getEmail(), subject, "mail_template.jsp", params); // + dto.getLocale().getLanguage() + ".html", params);
 	}
 	
 	@Async
@@ -309,8 +318,8 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("username", userManualSigning.getUser().getName() + " " + userManualSigning.getUser().getSurnames());
 		params.put("userId", userManualSigning.getUser().getId().toString());
 		params.put("manualSigningType", userManualSigning.getManualSigningType().getName());
-		params.put("startDate", Utiles.transform(userManualSigning.getStartDate(), DATE_FORMAT));
-		params.put("endDate", Utiles.transform(userManualSigning.getEndDate(), DATE_FORMAT));
+		params.put("startDate", Utiles.transform(userManualSigning.getStartDate(), DATE_TIME_FORMAT));
+		params.put("endDate", Utiles.transform(userManualSigning.getEndDate(), DATE_TIME_FORMAT));
 
 		loadTemplateAndSendMail(smtpMailFrom, to, subject, "signing_manual_mail_template_" + locale.getLanguage() + ".html", params);
 	}
@@ -327,8 +336,8 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("signingId", modifiedSigning.getSigningId().toString());
 		params.put("userId", modifiedSigning.getUser().getId().toString());
 		params.put("manualSigningType", modifiedSigning.getTypeId());
-		params.put("startDate", Utiles.transform(modifiedSigning.getStartDate(), DATE_FORMAT));
-		params.put("endDate", Utiles.transform(modifiedSigning.getEndDate(), DATE_FORMAT));
+		params.put("startDate", Utiles.transform(modifiedSigning.getStartDate(), DATE_TIME_FORMAT));
+		params.put("endDate", Utiles.transform(modifiedSigning.getEndDate(), DATE_TIME_FORMAT));
 
 		loadTemplateAndSendMail(smtpMailFrom, to, subject, "signing_modify_mail_template_" + locale.getLanguage() + ".html", params);
 	}
@@ -563,16 +572,16 @@ public class SMTPServiceImpl implements SMTPService {
 	private void loadTemplateAndSendMail(String from, String to, String subject, String templateName, Map<String, String> params) {
 		
 		try {
-			
+
 			InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("templates/mail/" + templateName);
 			String templateContent = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
-			
+
 			for (Map.Entry<String, String> entry : params.entrySet()) {
-				
+
 				if (entry.getValue() == null) {
 					continue;
 				}
-					
+
 				templateContent = templateContent.replace("{{" + entry.getKey() + "}}", entry.getValue());
 			}
 			

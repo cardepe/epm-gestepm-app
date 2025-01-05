@@ -166,7 +166,7 @@
 		let actions = [ { action: 'edit', permission: 'edit_countries' }, { action: 'delete', permission: 'edit_countries' }]
 
 		customDataTable = new CustomDataTable(columns, endpoint, null, actions);
-		createDataTable('#dTable', customDataTable, locale);
+		dTable = createDataTable('#dTable', customDataTable, locale);
 	});
 
 </script>

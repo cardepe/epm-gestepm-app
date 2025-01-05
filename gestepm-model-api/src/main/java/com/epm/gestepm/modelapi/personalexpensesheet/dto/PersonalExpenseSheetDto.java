@@ -5,8 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.List;
+import java.util.Set;
 
 @Data
 public class PersonalExpenseSheetDto implements Serializable {
@@ -33,6 +32,6 @@ public class PersonalExpenseSheetDto implements Serializable {
 
     private Double amount;
 
-    private List<Integer> personalExpenseIds;
+    private Set<Integer> personalExpenseIds;
 
 }

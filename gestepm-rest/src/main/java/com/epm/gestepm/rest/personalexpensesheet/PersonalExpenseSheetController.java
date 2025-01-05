@@ -4,16 +4,19 @@ import com.epm.gestepm.lib.applocale.apimodel.service.AppLocaleService;
 import com.epm.gestepm.lib.controller.BaseController;
 import com.epm.gestepm.lib.controller.metadata.APIMetadata;
 import com.epm.gestepm.lib.controller.response.ResponseSuccessfulHelper;
+import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.creator.PersonalExpenseSheetCreateDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.deleter.PersonalExpenseSheetDeleteDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.filter.PersonalExpenseSheetFilterDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.finder.PersonalExpenseSheetByIdFinderDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.updater.PersonalExpenseSheetUpdateDto;
+import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetExportService;
 import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetService;
 import com.epm.gestepm.rest.common.CommonProviders;
 import com.epm.gestepm.rest.common.MetadataMapper;
@@ -26,18 +29,18 @@ import com.epm.gestepm.rest.personalexpensesheet.request.PersonalExpenseSheetFin
 import com.epm.gestepm.rest.personalexpensesheet.request.PersonalExpenseSheetListRestRequest;
 import com.epm.gestepm.rest.personalexpensesheet.response.ResponsesForPersonalExpenseSheet;
 import com.epm.gestepm.rest.personalexpensesheet.response.ResponsesForPersonalExpenseSheetList;
-import com.epm.gestepm.rest.shares.noprogrammed.decorators.NoProgrammedShareResponseDecorator;
 import com.epm.gestepm.restapi.openapi.api.PersonalExpenseSheetV1Api;
 import com.epm.gestepm.restapi.openapi.model.*;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import org.springframework.context.ApplicationContext;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.context.MessageSource;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -53,16 +56,24 @@ import static org.mapstruct.factory.Mappers.getMapper;
 public class PersonalExpenseSheetController extends BaseController implements PersonalExpenseSheetV1Api,
         ResponsesForPersonalExpenseSheet, ResponsesForPersonalExpenseSheetList {
 
+    private final LocaleProvider localeProvider;
+
+    private final MessageSource messageSource;
+
     private final PersonalExpenseSheetService personalExpenseSheetService;
 
+    private final PersonalExpenseSheetExportService personalExpenseSheetExportService;
+
     public PersonalExpenseSheetController(final CommonProviders commonProviders, final ApplicationContext appCtx,
-                                          final AppLocaleService appLocaleService, final ResponseSuccessfulHelper successHelper,
-                                          final PersonalExpenseSheetService personalExpenseSheetService) {
+                                          final AppLocaleService appLocaleService, final ResponseSuccessfulHelper successHelper, LocaleProvider localeProvider, MessageSource messageSource,
+                                          final PersonalExpenseSheetService personalExpenseSheetService, PersonalExpenseSheetExportService personalExpenseSheetExportService) {
         super(commonProviders.localeProvider(), commonProviders.executionRequestProvider(),
                 commonProviders.executionTimeProvider(), commonProviders.restContextProvider(), appCtx, appLocaleService,
                 successHelper);
-
+        this.localeProvider = localeProvider;
+        this.messageSource = messageSource;
         this.personalExpenseSheetService = personalExpenseSheetService;
+        this.personalExpenseSheetExportService = personalExpenseSheetExportService;
     }
 
     @Override
@@ -161,6 +172,31 @@ public class PersonalExpenseSheetController extends BaseController implements Pe
         this.personalExpenseSheetService.delete(deleteDto);
 
         return this.success(getMapper(ResSuccessMapper.class)::from);
+    }
+
+    @Override
+    @RequirePermits(value = PRMT_READ_PES, action = "Export personal expense sheet")
+    @LogExecution(operation = OP_READ)
+    public  ResponseEntity<Resource> exportPersonalExpenseSheetV1(final Integer personalExpenseSheetId) {
+        final String language = this.localeProvider.getLocale().orElse("es");
+        final java.util.Locale locale = new java.util.Locale(language);
+
+        final PersonalExpenseSheetDto personalExpenseSheet = this.personalExpenseSheetService.findOrNotFound(new PersonalExpenseSheetByIdFinderDto(personalExpenseSheetId));
+        final byte[] pdf = this.personalExpenseSheetExportService.generate(personalExpenseSheet);
+
+        final String dateFormat = "dd-MM-yyyy";
+        final Resource resource = new ByteArrayResource(pdf);
+        final String fileName = messageSource.getMessage("expense.pdf.name",
+                new Object[] {
+                        personalExpenseSheet.getId(),
+                        Utiles.transform(personalExpenseSheet.getStartDate(), dateFormat)
+                }, locale) + ".pdf";
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 }
 

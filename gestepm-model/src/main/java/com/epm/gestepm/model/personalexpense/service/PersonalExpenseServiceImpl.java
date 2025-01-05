@@ -23,6 +23,7 @@ import com.epm.gestepm.modelapi.personalexpense.service.PersonalExpenseService;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -108,6 +109,7 @@ public class PersonalExpenseServiceImpl implements PersonalExpenseService {
   }
 
   @Override
+  @Transactional
   @RequirePermits(value = PRMT_EDIT_PE, action = "Create new personal expense")
   @LogExecution(operation = OP_CREATE,
           debugOut = true,
@@ -125,6 +127,7 @@ public class PersonalExpenseServiceImpl implements PersonalExpenseService {
   }
 
   @Override
+  @Transactional
   @RequirePermits(value = PRMT_EDIT_PE, action = "Update personal expense")
   @LogExecution(operation = OP_UPDATE,
           debugOut = true,

@@ -6,7 +6,7 @@ import com.epm.gestepm.lib.entity.Orderable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.util.List;
+import java.util.Set;
 
 import static com.epm.gestepm.model.personalexpense.dao.constants.PersonalExpenseAttributes.ATTR_PE_IDS;
 import static com.epm.gestepm.model.personalexpense.dao.constants.PersonalExpenseAttributes.ATTR_PE_PES_ID;
@@ -15,7 +15,7 @@ import static com.epm.gestepm.model.personalexpense.dao.constants.PersonalExpens
 @EqualsAndHashCode(callSuper = true)
 public class PersonalExpenseFilter extends Orderable implements CollectableAttributes {
 
-  private List<Integer> ids;
+  private Set<Integer> ids;
 
   private Integer personalExpenseSheetId;
 
@@ -24,7 +24,7 @@ public class PersonalExpenseFilter extends Orderable implements CollectableAttri
 
     final AttributeMap map = new AttributeMap();
 
-    map.putList(ATTR_PE_IDS, this.ids);
+    map.putSet(ATTR_PE_IDS, this.ids);
     map.put(ATTR_PE_PES_ID, this.personalExpenseSheetId);
 
     return map;

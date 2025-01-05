@@ -2,6 +2,7 @@ package com.epm.gestepm.modelapi.personalexpense.dto.updater;
 
 import com.epm.gestepm.modelapi.personalexpense.dto.PaymentTypeEnumDto;
 import com.epm.gestepm.modelapi.personalexpense.dto.PriceTypeEnumDto;
+import com.epm.gestepm.modelapi.personalexpense.dto.creator.PersonalExpenseFileCreateDto;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -26,6 +27,6 @@ public class PersonalExpenseUpdateDto {
 
     private PaymentTypeEnumDto paymentType;
 
-    private List<Integer> fileIds;
+    private List<PersonalExpenseFileCreateDto> files;
 
 }

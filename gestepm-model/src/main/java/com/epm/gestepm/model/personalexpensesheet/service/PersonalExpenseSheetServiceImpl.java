@@ -4,8 +4,6 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
-import com.epm.gestepm.model.inspection.dao.entity.updater.InspectionUpdate;
-import com.epm.gestepm.model.inspection.service.mapper.MapIToInspectionUpdate;
 import com.epm.gestepm.model.personalexpensesheet.dao.PersonalExpenseSheetDao;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.PersonalExpenseSheet;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.PersonalExpenseSheetStatusEnum;
@@ -15,6 +13,8 @@ import com.epm.gestepm.model.personalexpensesheet.dao.entity.filter.PersonalExpe
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.finder.PersonalExpenseSheetByIdFinder;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.updater.PersonalExpenseSheetUpdate;
 import com.epm.gestepm.model.personalexpensesheet.service.mapper.*;
+import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
+import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenPersonalExpenseSheetMailTemplateDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.creator.PersonalExpenseSheetCreateDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.deleter.PersonalExpenseSheetDeleteDto;
@@ -23,9 +23,14 @@ import com.epm.gestepm.modelapi.personalexpensesheet.dto.finder.PersonalExpenseS
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.updater.PersonalExpenseSheetUpdateDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.exception.PersonalExpenseSheetNotFoundException;
 import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetService;
+import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.user.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -42,10 +47,22 @@ import static org.mapstruct.factory.Mappers.getMapper;
 @EnableExecutionLog(layerMarker = SERVICE)
 public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetService {
 
+  private final HttpServletRequest request;
+
   private final PersonalExpenseSheetDao personalExpenseSheetDao;
 
-  public PersonalExpenseSheetServiceImpl(PersonalExpenseSheetDao personalExpenseSheetDao) {
-    this.personalExpenseSheetDao = personalExpenseSheetDao;
+  private final ProjectService projectService;
+
+  private final SMTPService smtpService;
+
+  private final UserService userService;
+
+  public PersonalExpenseSheetServiceImpl(HttpServletRequest request, PersonalExpenseSheetDao personalExpenseSheetDao, ProjectService projectService, SMTPService smtpService, UserService userService) {
+      this.request = request;
+      this.personalExpenseSheetDao = personalExpenseSheetDao;
+      this.projectService = projectService;
+      this.smtpService = smtpService;
+      this.userService = userService;
   }
 
   @Override
@@ -124,8 +141,11 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
     create.setStatus(PersonalExpenseSheetStatusEnum.PENDING);
 
     final PersonalExpenseSheet result = this.personalExpenseSheetDao.create(create);
+    final PersonalExpenseSheetDto personalExpenseSheetDto = getMapper(MapPESToPersonalExpenseSheetDto.class).from(result);
 
-    return getMapper(MapPESToPersonalExpenseSheetDto.class).from(result);
+    this.sendMail(personalExpenseSheetDto);
+
+    return personalExpenseSheetDto;
   }
 
   @Override
@@ -167,5 +187,21 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
     final PersonalExpenseSheetDelete delete = getMapper(MapPESToPersonalExpenseSheetDelete.class).from(deleteDto);
 
     this.personalExpenseSheetDao.delete(delete);
+  }
+
+  private void sendMail(final PersonalExpenseSheetDto personalExpenseSheetDto) {
+    final Project project = this.projectService.getProjectById(personalExpenseSheetDto.getProjectId().longValue());
+
+    final OpenPersonalExpenseSheetMailTemplateDto template = new OpenPersonalExpenseSheetMailTemplateDto();
+    template.setLocale(request.getLocale());
+    template.setPersonalExpenseSheetDto(personalExpenseSheetDto);
+    template.setProject(project);
+
+    project.getBossUsers().stream().filter(user -> user.getState() == 0).forEach(user -> {
+      template.setEmail(user.getEmail());
+      template.setUser(user);
+
+      smtpService.openPersonalExpenseSheetSendMail(template);
+    });
   }
 }

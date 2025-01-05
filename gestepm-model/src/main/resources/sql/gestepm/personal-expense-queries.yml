@@ -65,13 +65,13 @@ sql:
       price_type = :attr_pe_price_type,
       quantity = :attr_pe_quantity,
       amount = :attr_pe_amount,
-      paymentType = :attr_pe_payment_type,
+      payment_type = :attr_pe_payment_type
     WHERE
       personal_expense_id = :attr_pe_id
 
   qry-delete-pe: |
 
-    DELETE FROM ${sch-gestepm}.personal_expense WHERE personal_expense_id = :attr_pe_id
+    DELETE FROM ${sch-gestepm}.personal_expense WHERE personal_expense_id IN (:attr_pe_ids)
 
   filter-pe-by-params: |
 
@@ -88,11 +88,11 @@ sql:
 
   predicate-for-pe-id: |
 
-    pe.personal_expense_sheet_id = :attr_pe_id
+    pe.personal_expense_id = :attr_pe_id
 
   predicate-for-pe-ids: |
 
-    pe.personal_expense_sheet_id IN (:attr_pe_ids)
+    pe.personal_expense_id IN (:attr_pe_ids)
 
   predicate-for-pe-pes-id: |
 

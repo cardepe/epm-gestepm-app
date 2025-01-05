@@ -197,4 +197,7 @@
         <put-attribute name="body" value="/ui/jsp/view/errors/simpleError.jsp" />
     </definition>
 
+    <!-- Mail Template -->
+    <definition name="emailTemplate" template="/ui/jsp/templates/emailTemplate.jsp"></definition>
+
 </tiles-definitions>

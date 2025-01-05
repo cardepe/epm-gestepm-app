@@ -2,6 +2,7 @@ package com.epm.gestepm.model.personalexpense.dao.entity.updater;
 
 import com.epm.gestepm.lib.entity.AttributeMap;
 import com.epm.gestepm.lib.entity.CollectableAttributes;
+import com.epm.gestepm.model.personalexpense.dao.entity.creator.PersonalExpenseFileCreate;
 import com.epm.gestepm.modelapi.personalexpense.dto.PaymentTypeEnumDto;
 import com.epm.gestepm.modelapi.personalexpense.dto.PriceTypeEnumDto;
 import lombok.Data;
@@ -32,7 +33,7 @@ public class PersonalExpenseUpdate implements CollectableAttributes {
 
     private PaymentTypeEnumDto paymentType;
 
-    private List<Integer> fileIds;
+    private List<PersonalExpenseFileCreate> files;
 
     @Override
     public AttributeMap collectAttributes() {

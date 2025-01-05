@@ -21,6 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.csrf().disable()
 			.authorizeRequests()
 				.antMatchers("/login*").permitAll()
+				.antMatchers("/templates/**").permitAll()
 				.antMatchers("/v1/**").permitAll() // TODO: change login and security
 				.antMatchers("/shares**").hasAuthority(Constants.ROLE_PL)
 				// .antMatchers("/users").hasAuthority(Constants.ROLE_PL)

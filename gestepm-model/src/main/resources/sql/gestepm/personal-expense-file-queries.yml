@@ -1,6 +1,6 @@
 sql:
 
-  qry-list-of-if: |
+  qry-list-of-pef: |
     
     SELECT
       pef.personal_expense_file_id AS id_pagination,
@@ -12,7 +12,7 @@ sql:
     
     #whereToken #filter
 
-  qry-create-if: |
+  qry-create-pef: |
     
     INSERT INTO ${sch-gestepm}.personal_expense_file (
       personal_expense_id,
@@ -20,32 +20,32 @@ sql:
       content
     )
     VALUES (
-      :attr_if_personal_expense_id,
-      :attr_if_name,
-      :attr_if_content
+      :attr_pef_pe_id,
+      :attr_pef_name,
+      :attr_pef_content
     )
 
-  filter-if-by-params: |
+  filter-pef-by-params: |
 
     -- [AND
-      -- ${sql.predicate-for-if-ids}
-      -- ${sql.predicate-for-if-personal_expense-id}
+      -- ${sql.predicate-for-pef-ids}
+      -- ${sql.predicate-for-pef-pe-id}
     -- AND]
 
-  filter-if-by-id: |
+  filter-pef-by-id: |
 
     -- [AND
-      -- ${sql.predicate-for-if-id}
+      -- ${sql.predicate-for-pef-id}
     -- AND]
 
-  predicate-for-if-id: |
+  predicate-for-pef-id: |
 
-    pef.personal_expense_file_id = :attr_if_id
+    pef.personal_expense_file_id = :attr_pef_id
 
-  predicate-for-if-ids: |
+  predicate-for-pef-ids: |
 
-    pef.personal_expense_file_id IN (:attr_if_ids)
+    pef.personal_expense_file_id IN (:attr_pef_ids)
 
-  predicate-for-if-personal_expense-id: |
+  predicate-for-pef-pe-id: |
 
-    pef.personal_expense_id = :attr_if_personal_expense_id
+    pef.personal_expense_id = :attr_pef_pe_id
