@@ -14,7 +14,6 @@ import com.epm.gestepm.modelapi.holiday.dto.Holiday;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.deprecated.interventionsubshare.dto.InterventionSubShare;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
-import com.epm.gestepm.modelapi.pricetype.dto.PriceType;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import com.epm.gestepm.modelapi.user.dto.User;
@@ -257,8 +256,6 @@ public class DataTableUtil {
 				return MaterialRequired.class;
 			case "pr":
 				return Project.class;
-			case "pi":
-				return PriceType.class;
 			case "pv":
 				return ActivityCenter.class;
 			case "si":

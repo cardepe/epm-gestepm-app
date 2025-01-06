@@ -1,6 +1,7 @@
 package com.epm.gestepm.modelapi.expensefile.dto;
 
 import com.epm.gestepm.modelapi.expense.dto.Expense;
+import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,78 +12,24 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+@Data
 @Entity
-@Table(name = "expense_files")
+@Table(name = "personal_expense_file")
 public class ExpenseFile {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID", unique = true, nullable = false, precision = 10)
+	@Column(name = "personal_expense_file_id", unique = true, nullable = false, precision = 10)
 	private Long id;
 
-	@Column(name = "NAME", nullable = false, length = 64)
+	@Column(name = "name", nullable = false, length = 64)
 	private String name;
 
-	@Column(name = "EXT", nullable = false, length = 6)
-	private String ext;
-
-	@Column(name = "CONTENT", nullable = false)
+	@Column(name = "content", nullable = false)
 	private byte[] content;
 	
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "EXPENSE_ID", nullable = false)
+	@JoinColumn(name = "personal_expense_id", nullable = false)
 	private Expense expense;
-	
-	public ExpenseFile() {
-		super();
-	}
 
-	public ExpenseFile(Long id, String name, String ext, byte[] content, Expense expense) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.ext = ext;
-		this.content = content;
-		this.expense = expense;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getExt() {
-		return ext;
-	}
-
-	public void setExt(String ext) {
-		this.ext = ext;
-	}
-
-	public byte[] getContent() {
-		return content;
-	}
-
-	public void setContent(byte[] content) {
-		this.content = content;
-	}
-
-	public Expense getExpense() {
-		return expense;
-	}
-
-	public void setExpense(Expense expense) {
-		this.expense = expense;
-	}
 }

@@ -1,6 +1,5 @@
 package com.epm.gestepm.controller;
 
-import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheetTableDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectTableDTO;
@@ -14,8 +13,6 @@ import com.epm.gestepm.model.user.service.mapper.UserMapper;
 import com.epm.gestepm.modelapi.absencetype.dto.AbsenceType;
 import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.deprecated.country.dto.Country;
-import com.epm.gestepm.modelapi.expense.dto.Expense;
-import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.role.dto.Role;
@@ -24,7 +21,6 @@ import com.epm.gestepm.modelapi.user.service.UserService;
 import com.epm.gestepm.modelapi.userabsence.dto.UserAbsence;
 import com.epm.gestepm.modelapi.userabsence.dto.UserAbsenceDTO;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
-import com.epm.gestepm.modelapi.expensesheet.service.ExpenseSheetService;
 import com.epm.gestepm.modelapi.manualsigningtype.service.ManualSigningTypeService;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.role.service.RoleService;
@@ -43,7 +39,6 @@ import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,9 +80,6 @@ public class UserController {
 	
 	@Autowired
 	private UserAbsencesService userAbsenceService;
-	
-	@Autowired
-	private ExpenseSheetService expenseSheetService;
 	
 	@Autowired
 	private SubRoleService subRoleService;
@@ -509,50 +501,7 @@ public class UserController {
 			return new ResponseEntity<>(messageSource.getMessage("user.detail.absences.derror", new Object[] { }, locale), HttpStatus.NOT_FOUND);
 		}
 	}
-	
-	@ResponseBody
-	@GetMapping("/{id}/expenses/dt")
-	public DataTableResults<ExpenseSheetTableDTO> userExpensesDatatable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
 
-		try {
-
-			// Recover user
-			User user = Utiles.getUsuario();
-			Role role = user.getRole();
-			
-			List<ExpenseSheetTableDTO> expenseSheets = new ArrayList<>();
-			Long totalRecords = NumberUtils.LONG_ZERO;
-			
-			DataTableRequest<Expense> dataTableInRQ = new DataTableRequest<>(request);
-			PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
-			
-			if (role.getId() == Constants.ROLE_ADMINISTRATION_ID) {
-				expenseSheets = expenseSheetService.getExpenseSheetsByRRHHDataTables(id, pagination);
-				totalRecords = expenseSheetService.getExpenseSheetsCountByRRHH(id);
-			} else if (role.getId() == Constants.ROLE_ADMIN_ID) {
-				expenseSheets = expenseSheetService.getExpenseSheetsByUserDataTables(id, pagination);
-				totalRecords = expenseSheetService.getExpenseSheetsCountByUser(id);
-			}
-
-			DataTableResults<ExpenseSheetTableDTO> dataTableResult = new DataTableResults<>();
-			dataTableResult.setDraw(dataTableInRQ.getDraw());
-			dataTableResult.setData(expenseSheets);
-			dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
-			dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
-
-			if (expenseSheets != null && !expenseSheets.isEmpty()
-					&& !dataTableInRQ.getPaginationRequest().isFilterByEmpty()) {
-				dataTableResult.setRecordsFiltered(Integer.toString(expenseSheets.size()));
-			}
-
-			return dataTableResult;
-
-		} catch (InvalidUserSessionException e) {
-			log.error(e);
-			return null;
-		}
-	}
-	
 	@ResponseBody
 	@GetMapping("/{id}/projects/dt")
 	public DataTableResults<ProjectTableDTO> userProjectsDatatable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
@@ -583,42 +532,6 @@ public class UserController {
 			return null;
 		}
 	}
-	
-	@GetMapping("/{id}/expenses/{sheetId}/view")
-	public String personalExpensesCreate(@PathVariable("id") Long id, @PathVariable("sheetId") Long sheetId,
-			Locale locale, Model model, HttpServletRequest request) {
-
-		try {
-
-			// Loading constants
-			ModelUtil.loadConstants(locale, model, request);
-
-			User me = Utiles.getUsuario();
-			
-			// Log info
-			log.info("El usuario " + me.getId() + " ha accedido a la vista de detalle de la hoja de gastos " + sheetId);
-
-			// Recover expense sheet
-			ExpenseSheet expenseSheet = expenseSheetService.getExpenseSheetByIdAndUserId(sheetId, id);
-
-			// Recover user
-			User user = expenseSheet.getUser();
-
-			// Adding attributes to view
-			model.addAttribute("userLoaded", user);
-			model.addAttribute("backUrl", "/users/" + id);
-			model.addAttribute("expenseSheet", expenseSheet);
-			model.addAttribute("tableActionButtons", ModelUtil.getTableDownloadButtons());
-
-			// Loading view
-			return "personal-expenses-view";
-
-		} catch (InvalidUserSessionException e) {
-			log.error(e);
-			return "redirect:/login";
-		}
-	}
-
 
 	@ResponseBody
 	@DeleteMapping("/delete/{userId}")

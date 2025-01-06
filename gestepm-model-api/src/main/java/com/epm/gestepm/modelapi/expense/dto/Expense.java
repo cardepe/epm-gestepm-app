@@ -2,8 +2,8 @@ package com.epm.gestepm.modelapi.expense.dto;
 
 import com.epm.gestepm.modelapi.expensefile.dto.ExpenseFile;
 import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
-import com.epm.gestepm.modelapi.paymenttype.dto.PaymentType;
-import com.epm.gestepm.modelapi.pricetype.dto.PriceType;
+import com.epm.gestepm.modelapi.personalexpense.dto.PaymentTypeEnumDto;
+import com.epm.gestepm.modelapi.personalexpense.dto.PriceTypeEnumDto;
 import lombok.Data;
 
 import java.util.Date;
@@ -50,14 +50,12 @@ public class Expense {
 
     @Column(name="amount", nullable=false, length=22)
     private double total;
-    
-    @ManyToOne(optional=false)
-    @JoinColumn(name="price_type", nullable=false)
-    private PriceType priceType;
-    
-    @ManyToOne(optional=false)
-    @JoinColumn(name="payment_type", nullable=false)
-    private PaymentType paymentType;
+
+    @Column(name="price_type", nullable=false)
+    private PriceTypeEnumDto priceType;
+
+    @Column(name="payment_type", nullable=false)
+    private PaymentTypeEnumDto paymentType;
     
     @OneToMany(mappedBy = "expense")
 	private List<ExpenseFile> files;

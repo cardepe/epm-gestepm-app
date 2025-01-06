@@ -23,8 +23,6 @@ import com.epm.gestepm.modelapi.displacement.dto.DisplacementDTO;
 import com.epm.gestepm.modelapi.displacement.dto.DisplacementTableDTO;
 import com.epm.gestepm.modelapi.displacement.service.DisplacementService;
 import com.epm.gestepm.modelapi.displacementshare.service.DisplacementShareService;
-import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
-import com.epm.gestepm.modelapi.expensesheet.service.ExpenseSheetService;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
 import com.epm.gestepm.modelapi.family.dto.FamilyTableDTO;
@@ -116,9 +114,6 @@ public class ProjectController {
 
 	@Autowired
 	private UserService userService;
-
-	@Autowired
-	private ExpenseSheetService expenseSheetService;
 	
 	@Autowired
 	private UserForumService userForumService;
@@ -910,66 +905,6 @@ public class ProjectController {
 			return new ResponseEntity<>(
 					messageSource.getMessage("project.detail.bosses.boss.derror", new Object[] {}, locale),
 					HttpStatus.NOT_FOUND);
-		}
-	}
-
-	@ResponseBody
-	@GetMapping("/{id}/expenses/dt")
-	public DataTableResults<ProjectExpenseSheetDTO> projectExpensesDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
-
-		DataTableRequest<Project> dataTableInRQ = new DataTableRequest<>(request);
-		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
-
-		List<ProjectExpenseSheetDTO> expenses = expenseSheetService.getProjectExpenseSheetDTOsByProjectId(id,
-				pagination);
-
-		Long totalRecords = expenseSheetService.getProjectExpenseSheetDTOsCountByProjectId(id);
-
-		DataTableResults<ProjectExpenseSheetDTO> dataTableResult = new DataTableResults<>();
-		dataTableResult.setDraw(dataTableInRQ.getDraw());
-		dataTableResult.setData(expenses);
-		dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
-		dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
-
-		if (!expenses.isEmpty() && !dataTableInRQ.getPaginationRequest().isFilterByEmpty()) {
-			dataTableResult.setRecordsFiltered(Integer.toString(expenses.size()));
-		}
-
-		return dataTableResult;
-	}
-
-	@GetMapping("/{id}/expenses/{sheetId}/view")
-	public String personalExpensesCreate(@PathVariable("id") Long id, @PathVariable("sheetId") Long sheetId,
-			Locale locale, Model model, HttpServletRequest request) {
-
-		try {
-
-			// Loading constants
-			ModelUtil.loadConstants(locale, model, request);
-
-			User me = Utiles.getUsuario();
-			
-			// Log info
-			log.info("El usuario " + me.getId() + " ha accedido a la vista de detalle de la hoja de gastos " + sheetId);
-
-			// Recover expense sheet
-			ExpenseSheet expenseSheet = expenseSheetService.getExpenseSheetByIdAndProjectId(sheetId, id);
-
-			// Recover user
-			User user = expenseSheet.getUser();
-
-			// Adding attributes to view
-			model.addAttribute("userLoaded", user);
-			model.addAttribute("backUrl", "/projects/" + id);
-			model.addAttribute("expenseSheet", expenseSheet);
-			model.addAttribute("tableActionButtons", ModelUtil.getTableDownloadButtons());
-
-			// Loading view
-			return "personal-expenses-view";
-
-		} catch (InvalidUserSessionException e) {
-			log.error(e);
-			return "redirect:/login";
 		}
 	}
 
