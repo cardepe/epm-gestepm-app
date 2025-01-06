@@ -40,15 +40,9 @@ public interface MapNPSToNoProgrammedShareResponse {
 
   @Named("mapFiles")
   static Set<ShareFile> mapFiles(final Set<Integer> fileIds) {
-
-    return fileIds.stream().map(id -> {
-
-      final ShareFile shareFile = new ShareFile();
-      shareFile.setId(id);
-
-      return shareFile;
-
-    }).collect(Collectors.toSet());
+    return fileIds.stream()
+            .map(id -> new ShareFile().id(id))
+            .collect(Collectors.toSet());
   }
 
   @AfterMapping

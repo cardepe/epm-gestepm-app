@@ -1,9 +1,9 @@
 package com.epm.gestepm.modelapi.common.utils.datatables.util;
 
-import com.epm.gestepm.modelapi.activitycenter.dto.ActivityCenter;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.common.utils.datatables.SortOrder;
-import com.epm.gestepm.modelapi.country.dto.Country;
+import com.epm.gestepm.modelapi.deprecated.country.dto.Country;
 import com.epm.gestepm.modelapi.displacement.dto.Displacement;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
 import com.epm.gestepm.modelapi.expense.dto.Expense;
@@ -11,10 +11,9 @@ import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
 import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.holiday.dto.Holiday;
-import com.epm.gestepm.modelapi.interventionshare.dto.InterventionShare;
-import com.epm.gestepm.modelapi.interventionsubshare.dto.InterventionSubShare;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
+import com.epm.gestepm.modelapi.deprecated.interventionsubshare.dto.InterventionSubShare;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
-import com.epm.gestepm.modelapi.pricetype.dto.PriceType;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import com.epm.gestepm.modelapi.user.dto.User;
@@ -257,8 +256,6 @@ public class DataTableUtil {
 				return MaterialRequired.class;
 			case "pr":
 				return Project.class;
-			case "pi":
-				return PriceType.class;
 			case "pv":
 				return ActivityCenter.class;
 			case "si":

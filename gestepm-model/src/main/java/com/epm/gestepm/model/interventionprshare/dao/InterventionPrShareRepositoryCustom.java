@@ -2,7 +2,7 @@ package com.epm.gestepm.model.interventionprshare.dao;
 
 import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -223,7 +223,6 @@
 <script>
 
     let locale = '${locale}';
-    let $ = jQuery.noConflict();
 
     let lastPageUrl;
     let returnBtn = $('#returnBtn');
@@ -416,7 +415,7 @@
         document.querySelector('#finishBtn').classList.remove('d-none');
         document.querySelector('#createInspectionBtn').classList.remove('d-none');
 
-        disableEditForm();
+        disableForm('#editForm');
         showFiles();
 
         currentMode = 'WORKING';
@@ -431,32 +430,11 @@
         document.querySelector('#createInspectionBtn').remove();
 
         if (currentMode !== 'WORKING') {
-            disableEditForm();
+            disableForm('#editForm');
             showFiles();
         }
 
         currentMode = 'COMPLETED';
-    }
-
-    function disableEditForm() {
-        const form = document.querySelector('#editForm');
-        const files = form.querySelector('[name="files"]');
-
-        if (files) {
-            files.remove();
-        }
-
-        const elements = form.querySelectorAll('input, textarea, select');
-        elements.forEach(element => element.disabled = true);
-    }
-
-    function toBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result.split(",")[1]);
-            reader.onerror = (error) => reject(error);
-            reader.readAsDataURL(file);
-        });
     }
 
     function appendElementToList(element, list) {
@@ -494,7 +472,7 @@
         ]
 
         customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
-        createDataTable('#dTable', customDataTable, locale);
+        dTable = createDataTable('#dTable', customDataTable, locale);
     }
 
     function parseTypeToBadge(data) {

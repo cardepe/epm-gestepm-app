@@ -119,8 +119,6 @@
 
 <script>
 
-	let $ = jQuery.noConflict();
-
 	let selectedDayColor = '#FFAE00';
 	let approvedColor = '#229954';
 	let rejectedColor = '#E74C3C';

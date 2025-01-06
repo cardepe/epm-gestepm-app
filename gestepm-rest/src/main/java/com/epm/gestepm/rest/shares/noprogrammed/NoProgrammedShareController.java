@@ -107,10 +107,10 @@ public class NoProgrammedShareController extends BaseController implements NoPro
 
         final NoProgrammedShareCreateDto createDto = getMapper(MapNPSToNoProgrammedShareCreateDto.class).from(reqCreateNoProgrammedShare);
 
-        final NoProgrammedShareDto countryDto = this.noProgrammedShareService.create(createDto);
+        final NoProgrammedShareDto noProgrammedShareDto = this.noProgrammedShareService.create(createDto);
 
         final APIMetadata metadata = this.getDefaultMetadata();
-        final NoProgrammedShare data = getMapper(MapNPSToNoProgrammedShareResponse.class).from(countryDto);
+        final NoProgrammedShare data = getMapper(MapNPSToNoProgrammedShareResponse.class).from(noProgrammedShareDto);
 
         final CreateNoProgrammedShareV1200Response response = new CreateNoProgrammedShareV1200Response();
         response.setMetadata(getMapper(MetadataMapper.class).from(metadata));

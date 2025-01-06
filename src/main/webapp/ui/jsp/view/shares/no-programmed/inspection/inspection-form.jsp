@@ -357,16 +357,7 @@
         ]
 
         customDataTable = new CustomDataTable(columns, null, inspection.materials, actions, null,  null, null, columnDefs);
-        createSimpleDataTable('#materialsTable', customDataTable, locale);
-    }
-
-    function toBase64(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result.split(",")[1]);
-            reader.onerror = (error) => reject(error);
-            reader.readAsDataURL(file);
-        });
+        dTable = createSimpleDataTable('#materialsTable', customDataTable, locale);
     }
 
     function showFiles(files, fileName, filesId) {

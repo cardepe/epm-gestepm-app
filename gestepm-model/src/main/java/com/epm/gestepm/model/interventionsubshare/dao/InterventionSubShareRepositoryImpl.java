@@ -1,8 +1,8 @@
 package com.epm.gestepm.model.interventionsubshare.dao;
 
-import com.epm.gestepm.modelapi.interventionshare.dto.InterventionShare;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
-import com.epm.gestepm.modelapi.interventionsubshare.dto.InterventionSubShare;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionsubshare.dto.InterventionSubShare;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;

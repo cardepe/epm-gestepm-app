@@ -14,6 +14,20 @@ public class ResultSetMappingUtils {
     private ResultSetMappingUtils() {
     }
 
+    public static Double nullableDouble(final ResultSet resultSet, final String col) throws SQLException {
+
+        if (!hasColumn(resultSet, col)) {
+
+            return null;
+
+        } else {
+
+            final double anInt = resultSet.getDouble(col);
+
+            return resultSet.wasNull() ? null : anInt;
+        }
+    }
+
     public static Integer nullableInt(final ResultSet resultSet, final String col) throws SQLException {
 
         if (!hasColumn(resultSet, col)) {

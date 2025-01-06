@@ -269,7 +269,6 @@
 <script>
 
     let locale = '${locale}';
-    let $ = jQuery.noConflict();
 
     $(document).ready(function() {
 
@@ -295,7 +294,7 @@
         ]
 
         customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnsDef);
-        createDataTable('#dTable', customDataTable, locale);
+        dTable = createDataTable('#dTable', customDataTable, locale);
     });
 
 </script>

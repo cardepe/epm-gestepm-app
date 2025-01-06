@@ -6,7 +6,7 @@ import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShareTableDTO;
 import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import org.springframework.stereotype.Repository;
 

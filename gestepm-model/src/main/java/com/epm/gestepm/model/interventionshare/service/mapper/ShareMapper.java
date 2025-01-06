@@ -14,7 +14,7 @@ import com.epm.gestepm.modelapi.expense.dto.FileDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShareFile;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningDTO;
 import com.epm.gestepm.modelapi.project.dto.Project;
@@ -31,8 +31,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 

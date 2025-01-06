@@ -1,5 +1,3 @@
-var $ = jQuery.noConflict();
-
 function parseActionButtons() {
 
     var tableRows = $('#msTable tbody tr');

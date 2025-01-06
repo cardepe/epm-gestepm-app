@@ -2,7 +2,7 @@ package com.epm.gestepm.modelapi.usersigning.dto;
 
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.interventionshare.dto.InterventionShare;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;

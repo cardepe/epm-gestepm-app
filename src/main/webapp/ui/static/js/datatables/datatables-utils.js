@@ -61,7 +61,7 @@ class CustomDataTable {
 }
 
 function createSimpleDataTable(tableId, customDataTable, locale) {
-    dTable = $(tableId).DataTable({
+    return $(tableId).DataTable({
         lengthChange: false,
         searching: false,
         processing: true,
@@ -75,12 +75,10 @@ function createSimpleDataTable(tableId, customDataTable, locale) {
         fixedColumns: customDataTable.stickyColumns,
         dom: '<\'top\'i>rt<\'bottom\'p><\'clear\'>',
     })
-
-    return dTable;
 }
 
 function createDataTable(tableId, customDataTable, locale) {
-    dTable = $(tableId).DataTable({
+    return $(tableId).DataTable({
         lengthChange: false,
         searching: false,
         processing: true,
@@ -92,7 +90,7 @@ function createDataTable(tableId, customDataTable, locale) {
             //     let token = getToken()
             //     request.setRequestHeader('Authorization', 'Bearer ' + token)
             // },
-            data: function(d) {
+            data: function (d) {
                 calculateQueryParams(d, customDataTable)
             },
             dataSrc: function (res) {
@@ -112,17 +110,19 @@ function createDataTable(tableId, customDataTable, locale) {
         fixedColumns: customDataTable.stickyColumns,
         dom: '<\'top\'i>rt<\'bottom\'p><\'clear\'>',
     })
-
-    return dTable;
 }
 
 function generateQueryParams(settings) {
 
     let staticParams = ['offset', 'limit', '_expand'];
     let data = settings.oAjaxData;
-    let ajaxData = { ...data };
+    let ajaxData = {...data};
     let pageNumber = ajaxData.offset / ajaxData.limit + 1;
-    if (pageNumber > 1) { ajaxData.pageNumber = pageNumber; } else { delete ajaxData.pageNumber; }
+    if (pageNumber > 1) {
+        ajaxData.pageNumber = pageNumber;
+    } else {
+        delete ajaxData.pageNumber;
+    }
     let keys = Object.keys(ajaxData).filter(field => !staticParams.includes(field) && ajaxData[field] !== undefined);
     let queryParams = keys.map(key => {
         return key + '=' + ajaxData[key];
@@ -147,8 +147,8 @@ function generateColumnDefs(customDataTable) {
         {
             targets: -1,
             orderable: false,
-            render: function(data, type, row) {
-                return printActions(customDataTable.actions, row.id)
+            render: function (data, type, row) {
+                return printActions(row, customDataTable.actions, row.id)
             }
         }
     )
@@ -202,13 +202,15 @@ function calculateFiltersQueryParams(d, customDataTable) {
 
 function calculateOrderQueryParams(d, customDataTable) {
 
-    let info = dTable.order()
+    if (dTable) {
+        let info = dTable.order()
 
-    let orderIndex = info[0][0]
-    let order = info[0][1]
+        let orderIndex = info[0][0]
+        let order = info[0][1]
 
-    d.order = order
-    d.orderBy = customDataTable.columns[orderIndex]
+        d.order = order
+        d.orderBy = customDataTable.columns[orderIndex]
+    }
 }
 
 function calculateExpandQueryParams(d, customDataTable) {
@@ -223,7 +225,7 @@ function parseArrayToDataTableColumns(columns) {
     let dtColumns = []
 
     columns.forEach(c => {
-        let columnObject = { data: c }
+        let columnObject = {data: c}
         dtColumns.push(columnObject)
     });
 
@@ -241,7 +243,7 @@ function countToArray(count) {
     return arrayCount;
 }
 
-function printActions(actions, id) {
+function printActions(data, actions, id) {
 
     let buttonHtml = '';
 
@@ -249,14 +251,26 @@ function printActions(actions, id) {
 
         if (a.action === 'view') { // FIXME: && a.permission && authentication.permissions.includes(a.permission)) {
             buttonHtml += '<a href="' + a.url.replace('{id}', id) + '" class="menu-link">' +
-                '<em class="far fa-eye" onclick="edit(' + id + ')"></em>' +
+                '<em class="far fa-eye"></em>' +
                 '</a>';
+        }
+
+        if (a.action === 'validate') {
+            if (checkConditions(data, a.condition)) {
+                buttonHtml += '<em class="far fa-thumbs-up" onclick="validate(' + id + ')"></em>';
+            }
+        }
+
+        if (a.action === 'decline') {
+            if (checkConditions(data, a.condition)) {
+                buttonHtml += '<em class="far fa-thumbs-down" onclick="decline(' + id + ')"></em>';
+            }
         }
 
         if (a.action === 'edit') { // FIXME: } && a.permission && authentication.permissions.includes(a.permission)) {
             if (a.type === 'redirect') {
                 buttonHtml += '<a href="' + a.url.replace('{id}', id) + '" class="menu-link">' +
-                    '<em class="fas fa-edit" onclick="edit(' + id + ')"></em>' +
+                    '<em class="fas fa-edit"></em>' +
                     '</a>';
             } else {
                 buttonHtml += '<em class="fas fa-edit" onclick="edit(' + id + ')"></em>';
@@ -264,7 +278,9 @@ function printActions(actions, id) {
         }
 
         if (a.action === 'delete') { // FIXME: } && a.permission && authentication.permissions.includes(a.permission)) {
-            buttonHtml += '<em class="far fa-trash-alt" onclick="remove(' + id + ')"></em>';
+            if (checkConditions(data, a.condition)) {
+                buttonHtml += '<em class="far fa-trash-alt" onclick="remove(' + id + ')"></em>';
+            }
         }
 
         if (a.action === 'file-pdf') {
@@ -275,4 +291,23 @@ function printActions(actions, id) {
     });
 
     return buttonHtml;
+}
+
+function checkConditions(data, condition) {
+
+    if (condition) {
+        if (condition.key === 'status') {
+            if (condition.operation === '!==') {
+                if (condition.value.includes(data.status)) {
+                    return false;
+                }
+            } else if (condition.operation === '===') {
+                if (!condition.value.includes(data.status)) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
 }

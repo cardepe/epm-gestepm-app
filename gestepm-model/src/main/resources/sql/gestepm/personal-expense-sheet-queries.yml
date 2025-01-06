@@ -1,0 +1,114 @@
+sql:
+
+  qry-list-of-pes: |
+    
+    SELECT
+      pes.personal_expense_sheet_id AS id_pagination,
+      pes.personal_expense_sheet_id,
+      pes.user_id,
+      pes.project_id,
+      pes.description,
+      pes.start_date,
+      pes.status,
+      pes.observations,
+      pe.personal_expense_id,
+      pe.amount
+    FROM ${sch-gestepm}.personal_expense_sheet pes
+    LEFT JOIN ${sch-gestepm}.personal_expense pe ON pes.personal_expense_sheet_id = pe.personal_expense_sheet_id
+
+    #whereToken #filter
+
+  qry-page-of-pes: |
+
+    ${sql.paginated-query-group-prefix}
+    ${sql.qry-list-of-pes}
+    ${sql.paginated-query-suffix}
+
+  qry-count-of-pes: |
+
+    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    FROM (${sql.qry-list-of-pes}) final
+
+  qry-create-pes: |
+    
+    INSERT INTO ${sch-gestepm}.personal_expense_sheet (
+      user_id,
+      project_id,
+      description,
+      start_date,
+      status
+    )
+    VALUES (
+      :attr_pes_user_id,
+      :attr_pes_project_id,
+      :attr_pes_description,
+      :attr_pes_start_date,
+      :attr_pes_status
+    )
+
+  qry-update-pes: |
+    
+    UPDATE
+      ${sch-gestepm}.personal_expense_sheet
+    SET
+      project_id = :attr_pes_project_id,
+      description = :attr_pes_description,
+      start_date = :attr_pes_start_date,
+      status = :attr_pes_status,
+      observations = :attr_pes_observations
+    WHERE
+      personal_expense_sheet_id = :attr_pes_id
+
+  qry-delete-pes: |
+
+    DELETE FROM ${sch-gestepm}.personal_expense_sheet WHERE personal_expense_sheet_id = :attr_pes_id
+
+  filter-pes-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-pes-ids}
+      -- ${sql.predicate-for-pes-user-id}
+      -- ${sql.predicate-for-pes-project-id}
+      -- ${sql.predicate-for-pes-description}
+      -- ${sql.predicate-for-pes-start-date}
+      -- ${sql.predicate-for-pes-status}
+      -- ${sql.predicate-for-pes-observations}
+    -- AND]
+
+  filter-pes-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-pes-id}
+    -- AND]
+
+  predicate-for-pes-id: |
+
+    pes.personal_expense_sheet_id = :attr_pes_id
+
+  predicate-for-pes-ids: |
+
+    pes.personal_expense_sheet_id IN (:attr_pes_ids)
+
+  predicate-for-pes-user-id: |
+
+    pes.user_id = :attr_pes_user_id
+
+  predicate-for-pes-project-id: |
+    
+    pes.project_id = :attr_pes_project_id
+
+  predicate-for-pes-description: |
+    
+    pes.description LIKE :attr_pes_description
+
+  predicate-for-pes-start-date: |
+    
+    pes.start_date > :attr_pes_start_date
+
+  predicate-for-pes-status: |
+
+    pes.status = :attr_pes_status
+
+  predicate-for-pes-observations: |
+
+    pes.observations LIKE :attr_pes_observations

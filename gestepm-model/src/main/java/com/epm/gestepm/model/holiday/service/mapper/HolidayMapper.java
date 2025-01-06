@@ -1,7 +1,7 @@
 package com.epm.gestepm.model.holiday.service.mapper;
 
-import com.epm.gestepm.modelapi.activitycenter.service.ActivityCenterService;
-import com.epm.gestepm.modelapi.country.service.CountryServiceOld;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.service.ActivityCenterService;
+import com.epm.gestepm.modelapi.deprecated.country.service.CountryServiceOld;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.holiday.dto.Holiday;
 import com.epm.gestepm.modelapi.holiday.dto.HolidayDTO;

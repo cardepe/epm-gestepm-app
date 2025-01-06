@@ -1,5 +1,3 @@
-var $ = jQuery.noConflict();
-
 function parseActionButtons(trashVisible) {
 	var tableRows = $('#dTable tbody tr');
 	

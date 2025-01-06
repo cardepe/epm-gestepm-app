@@ -2,7 +2,7 @@ package com.epm.gestepm.model.shares.noprogrammed.mapper.decorator;
 
 import com.epm.gestepm.modelapi.common.config.ApplicationContextProvider;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;

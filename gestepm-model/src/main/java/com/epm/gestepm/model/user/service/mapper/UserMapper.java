@@ -1,7 +1,7 @@
 package com.epm.gestepm.model.user.service.mapper;
 
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
-import com.epm.gestepm.modelapi.activitycenter.dto.ActivityCenter;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import com.epm.gestepm.modelapi.common.utils.CipherUtil;

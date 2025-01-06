@@ -2,8 +2,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<script>let $ = jQuery.noConflict();</script>
-
 <div class="breadcrumbs">
     <div class="breadcrumbs-inner">
         <div class="row m-0">

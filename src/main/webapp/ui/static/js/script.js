@@ -1,4 +1,5 @@
 let messages;
+let $ = jQuery.noConflict();
 
 function getI18n(locale) {
 
@@ -79,8 +80,35 @@ function loadDisplacements(activityCenterId, callback) {
 	});
 }
 
-window.addEventListener("load", function(){
+$(document).ready(function () {
 	messages = getI18n('es');
 	hideLoading();
 });
 
+/* NEW */
+
+function disableForm(formId) {
+	const form = document.querySelector(formId);
+	const files = form.querySelector('[name="files"]');
+
+	if (files) {
+		files.remove();
+	}
+
+	const elements = form.querySelectorAll('input, textarea, select');
+	elements.forEach(element => element.disabled = true);
+
+	if (typeof $.fn.selectpicker === 'function') {
+		const selects = form.querySelectorAll('select');
+		selects.forEach(select => $(select).selectpicker('refresh'));
+	}
+}
+
+function toBase64(file) {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.onload = () => resolve(reader.result.split(",")[1]);
+		reader.onerror = (error) => reject(error);
+		reader.readAsDataURL(file);
+	});
+}

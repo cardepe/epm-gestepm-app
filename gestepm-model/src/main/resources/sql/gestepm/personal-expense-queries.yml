@@ -1,0 +1,99 @@
+sql:
+
+  qry-list-of-pe: |
+    
+    SELECT
+      pe.personal_expense_id AS id_pagination,
+      pe.personal_expense_id,
+      pe.personal_expense_sheet_id,
+      pe.notice_date,
+      pe.start_date,
+      pe.end_date,
+      pe.description,
+      pe.price_type,
+      pe.quantity,
+      pe.amount,
+      pe.payment_type,
+      pef.personal_expense_file_id
+    FROM ${sch-gestepm}.personal_expense pe
+    LEFT JOIN ${sch-gestepm}.personal_expense_file pef ON pe.personal_expense_id = pef.personal_expense_id
+
+    #whereToken #filter
+
+  qry-page-of-pe: |
+
+    ${sql.paginated-query-group-prefix}
+    ${sql.qry-list-of-pe}
+    ${sql.paginated-query-suffix}
+
+  qry-count-of-pe: |
+
+    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    FROM (${sql.qry-list-of-pe}) final
+
+  qry-create-pe: |
+    
+    INSERT INTO ${sch-gestepm}.personal_expense (
+      personal_expense_sheet_id,
+      notice_date,
+      start_date,
+      description,
+      price_type,
+      quantity,
+      amount,
+      payment_type
+    )
+    VALUES (
+      :attr_pe_pes_id,
+      :attr_pe_notice_date,
+      :attr_pe_start_date,
+      :attr_pe_description,
+      :attr_pe_price_type,
+      :attr_pe_quantity,
+      :attr_pe_amount,
+      :attr_pe_payment_type
+    )
+
+  qry-update-pe: |
+    
+    UPDATE
+      ${sch-gestepm}.personal_expense
+    SET
+      start_date = :attr_pe_start_date,
+      end_date = :attr_pe_end_date,
+      description = :attr_pe_description,
+      price_type = :attr_pe_price_type,
+      quantity = :attr_pe_quantity,
+      amount = :attr_pe_amount,
+      payment_type = :attr_pe_payment_type
+    WHERE
+      personal_expense_id = :attr_pe_id
+
+  qry-delete-pe: |
+
+    DELETE FROM ${sch-gestepm}.personal_expense WHERE personal_expense_id IN (:attr_pe_ids)
+
+  filter-pe-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-pe-ids}
+      -- ${sql.predicate-for-pe-pes-id}
+    -- AND]
+
+  filter-pe-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-pe-id}
+    -- AND]
+
+  predicate-for-pe-id: |
+
+    pe.personal_expense_id = :attr_pe_id
+
+  predicate-for-pe-ids: |
+
+    pe.personal_expense_id IN (:attr_pe_ids)
+
+  predicate-for-pe-pes-id: |
+
+    pe.personal_expense_sheet_id = :attr_pe_pes_id

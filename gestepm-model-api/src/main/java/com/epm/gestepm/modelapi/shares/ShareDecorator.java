@@ -1,6 +1,6 @@
 package com.epm.gestepm.modelapi.shares;
 
-import com.epm.gestepm.modelapi.interventionshare.dto.PdfFileDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;

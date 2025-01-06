@@ -1,5 +1,3 @@
-var $ = jQuery.noConflict();
-
 function parseId(data) {
 	return data.split('_')[0];
 }

@@ -18,7 +18,7 @@ sql:
     INSERT INTO ${sch-gestepm}.no_programmed_share_file (
       no_programmed_share_id,
       name,
-      ext,
+      extension,
       content
     )
     VALUES (

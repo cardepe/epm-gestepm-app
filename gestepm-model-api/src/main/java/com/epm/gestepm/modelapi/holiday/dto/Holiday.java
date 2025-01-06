@@ -1,7 +1,7 @@
 package com.epm.gestepm.modelapi.holiday.dto;
 
-import com.epm.gestepm.modelapi.activitycenter.dto.ActivityCenter;
-import com.epm.gestepm.modelapi.country.dto.Country;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
+import com.epm.gestepm.modelapi.deprecated.country.dto.Country;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

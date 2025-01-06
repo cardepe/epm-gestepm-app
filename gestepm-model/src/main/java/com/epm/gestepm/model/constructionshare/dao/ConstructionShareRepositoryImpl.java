@@ -1,8 +1,8 @@
 package com.epm.gestepm.model.constructionshare.dao;
 
-import com.epm.gestepm.modelapi.activitycenter.dto.ActivityCenter;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
-import com.epm.gestepm.modelapi.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

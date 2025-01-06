@@ -1,0 +1,51 @@
+sql:
+
+  qry-list-of-pef: |
+    
+    SELECT
+      pef.personal_expense_file_id AS id_pagination,
+      pef.personal_expense_file_id,
+      pef.personal_expense_id,
+      pef.name,
+      pef.content
+    FROM ${sch-gestepm}.personal_expense_file pef
+    
+    #whereToken #filter
+
+  qry-create-pef: |
+    
+    INSERT INTO ${sch-gestepm}.personal_expense_file (
+      personal_expense_id,
+      name,
+      content
+    )
+    VALUES (
+      :attr_pef_pe_id,
+      :attr_pef_name,
+      :attr_pef_content
+    )
+
+  filter-pef-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-pef-ids}
+      -- ${sql.predicate-for-pef-pe-id}
+    -- AND]
+
+  filter-pef-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-pef-id}
+    -- AND]
+
+  predicate-for-pef-id: |
+
+    pef.personal_expense_file_id = :attr_pef_id
+
+  predicate-for-pef-ids: |
+
+    pef.personal_expense_file_id IN (:attr_pef_ids)
+
+  predicate-for-pef-pe-id: |
+
+    pef.personal_expense_id = :attr_pef_pe_id

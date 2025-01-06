@@ -61,16 +61,12 @@
     </definition>
     
     <!-- Expenses -->
-    <definition name="personal-expenses" extends="fullFrameLayaout">
-        <put-attribute name="body" value="/ui/jsp/view/expenses/personal.jsp" />
+    <definition name="personal-expense-sheets" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/expenses/personal/sheets/view.jsp" />
     </definition>
-    
-    <definition name="personal-expenses-create" extends="fullFrameLayaout">
-        <put-attribute name="body" value="/ui/jsp/view/expenses/crud/create.jsp" />
-    </definition>
-    
-    <definition name="personal-expenses-view" extends="fullFrameLayaout">
-        <put-attribute name="body" value="/ui/jsp/view/expenses/crud/view.jsp" />
+
+    <definition name="personal-expense-sheet-detail" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/expenses/personal/sheets/detail.jsp" />
     </definition>
     
     <definition name="corrective-expenses" extends="fullFrameLayaout">
@@ -188,5 +184,8 @@
     <definition name="simple-error" extends="fullFrameLayaout">
         <put-attribute name="body" value="/ui/jsp/view/errors/simpleError.jsp" />
     </definition>
+
+    <!-- Mail Template -->
+    <definition name="emailTemplate" template="/ui/jsp/templates/emailTemplate.jsp"></definition>
 
 </tiles-definitions>

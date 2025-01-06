@@ -8,7 +8,7 @@ import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
 import com.epm.gestepm.modelapi.inspection.service.InspectionExportService;
 import com.epm.gestepm.modelapi.inspection.service.InspectionService;
 import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
-import com.epm.gestepm.modelapi.interventionshare.dto.PdfFileDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
 import com.epm.gestepm.modelapi.shares.ShareDecorator;
 import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
 import org.springframework.context.MessageSource;
