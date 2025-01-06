@@ -40,9 +40,6 @@ import java.util.Locale;
 public class ExpensesController {
 
 	private static final Log log = LogFactory.getLog(ExpensesController.class);
-
-	@Autowired
-	private ExpenseSheetServiceImpl expenseSheetService;
 	
 	@Autowired
 	private ExpenseCorrectiveServiceImpl expenseCorrectiveService;
@@ -123,122 +120,6 @@ public class ExpensesController {
 		} catch (InvalidUserSessionException e) {
 			log.error(e);
 			return null;
-		}
-	}
-
-	@ResponseBody
-	@PostMapping("/validate/{id}")
-	public ResponseEntity<String> validateExpenseSheet(@PathVariable("id") String id, Locale locale) {
-
-		try {
-
-			// Recover user
-			User user = Utiles.getUsuario();
-
-			// Get expense sheet
-			ExpenseSheet expenseSheet = expenseSheetService.getExpenseSheetById(Long.parseLong(id));
-
-			// Get user role
-			Role role = user.getRole();
-
-			if (role.getId() >= Constants.ROLE_PL_ID && Constants.STATUS_APPROVED.equals(expenseSheet.getStatus())) {
-				
-				// Move expense sheet to Paid
-				expenseSheet.setStatus(Constants.STATUS_PAID);
-				
-			} else if (role.getId() >= Constants.ROLE_ADMINISTRATION_ID && Constants.STATUS_PENDING.equals(expenseSheet.getStatus())) {
-				
-				// Move expense sheet to Approved
-				expenseSheet.setStatus(Constants.STATUS_APPROVED);
-				
-			} else {
-				
-				// Unauthorized validate
-				return new ResponseEntity<>(messageSource.getMessage("expense.validate.unauthorized", new Object[] {}, locale),HttpStatus.UNAUTHORIZED);
-			}
-
-			// Update expense sheet
-			expenseSheet = expenseSheetService.save(expenseSheet);
-
-			// Log info
-			log.info("Gasto " + expenseSheet.getId() + " validado por parte del usuario " + user.getId());
-			
-			// Send mail
-			if (Constants.STATUS_APPROVED.equals(expenseSheet.getStatus())) {
-				
-				 // List<UserDTO> rrhhDTOs = userService.getUserDTOsByRank(Constants.ROLE_RRHH_ID);
-				 
-				 List<User> teamLeaders = expenseSheet.getProject().getBossUsers();
-				 
-				 if (!teamLeaders.isEmpty()) {
-					 
-					 for (User teamLeader : teamLeaders) {
-
-						 if (teamLeader.getState() == 0) {
-							 smtpService.sendExpenseTeamLeaderMail(teamLeader.getEmail(), user, expenseSheet, locale);
-						 }
-					 }
-				 }
-				 
-			} else if (Constants.STATUS_PAID.equals(expenseSheet.getStatus())) {
-				smtpService.sendExpenseRRHHMail(expenseSheet.getUser().getEmail(), user, expenseSheet, locale);
-			}
-
-			// Return data
-			return new ResponseEntity<>(messageSource.getMessage("expense.validate.success", new Object[] {}, locale), HttpStatus.OK);
-
-		} catch (Exception e) {
-			return new ResponseEntity<>(messageSource.getMessage("expense.validate.error", new Object[] {}, locale),
-					HttpStatus.NOT_FOUND);
-		}
-	}
-
-	@ResponseBody
-	@PostMapping("/decline/{id}")
-	public ResponseEntity<String> declineExpenseSheet(@PathVariable("id") String id, @RequestParam(required = false) String observations, Locale locale) {
-
-		try {
-
-			// Recover user
-			User user = Utiles.getUsuario();
-
-			// Get expense sheet
-			ExpenseSheet expenseSheet = expenseSheetService.getExpenseSheetById(Long.parseLong(id));
-
-			// Get user role
-			Role role = user.getRole();
-
-			if (role.getId() >= Constants.ROLE_PL_ID) {
-				
-				// Move expense sheet to Decline
-				expenseSheet.setStatus(Constants.STATUS_REJECTED);
-				
-			} else {
-				
-				// Unauthorized validate
-				return new ResponseEntity<>(messageSource.getMessage("expense.decline.unauthorized", new Object[] {}, locale), HttpStatus.UNAUTHORIZED);
-			}
-			
-			if (StringUtils.isNoneBlank(observations)) {
-				expenseSheet.setObservations(observations);
-			}
-
-			// Update expense sheet
-			expenseSheetService.save(expenseSheet);
-			
-			// Send decline email
-			if (expenseSheet.getUser() != null && StringUtils.isNoneBlank(expenseSheet.getUser().getEmail())) {
-				smtpService.sendExpenseDeclineMail(expenseSheet.getUser().getEmail(), user, expenseSheet, locale);
-			}
-
-			// Log info
-			log.info("Gasto " + expenseSheet.getId() + " denegado por parte del usuario " + user.getId());
-
-			// Return data
-			return new ResponseEntity<>(messageSource.getMessage("expense.decline.success", new Object[] {}, locale), HttpStatus.OK);
-
-		} catch (Exception e) {
-			return new ResponseEntity<>(messageSource.getMessage("expense.decline.error", new Object[] {}, locale), HttpStatus.NOT_FOUND);
 		}
 	}
 

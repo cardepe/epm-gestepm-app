@@ -33,16 +33,13 @@ public interface SMTPService {
 
 	void sendCloseWorkShareMail(String to, WorkShare share, byte[] pdfGenerated, Locale locale);
 	
-	void openPersonalExpenseSheetSendMail(final OpenPersonalExpenseSheetMailTemplateDto dto);
-	void sendExpenseTeamLeaderMail(String to, User teamLeader, ExpenseSheet expenseSheet, Locale locale);
-	void sendExpenseRRHHMail(String to, User rrhh, ExpenseSheet expenseSheet, Locale locale);
+	void sendPersonalExpenseSheetSendMail(final OpenPersonalExpenseSheetMailTemplateDto dto);
 	
 	void sendSigningInvalidMail(String to, User user, Locale locale);
 	void sendSigningManualMail(String to, UserManualSigning userManualSigning, Locale locale);
 
 	void sendSigningModifyMail(String to, ModifiedSigning modifiedSigning, Locale locale);
-	
-	void sendExpenseDeclineMail(String to, User user, ExpenseSheet expenseSheet, Locale locale);
+
 	void sendHolidayDeclineMail(String to, User user, UserHoliday userHoliday, Locale locale);
 	
 	void sendCorrectiveTeamLeaderMail(String to, User user, ExpenseCorrective corrective, Project project, Locale locale);

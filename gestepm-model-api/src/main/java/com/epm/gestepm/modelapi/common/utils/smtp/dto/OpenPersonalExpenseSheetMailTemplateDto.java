@@ -26,4 +26,10 @@ public class OpenPersonalExpenseSheetMailTemplateDto {
     @NotNull
     private Project project;
 
+    @NotNull
+    private String template;
+
+    @NotNull
+    private String subject;
+
 }

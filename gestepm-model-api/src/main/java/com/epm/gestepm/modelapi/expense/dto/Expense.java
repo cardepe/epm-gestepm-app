@@ -48,7 +48,7 @@ public class Expense {
 	@Column(name="quantity", length=5)
 	private Double kms;
 
-    @Column(name="total_price", nullable=false, length=22)
+    @Column(name="amount", nullable=false, length=22)
     private double total;
     
     @ManyToOne(optional=false)

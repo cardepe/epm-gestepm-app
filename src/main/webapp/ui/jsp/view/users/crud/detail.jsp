@@ -200,21 +200,17 @@
 										</div>
 									</div>
 								</div>
-						  	
-						  		<div class="table-responsive">
-								  	<table id="dTableExpenses" class="table table-striped table-borderer dataTable w-100">
-										<caption class="d-none">
-											NO SONAR
-										</caption>
+
+								<div class="table-responsive">
+									<table id="dTableExpenses" class="table table-striped table-borderer dataTable w-100">
 										<thead>
 											<tr>
-												<th id="id"><spring:message code="user.detail.expenses.id" /></th>
-												<th id="description"><spring:message code="user.detail.expenses.description" /></th>
-												<th id="project"><spring:message code="user.detail.expenses.project" /></th>
-												<th id="status"><spring:message code="user.detail.expenses.status" /></th>
-												<th id="date"><spring:message code="user.detail.expenses.date" /></th>
-												<th id="amount"><spring:message code="user.detail.expenses.amount" /></th>
-												<th id="actions" class="all"><spring:message code="user.detail.expenses.actions" /></th>
+												<th><spring:message code="id"/></th>
+												<th><spring:message code="description"/></th>
+												<th><spring:message code="project"/></th>
+												<th><spring:message code="status"/></th>
+												<th><spring:message code="date"/></th>
+												<th><spring:message code="actions"/></th>
 											</tr>
 										</thead>
 									</table>
@@ -768,13 +764,12 @@
 			</div>
 			<div class="modal-body">
 				<form id="declineExpenseForm">
-					<input type="hidden" id="deExpenseId" />
-					
 					<div class="row">
 						<div class="col">
 							<div class="form-group">
-								<label for="deObservations" class="col-form-label"><spring:message code="user.detail.expenses.decline.observations" /></label>
-								<textarea id="deObservations" name="observations" class="form-control" rows="6"></textarea>
+								<label class="col-form-label"><spring:message code="user.detail.expenses.decline.observations" />
+									<textarea name="observations" class="form-control" rows="6"></textarea>
+								</label>
 							</div>
 						</div>
 					</div>
@@ -786,7 +781,7 @@
 						<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
 					</div>
 					<div class="float-right">
-						<button id="addDeclineExpenseBtn" type="button" class="btn btn-sm btn-success"><spring:message code="decline" /></button>
+						<button type="button" class="btn btn-sm btn-success" onclick="declineAction()"><spring:message code="decline" /></button>
 					</div>
 				</div>
 			</div>
@@ -996,65 +991,7 @@
 			}
 		});
 
-		var dTableExpenses = $('#dTableExpenses').DataTable({
-			"lengthChange": false,
-			"responsive": true,
-			"processing": true,
-			"pageLength": 8,
-			"serverSide": true,
-			"ajax": "/users/${userDetail.id}/expenses/dt",
-			"rowId": "es_id",
-			"language": {
-				"url": "/ui/static/lang/datatables/${locale}.json"
-			},
-			"order": [[4, "desc"]],
-			"columns": [
-				{ "data": "es_id" },
-				{ "data": "es_name" },
-				{ "data": "pr_projectName" },
-				{ "data": "es_status" },
-				{ "data": "es_creationDate" },
-				{ "data": "es_total" },
-				{ "data": null }
-			],
-			"columnDefs": [
-				{ "targets": [0], "visible": false },
-				{ 
-					"className": "text-center", 
-					"targets": [ 0, 1, 2, 3, 4, 6 ]
-				},
-				{  
-					"className": "text-right",
-				    "render": function ( data ) {
-                        return parseStatus(data);
-                	},
-                	"targets": 3
-                },
-                {  
-				    "render": function ( data, type, row ) {
-                    	return moment(data).format('DD/MM/YYYY');
-                	},
-                	"targets": 4 
-                },
-			    {  
-					"className": "text-right",
-				    "render": function ( data, type, row ) {
-                    	return (Math.round(data * 100) / 100) + ' €';
-                	},
-                	"targets": 5 
-                },
-			    { 
-    			    "defaultContent": "${tableValidateExpenseActionButtons}", 
-    			    "width": "217px",
-    			    "orderable": false, 
-    			    "targets": -1 
-    			}
-			],
-			"dom": "<'top'i>rt<'bottom'p><'clear'>",
-			"drawCallback": function(settings, json) {
-				parseExpenseActionButtons();
-			}
-		});
+		initializePersonalExpensesDataTables();
 
 		var dTableProjects = $('#dTableProjects').DataTable({
 			"lengthChange": false,
@@ -1252,30 +1189,6 @@
 			});
 
 			$('#createProjectModal').modal('hide');	
-		});
-
-		$('#addDeclineExpenseBtn').click(function() {
-
-			showLoading();
-
-			var expenseId = $('#deExpenseId').val();
-			
-			$.ajax({
-				type: "POST",
-				url: "/expenses/decline/" + expenseId,
-				data: $('#declineExpenseForm').serialize(),
-				success: function(msg) {
-					$('#dTableExpenses').DataTable().ajax.reload();
-					hideLoading();
-					showNotify(msg, 'success');
-				},
-				error: function(e) {
-					hideLoading();
-					showNotify(e.responseText, 'danger');
-				}
-			});
-
-			$('#declineExpenseModal').modal('hide');	
 		});
 
 		$('#addDeclineHolidayBtn').click(function() {
@@ -1657,102 +1570,6 @@
 		return false;
 	}
 
-	function canValidateExpense(status) {
-		var roleId = ${user.role.id};
-		var paid = status.children().hasClass('badge-success');
-		var rejected = status.children().hasClass('badge-danger');
-		var pending = status.children().hasClass('badge-secondary');
-		var approved = status.children().hasClass('badge-primary');
-
-		if (paid || rejected) {
-			return false;
-		} else if (pending && roleId >= ${jspUtil.getRolId('ROLE_ADMINISTRACION')}) { // RRHH can approve
-			return true;
-		} else if (approved && roleId >= ${jspUtil.getRolId('ROLE_ADMIN')}) { // Admin can pay
-			return true;
-		}
-
-		return false;
-	}
-
-	function canRejectExpense(status) {
-		var roleId = ${user.role.id};
-		var paid = status.children().hasClass('badge-success');
-		var rejected = status.children().hasClass('badge-danger');
-		var pending = status.children().hasClass('badge-secondary');
-		var approved = status.children().hasClass('badge-primary');
-
-		if (paid || rejected) {
-			return false;
-		} else if (pending && roleId >= ${jspUtil.getRolId('ROLE_ADMINISTRACION')}) { // RRHH can approve
-			return true;
-		} else if (approved && roleId >= ${jspUtil.getRolId('ROLE_ADMIN')}) { // Admin can pay
-			return true;
-		}
-
-		return false;
-	}
-
-	function parseExpenseActionButtons() {
-		var tableRows = $('#dTableExpenses tbody tr');
-
-		tableRows.each(function() {
-			
-			var expenseId = $(this).attr('id');
-			var status = jQuery($(this).children().get(2));
-			var lastColumn = $(this).children().last();
-			var emList = lastColumn.children();
-			
-			emList.each(function(index) {
-
-				if (index == 0) {
-					$(this).wrap('<a href="/expenses/' + expenseId + '/pdf"></a>');
-				} else if (index == 1) { // view
-					$(this).wrap('<a href="/users/${userDetail.id}/expenses/' + expenseId + '/view"></a>');
-				} else if (index == 2) { // validate
-
-					if (!canValidateExpense(status)) {
-						$(this).remove();
-					}
-					
-					$(this).attr('onclick', 'validateExpense(' + expenseId + ')');
-				} else if (index == 3) { // decline
-
-					if (!canRejectExpense(status)) {
-						$(this).remove();
-					}
-					
-					$(this).attr('onclick', 'openDeclineExpenseModal(' + expenseId + ')');
-				}
-			});
-		});
-	}
-
-	function validateExpense(expenseId) {
-		showLoading();
-		
-		$.ajax({
-			type: "POST",
-			url: "/expenses/validate/" + expenseId,
-			data: { },
-			success: function(msg) {
-				$('#dTableExpenses').DataTable().ajax.reload();
-				hideLoading();
-				showNotify(msg, 'success');
-			},
-			error: function(e) {
-				hideLoading();
-				showNotify(e.responseText, 'danger');
-			}
-		});
-	}
-
-	function openDeclineExpenseModal(expenseId) {
-
-		$('#deExpenseId').val(expenseId);
-		$('#declineExpenseModal').modal('show');
-	}
-
 	function openDeclineHolidayModal(holidayId) {
 
 		$('#deHolidayId').val(holidayId);
@@ -1805,6 +1622,9 @@
 </script>
 
 <script>
+	let locale = '${locale}';
+	let dTableExpenses = null;
+
 	document.addEventListener("DOMContentLoaded", function() {
 		setReturnButtonUrl();
 	});
@@ -1820,5 +1640,126 @@
 				$('#returnBtn').attr('href', lastPageUrl);
 			}
 		}
+	}
+
+	function initializePersonalExpensesDataTables() {
+		let columns = ['id', 'description', 'project.name', 'status', 'startDate', 'id']
+		let endpoint = '/v1/expenses/personal/sheets';
+		let actions = [
+			{
+				action: 'file-pdf',
+				url: '/v1/expenses/personal/sheets/{id}/export',
+				permission: 'edit_personal_expenses_sheet'
+			},
+			{
+				action: 'validate',
+				permission: 'edit_personal_expenses_sheet',
+				condition: {
+					key: 'status',
+					value: ['PENDING', 'APPROVED'],
+					operation: '==='
+				}
+			},
+			{
+				action: 'decline',
+				permission: 'edit_personal_expenses_sheet',
+				condition: {
+					key: 'status',
+					value: ['PENDING', 'APPROVED'],
+					operation: '==='
+				}
+			},
+			{
+				action: 'view',
+				url: '/expenses/personal/sheets/{id}',
+				permission: 'edit_personal_expenses_sheet'
+			}
+		]
+		let expand = ['project']
+		let filters = [{'userId': ${userDetail.id}}]
+		let orderable = [[0, 'DESC']]
+		let columnDefs = [
+			{
+				targets: 3,
+				render: function (data) {
+					return parseStatusToBadge(data);
+				}
+			},
+			{
+				targets: 4,
+				render: function (data) {
+					return moment(data).format('DD-MM-YYYY HH:mm');
+				}
+			}
+		]
+
+		customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
+		dTableExpenses = createDataTable('#dTableExpenses', customDataTable, locale);
+	}
+
+	function parseStatusToBadge(status) {
+		if (status === 'PENDING') {
+			return '<div class="badge badge-warning">' + messages.status.pending + '</div>';
+		} else if (status === 'APPROVED') {
+			return '<span class="badge badge-primary">' + messages.status.approved + '</span>';
+		} else if (status === 'PAID') {
+			return '<span class="badge badge-success">' + messages.status.paid + '</span>';
+		} else if (status === 'REJECTED') {
+			return '<span class="badge badge-danger">' + messages.status.rejected + '</span>';
+		}
+	}
+
+	function validate(personalExpenseSheetId) {
+
+		showLoading();
+
+		const data = dTableExpenses.row("#" + personalExpenseSheetId).data();
+		const nextStatus = getNextStatus(data.status);
+
+		if (nextStatus) {
+			axios.patch('/v1/expenses/personal/sheets/' + personalExpenseSheetId, {
+				status: nextStatus
+			}).then(() => {
+				dTableExpenses.ajax.reload();
+				showNotify(messages.personalExpenseSheet.update.success.replace('{0}', personalExpenseSheetId))
+			}).catch(error => showNotify(error, 'danger'))
+					.finally(() => hideLoading());
+		}
+	}
+
+	function decline(personalExpenseSheetId) {
+		const modal = $('#declineExpenseModal');
+		modal.attr('data-id', personalExpenseSheetId);
+		modal.modal('show');
+	}
+
+	function declineAction() {
+		showLoading();
+
+		const modal = $('#declineExpenseModal');
+		const personalExpenseSheetId = modal.data('id');
+		const form = document.querySelector('#declineExpenseForm');
+		const obervations = form.querySelector('[name="observations"]')
+
+		axios.patch('/v1/expenses/personal/sheets/' + personalExpenseSheetId, {
+			status: 'REJECTED',
+			observations: obervations.value
+		}).then(() => {
+			dTableExpenses.ajax.reload();
+			showNotify(messages.personalExpenseSheet.update.success.replace('{0}', personalExpenseSheetId))
+		}).catch(error => showNotify(error, 'danger'))
+				.finally(() => {
+					hideLoading();
+					modal.modal('hide');
+				});
+	}
+
+	function getNextStatus(status) {
+		if (status === 'PENDING') {
+			return 'APPROVED';
+		} else if (status === 'APPROVED') {
+			return 'PAID';
+		}
+		return null;
 	}
 </script>

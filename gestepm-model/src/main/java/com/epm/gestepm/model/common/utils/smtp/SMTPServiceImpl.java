@@ -31,10 +31,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.ConcurrentModel;
-import org.springframework.ui.Model;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -44,11 +40,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
-import javax.servlet.ServletContext;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
@@ -244,54 +236,28 @@ public class SMTPServiceImpl implements SMTPService {
 	}
 
 	@Async
-	public void openPersonalExpenseSheetSendMail(final OpenPersonalExpenseSheetMailTemplateDto dto) {
+	public void sendPersonalExpenseSheetSendMail(final OpenPersonalExpenseSheetMailTemplateDto dto) {
 		
-		log.info("Preparando la plantilla de correo: expense_user_mail_template_" + dto.getLocale().getLanguage() + ".html");
+		log.info("Preparando la plantilla de correo: " + dto.getTemplate());
 		
-		String subject = messageSource.getMessage("smtp.mail.expense.user.subject", new Object[] { }, dto.getLocale());
+		final String subject = messageSource.getMessage(dto.getSubject(), new Object[] { }, dto.getLocale());
 		
-		Map<String, String> params = new HashMap<>();
+		final Map<String, String> params = new HashMap<>();
+		params.put("id", dto.getPersonalExpenseSheetDto().getId().toString());
 		params.put("projectId", dto.getProject().getId().toString());
 		params.put("username", dto.getUser().getFullName());
 		params.put("projectName", dto.getProject().getName());
 		params.put("noticeDate", Utiles.transform(dto.getPersonalExpenseSheetDto().getStartDate(), DATE_TIME_FORMAT));
 		params.put("description", dto.getPersonalExpenseSheetDto().getDescription());
-		
-		loadTemplateAndSendMail(smtpMailFrom, dto.getEmail(), subject, "mail_template.jsp", params); // + dto.getLocale().getLanguage() + ".html", params);
-	}
-	
-	@Async
-	public void sendExpenseTeamLeaderMail(String to, User teamLeader, ExpenseSheet expenseSheet, Locale locale) {
-		
-		log.info("Preparando la plantilla de correo: expense_team_leader_mail_template_" + locale.getLanguage() + ".html");
-		
-		String subject = messageSource.getMessage("smtp.mail.expense.team.leader.subject", new Object[] { }, locale);
-		
-		Map<String, String> params = new HashMap<>();
-		params.put("projectId", expenseSheet.getProject().getId().toString());
-		params.put("username", teamLeader.getName() +  " " + teamLeader.getSurnames());
-		params.put("projectName", expenseSheet.getProject().getName());
-		params.put("noticeDate", Utiles.transformFormattedDateToString(expenseSheet.getCreationDate()));
-		params.put("description", expenseSheet.getName());
-		
-		loadTemplateAndSendMail(smtpMailFrom, to, subject, "expense_team_leader_mail_template_" + locale.getLanguage() + ".html", params);
-	}
-	
-	@Async
-	public void sendExpenseRRHHMail(String to, User rrhh, ExpenseSheet expenseSheet, Locale locale) {
-		
-		log.info("Preparando la plantilla de correo: expense_rrhh_mail_template_" + locale.getLanguage() + ".html");
-		
-		String subject = messageSource.getMessage("smtp.mail.expense.rrhh.subject", new Object[] { }, locale);
-		
-		Map<String, String> params = new HashMap<>();
-		params.put("projectId", expenseSheet.getProject().getId().toString());
-		params.put("username", rrhh.getName() +  " " + rrhh.getSurnames());
-		params.put("projectName", expenseSheet.getProject().getName());
-		params.put("noticeDate", Utiles.transformFormattedDateToString(expenseSheet.getCreationDate()));
-		params.put("description", expenseSheet.getName());
-		
-		loadTemplateAndSendMail(smtpMailFrom, to, subject, "expense_rrhh_mail_template_" + locale.getLanguage() + ".html", params);
+
+		if (StringUtils.isNoneBlank(dto.getPersonalExpenseSheetDto().getObservations())) {
+			final String observations = messageSource.getMessage("smtp.mail.expense.decline.observation",
+					new Object[] { dto.getPersonalExpenseSheetDto().getObservations() }, dto.getLocale());
+			params.put("observations", observations);
+		}
+
+
+		loadTemplateAndSendMail(smtpMailFrom, dto.getEmail(), subject, dto.getTemplate(), params);
 	}
 
 	@Async
@@ -340,28 +306,6 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("endDate", Utiles.transform(modifiedSigning.getEndDate(), DATE_TIME_FORMAT));
 
 		loadTemplateAndSendMail(smtpMailFrom, to, subject, "signing_modify_mail_template_" + locale.getLanguage() + ".html", params);
-	}
-
-	@Async
-	public void sendExpenseDeclineMail(String to, User user, ExpenseSheet expenseSheet, Locale locale) {
-		
-		log.info("Preparando la plantilla de correo: expense_decline_mail_template_" + locale.getLanguage() + ".html");
-		
-		String subject = messageSource.getMessage("smtp.mail.expense.decline.subject", new Object[] { }, locale);
-
-		Map<String, String> params = new HashMap<>();
-		params.put("id", String.valueOf(expenseSheet.getId()));
-		params.put("description", expenseSheet.getName());
-		params.put("username", user.getName() + " " + user.getSurnames());
-		
-		if (StringUtils.isNoneBlank(expenseSheet.getObservations())) {
-			
-			String observations = messageSource.getMessage("smtp.mail.expense.decline.observation", new Object[] { expenseSheet.getObservations() }, locale);
-
-			params.put("observations", observations);
-		}
-		
-		loadTemplateAndSendMail(smtpMailFrom, to, subject, "expense_decline_mail_template_" + locale.getLanguage() + ".html", params);
 	}
 	
 	@Async
