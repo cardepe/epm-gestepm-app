@@ -196,13 +196,14 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
 
     private void sendMail(final PersonalExpenseSheetDto original, final PersonalExpenseSheetDto updated) {
         final Project project = this.projectService.getProjectById(original.getProjectId().longValue());
+        final User user = this.userService.getUserById(original.getUserId().longValue());
         final List<User> usersToNotify = this.determineUsersToNotify(original, updated, project);
 
-        final OpenPersonalExpenseSheetMailTemplateDto template = this.buildMailTemplate(original, updated, project);
+        final OpenPersonalExpenseSheetMailTemplateDto template = this.buildMailTemplate(original, updated, project, user);
 
         usersToNotify.stream()
-                .filter(user -> user.getState() == 0)
-                .forEach(user -> this.sendMailToUser(template, user));
+                .filter(userToNotify -> userToNotify.getState() == 0)
+                .forEach(userToNotify -> this.sendMailToUser(template, userToNotify));
     }
 
     private List<User> determineUsersToNotify(final PersonalExpenseSheetDto original, final PersonalExpenseSheetDto updated,
@@ -223,11 +224,12 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
 
     private OpenPersonalExpenseSheetMailTemplateDto buildMailTemplate(final PersonalExpenseSheetDto original,
                                                                       final PersonalExpenseSheetDto updated,
-                                                                      final Project project) {
+                                                                      final Project project, final User user) {
         final OpenPersonalExpenseSheetMailTemplateDto template = new OpenPersonalExpenseSheetMailTemplateDto();
         template.setLocale(request.getLocale());
         template.setPersonalExpenseSheetDto(updated);
         template.setProject(project);
+        template.setUser(user);
 
         this.selectTemplateName(updated, template);
 
@@ -254,7 +256,6 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
 
     private void sendMailToUser(final OpenPersonalExpenseSheetMailTemplateDto template, final User user) {
         template.setEmail(user.getEmail());
-        template.setUser(user);
         smtpService.sendPersonalExpenseSheetSendMail(template);
     }
 }

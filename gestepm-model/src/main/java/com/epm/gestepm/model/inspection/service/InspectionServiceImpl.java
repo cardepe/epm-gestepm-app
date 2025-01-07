@@ -322,7 +322,6 @@ public class InspectionServiceImpl implements InspectionService {
         if (CollectionUtils.isNotEmpty(project.getResponsables())) {
             project.getResponsables().forEach(responsible -> {
                 dto.setEmail(responsible.getEmail());
-                dto.setUser(responsible);
                 this.smtpService.closeInspectionSendMail(dto);
             });
         }

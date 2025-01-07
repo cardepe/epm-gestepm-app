@@ -279,7 +279,7 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
 
         final OpenNoProgrammedShareMailTemplateDto template = new OpenNoProgrammedShareMailTemplateDto();
         template.setLocale(request.getLocale());
-        template.setNoProgrammedShare(getMapper(MapNPSToNoProgrammedShareUpdateDto.class).from(update));
+        template.setNoProgrammedShare(dto);
         template.setEmail(user.getEmail());
         template.setUser(user);
         template.setProject(project);
@@ -310,7 +310,6 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
         if (CollectionUtils.isNotEmpty(template.getProject().getResponsables())) {
             template.getProject().getResponsables().forEach(responsible -> {
                 template.setEmail(responsible.getEmail());
-                template.setUser(responsible);
                 smtpService.openNoProgrammedShareSendMail(template);
             });
         }
@@ -337,7 +336,6 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
         if (project.getResponsables() != null && !project.getResponsables().isEmpty()) {
             for (final User responsible : project.getResponsables()) {
                 dto.setEmail(responsible.getEmail());
-                dto.setUser(responsible);
                 this.smtpService.closeNoProgrammedShareSendMail(dto);
             }
         }
