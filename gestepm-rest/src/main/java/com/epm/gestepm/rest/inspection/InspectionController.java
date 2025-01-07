@@ -201,7 +201,7 @@ public class InspectionController extends BaseController implements InspectionV1
         final Resource resource = new ByteArrayResource(pdf);
         final String fileName = messageSource.getMessage("shares.no.programmed.pdf.name",
                 new Object[] {
-                        noProgrammedShare.getId() + "-" + inspection.getOrder(noProgrammedShare.getInspectionIds()),
+                        inspection.getId(),
                         Utiles.transform(inspection.getStartDate(), dateFormat)
                 }, locale) + ".pdf";
 

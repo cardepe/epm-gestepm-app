@@ -1,10 +1,13 @@
 package com.epm.gestepm.model.personalexpensesheet.service;
 
+import com.epm.gestepm.lib.file.FileUtils;
 import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
+import com.epm.gestepm.model.personalexpense.dao.entity.PersonalExpenseFile;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.personalexpense.dto.PersonalExpenseDto;
 import com.epm.gestepm.modelapi.personalexpense.dto.PersonalExpenseFileDto;
+import com.epm.gestepm.modelapi.personalexpense.dto.filter.PersonalExpenseFileFilterDto;
 import com.epm.gestepm.modelapi.personalexpense.dto.filter.PersonalExpenseFilterDto;
 import com.epm.gestepm.modelapi.personalexpense.dto.finder.PersonalExpenseFileByIdFinderDto;
 import com.epm.gestepm.modelapi.personalexpense.service.PersonalExpenseFileService;
@@ -20,21 +23,21 @@ import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.AcroFields;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfReader;
-import com.itextpdf.text.pdf.PdfStamper;
+import com.itextpdf.text.pdf.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.Base64;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
 
@@ -123,10 +126,10 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
 
             return baos.toByteArray();
         } catch (IOException | DocumentException ex) {
-            throw new PersonalExpenseSheetExportException(personalExpenseSheet.getId());
+            throw new PersonalExpenseSheetExportException(personalExpenseSheet.getId(), ex.getMessage());
         }
     }
-    
+
     private void printImages(final PdfStamper stamper, final PdfReader pdfTemplate, final PersonalExpenseDto personalExpense) throws DocumentException, IOException {
         int pageNumber = pdfTemplate.getNumberOfPages();
 
@@ -136,12 +139,39 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
         final float topMargin = 40;
         final float leftMargin = 50;
 
-        for (Integer id : personalExpense.getFileIds()) {
+        final List<Integer> fileIds = personalExpense.getFileIds();
 
-            final PersonalExpenseFileDto file = this.personalExpenseFileService.findOrNotFound(new PersonalExpenseFileByIdFinderDto(id));
+        final PersonalExpenseFileFilterDto filterDto = new PersonalExpenseFileFilterDto();
+        filterDto.setIds(fileIds);
 
-            if (StringUtils.isNoneBlank(file.getContent())) {
+        final List<PersonalExpenseFileDto> files = this.personalExpenseFileService.list(filterDto).stream()
+                .filter(file -> file.getContent() != null)
+                .collect(Collectors.toList());
 
+        for (final PersonalExpenseFileDto file : files) {
+            if (isPDF(file)) {
+                final byte[] pdfBytes = Base64.getDecoder().decode(file.getContent());
+                final InputStream inputStream = new ByteArrayInputStream(pdfBytes);
+                final PdfReader pdfReader = new PdfReader(inputStream);
+
+                for (int j = 1; j <= pdfReader.getNumberOfPages(); j++) {
+
+                    stamper.insertPage(++pageNumber, pdfTemplate.getPageSizeWithRotation(1));
+
+                    final PdfImportedPage page = stamper.getImportedPage(pdfReader, j);
+                    final PdfContentByte canvas = stamper.getOverContent(pageNumber);
+
+                    if (page.getRotation() == 0) {
+                        canvas.addTemplate(page, 0, -1f, 1f, 0, 0, pageHeight);
+                    } else if (page.getRotation() == 90) {
+                        canvas.addTemplate(page, -1f, 0, 0, -1f, pageWidth, pageHeight);
+                    } else if (page.getRotation() == 180) {
+                        canvas.addTemplate(page, 0, 1.0F, -1.0F, 0, pageWidth, 0);
+                    } else if (page.getRotation() == 270) {
+                        canvas.addTemplate(page, 1f, 0, 0, 1f, 0, 0);
+                    }
+                }
+            } else {
                 stamper.insertPage(++pageNumber, pdfTemplate.getPageSizeWithRotation(1));
 
                 final Image image = Image.getInstance(Base64.getDecoder().decode(file.getContent()));
@@ -151,7 +181,7 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
                     image.scaleToFit(maxImageSize);
                 }
 
-                image.setAbsolutePosition(leftMargin,  (PageSize.A4.getHeight() - image.getScaledHeight()) - topMargin);
+                image.setAbsolutePosition(leftMargin, (PageSize.A4.getHeight() - image.getScaledHeight()) - topMargin);
 
                 final PdfContentByte canvas = stamper.getOverContent(pageNumber);
                 canvas.addImage(image);
@@ -165,5 +195,9 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
         } else {
             return String.format("%s", number);
         }
+    }
+
+    private boolean isPDF(final PersonalExpenseFileDto file) {
+        return file.getName().endsWith(".pdf");
     }
 }

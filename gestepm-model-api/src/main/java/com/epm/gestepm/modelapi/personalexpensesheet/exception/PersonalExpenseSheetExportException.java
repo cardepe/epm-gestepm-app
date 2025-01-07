@@ -9,4 +9,6 @@ public class PersonalExpenseSheetExportException extends RuntimeException {
 
     private final Integer id;
 
+    private final String errorMessage;
+
 }
