@@ -175,9 +175,9 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
 
                 if (image.getWidth() > pageWidth || image.getHeight() > pageHeight) {
                     image.scaleToFit(maxImageSize);
-                }
+                 }
 
-                image.setAbsolutePosition(leftMargin, (PageSize.A4.getHeight() - image.getScaledHeight()) - topMargin);
+                image.setAbsolutePosition(leftMargin, topMargin);
 
                 final PdfContentByte canvas = stamper.getOverContent(pageNumber);
                 canvas.addImage(image);

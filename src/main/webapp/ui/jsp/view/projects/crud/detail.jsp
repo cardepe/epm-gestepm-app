@@ -295,6 +295,7 @@
                                                 <th><spring:message code="project"/></th>
                                                 <th><spring:message code="status"/></th>
                                                 <th><spring:message code="date"/></th>
+                                                <th><spring:message code="amount"/></th>
                                                 <th><spring:message code="actions"/></th>
                                             </tr>
                                         </thead>
@@ -2836,7 +2837,7 @@
     }
 
     function initializePersonalExpensesDataTables() {
-        let columns = ['id', 'description', 'project.name', 'status', 'startDate', 'id']
+        let columns = ['id', 'description', 'project.name', 'status', 'startDate', 'amount', 'id']
         let endpoint = '/v1/expenses/personal/sheets';
         let actions = [
             {
@@ -2883,11 +2884,18 @@
                 render: function (data) {
                     return moment(data).format('DD-MM-YYYY HH:mm');
                 }
+            },
+            {
+                targets: 5,
+                render: function (data) {
+                    return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(data);
+                }
             }
         ]
 
         customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
         dTableExpenses = createDataTable('#dTableExpenses', customDataTable, locale);
+        customDataTable.setCurrentTable(dTableExpenses);
     }
 
     function parseStatusToBadge(status) {

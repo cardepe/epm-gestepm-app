@@ -13,6 +13,7 @@ class CustomDataTable {
         this.orderable = orderable
         this.columnDefs = columnDefs
         this.stickyColumns = stickyColumns
+        this.currentTable = null;
     }
 
     columns() {
@@ -57,6 +58,14 @@ class CustomDataTable {
 
     stickyColumns() {
         return this.stickyColumns
+    }
+
+    currentTable() {
+        return this.currentTable;
+    }
+
+    setCurrentTable(currentTable) {
+        this.currentTable = currentTable
     }
 }
 
@@ -202,14 +211,11 @@ function calculateFiltersQueryParams(d, customDataTable) {
 
 function calculateOrderQueryParams(d, customDataTable) {
 
-    if (dTable) {
-        let info = dTable.order()
+    if (customDataTable.currentTable) {
+        let info = customDataTable.currentTable.order()
 
-        let orderIndex = info[0][0]
-        let order = info[0][1]
-
-        d.order = order
-        d.orderBy = customDataTable.columns[orderIndex]
+        d.order = info[0][1]
+        d.orderBy = customDataTable.columns[info[0][0]]
     }
 }
 

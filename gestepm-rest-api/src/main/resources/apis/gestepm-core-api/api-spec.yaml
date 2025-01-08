@@ -870,10 +870,12 @@ components:
           type: number
           x-stoplight:
             id: 86j812wl5fqd1
+          format: double
         amount:
           type: number
           x-stoplight:
             id: nidm8dwglw7r9
+          format: double
         paymentType:
           type: string
           x-stoplight:
@@ -920,6 +922,11 @@ components:
             - REJECTED
         observations:
           type: string
+        amount:
+          type: number
+          x-stoplight:
+            id: 7uj2cfnsejbvk
+          format: double
         personalExpenses:
           type: array
           x-stoplight:

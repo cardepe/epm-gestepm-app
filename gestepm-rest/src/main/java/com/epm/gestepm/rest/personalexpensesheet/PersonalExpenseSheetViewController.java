@@ -20,6 +20,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -65,16 +66,18 @@ public class PersonalExpenseSheetViewController {
             final List<PersonalExpenseSheetDto> filteredSheets
                     = personalExpenseSheets.stream().filter(sheet -> status.equals(sheet.getStatus())).collect(Collectors.toList());
             final Double totalAmount = filteredSheets.stream().map(PersonalExpenseSheetDto::getAmount).reduce(0.0, Double::sum);
+            final String amount = new DecimalFormat("###,##0.00 €").format(totalAmount);
 
             if (status.equals(PersonalExpenseSheetStatusEnumDto.PENDING) || status.equals(PersonalExpenseSheetStatusEnumDto.APPROVED)) {
                 pendingAmount.updateAndGet(v -> v + totalAmount);
             }
 
-            model.addAttribute("amount" + status.name(), totalAmount);
+            model.addAttribute("amount" + status.name(), amount);
             model.addAttribute("count" + status.name(), filteredSheets.size());
         });
 
-        model.addAttribute("totalAmountPENDING", pendingAmount.get());
+        final String amount = new DecimalFormat("###,##0.00 €").format(pendingAmount.get());
+        model.addAttribute("totalAmountPENDING", amount);
 
         this.loadProjects(user, model);
 

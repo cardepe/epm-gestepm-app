@@ -473,6 +473,7 @@
 
         customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
         dTable = createDataTable('#dTable', customDataTable, locale);
+        customDataTable.setCurrentTable(dTable);
     }
 
     function parseTypeToBadge(data) {

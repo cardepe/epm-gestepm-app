@@ -39,7 +39,7 @@
                         </div>
                         <div class="stat-content">
                             <div class="text-left dib">
-                                <div class="stat-text"><span class="count">${amountPENDING}</span>€</div>
+                                <div class="stat-text"><span class="count">${amountPENDING}</span></div>
                                 <div class="stat-heading">pendientes en ${countPENDING} hojas</div>
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                         </div>
                         <div class="stat-content">
                             <div class="text-left dib">
-                                <div class="stat-text"><span class="count">${amountAPPROVED}</span>€</div>
+                                <div class="stat-text"><span class="count">${amountAPPROVED}</span></div>
                                 <div class="stat-heading">aprobados en ${countAPPROVED} hojas</div>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                         </div>
                         <div class="stat-content">
                             <div class="text-left dib">
-                                <div class="stat-text"><span class="count">${amountPAID}</span>€</div>
+                                <div class="stat-text"><span class="count">${amountPAID}</span></div>
                                 <div class="stat-heading">pagados en ${countPAID} hojas</div>
                             </div>
                         </div>
@@ -93,7 +93,7 @@
                         </div>
                         <div class="stat-content">
                             <div class="text-left dib">
-                                <div class="stat-text"><span class="count">${amountREJECTED}</span>€</div>
+                                <div class="stat-text"><span class="count">${amountREJECTED}</span></div>
                                 <div class="stat-heading">denegados en ${countREJECTED} hojas</div>
                             </div>
                         </div>
@@ -111,7 +111,7 @@
                         </div>
                         <div class="stat-content">
                             <div class="text-left dib">
-                                <div class="stat-text"><span class="count">${totalAmountPENDING}</span>€</div>
+                                <div class="stat-text"><span class="count">${totalAmountPENDING}</span></div>
                                 <div class="stat-heading">pendientes de cobrar</div>
                             </div>
                         </div>
@@ -138,6 +138,7 @@
                                     <th><spring:message code="project"/></th>
                                     <th><spring:message code="status"/></th>
                                     <th><spring:message code="date"/></th>
+                                    <th><spring:message code="amount"/></th>
                                     <th><spring:message code="actions"/></th>
                                 </tr>
                             </thead>

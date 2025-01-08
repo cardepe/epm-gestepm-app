@@ -295,6 +295,7 @@
 
         customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnsDef);
         dTable = createDataTable('#dTable', customDataTable, locale);
+        customDataTable.setCurrentTable(dTable);
     });
 
 </script>

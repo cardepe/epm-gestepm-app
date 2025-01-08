@@ -1,5 +1,5 @@
 function initializeDataTables() {
-    let columns = ['id', 'description', 'project.name', 'status', 'startDate', 'id']
+    let columns = ['id', 'description', 'project.name', 'status', 'startDate', 'amount', 'id']
     let endpoint = '/v1/expenses/personal/sheets';
     let actions = [
         {
@@ -37,11 +37,18 @@ function initializeDataTables() {
             render: function (data) {
                 return moment(data).format('DD-MM-YYYY HH:mm');
             }
+        },
+        {
+            targets: 5,
+            render: function (data) {
+                return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(data);
+            }
         }
     ]
 
     customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
     dTable = createDataTable('#dTable', customDataTable, locale);
+    customDataTable.setCurrentTable(dTable);
 }
 
 function initializeSelects() {
