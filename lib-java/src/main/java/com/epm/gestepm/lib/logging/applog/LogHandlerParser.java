@@ -10,8 +10,6 @@ import static com.epm.gestepm.lib.logging.constants.LogDataKeys.LOG_CODE_TRACE_O
 import static com.epm.gestepm.lib.logging.constants.LogDataKeys.LOG_CODE_TRACE_ON_METHOD;
 import static com.epm.gestepm.lib.logging.constants.LogDataKeys.LOG_MSG;
 import static com.epm.gestepm.lib.logging.constants.LogDataKeys.LOG_OPERATION;
-import static com.epm.gestepm.lib.logging.constants.LogDataKeys.LOG_USER_LOGIN;
-import static com.epm.gestepm.lib.logging.constants.LogDataKeys.LOG_USER_PERMITS;
 import static com.epm.gestepm.lib.logging.constants.LogFlowMarker.FLOW_MARK_LINE;
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.UNKNOWN;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_PROCESS;
@@ -19,10 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import com.epm.gestepm.lib.user.UserProviderContext;
-import com.epm.gestepm.lib.user.data.UserLogin;
-import com.epm.gestepm.lib.user.data.UserPermits;
+
 import com.epm.gestepm.lib.utils.stringutils.StringCleanUtils;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,7 +28,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.MessageSource;
 
 public class LogHandlerParser {
 

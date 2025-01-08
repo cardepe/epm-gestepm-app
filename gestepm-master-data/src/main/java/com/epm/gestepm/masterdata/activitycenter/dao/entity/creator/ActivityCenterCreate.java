@@ -8,8 +8,6 @@ import javax.validation.constraints.NotNull;
 
 import static com.epm.gestepm.masterdata.activitycenter.dao.constants.ActivityCenterAttributes.ATTR_AC_COUNTRY_ID;
 import static com.epm.gestepm.masterdata.activitycenter.dao.constants.ActivityCenterAttributes.ATTR_AC_NAME;
-import static com.epm.gestepm.masterdata.country.dao.constants.CountryAttributes.ATTR_C_NAME;
-import static com.epm.gestepm.masterdata.country.dao.constants.CountryAttributes.ATTR_C_TAG;
 
 @Data
 public class ActivityCenterCreate implements CollectableAttributes {

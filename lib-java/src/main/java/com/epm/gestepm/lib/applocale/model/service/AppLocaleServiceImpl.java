@@ -19,7 +19,6 @@ import com.epm.gestepm.lib.applocale.model.service.mapper.MapALToAppLocaleFilter
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.logging.constants.LogLayerMarkers;
-import com.epm.gestepm.lib.logging.constants.LogOperations;
 import com.epm.gestepm.lib.types.Page;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;

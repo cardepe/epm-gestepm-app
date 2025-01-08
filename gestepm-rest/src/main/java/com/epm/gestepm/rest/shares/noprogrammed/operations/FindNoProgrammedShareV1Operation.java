@@ -2,7 +2,6 @@ package com.epm.gestepm.rest.shares.noprogrammed.operations;
 
 import com.epm.gestepm.lib.controller.APIOperation;
 import com.epm.gestepm.rest.shares.noprogrammed.request.NoProgrammedShareFindRestRequest;
-import com.epm.gestepm.restapi.openapi.api.CountriesV1Api;
 import com.epm.gestepm.restapi.openapi.api.NoProgrammedShareV1Api;
 
 public class FindNoProgrammedShareV1Operation extends APIOperation<NoProgrammedShareV1Api, NoProgrammedShareFindRestRequest> {

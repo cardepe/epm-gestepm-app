@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-import com.epm.gestepm.lib.applocale.model.dao.constants.AppLocaleAttributes;
 import com.epm.gestepm.lib.entity.AttributeMap;
 import com.epm.gestepm.lib.entity.CollectableAttributes;
 

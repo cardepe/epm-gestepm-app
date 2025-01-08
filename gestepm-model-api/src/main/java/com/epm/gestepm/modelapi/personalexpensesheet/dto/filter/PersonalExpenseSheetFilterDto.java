@@ -7,7 +7,6 @@ import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetSta
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 

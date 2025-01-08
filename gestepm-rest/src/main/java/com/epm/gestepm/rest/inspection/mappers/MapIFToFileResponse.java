@@ -5,7 +5,6 @@ import com.epm.gestepm.restapi.openapi.model.ShareFile;
 import org.mapstruct.Mapper;
 
 import java.util.List;
-import java.util.Set;
 
 @Mapper
 public interface MapIFToFileResponse {

@@ -5,7 +5,6 @@ import com.epm.gestepm.rest.displacement.request.DisplacementListRestRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper

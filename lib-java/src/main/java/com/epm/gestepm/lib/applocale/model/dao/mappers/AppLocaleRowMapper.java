@@ -1,6 +1,5 @@
 package com.epm.gestepm.lib.applocale.model.dao.mappers;
 
-import static com.epm.gestepm.lib.jdbc.utils.ResultSetMappingUtils.nullableInt;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import com.epm.gestepm.lib.applocale.model.dao.entity.AppLocale;

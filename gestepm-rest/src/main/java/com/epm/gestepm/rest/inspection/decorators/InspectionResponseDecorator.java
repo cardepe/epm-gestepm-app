@@ -6,18 +6,15 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionFileDto;
 import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFileFilterDto;
-import com.epm.gestepm.modelapi.inspection.dto.finder.InspectionFileByIdFinderDto;
 import com.epm.gestepm.modelapi.inspection.service.InspectionFileService;
 import com.epm.gestepm.rest.inspection.mappers.MapIFToFileResponse;
 import com.epm.gestepm.rest.inspection.request.InspectionFindRestRequest;
-import com.epm.gestepm.rest.personalexpense.mappers.MapPEFToFileResponse;
 import com.epm.gestepm.restapi.openapi.model.Inspection;
 import com.epm.gestepm.restapi.openapi.model.ShareFile;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DELEGATOR;

@@ -4,7 +4,6 @@ import com.epm.gestepm.lib.controller.error.APIError;
 import com.epm.gestepm.lib.controller.error.I18nErrorMessageSource;
 import com.epm.gestepm.lib.controller.exception.BaseRestExceptionHandler;
 import com.epm.gestepm.lib.executiontrace.ExecutionRequestProvider;
-import com.epm.gestepm.masterdata.api.displacement.exception.DisplacementNotFoundException;
 import com.epm.gestepm.masterdata.api.holiday.exception.HolidayNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;

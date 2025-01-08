@@ -1,5 +1,8 @@
 package com.epm.gestepm.lib.types;
 
+import lombok.Data;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 import static java.util.Objects.requireNonNullElse;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -9,6 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+@Data
 public class Page<T> implements Iterable<T>, Serializable {
 
     private final PageCursor cursor;
@@ -47,14 +51,6 @@ public class Page<T> implements Iterable<T>, Serializable {
 
     public void setOffset(Long offset) {
         this.cursor.setOffset(offset);
-    }
-
-    public List<T> getContent() {
-        return content;
-    }
-
-    public void setContent(List<T> content) {
-        this.content = content;
     }
 
     public PageCursor cursor() {
@@ -102,22 +98,4 @@ public class Page<T> implements Iterable<T>, Serializable {
     public Iterator<T> iterator() {
         return requireNonNullElse(this.content, new ArrayList<T>()).iterator();
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Page)) {
-            return false;
-        }
-        Page<?> page = (Page<?>) o;
-        return Objects.equals(cursor, page.cursor) && Objects.equals(getContent(), page.getContent());
-    }
-
-    @Override
-    public int hashCode() {
-        return getContent().hashCode();
-    }
-
 }

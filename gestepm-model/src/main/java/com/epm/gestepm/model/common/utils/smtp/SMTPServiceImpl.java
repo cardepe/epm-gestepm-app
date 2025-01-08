@@ -8,7 +8,6 @@ import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenNoProgrammedShareMailT
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenPersonalExpenseSheetMailTemplateDto;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
-import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigning;
@@ -445,8 +444,8 @@ public class SMTPServiceImpl implements SMTPService {
 	        	log.info("Adjuntando revisión " + inspection.getId() + " en " + locale.getLanguage());
 
 				fileName = messageSource.getMessage("shares.no.programmed.pdf.name", new Object[] {
-						inspection.getId(),
-						Utiles.getDateFormatted(inspection.getStartDate())
+						inspection.getShareId(),
+						inspection.getId()
 				}, locale) + ".pdf";
 				
 	        } else if ("ips".equals(type)) {

@@ -7,7 +7,6 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 
-import static com.epm.gestepm.masterdata.activitycenter.dao.constants.ActivityCenterAttributes.*;
 import static com.epm.gestepm.masterdata.displacement.dao.constants.DisplacementAttributes.*;
 import static com.epm.gestepm.masterdata.displacement.dao.constants.DisplacementAttributes.ATTR_D_TOTAL_TIME;
 

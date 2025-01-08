@@ -11,7 +11,6 @@ import com.epm.gestepm.lib.jdbc.api.query.fetch.SQLQueryFetchPage;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.types.Page;
-import com.epm.gestepm.model.inspection.dao.entity.creator.InspectionFileCreate;
 import com.epm.gestepm.model.personalexpense.dao.entity.PersonalExpense;
 import com.epm.gestepm.model.personalexpense.dao.entity.creator.PersonalExpenseCreate;
 import com.epm.gestepm.model.personalexpense.dao.entity.creator.PersonalExpenseFileCreate;
@@ -27,9 +26,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-import static com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType.ASC;
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
 import static com.epm.gestepm.model.inspection.dao.mappers.InspectionRowMapper.COL_I_START_DATE;

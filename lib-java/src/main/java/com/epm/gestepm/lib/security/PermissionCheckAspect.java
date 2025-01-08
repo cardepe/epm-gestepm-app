@@ -7,7 +7,6 @@ import com.epm.gestepm.lib.security.annotation.RequireOneOfPermits;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.security.exception.NotEnoughPermissionException;
 import com.epm.gestepm.lib.user.UserProvider;
-import com.epm.gestepm.lib.user.data.UserPermits;
 import com.epm.gestepm.lib.user.data.condition.UserHasAllOfPermits;
 import com.epm.gestepm.lib.user.data.condition.UserHasOneOfPermits;
 import org.aspectj.lang.annotation.Aspect;
