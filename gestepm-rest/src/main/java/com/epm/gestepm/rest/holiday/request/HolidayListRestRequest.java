@@ -1,7 +1,6 @@
 package com.epm.gestepm.rest.holiday.request;
 
 import com.epm.gestepm.lib.controller.RestRequest;
-import com.epm.gestepm.restapi.openapi.model.DisplacementType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

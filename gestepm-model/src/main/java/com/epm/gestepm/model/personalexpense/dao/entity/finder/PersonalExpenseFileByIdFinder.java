@@ -4,7 +4,6 @@ import com.epm.gestepm.lib.entity.AttributeMap;
 import com.epm.gestepm.lib.entity.CollectableAttributes;
 import lombok.Data;
 
-import static com.epm.gestepm.model.personalexpense.dao.constants.PersonalExpenseAttributes.ATTR_PE_ID;
 import static com.epm.gestepm.model.personalexpense.dao.constants.PersonalExpenseFileAttributes.ATTR_PEF_ID;
 
 @Data

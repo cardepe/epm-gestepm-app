@@ -107,8 +107,8 @@ public class InspectionExportServiceImpl implements InspectionExportService {
             acroFields.setField("station", project.getName());
             acroFields.setField("faultDate", Utiles.transform(noProgrammedShare.getStartDate(), DATE_FORMAT));
             acroFields.setField("faultDescription", noProgrammedShare.getDescription().replaceAll("( *\n *){2,}", "\n"));
-            acroFields.setField("interventionText", this.messageSource.getMessage("inspection.type." + inspection.getAction().name().toLowerCase(), null, locale));
-            acroFields.setField("interventionNum", inspection.getInspectionTypeNumber(noProgrammedShare.getInspectionIds()).toString());
+            acroFields.setField("inspectionId", inspection.getId().toString());
+            acroFields.setField("inspectionType", this.messageSource.getMessage("inspection.type." + inspection.getAction().name().toLowerCase(), null, locale));
             acroFields.setField("interventionStartDate", Utiles.transform(inspection.getStartDate(), DATE_FORMAT));
             acroFields.setField("interventionEndDate", Utiles.transform(inspection.getEndDate(), DATE_FORMAT));
             acroFields.setField("technic1", firstTechnical.getFullName());
@@ -180,15 +180,13 @@ public class InspectionExportServiceImpl implements InspectionExportService {
             final Project project = this.projectService.getProjectById(noProgrammedShare.getProjectId().longValue());
 
             final String language = localeProvider.getLocale().orElse("es");
-            final Locale locale = new Locale(language);
             final PdfReader pdfTemplate = new PdfReader(String.format(MATERIALS_TEMPLATE_PATH, language));
             final ByteArrayOutputStream baos = new ByteArrayOutputStream();
             final PdfStamper stamper = new PdfStamper(pdfTemplate, baos);
             final AcroFields acroFields = stamper.getAcroFields();
 
             stamper.getAcroFields().setField("faultNum", noProgrammedShare.getId().toString());
-            acroFields.setField("interventionText", this.messageSource.getMessage("inspection.type." + inspection.getAction().name().toLowerCase(), null, locale));
-            acroFields.setField("interventionNum", inspection.getInspectionTypeNumber(noProgrammedShare.getInspectionIds()).toString());
+            acroFields.setField("inspectionId", inspection.getId().toString());
             acroFields.setField("excelNum", "EXCEL: " + (inspection.getMaterialsFile() != null ? noProgrammedShare.getId() : "S/N"));
 
             final List<MaterialRequired> materials = project.getMaterialsRequired().stream().limit(30).collect(Collectors.toList());

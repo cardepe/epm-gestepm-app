@@ -190,19 +190,12 @@ public class InspectionController extends BaseController implements InspectionV1
 
         final InspectionDto inspection = this.inspectionService.findOrNotFound(new InspectionByIdFinderDto(inspectionId));
 
-        if (shareId == 0) {
-            shareId = inspection.getShareId(); // FIXME: to remove when refactor projects/shares view
-        }
-
-        final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(shareId));
-
         final byte[] pdf = this.inspectionExportService.generate(inspection);
-        final String dateFormat = "dd-MM-yyyy";
         final Resource resource = new ByteArrayResource(pdf);
         final String fileName = messageSource.getMessage("shares.no.programmed.pdf.name",
                 new Object[] {
-                        inspection.getId(),
-                        Utiles.transform(inspection.getStartDate(), dateFormat)
+                        inspection.getShareId(),
+                        inspection.getId()
                 }, locale) + ".pdf";
 
         final HttpHeaders headers = new HttpHeaders();

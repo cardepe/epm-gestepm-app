@@ -6,8 +6,6 @@ import com.epm.gestepm.lib.applocale.apimodel.dto.finder.AppLocaleByIdFinderDto;
 import com.epm.gestepm.lib.applocale.apimodel.exception.AppLocaleNotSupportedException;
 import com.epm.gestepm.lib.applocale.apimodel.service.AppLocaleService;
 import com.epm.gestepm.lib.locale.ThreadLocalLocaleProvider;
-import com.epm.gestepm.lib.logging.AppLogger;
-import com.epm.gestepm.lib.logging.applog.LogHandler;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;

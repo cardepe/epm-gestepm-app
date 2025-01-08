@@ -1,8 +1,6 @@
 package com.epm.gestepm.rest.holiday;
 
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
-import com.epm.gestepm.masterdata.api.activitycenter.dto.ActivityCenterDto;
-import com.epm.gestepm.masterdata.api.activitycenter.dto.filter.ActivityCenterFilterDto;
 import com.epm.gestepm.masterdata.api.activitycenter.service.ActivityCenterService;
 import com.epm.gestepm.masterdata.api.country.dto.CountryDto;
 import com.epm.gestepm.masterdata.api.country.dto.filter.CountryFilterDto;

@@ -8,7 +8,6 @@ import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
-import static com.epm.gestepm.masterdata.displacement.dao.constants.DisplacementAttributes.*;
 import static com.epm.gestepm.masterdata.holiday.dao.constants.HolidayAttributes.*;
 
 @Data

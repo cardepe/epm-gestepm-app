@@ -1,7 +1,6 @@
 package com.epm.gestepm.rest.personalexpensesheet.request;
 
 import com.epm.gestepm.lib.controller.RestRequest;
-import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetStatusEnumDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

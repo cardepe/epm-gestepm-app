@@ -1,15 +1,12 @@
 package com.epm.gestepm.model.personalexpensesheet.service;
 
-import com.epm.gestepm.lib.file.FileUtils;
 import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
-import com.epm.gestepm.model.personalexpense.dao.entity.PersonalExpenseFile;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.personalexpense.dto.PersonalExpenseDto;
 import com.epm.gestepm.modelapi.personalexpense.dto.PersonalExpenseFileDto;
 import com.epm.gestepm.modelapi.personalexpense.dto.filter.PersonalExpenseFileFilterDto;
 import com.epm.gestepm.modelapi.personalexpense.dto.filter.PersonalExpenseFilterDto;
-import com.epm.gestepm.modelapi.personalexpense.dto.finder.PersonalExpenseFileByIdFinderDto;
 import com.epm.gestepm.modelapi.personalexpense.service.PersonalExpenseFileService;
 import com.epm.gestepm.modelapi.personalexpense.service.PersonalExpenseService;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetDto;
@@ -24,7 +21,6 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.*;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
