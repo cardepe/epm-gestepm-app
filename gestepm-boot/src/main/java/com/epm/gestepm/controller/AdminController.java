@@ -30,6 +30,8 @@ import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyOldDTO;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -75,6 +77,9 @@ public class AdminController {
 	
 	@Autowired
 	private SubRoleServiceImpl subRoleService;
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@GetMapping("/holidays")
 	public String holidays(Locale locale, Model model, HttpServletRequest request) {
@@ -349,12 +354,12 @@ public class AdminController {
 			model.addAttribute("tableActionButtons", ModelUtil.getTableModifyActionButtons());
 			model.addAttribute("family", family);
 			model.addAttribute("subRoles", subRoles);
-			model.addAttribute("dataRows", new Gson().toJson(subFamilies));
-						
+			model.addAttribute("dataRows", this.objectMapper.writeValueAsString(subFamilies));
+
 			// Loading view
 			return "admin-families-edit";
 
-		} catch (InvalidUserSessionException e) {
+		} catch (InvalidUserSessionException | JsonProcessingException e) {
 			log.error(e);
 			return "redirect:/login";
 		}
