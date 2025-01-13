@@ -12,9 +12,6 @@ public class InspectionFileCreateDto {
     private String name;
 
     @NotNull
-    private String ext;
-
-    @NotNull
     @JsonIgnore
     private String content;
 

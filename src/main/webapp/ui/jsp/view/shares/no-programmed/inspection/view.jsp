@@ -38,14 +38,21 @@
 
 <script>
     let locale = '${locale}';
+    let share;
     let inspection;
     let canvas, canvasOp;
     let signaturePad, signaturePadOp;
 
     async function getInspection() {
-        await axios.get('/v1' + window.location.pathname, { params: { _expand: 'files' }}).then((response) => {
+        await axios.get('/v1' + window.location.pathname, { params: { _expand: 'files,firstTechnical,secondTechnical' }}).then((response) => {
             inspection = response.data.data;
-        }).catch(error => showNotify(error, 'danger'));
+        }).catch(error => showNotify(error.response.data.detail, 'danger'));
+    }
+
+    async function getShare(id) {
+        await axios.get('/v1/shares/no-programmed/' + id).then((response) => {
+            share = response.data.data;
+        }).catch(error => showNotify(error.response.data.detail, 'danger'));
     }
 
     function init() {
@@ -75,6 +82,7 @@
 
     $(document).ready(async function () {
         await getInspection();
+        await getShare(inspection.share.id);
         init();
         update();
         save();

@@ -80,8 +80,9 @@ public class ShareDecoratorImpl implements ShareDecorator {
             final byte[] pdf = this.inspectionExportService.generate(inspection);
 
             final String fileName = this.messageSource.getMessage("shares.no.programmed.pdf.name", new Object[]{
-                    inspection.getShareId(),
-                    inspection.getId()
+                    inspection.getShareId().toString(),
+                    inspection.getId().toString(),
+                    Utiles.transform(inspection.getStartDate(), "yyyyMMdd")
             }, Locale.getDefault()) + ".pdf";
 
             final PdfFileDTO pdfFileDTO = new PdfFileDTO();

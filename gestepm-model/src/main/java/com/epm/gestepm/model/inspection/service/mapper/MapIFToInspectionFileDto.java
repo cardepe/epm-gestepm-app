@@ -11,13 +11,8 @@ import java.util.List;
 @Mapper
 public interface MapIFToInspectionFileDto {
 
-  @Mapping(source = ".", target = "name", qualifiedByName = "parseFileName")
   InspectionFileDto from(InspectionFile file);
 
   List<InspectionFileDto> from(List<InspectionFile> files);
 
-  @Named("parseFileName")
-  static String parseFileName(InspectionFile file) {
-    return file.getName() + "." + file.getExt();
-  }
 }

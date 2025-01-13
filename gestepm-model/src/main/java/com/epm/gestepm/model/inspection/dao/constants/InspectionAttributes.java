@@ -32,7 +32,7 @@ public abstract class InspectionAttributes {
 
   public static final String ATTR_I_MATERIALS_FILE = "attr_i_materials_file";
 
-  public static final String ATTR_I_MATERIALS_FILE_EXTENSION = "attr_i_materials_file_extension";
+  public static final String ATTR_I_MATERIALS_FILE_NAME = "attr_i_materials_file_name";
 
   public static final String ATTR_I_TOPIC_ID = "attr_i_topic_id";
 

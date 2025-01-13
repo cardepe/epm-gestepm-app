@@ -362,6 +362,29 @@ paths:
       description: delete-no-programmed-share-v1
       tags:
         - no-programmed-share-v1
+  '/v1/shares/no-programmed/{shareId}/files/{fileId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+      - $ref: '#/components/parameters/File-Id'
+    delete:
+      summary: V1 - Delete no programmed share file
+      operationId: delete-no-programmed-share-file-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: no-programmed-share-file-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - no-programmed-share-file-v1
+      description: delete-no-programmed-share-file-v1
   '/v1/shares/no-programmed/{shareId}/inspections':
     parameters:
       - $ref: '#/components/parameters/Share-Id'
@@ -464,6 +487,30 @@ paths:
       tags:
         - inspection-v1
       description: delete-inspection-v1
+  '/v1/shares/no-programmed/{shareId}/inspections/{inspectionId}/files/{fileId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+      - $ref: '#/components/parameters/Inspection-Id'
+      - $ref: '#/components/parameters/File-Id'
+    delete:
+      summary: V1 - Delete inspection file
+      operationId: delete-inspection-file-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: inspection-file-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - inspection-file-v1
+      description: delete-inspection-file-v1
   '/v1/shares/no-programmed/{shareId}/inspections/{inspectionId}/export':
     parameters:
       - $ref: '#/components/parameters/Share-Id'
@@ -615,7 +662,7 @@ components:
           type: string
           x-stoplight:
             id: 8lfzk9pa7wyrg
-        materialsFileExtension:
+        materialsFileName:
           type: string
           x-stoplight:
             id: 790fxpi66ikvh
@@ -1449,6 +1496,13 @@ components:
       schema:
         type: integer
       description: Personal expense identificator.
+    File-Id:
+      name: fileId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: File identificator.
 tags:
   - name: personal-expense-sheet-v1
     description: V1 - Personal Expense Sheets
@@ -1456,7 +1510,11 @@ tags:
     description: V1 - Personal Expenses
   - name: inspection-v1
     description: V1 - Inspection
+  - name: inspection-file-v1
+    description: V1 - Inspection File
   - name: no-programmed-share-v1
     description: V1 - No Programmed Share
+  - name: no-programmed-share-file-v1
+    description: V1 - No Programmed Share File
   - name: user-v1
     description: V1 - User

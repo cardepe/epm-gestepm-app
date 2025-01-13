@@ -18,9 +18,6 @@ public class NoProgrammedShareFile implements Serializable {
     private String name;
 
     @NotNull
-    private String ext;
-
-    @NotNull
     private String content;
 
 }

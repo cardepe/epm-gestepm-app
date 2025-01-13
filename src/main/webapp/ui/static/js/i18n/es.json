@@ -51,6 +51,12 @@
         "delete" : {
             "alert": "¿Está seguro que quiere borrar la revisión {0}?",
             "success": "Revisión nº {0} eliminada con éxito."
+        },
+        "files": {
+            "delete": {
+                "alert": "¿Está seguro que desea eliminar el adjunto {0}?",
+                "success": "Adjunto {0} eliminado con éxito."
+            }
         }
     },
     "personalExpenseSheet": {
@@ -90,7 +96,10 @@
                 }
             },
             "files": {
-                "empty": "No se adjuntaron archivos para este parte."
+                "delete": {
+                    "alert": "¿Está seguro que desea eliminar el adjunto {0}?",
+                    "success": "Adjunto {0} eliminado con éxito."
+                }
             },
             "postForumUrl": "Puede ver la entrada en el foro clicando aquí."
         }

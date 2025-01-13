@@ -53,7 +53,7 @@ public class InspectionUpdate implements CollectableAttributes {
 
     private String materialsFile;
 
-    private String materialsFileExtension;
+    private String materialsFileName;
 
     private Integer equipmentHours;
 
@@ -79,7 +79,7 @@ public class InspectionUpdate implements CollectableAttributes {
         map.put(InspectionAttributes.ATTR_I_OPERATOR_SIGNATURE, this.operatorSignature);
         map.put(InspectionAttributes.ATTR_I_CLIENT_NAME, this.clientName);
         map.put(InspectionAttributes.ATTR_I_MATERIALS_FILE, StringUtils.isNoneEmpty(this.materialsFile) ? FileUtils.compressBytes(Base64.getDecoder().decode(this.materialsFile)) : null);
-        map.put(InspectionAttributes.ATTR_I_MATERIALS_FILE_EXTENSION, this.materialsFileExtension);
+        map.put(InspectionAttributes.ATTR_I_MATERIALS_FILE_NAME, this.materialsFileName);
         map.put(InspectionAttributes.ATTR_I_EQUIPMENT_HOURS, this.equipmentHours);
         map.put(InspectionAttributes.ATTR_I_TOPIC_ID, this.topicId);
 

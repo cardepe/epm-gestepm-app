@@ -89,12 +89,6 @@ $(document).ready(function () {
 
 function disableForm(formId) {
 	const form = document.querySelector(formId);
-	const files = form.querySelector('[name="files"]');
-
-	if (files) {
-		files.remove();
-	}
-
 	const elements = form.querySelectorAll('input, textarea, select');
 	elements.forEach(element => element.disabled = true);
 

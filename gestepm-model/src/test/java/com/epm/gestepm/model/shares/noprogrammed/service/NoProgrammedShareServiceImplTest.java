@@ -5,11 +5,14 @@ import com.epm.gestepm.model.shares.noprogrammed.checker.NoProgrammedShareChecke
 import com.epm.gestepm.model.shares.noprogrammed.dao.NoProgrammedShareDao;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.NoProgrammedShare;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.filter.NoProgrammedShareFilter;
+import com.epm.gestepm.model.shares.noprogrammed.dao.entity.finder.NoProgrammedShareByIdFinder;
 import com.epm.gestepm.model.shares.noprogrammed.decorator.NoProgrammedSharePostCreationDecorator;
+import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSToNoProgrammedShareByIdFinder;
 import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSToNoProgrammedShareDto;
 import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSToNoProgrammedShareFilter;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.filter.NoProgrammedShareFilterDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -36,6 +40,9 @@ class NoProgrammedShareServiceImplTest {
 
     @Mock
     private MapNPSToNoProgrammedShareFilter filterMapper;
+
+    @Mock
+    private MapNPSToNoProgrammedShareByIdFinder finderMapper;
 
     @Mock
     private NoProgrammedShareChecker noProgrammedShareChecker;
@@ -119,5 +126,32 @@ class NoProgrammedShareServiceImplTest {
         assertNotNull(result);
         assertEquals(expected, result);
         verify(this.noProgrammedShareDao, times(1)).list(filter, OFFSET, LIMIT);
+    }
+
+    @Test
+    void shouldFindNoProgrammedShares() {
+        final NoProgrammedShareByIdFinderDto source = new NoProgrammedShareByIdFinderDto();
+        source.setId(NO_PROGRAMMED_SHARE_ID);
+
+        final NoProgrammedShareByIdFinder finder = new NoProgrammedShareByIdFinder();
+        finder.setId(NO_PROGRAMMED_SHARE_ID);
+
+        when(this.finderMapper.from(source)).thenReturn(finder);
+
+        final NoProgrammedShare dbResult = new NoProgrammedShare();
+        dbResult.setId(NO_PROGRAMMED_SHARE_ID);
+
+        when(this.noProgrammedShareDao.find(finder)).thenReturn(Optional.of(dbResult));
+
+        final NoProgrammedShareDto expected = new NoProgrammedShareDto();
+        expected.setId(NO_PROGRAMMED_SHARE_ID);
+
+        when(this.mapper.from(dbResult)).thenReturn(expected);
+
+        final Optional<NoProgrammedShareDto> result = this.noProgrammedShareService.find(source);
+
+        assertNotNull(result);
+        assertEquals(Optional.of(expected), result);
+        verify(this.noProgrammedShareDao, times(1)).find(finder);
     }
 }

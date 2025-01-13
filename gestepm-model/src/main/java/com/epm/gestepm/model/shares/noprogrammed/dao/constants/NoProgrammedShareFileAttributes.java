@@ -10,8 +10,6 @@ public abstract class NoProgrammedShareFileAttributes {
 
   public static final String ATTR_NPSF_NAME = "attr_npsf_name";
 
-  public static final String ATTR_NPSF_EXT = "attr_npsf_ext";
-
   public static final String ATTR_NPSF_CONTENT = "attr_npsf_content";
 
 }

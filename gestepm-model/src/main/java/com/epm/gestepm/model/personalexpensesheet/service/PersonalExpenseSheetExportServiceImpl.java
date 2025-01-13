@@ -175,7 +175,7 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
 
                 if (image.getWidth() > pageWidth || image.getHeight() > pageHeight) {
                     image.scaleToFit(maxImageSize);
-                 }
+                }
 
                 image.setAbsolutePosition(leftMargin, topMargin);
 

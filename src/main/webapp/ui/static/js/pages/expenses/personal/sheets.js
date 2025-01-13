@@ -89,7 +89,7 @@ function createPersonalExpenseSheet() {
     }).then((response) => {
         const id = response.data.data.id;
         window.location.href = '/expenses/personal/sheets/' + id;
-    }).catch(error => showNotify(error, 'danger'))
+    }).catch(error => showNotify(error.response.data.detail, 'danger'))
         .finally(() => {
             hideLoading();
             $('#createModal').modal('hide');
@@ -106,7 +106,7 @@ function remove(id) {
             dTable.ajax.reload();
             const successMessage = messages.personalExpenseSheet.delete.success.replace('{0}', id);
             showNotify(successMessage);
-        }).catch(error => showNotify(error, 'danger'))
+        }).catch(error => showNotify(error.response.data.detail, 'danger'))
             .finally(() => hideLoading());
     }
 }

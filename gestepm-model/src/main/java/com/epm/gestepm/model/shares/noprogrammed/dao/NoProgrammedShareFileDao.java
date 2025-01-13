@@ -2,6 +2,7 @@ package com.epm.gestepm.model.shares.noprogrammed.dao;
 
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.NoProgrammedShareFile;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.creator.NoProgrammedShareFileCreate;
+import com.epm.gestepm.model.shares.noprogrammed.dao.entity.deleter.NoProgrammedShareFileDelete;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.filter.NoProgrammedShareFileFilter;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.finder.NoProgrammedShareFileByIdFinder;
 
@@ -17,5 +18,7 @@ public interface NoProgrammedShareFileDao {
 
   @Valid
   NoProgrammedShareFile create(@Valid NoProgrammedShareFileCreate create);
+
+  void delete(@Valid NoProgrammedShareFileDelete delete);
 
 }

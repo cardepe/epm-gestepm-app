@@ -2,6 +2,7 @@ package com.epm.gestepm.modelapi.shares.noprogrammed.service;
 
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareFileDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.creator.NoProgrammedShareFileCreateDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.deleter.NoProgrammedShareFileDeleteDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.filter.NoProgrammedShareFileFilterDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareFileByIdFinderDto;
 
@@ -20,5 +21,7 @@ public interface NoProgrammedShareFileService {
 
     @Valid
     NoProgrammedShareFileDto create(@Valid NoProgrammedShareFileCreateDto createDto);
+
+    void delete(@Valid NoProgrammedShareFileDeleteDto deleteDto);
     
 }

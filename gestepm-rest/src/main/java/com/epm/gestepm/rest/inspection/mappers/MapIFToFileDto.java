@@ -16,12 +16,4 @@ public interface MapIFToFileDto {
 
     List<InspectionFileCreateDto> from(List<UpdateNoProgrammedShareV1RequestFilesInner> list);
 
-    @AfterMapping
-    default void parse(@MappingTarget InspectionFileCreateDto updateDto) {
-        final String fileName = updateDto.getName().substring(0, updateDto.getName().lastIndexOf('.'));
-        final String fileExtension = updateDto.getName().substring(updateDto.getName().lastIndexOf('.') + 1);
-
-        updateDto.setName(fileName);
-        updateDto.setExt(fileExtension);
-    }
 }

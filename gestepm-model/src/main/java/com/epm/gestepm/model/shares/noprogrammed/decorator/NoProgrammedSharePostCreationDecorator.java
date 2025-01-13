@@ -75,7 +75,7 @@ public class NoProgrammedSharePostCreationDecorator {
         final String ip = request.getLocalAddr();
         final List<MultipartFile> files = CollectionUtils.isNotEmpty(update.getFiles())
                 ? update.getFiles().stream()
-                .map(file -> convertToMultipartFile(file.getName() + "." + file.getExt(), Base64.decode(file.getContent()).getBytes()))
+                .map(file -> convertToMultipartFile(file.getName(), Base64.decode(file.getContent()).getBytes()))
                 .collect(Collectors.toList())
                 : new ArrayList<>();
 

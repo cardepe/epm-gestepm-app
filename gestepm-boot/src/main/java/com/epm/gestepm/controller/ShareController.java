@@ -1284,8 +1284,9 @@ public class ShareController {
                         final byte[] pdf = this.inspectionExportService.generate(inspection);
 
                         final String fileName = messageSource.getMessage("shares.no.programmed.pdf.name", new Object[] {
-                                inspection.getShareId(),
-                                inspection.getId()
+                                inspection.getShareId().toString(),
+                                inspection.getId().toString(),
+                                Utiles.transform(inspection.getStartDate(), "yyyyMMdd")
                         }, locale) + ".pdf";
 
                         final ZipEntry zipEntr = new ZipEntry(fileName);
@@ -1297,8 +1298,9 @@ public class ShareController {
                         final byte[] pdfMaterials = this.inspectionExportService.generateMaterials(inspection);
 
                         final String fileNameMaterials = messageSource.getMessage("shares.no.programmed.materials.pdf.name", new Object[] {
-                                inspection.getId(),
-                                Utiles.getDateFormatted(inspection.getStartDate())
+                                inspection.getShareId().toString(),
+                                inspection.getId().toString(),
+                                Utiles.transform(inspection.getStartDate(), "yyyyMMdd")
                         }, locale) + ".pdf";
 
                         final ZipEntry zipEntryMat = new ZipEntry(fileNameMaterials);
@@ -1316,7 +1318,8 @@ public class ShareController {
                 }
 
                 final String fileName = messageSource.getMessage("shares.no.programmed.zip.name", new Object[] {
-                        noProgrammedShareId
+                        noProgrammedShareId.toString(),
+                        Utiles.transform(noProgrammedShare.getStartDate(), "yyyyMMdd")
                 }, locale) + ".zip";
 
                 final PdfFileDTO pdfFileDTO = new PdfFileDTO();

@@ -7,8 +7,7 @@ sql:
       npsf.no_programmed_share_file_id,
       npsf.no_programmed_share_id,
       npsf.name,
-      npsf.content,
-      npsf.extension
+      npsf.content
     FROM ${sch-gestepm}.no_programmed_share_file npsf
     
     #whereToken #filter
@@ -18,15 +17,17 @@ sql:
     INSERT INTO ${sch-gestepm}.no_programmed_share_file (
       no_programmed_share_id,
       name,
-      extension,
       content
     )
     VALUES (
       :attr_npsf_share_id,
       :attr_npsf_name,
-      :attr_npsf_ext,
       :attr_npsf_content
     )
+
+  qry-delete-npsf: |
+    
+    DELETE FROM ${sch-gestepm}.no_programmed_share_file WHERE no_programmed_share_file_id = :attr_npsf_id
 
   filter-npsf-by-params: |
 

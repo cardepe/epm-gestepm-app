@@ -45,7 +45,7 @@ public class InspectionDto implements Serializable {
 
     private String materialsFile;
 
-    private String materialsFileExtension;
+    private String materialsFileName;
 
     private Integer equipmentHours;
 

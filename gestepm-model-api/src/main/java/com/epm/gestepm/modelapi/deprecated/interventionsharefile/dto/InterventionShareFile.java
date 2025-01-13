@@ -25,9 +25,6 @@ public class InterventionShareFile {
 	@Column(name = "name", nullable = false, length = 64)
 	private String name;
 
-	@Column(name = "extension", nullable = false, length = 6)
-	private String ext;
-
 	@Column(name = "content", nullable = false)
 	private byte[] content;
 

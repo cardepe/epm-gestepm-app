@@ -52,10 +52,10 @@
 <div class="clearfix"></div>
 
 <div class="content">
-    <div class="card h-100">
-        <div class="card-body p-0 h-100">
-            <div class="container-fluid h-100">
-                <div class="row h-100">
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="container-fluid">
+                <div class="row">
                     <div class="col-sm-12 col-md-3">
                         <div class="nav flex-column nav-pills p-4" id="v-pills-tab" role="tablist"
                              aria-orientation="vertical">
@@ -88,7 +88,7 @@
                                     code="project.detail.users"/></a>
                         </div>
                     </div>
-                    <div class="col-sm-12 col-md-9 h-100 bg-light">
+                    <div class="col-sm-12 col-md-9 bg-light">
                         <div class="tab-content" id="v-pills-tabContent">
 
                             <div class="tab-pane fade" id="v-pills-customer" role="tabpanel"
@@ -2923,7 +2923,7 @@
             }).then(() => {
                 dTableExpenses.ajax.reload();
                 showNotify(messages.personalExpenseSheet.update.success.replace('{0}', personalExpenseSheetId))
-            }).catch(error => showNotify(error, 'danger'))
+            }).catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());
         }
     }
@@ -2948,7 +2948,7 @@
         }).then(() => {
             dTableExpenses.ajax.reload();
             showNotify(messages.personalExpenseSheet.update.success.replace('{0}', personalExpenseSheetId))
-        }).catch(error => showNotify(error, 'danger'))
+        }).catch(error => showNotify(error.response.data.detail, 'danger'))
             .finally(() => {
                 hideLoading();
                 modal.modal('hide');

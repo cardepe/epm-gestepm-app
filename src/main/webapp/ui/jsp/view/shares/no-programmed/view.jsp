@@ -261,7 +261,7 @@
             }
         }).then((response) => {
             share = response.data.data;
-        }).catch(error => showNotify(error, 'danger'));
+        }).catch(error => showNotify(error.response.data.detail, 'danger'));
     }
 
     function edit(id) {
@@ -293,12 +293,11 @@
                 description: editForm.querySelector('[name="description"]').value,
                 state: 'INITIALIZED',
                 files: filesData
-            }).then((response) => {
-                share = response.data.data;
-                share.files = filesData;
+            }).then(async (response) => {
+                await getShare(response.data.data.id);
                 setWorkingMode();
                 showNotify(messages.shares.noprogrammed.update.success)
-            }).catch(error => showNotify(error, 'danger'))
+            }).catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());
         })
     }
@@ -330,11 +329,11 @@
 
             axios.patch('/v1/shares/no-programmed/' + id, {
                 state: 'CLOSED'
-            }).then((response) => {
-                share = response.data.data;
+            }).then(async (response) => {
+                await getShare(response.data.data.id);
                 setCompletedMode();
                 showNotify(messages.shares.noprogrammed.update.success)
-            }).catch(error => showNotify(error, 'danger'))
+            }).catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());
         });
     }
@@ -398,43 +397,45 @@
 
                     response.data.forEach((element) => {
                         appendElementToList(element, subFamily);
-                    }).catch(error => showNotify(error, 'danger'));
+                    }).catch(error => showNotify(error.response.data.detail, 'danger'));
                 })
         }
     }
 
     function setInitialMode() {
+        currentMode = 'INITIAL';
+
         document.querySelector('#finishBtn').classList.add('d-none');
         document.querySelector('#createInspectionBtn').classList.add('d-none');
-
-        currentMode = 'INITIAL';
     }
 
     function setWorkingMode() {
-        document.querySelector('#editBtn').remove();
+        currentMode = 'WORKING';
+
         document.querySelector('#finishBtn').classList.remove('d-none');
         document.querySelector('#createInspectionBtn').classList.remove('d-none');
 
         disableForm('#editForm');
-        showFiles();
 
-        currentMode = 'WORKING';
+        const form = document.querySelector('#editForm');
+        const files = form.querySelector('[name="files"]');
+
+        files.value = '';
+        files.disabled = false;
+
+        showFiles();
     }
 
     function setCompletedMode() {
-        if (currentMode !== 'WORKING') {
-            document.querySelector('#editBtn').remove();
-        }
+        const needsPrint = currentMode !== 'WORKING';
+        currentMode = 'COMPLETED';
 
+        document.querySelector('#editBtn').remove();
         document.querySelector('#finishBtn').remove();
         document.querySelector('#createInspectionBtn').remove();
 
-        if (currentMode !== 'WORKING') {
-            disableForm('#editForm');
-            showFiles();
-        }
-
-        currentMode = 'COMPLETED';
+        disableForm('#editForm');
+        showFiles();
     }
 
     function appendElementToList(element, list) {
@@ -450,9 +451,11 @@
         let endpoint = '/v1/shares/no-programmed/' + share.id + '/inspections';
         let actions = [
             { action: 'edit', type: 'redirect', url: '/shares/no-programmed/' + share.id + '/inspections/{id}', permission: 'edit_no_programmed_shares' },
-            { action: 'file-pdf', url: '/v1/shares/no-programmed/' + share.id + '/inspections/{id}/export' },
-            { action: 'delete', permission: 'edit_no_programmed_shares' }
+            { action: 'file-pdf', url: '/v1/shares/no-programmed/' + share.id + '/inspections/{id}/export' }
         ]
+        if (share.state !== 'CLOSED') {
+            actions.push({ action: 'delete', permission: 'edit_no_programmed_shares' });
+        }
         let expand = []
         let filters = []
         let orderable = [[0, 'DESC']]
@@ -489,12 +492,25 @@
     function showFiles() {
         const form = document.querySelector('#editForm');
         const filesFormGroup = form.querySelector('#filesFormGroup');
+        const filesAttachmentContainer = filesFormGroup.querySelector('.attachment-contianer');
+
+        if (filesAttachmentContainer) {
+            filesAttachmentContainer.remove();
+        }
 
         const linksContainer = document.createElement('div');
+        linksContainer.classList.add('attachment-contianer');
 
-        if (share.files.length > 0) {
-            const downloadBase64File = (fileName, base64Content) => {
-                const binaryData = atob(base64Content);
+        const files = share.files;
+
+        const selector = form.querySelector('[name="files"]');
+        if (selector && share.state === 'CLOSED') {
+            selector.remove();
+        }
+
+        if (files.length > 0) {
+            const downloadBase64File = (file) => {
+                const binaryData = atob(file.content);
                 const byteNumbers = new Uint8Array(binaryData.length);
 
                 for (let i = 0; i < binaryData.length; i++) {
@@ -505,26 +521,32 @@
                 const blob = new Blob([byteNumbers], {type: 'application/octet-stream'});
 
                 link.href = URL.createObjectURL(blob);
-                link.download = fileName;
-                link.textContent = fileName;
-                link.classList.add('btn', 'btn-outline-primary', 'btn-sm', 'mr-1');
+                link.download = file.name;
+                link.textContent = file.name;
+                link.classList.add('btn', 'btn-outline-primary', 'btn-xs', 'mr-1');
                 link.target = '_blank';
 
-                return link;
+                linksContainer.appendChild(link);
+
+                if (share.state !== 'CLOSED') {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.textContent = 'x';
+                    btn.classList.add('btn', 'btn-outline-danger', 'btn-xs', 'mr-1');
+                    btn.addEventListener('click', () => {
+                        deleteFile(file);
+                        link.remove();
+                        btn.remove();
+                    });
+
+                    linksContainer.appendChild(btn);
+                }
             };
 
-            share.files.forEach(file => {
-                const link = downloadBase64File(file.name, file.content);
-                linksContainer.appendChild(link);
+            files.forEach(file => {
+                downloadBase64File(file);
             });
 
-            filesFormGroup.appendChild(linksContainer);
-        } else {
-            const span = document.createElement('span');
-            span.textContent = messages.shares.noprogrammed.files.empty;
-            span.classList.add('font-size-12', 'font-italic');
-
-            linksContainer.appendChild(span);
             filesFormGroup.appendChild(linksContainer);
         }
     }
@@ -545,11 +567,8 @@
             action: form.querySelector('[name="action"]').value,
         }).then((response) => {
             const inspection = response.data.data;
-            nextAction = getNextAction(inspection.action);
-            updateModalAction(nextAction);
-            dTable.ajax.reload();
-            showNotify(messages.inspections.create.success.replace('{0}', inspection.id));
-        }).catch(error => showNotify(error, 'danger'))
+            window.location.replace(window.location.pathname + '/inspections/ ' + inspection.id);
+        }).catch(error => showNotify(error.response.data.detail, 'danger'))
             .finally(() => {
                 hideLoading();
                 $('#createModal').modal('hide');
@@ -576,12 +595,14 @@
                 dTable.ajax.reload();
                 const successMessage = messages.inspections.delete.success.replace('{0}', inspectionId);
                 showNotify(successMessage);
-            }).catch(error => showNotify(error, 'danger'))
+            }).catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());
         }
     }
 
     function setReturnButtonUrl() {
+        lastPageUrl = '/shares/intervention';
+
         if (document.referrer) {
             const lastPagePath = new URL(document.referrer).pathname;
 
@@ -591,11 +612,24 @@
                 sessionStorage.setItem('sharesFilter', lastPageUrl);
             } else if (lastPagePath.startsWith('/shares/no-programmed/')) {
                 lastPageUrl = sessionStorage.getItem('sharesFilter');
-            } else {
-                lastPageUrl = '/shares/intervention';
             }
+        }
 
-            returnBtn.attr('href', lastPageUrl);
+        returnBtn.attr('href', lastPageUrl);
+    }
+
+    function deleteFile(file) {
+        const alertMessage = messages.shares.noprogrammed.files.delete.alert.replace('{0}', file.name);
+        if (confirm(alertMessage)) {
+
+            showLoading();
+
+            axios.delete('/v1/shares/no-programmed/' + share.id + '/files/' + file.id).then(() => {
+                share.files = share.files.filter(f => f.id !== file.id)
+                const successMessage = messages.shares.noprogrammed.files.delete.success.replace('{0}', file.name);
+                showNotify(successMessage);
+            }).catch(error => showNotify(error.response.data.detail, 'danger'))
+                .finally(() => hideLoading());
         }
     }
 

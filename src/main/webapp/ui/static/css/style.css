@@ -356,6 +356,13 @@ img.idioma {
 
 /* End Loading Wheel */
 
+.btn-group-xs > .btn, .btn-xs {
+	padding: .5rem;
+	font-size: .75rem;
+	line-height: .5;
+	border-radius: .2rem;
+}
+
 /* Media Types */
 
 @media (max-width: 767.98px) { 

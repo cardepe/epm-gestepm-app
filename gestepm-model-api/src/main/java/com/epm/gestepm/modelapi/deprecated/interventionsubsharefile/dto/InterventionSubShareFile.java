@@ -25,9 +25,6 @@ public class InterventionSubShareFile {
 	@Column(name = "NAME", nullable = false, length = 64)
 	private String name;
 
-	@Column(name = "EXT", nullable = false, length = 6)
-	private String ext;
-
 	@Column(name = "CONTENT", nullable = false)
 	private byte[] content;
 

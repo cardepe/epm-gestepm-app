@@ -17,7 +17,7 @@ sql:
       i.operator_signature,
       i.client_name,
       i.materials_file,
-      i.materials_file_extension,
+      i.materials_file_name,
       i.equipment_hours,   
       i.topic_id,
       ifi.inspection_file_id,
@@ -79,7 +79,7 @@ sql:
       operator_signature = :attr_i_operator_signature, 
       client_name = :attr_i_client_name, 
       materials_file = :attr_i_materials_file, 
-      materials_file_extension = :attr_i_materials_file_extension,
+      materials_file_name = :attr_i_materials_file_name,
       equipment_hours = :attr_i_equipment_hours,
       topic_id = :attr_i_topic_id
     WHERE

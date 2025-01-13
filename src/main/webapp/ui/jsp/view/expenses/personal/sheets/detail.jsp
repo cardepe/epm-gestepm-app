@@ -134,7 +134,7 @@
     async function getPersonalExpenseShare() {
         await axios.get('/v1' + window.location.pathname).then((response) => {
             personalExpenseSheet = response.data.data;
-        }).catch(error => showNotify(error, 'danger'));
+        }).catch(error => showNotify(error.response.data.detail, 'danger'));
     }
 
     function init() {
@@ -269,7 +269,7 @@
             }).then((response) => {
                 personalExpenseSheet = response.data.data;
                 showNotify(messages.personalExpenseSheet.update.success.replace('{0}', personalExpenseSheet.id))
-            }).catch(error => showNotify(error, 'danger'))
+            }).catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());
         })
     }
@@ -284,7 +284,7 @@
                 dTable.ajax.reload();
                 const successMessage = messages.personalExpense.delete.success.replace('{0}', id);
                 showNotify(successMessage);
-            }).catch(error => showNotify(error, 'danger'))
+            }).catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());
         }
     }

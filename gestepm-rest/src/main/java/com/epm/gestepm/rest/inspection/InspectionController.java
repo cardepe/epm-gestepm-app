@@ -65,13 +65,11 @@ public class InspectionController extends BaseController implements InspectionV1
 
     private final LocaleProvider localeProvider;
 
-    private final NoProgrammedShareService noProgrammedShareService;
-
     private final MessageSource messageSource;
 
     public InspectionController(final CommonProviders commonProviders, final ApplicationContext appCtx,
                                 final AppLocaleService appLocaleService, final ResponseSuccessfulHelper successHelper,
-                                final InspectionService inspectionService, InspectionExportService inspectionExportService, LocaleProvider localeProvider, NoProgrammedShareService noProgrammedShareService, MessageSource messageSource) {
+                                final InspectionService inspectionService, InspectionExportService inspectionExportService, LocaleProvider localeProvider, MessageSource messageSource) {
 
         super(commonProviders.localeProvider(), commonProviders.executionRequestProvider(),
                 commonProviders.executionTimeProvider(), commonProviders.restContextProvider(), appCtx, appLocaleService,
@@ -80,7 +78,6 @@ public class InspectionController extends BaseController implements InspectionV1
         this.inspectionService = inspectionService;
         this.inspectionExportService = inspectionExportService;
         this.localeProvider = localeProvider;
-        this.noProgrammedShareService = noProgrammedShareService;
         this.messageSource = messageSource;
     }
 
@@ -194,8 +191,9 @@ public class InspectionController extends BaseController implements InspectionV1
         final Resource resource = new ByteArrayResource(pdf);
         final String fileName = messageSource.getMessage("shares.no.programmed.pdf.name",
                 new Object[] {
-                        inspection.getShareId(),
-                        inspection.getId()
+                        inspection.getShareId().toString(),
+                        inspection.getId().toString(),
+                        Utiles.transform(inspection.getStartDate(), "yyyyMMdd")
                 }, locale) + ".pdf";
 
         final HttpHeaders headers = new HttpHeaders();

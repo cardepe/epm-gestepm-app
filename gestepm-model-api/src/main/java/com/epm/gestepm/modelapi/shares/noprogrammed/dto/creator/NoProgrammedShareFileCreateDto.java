@@ -15,9 +15,6 @@ public class NoProgrammedShareFileCreateDto {
     private String name;
 
     @NotNull
-    private String ext;
-
-    @NotNull
     @JsonIgnore
     private String content;
 

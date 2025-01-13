@@ -16,21 +16,18 @@ public class InspectionFileRowMapper implements RowMapper<InspectionFile> {
 
   public static final String COL_IF_NAME = "name";
 
-  public static final String COL_IF_EXTENSION = "extension";
-
   public static final String COL_IF_CONTENT = "content";
 
   @Override
   public InspectionFile mapRow(ResultSet rs, int i) throws SQLException {
 
-    final InspectionFile noProgrammedShareFile = new InspectionFile();
+    final InspectionFile inspectionFile = new InspectionFile();
 
-    noProgrammedShareFile.setId(rs.getInt(COL_IF_ID));
-    noProgrammedShareFile.setInspectionId(rs.getInt(COL_IF_SHARE_ID));
-    noProgrammedShareFile.setName(rs.getString(COL_IF_NAME));
-    noProgrammedShareFile.setContent(Base64.getEncoder().encodeToString(FileUtils.decompressBytes(rs.getBytes(COL_IF_CONTENT))));
-    noProgrammedShareFile.setExt(rs.getString(COL_IF_EXTENSION));
+    inspectionFile.setId(rs.getInt(COL_IF_ID));
+    inspectionFile.setInspectionId(rs.getInt(COL_IF_SHARE_ID));
+    inspectionFile.setName(rs.getString(COL_IF_NAME));
+    inspectionFile.setContent(Base64.getEncoder().encodeToString(FileUtils.decompressBytes(rs.getBytes(COL_IF_CONTENT))));
 
-    return noProgrammedShareFile;
+    return inspectionFile;
   }
 }

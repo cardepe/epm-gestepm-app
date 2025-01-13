@@ -105,6 +105,20 @@
                     <input name="equipmentHours" type="number" class="form-control mt-1" />
                 </label>
             </div>
+
+            <div class="form-group mb-1">
+                <label class="col-form-label w-100">
+                    <spring:message code="shares.intervention.create.technical.1" />
+                    <input name="firstTechnical" type="text" class="form-control mt-1" disabled />
+                </label>
+            </div>
+
+            <div class="form-group mb-1">
+                <label class="col-form-label w-100">
+                    <spring:message code="shares.intervention.create.technical.2" />
+                    <input name="secondTechnical" type="text" class="form-control mt-1" disabled />
+                </label>
+            </div>
         </div>
 
         <div class="col-md-6">
@@ -245,10 +259,9 @@
                 equipmentHours: equipmentHours ? equipmentHours.value : null,
                 files: files
             }).then((response) => {
-                loadFiles(files, materialsFile);
-                inspection = response.data.data;
-                showNotify(messages.inspections.update.success.replace('{0}', inspection.id))
-            }).catch(error => showNotify(error, 'danger'))
+                const inspection = response.data.data;
+                window.location.replace('/shares/no-programmed/' + inspection.share.id);
+            }).catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());
         })
     }
@@ -264,6 +277,14 @@
             editForm.querySelector('[name="equipmentHours"]').value = inspection.equipmentHours;
         }
 
+        if (inspection.firstTechnical && inspection.firstTechnical.id) {
+            editForm.querySelector('[name="firstTechnical"]').value = inspection.firstTechnical.name + ' ' + inspection.firstTechnical.surnames;
+        }
+
+        if (inspection.secondTechnical && inspection.secondTechnical.id) {
+            editForm.querySelector('[name="secondTechnical"]').value = inspection.secondTechnical.name + ' ' + inspection.secondTechnical.surnames;
+        }
+
         if (inspection.clientName) {
             editForm.querySelector('[name="clientName"]').value = inspection.clientName;
         }
@@ -271,13 +292,18 @@
         let materialsFile = null;
         if (inspection.materialsFile) {
             materialsFile = {
-                name: 'Material_file.' + inspection.materialsFileExtension,
-                content: materialsFile
+                name: inspection.materialsFileName,
+                content: inspection.materialsFile
             }
         }
 
         if (inspection.action === 'FOLLOWING') {
             $('.visibility-id').hide();
+        }
+
+        if (share.state === 'CLOSED') {
+            editForm.querySelector('#editBtn').remove();
+            disableForm('#editForm');
         }
 
         loadFiles(inspection.files, materialsFile);
@@ -360,19 +386,26 @@
         dTable = createSimpleDataTable('#materialsTable', customDataTable, locale);
     }
 
-    function showFiles(files, fileName, filesId) {
+    function showFiles(files, inputName, filesId) {
         const form = document.querySelector('#editForm');
         const filesFormGroup = form.querySelector(filesId);
-        const linksContainer = document.createElement('div');
+        const filesAttachmentContainer = filesFormGroup.querySelector('.attachment-contianer');
 
-        const selector = form.querySelector('[name="' + fileName + '"]');
-        if (selector) {
+        if (filesAttachmentContainer) {
+            filesAttachmentContainer.remove();
+        }
+
+        const linksContainer = document.createElement('div');
+        linksContainer.classList.add('attachment-contianer');
+
+        const selector = form.querySelector('[name="' + inputName + '"]');
+        if (selector && (share.state === 'CLOSED' || inputName === 'materialsFile')) {
             selector.remove();
         }
 
         if (files.length > 0) {
-            const downloadBase64File = (fileName, base64Content) => {
-                const binaryData = atob(base64Content);
+            const downloadBase64File = (file) => {
+                const binaryData = atob(file.content);
                 const byteNumbers = new Uint8Array(binaryData.length);
 
                 for (let i = 0; i < binaryData.length; i++) {
@@ -383,18 +416,29 @@
                 const blob = new Blob([byteNumbers], { type: 'application/octet-stream' });
 
                 link.href = URL.createObjectURL(blob);
-                link.download = fileName;
-                link.textContent = fileName;
-                link.classList.add('btn', 'btn-outline-primary', 'btn-sm', 'mr-1');
+                link.download = file.name;
+                link.textContent = file.name;
+                link.classList.add('btn', 'btn-outline-primary', 'btn-xs', 'mr-1');
                 link.target = '_blank';
 
-                return link;
+                linksContainer.appendChild(link);
+
+                if (share.state !== 'CLOSED' && inputName === 'files') {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.textContent = 'x';
+                    btn.classList.add('btn', 'btn-outline-danger', 'btn-xs', 'mr-1');
+                    btn.addEventListener('click', () => {
+                        deleteFile(file);
+                        link.remove();
+                        btn.remove();
+                    });
+
+                    linksContainer.appendChild(btn);
+                }
             };
 
-            files.forEach(file => {
-                const link = downloadBase64File(file.name, file.content);
-                linksContainer.appendChild(link);
-            });
+            files.forEach(file => downloadBase64File(file));
 
             filesFormGroup.appendChild(linksContainer);
         }
@@ -425,6 +469,21 @@
             }
         }
         return null;
+    }
+
+    function deleteFile(file) {
+        const alertMessage = messages.inspections.files.delete.alert.replace('{0}', file.name);
+        if (confirm(alertMessage)) {
+
+            showLoading();
+
+            axios.delete('/v1/shares/no-programmed/0/inspections/' + inspection.id + '/files/' + file.id).then(() => {
+                inspection.files = inspection.files.filter(i => i.id !== file.id)
+                const successMessage = messages.inspections.files.delete.success.replace('{0}', file.name);
+                showNotify(successMessage);
+            }).catch(error => showNotify(error.response.data.detail, 'danger'))
+                .finally(() => hideLoading());
+        }
     }
 
 </script>

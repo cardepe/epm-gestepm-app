@@ -20,9 +20,6 @@ public class NoProgrammedShareFileCreate implements CollectableAttributes {
     private String name;
 
     @NotNull
-    private String ext;
-
-    @NotNull
     @JsonIgnore
     private String content;
 
@@ -33,7 +30,6 @@ public class NoProgrammedShareFileCreate implements CollectableAttributes {
 
         map.put(NoProgrammedShareFileAttributes.ATTR_NPSF_SHARE_ID, this.shareId);
         map.put(NoProgrammedShareFileAttributes.ATTR_NPSF_NAME, this.name);
-        map.put(NoProgrammedShareFileAttributes.ATTR_NPSF_EXT, this.ext);
         map.put(NoProgrammedShareFileAttributes.ATTR_NPSF_CONTENT, FileUtils.compressBytes(Base64.getDecoder().decode(this.content)));
 
         return map;

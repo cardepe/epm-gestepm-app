@@ -7,10 +7,12 @@ import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionFileDto;
 import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFileFilterDto;
 import com.epm.gestepm.modelapi.inspection.service.InspectionFileService;
+import com.epm.gestepm.modelapi.user.service.UserService;
 import com.epm.gestepm.rest.inspection.mappers.MapIFToFileResponse;
 import com.epm.gestepm.rest.inspection.request.InspectionFindRestRequest;
 import com.epm.gestepm.restapi.openapi.model.Inspection;
 import com.epm.gestepm.restapi.openapi.model.ShareFile;
+import com.epm.gestepm.restapi.openapi.model.User;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -27,11 +29,18 @@ public class InspectionResponseDecorator extends BaseResponseDataDecorator<Inspe
 
     public static final String I_FILES_EXPAND = "files";
 
+    public static final String I_FIRST_TECHNICAL_EXPAND = "firstTechnical";
+
+    public static final String I_SECOND_TECHNICAL_EXPAND = "secondTechnical";
+
     private final InspectionFileService inspectionFileService;
+
+    private final UserService userService;
     
-    public InspectionResponseDecorator(ApplicationContext applicationContext, InspectionFileService inspectionFileService) {
+    public InspectionResponseDecorator(ApplicationContext applicationContext, InspectionFileService inspectionFileService, UserService userService) {
         super(applicationContext);
         this.inspectionFileService = inspectionFileService;
+        this.userService = userService;
     }
 
     @Override
@@ -56,6 +65,24 @@ public class InspectionResponseDecorator extends BaseResponseDataDecorator<Inspe
             final List<InspectionFileDto> files = this.inspectionFileService.list(filterDto);
 
             data.setFiles(getMapper(MapIFToFileResponse.class).from(files));
+        }
+
+        if (request.hasExpand(I_FIRST_TECHNICAL_EXPAND) && data.getFirstTechnical() != null && data.getFirstTechnical().getId() != null) {
+            final Integer firstTechnicalId = data.getFirstTechnical().getId();
+
+            final com.epm.gestepm.modelapi.user.dto.User userDto = this.userService.getUserById(Long.valueOf(firstTechnicalId));
+            final User response = new User().id(firstTechnicalId).name(userDto.getName()).surnames(userDto.getSurnames());
+
+            data.setFirstTechnical(response);
+        }
+
+        if (request.hasExpand(I_SECOND_TECHNICAL_EXPAND) && data.getSecondTechnical() != null && data.getSecondTechnical().getId() != null) {
+            final Integer secondTechnicalId = data.getSecondTechnical().getId();
+
+            final com.epm.gestepm.modelapi.user.dto.User userDto = this.userService.getUserById(Long.valueOf(secondTechnicalId));
+            final User response = new User().id(secondTechnicalId).name(userDto.getName()).surnames(userDto.getSurnames());
+
+            data.setSecondTechnical(response);
         }
     }
 }

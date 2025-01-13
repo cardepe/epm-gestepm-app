@@ -1271,7 +1271,7 @@ em[disabled] {
 				axios.delete('/v1/shares/no-programmed/' + shareId).then(() => {
 					$('#dTable').DataTable().ajax.reload();
 					showNotify(messages.shares.noprogrammed.delete.success.replace('{0}', shareId));
-				}).catch(error => showNotify(error, 'danger'))
+				}).catch(error => showNotify(error.response.data.detail, 'danger'))
 						.finally(() => hideLoading());
 			} else if (shareType === 'ips') {
 				restUrl = '/shares/intervention/programmed/delete/' + shareId;

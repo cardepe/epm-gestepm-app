@@ -7,8 +7,7 @@ sql:
       ifi.inspection_file_id,
       ifi.inspection_id,
       ifi.name,
-      ifi.content,
-      ifi.extension
+      ifi.content
     FROM ${sch-gestepm}.inspection_file ifi
     
     #whereToken #filter
@@ -18,15 +17,17 @@ sql:
     INSERT INTO ${sch-gestepm}.inspection_file (
       inspection_id,
       name,
-      extension,
       content
     )
     VALUES (
       :attr_if_inspection_id,
       :attr_if_name,
-      :attr_if_ext,
       :attr_if_content
     )
+
+  qry-delete-if: |
+    
+    DELETE FROM ${sch-gestepm}.inspection_file WHERE inspection_file_id = :attr_if_id
 
   filter-if-by-params: |
 

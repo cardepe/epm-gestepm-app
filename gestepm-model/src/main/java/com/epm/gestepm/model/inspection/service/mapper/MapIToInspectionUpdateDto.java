@@ -10,11 +10,11 @@ import org.mapstruct.Mapping;
 public interface MapIToInspectionUpdateDto {
 
   @Mapping(source = "materialsFile", target = "materialsFile.content")
-  @Mapping(source = "materialsFileExtension", target = "materialsFile.ext")
+  @Mapping(source = "materialsFileName", target = "materialsFile.name")
   InspectionUpdateDto from(InspectionUpdate updateDto);
 
   @Mapping(source = "materialsFile", target = "materialsFile.content")
-  @Mapping(source = "materialsFileExtension", target = "materialsFile.ext")
+  @Mapping(source = "materialsFileName", target = "materialsFile.name")
   InspectionUpdateDto from(InspectionDto dto);
 
 }

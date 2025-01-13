@@ -10,8 +10,6 @@ public abstract class InspectionFileAttributes {
 
   public static final String ATTR_IF_NAME = "attr_if_name";
 
-  public static final String ATTR_IF_EXT = "attr_if_ext";
-
   public static final String ATTR_IF_CONTENT = "attr_if_content";
 
 }

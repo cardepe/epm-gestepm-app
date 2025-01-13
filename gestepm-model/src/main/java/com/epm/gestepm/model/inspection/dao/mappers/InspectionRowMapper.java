@@ -50,7 +50,7 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
 
     public static final String COL_I_MATERIALS_FILE = "materials_file";
 
-    public static final String COL_I_MATERIALS_FILE_EXT = "materials_file_extension";
+    public static final String COL_I_MATERIALS_FILE_NAME = "materials_file_name";
 
     public static final String COL_I_EQUIPMENT_HOURS = "equipment_hours";
 
@@ -77,7 +77,7 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
         inspection.setClientName(nullableString(rs, COL_I_CLIENT_NAME));
         if (hasValue(rs, COL_I_MATERIALS_FILE)) {
             inspection.setMaterialsFile(Base64.getEncoder().encodeToString(FileUtils.decompressBytes(rs.getBytes(COL_I_MATERIALS_FILE))));
-            inspection.setMaterialsFileExtension(nullableString(rs, COL_I_MATERIALS_FILE_EXT));
+            inspection.setMaterialsFileName(nullableString(rs, COL_I_MATERIALS_FILE_NAME));
         }
         inspection.setEquipmentHours(nullableInt(rs, COL_I_EQUIPMENT_HOURS));
         inspection.setTopicId(nullableInt(rs, COL_I_TOPIC_ID));

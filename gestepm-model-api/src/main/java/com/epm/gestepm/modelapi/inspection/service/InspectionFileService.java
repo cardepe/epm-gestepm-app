@@ -2,8 +2,10 @@ package com.epm.gestepm.modelapi.inspection.service;
 
 import com.epm.gestepm.modelapi.inspection.dto.InspectionFileDto;
 import com.epm.gestepm.modelapi.inspection.dto.creator.InspectionFileCreateDto;
+import com.epm.gestepm.modelapi.inspection.dto.deleter.InspectionFileDeleteDto;
 import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFileFilterDto;
 import com.epm.gestepm.modelapi.inspection.dto.finder.InspectionFileByIdFinderDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.deleter.NoProgrammedShareFileDeleteDto;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -20,5 +22,7 @@ public interface InspectionFileService {
 
     @Valid
     InspectionFileDto create(@Valid InspectionFileCreateDto createDto);
-    
+
+    void delete(@Valid InspectionFileDeleteDto deleteDto);
+
 }

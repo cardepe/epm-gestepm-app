@@ -180,9 +180,14 @@ public class SMTPServiceImpl implements SMTPService {
 
 		log.info("Preparando la plantilla de correo: intervention_sub_share_close_mail_template_" + locale.getLanguage() + ".html");
 
+		final String fileName = messageSource.getMessage("shares.no.programmed.pdf.name", new Object[] {
+				inspection.getShareId().toString(),
+				inspection.getId().toString(),
+				Utiles.transform(inspection.getStartDate(), "yyyyMMdd")
+		}, locale) + ".pdf";
 		final String action = this.messageSource.getMessage(dto.getInspection().getAction().toString().toLowerCase(), new Object[] {}, locale);
 		final String subject = messageSource.getMessage("smtp.mail.intervention.sub.share.close.subject", new Object[] {
-				inspection.getId(),
+				fileName,
 				action
 		}, locale);
 		
@@ -444,8 +449,9 @@ public class SMTPServiceImpl implements SMTPService {
 	        	log.info("Adjuntando revisión " + inspection.getId() + " en " + locale.getLanguage());
 
 				fileName = messageSource.getMessage("shares.no.programmed.pdf.name", new Object[] {
-						inspection.getShareId(),
-						inspection.getId()
+						inspection.getShareId().toString(),
+						inspection.getId().toString(),
+						Utiles.transform(inspection.getStartDate(), "yyyyMMdd")
 				}, locale) + ".pdf";
 				
 	        } else if ("ips".equals(type)) {

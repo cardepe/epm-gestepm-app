@@ -163,7 +163,7 @@
             modal.removeAttribute('data-id');
             dTable.ajax.reload();
             showNotify(messages.personalExpense.create.success.replace('{0}', response.data.data.id));
-        }).catch(error => showNotify(error, 'danger')).finally(() => hideLoading());
+        }).catch(error => showNotify(error.response.data.detail, 'danger')).finally(() => hideLoading());
     }
 
     function edit(id) {

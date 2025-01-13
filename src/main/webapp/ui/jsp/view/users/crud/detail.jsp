@@ -1730,7 +1730,7 @@
 			}).then(() => {
 				dTableExpenses.ajax.reload();
 				showNotify(messages.personalExpenseSheet.update.success.replace('{0}', personalExpenseSheetId))
-			}).catch(error => showNotify(error, 'danger'))
+			}).catch(error => showNotify(error.response.data.detail, 'danger'))
 					.finally(() => hideLoading());
 		}
 	}
@@ -1755,7 +1755,7 @@
 		}).then(() => {
 			dTableExpenses.ajax.reload();
 			showNotify(messages.personalExpenseSheet.update.success.replace('{0}', personalExpenseSheetId))
-		}).catch(error => showNotify(error, 'danger'))
+		}).catch(error => showNotify(error.response.data.detail, 'danger'))
 				.finally(() => {
 					hideLoading();
 					modal.modal('hide');

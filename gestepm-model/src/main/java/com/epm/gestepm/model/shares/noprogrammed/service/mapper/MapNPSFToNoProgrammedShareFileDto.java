@@ -11,13 +11,8 @@ import java.util.List;
 @Mapper
 public interface MapNPSFToNoProgrammedShareFileDto {
 
-  @Mapping(source = ".", target = "name", qualifiedByName = "parseFileName")
   NoProgrammedShareFileDto from(NoProgrammedShareFile file);
 
   List<NoProgrammedShareFileDto> from(List<NoProgrammedShareFile> files);
 
-  @Named("parseFileName")
-  static String parseFileName(NoProgrammedShareFile file) {
-    return file.getName() + "." + file.getExt();
-  }
 }

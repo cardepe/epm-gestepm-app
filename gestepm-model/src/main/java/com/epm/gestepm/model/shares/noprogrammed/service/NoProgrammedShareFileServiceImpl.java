@@ -6,15 +6,17 @@ import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.model.shares.noprogrammed.dao.NoProgrammedShareFileDao;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.NoProgrammedShareFile;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.creator.NoProgrammedShareFileCreate;
+import com.epm.gestepm.model.shares.noprogrammed.dao.entity.deleter.NoProgrammedShareDelete;
+import com.epm.gestepm.model.shares.noprogrammed.dao.entity.deleter.NoProgrammedShareFileDelete;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.filter.NoProgrammedShareFileFilter;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.finder.NoProgrammedShareFileByIdFinder;
-import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSFToNoProgrammedShareFileByIdFinder;
-import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSFToNoProgrammedShareFileCreate;
-import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSFToNoProgrammedShareFileDto;
-import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSFToNoProgrammedShareFileFilter;
+import com.epm.gestepm.model.shares.noprogrammed.service.mapper.*;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareFileDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.creator.NoProgrammedShareFileCreateDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.deleter.NoProgrammedShareDeleteDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.deleter.NoProgrammedShareFileDeleteDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.filter.NoProgrammedShareFileFilterDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareFileByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareFileNotFoundException;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareFileService;
@@ -27,8 +29,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
-import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_CREATE;
-import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_READ;
+import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
 import static com.epm.gestepm.modelapi.shares.noprogrammed.security.NoProgrammedSharePermission.PRMT_EDIT_NPS;
 import static com.epm.gestepm.modelapi.shares.noprogrammed.security.NoProgrammedSharePermission.PRMT_READ_NPS;
 import static org.mapstruct.factory.Mappers.getMapper;
@@ -38,10 +39,10 @@ import static org.mapstruct.factory.Mappers.getMapper;
 @EnableExecutionLog(layerMarker = SERVICE)
 public class NoProgrammedShareFileServiceImpl implements NoProgrammedShareFileService {
     
-    private final NoProgrammedShareFileDao noProgrammedShareDao;
+    private final NoProgrammedShareFileDao noProgrammedShareFileDao;
 
-    public NoProgrammedShareFileServiceImpl(NoProgrammedShareFileDao noProgrammedShareDao) {
-        this.noProgrammedShareDao = noProgrammedShareDao;
+    public NoProgrammedShareFileServiceImpl(NoProgrammedShareFileDao noProgrammedShareFileDao) {
+        this.noProgrammedShareFileDao = noProgrammedShareFileDao;
     }
 
     @Override
@@ -54,7 +55,7 @@ public class NoProgrammedShareFileServiceImpl implements NoProgrammedShareFileSe
     public List<NoProgrammedShareFileDto> list(NoProgrammedShareFileFilterDto filterDto) {
         final NoProgrammedShareFileFilter filter = getMapper(MapNPSFToNoProgrammedShareFileFilter.class).from(filterDto);
 
-        final List<NoProgrammedShareFile> page = this.noProgrammedShareDao.list(filter);
+        final List<NoProgrammedShareFile> page = this.noProgrammedShareFileDao.list(filter);
 
         return getMapper(MapNPSFToNoProgrammedShareFileDto.class).from(page);
     }
@@ -69,7 +70,7 @@ public class NoProgrammedShareFileServiceImpl implements NoProgrammedShareFileSe
     public Optional<NoProgrammedShareFileDto> find(final NoProgrammedShareFileByIdFinderDto finderDto) {
         final NoProgrammedShareFileByIdFinder finder = getMapper(MapNPSFToNoProgrammedShareFileByIdFinder.class).from(finderDto);
 
-        final Optional<NoProgrammedShareFile> found = this.noProgrammedShareDao.find(finder);
+        final Optional<NoProgrammedShareFile> found = this.noProgrammedShareFileDao.find(finder);
 
         return found.map(getMapper(MapNPSFToNoProgrammedShareFileDto.class)::from);
     }
@@ -98,9 +99,27 @@ public class NoProgrammedShareFileServiceImpl implements NoProgrammedShareFileSe
     public NoProgrammedShareFileDto create(NoProgrammedShareFileCreateDto createDto) {
         final NoProgrammedShareFileCreate create = getMapper(MapNPSFToNoProgrammedShareFileCreate.class).from(createDto);
 
-        final NoProgrammedShareFile result = this.noProgrammedShareDao.create(create);
+        final NoProgrammedShareFile result = this.noProgrammedShareFileDao.create(create);
 
         return getMapper(MapNPSFToNoProgrammedShareFileDto.class).from(result);
+    }
+
+    @Override
+    @RequirePermits(value = PRMT_EDIT_NPS, action = "Delete no programmed share file")
+    @LogExecution(operation = OP_DELETE,
+            debugOut = true,
+            msgIn = "Deleting no programmed share file",
+            msgOut = "No programmed share file deleted OK",
+            errorMsg = "Failed to delete no programmed share file")
+    public void delete(NoProgrammedShareFileDeleteDto deleteDto) {
+
+        final NoProgrammedShareFileByIdFinderDto finderDto = new NoProgrammedShareFileByIdFinderDto(deleteDto.getId());
+
+        findOrNotFound(finderDto);
+
+        final NoProgrammedShareFileDelete delete = getMapper(MapNPSFToNoProgrammedShareFileDelete.class).from(deleteDto);
+
+        this.noProgrammedShareFileDao.delete(delete);
     }
 
 }

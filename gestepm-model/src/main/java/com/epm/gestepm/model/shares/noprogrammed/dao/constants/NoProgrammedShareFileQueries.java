@@ -10,4 +10,6 @@ public abstract class NoProgrammedShareFileQueries {
 
   public static final String FILTER_NPSF_BY_ID = "filter-npsf-by-id";
 
+  public static final String QRY_DELETE_NPSF = "qry-delete-npsf";
+
 }

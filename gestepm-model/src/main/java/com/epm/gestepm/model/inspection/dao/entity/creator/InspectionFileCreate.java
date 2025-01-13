@@ -20,9 +20,6 @@ public class InspectionFileCreate implements CollectableAttributes {
     private String name;
 
     @NotNull
-    private String ext;
-
-    @NotNull
     @JsonIgnore
     private String content;
 
@@ -33,7 +30,6 @@ public class InspectionFileCreate implements CollectableAttributes {
 
         map.put(InspectionFileAttributes.ATTR_IF_INSPECTION_ID, this.inspectionId);
         map.put(InspectionFileAttributes.ATTR_IF_NAME, this.name);
-        map.put(InspectionFileAttributes.ATTR_IF_EXT, this.ext);
         map.put(InspectionFileAttributes.ATTR_IF_CONTENT, FileUtils.compressBytes(Base64.getDecoder().decode(this.content)));
 
         return map;

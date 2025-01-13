@@ -13,12 +13,4 @@ public interface MapNPSFToFileDto {
 
     List<NoProgrammedShareFileCreateDto> from(List<UpdateNoProgrammedShareV1RequestFilesInner> list);
 
-    @AfterMapping
-    default void parse(@MappingTarget NoProgrammedShareFileCreateDto updateDto) {
-        final String fileName = updateDto.getName().substring(0, updateDto.getName().lastIndexOf('.'));
-        final String fileExtension = updateDto.getName().substring(updateDto.getName().lastIndexOf('.') + 1);
-
-        updateDto.setName(fileName);
-        updateDto.setExt(fileExtension);
-    }
 }
