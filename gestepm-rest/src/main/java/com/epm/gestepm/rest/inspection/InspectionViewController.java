@@ -55,8 +55,10 @@ public class InspectionViewController {
 
         final boolean hasRole = subRoles.isEmpty()
                 || subRoles.stream().anyMatch(subRole -> subRole.getName().equals(user.getSubRole().getRol()));
+        final boolean hasSigning = false;
 
         model.addAttribute("hasRole", hasRole);
+        model.addAttribute("hasSigning", hasSigning);
 
         return "inspection-detail";
     }

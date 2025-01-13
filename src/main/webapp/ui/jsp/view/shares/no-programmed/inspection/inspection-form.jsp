@@ -89,6 +89,18 @@
     }
 </style>
 
+<div class="row">
+    <div class="col">
+        <c:if test="${ hasRole }">
+            <div class="badge badge-danger mb-1"><spring:message code="share.detail.init.diag.role" /></div>
+        </c:if>
+
+        <c:if test="${ hasSigning }">
+            <div class="badge badge-warning mb-1"><spring:message code="signing.page.not.enable" /></div>
+        </c:if>
+    </div>
+</div>
+
 <form id="editForm" class="needs-validation">
     <div class="row">
         <div class="col-md-6">
@@ -223,8 +235,18 @@
     </div>
 
     <div class="row">
+        <div class="col ml-auto">
+            <c:if test="${ hasRole }">
+                <div class="alert alert-danger" style="font-size: 12px" role="alert">
+                    <spring:message code="share.detail.init.diag.role" />
+                </div>
+            </c:if>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col text-right">
-            <button id="editBtn" type="button" class="btn btn-standard btn-sm movile-full"><spring:message code="save" /></button>
+            <button id="editBtn" type="button" class="btn btn-standard btn-sm movile-full" ${hasRole ? 'disabled' : ''}><spring:message code="save" /></button>
         </div>
     </div>
 </form>
