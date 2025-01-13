@@ -493,14 +493,7 @@ public class Utiles {
 	}
 
 	public static boolean havePrivileges(String role) {
-		
-		boolean havePrivileges = false;
-		
-		if ("NIVEL 3".equals(role)) {
-			havePrivileges = true;
-		}
-		
-		return havePrivileges;
+		return role.equals("NIVEL 3");
 	}
 	
 	public static String getExceptionDump(Exception ex) {

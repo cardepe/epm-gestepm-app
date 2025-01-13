@@ -3,12 +3,15 @@ package com.epm.gestepm.rest.inspection;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.role.dto.RoleDTO;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
 import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
+import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,9 +35,12 @@ public class InspectionViewController {
 
     private final SubFamilyService subFamilyService;
 
-    public InspectionViewController(NoProgrammedShareService noProgrammedShareService, SubFamilyService subFamilyService) {
+    private final UserSigningService userSigningService;
+
+    public InspectionViewController(NoProgrammedShareService noProgrammedShareService, SubFamilyService subFamilyService, UserSigningService userSigningService) {
         this.noProgrammedShareService = noProgrammedShareService;
         this.subFamilyService = subFamilyService;
+        this.userSigningService = userSigningService;
     }
 
     @ModelAttribute
@@ -52,10 +58,12 @@ public class InspectionViewController {
 
         final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(shareId));
         final List<RoleDTO> subRoles = this.subFamilyService.getSubRolsById(noProgrammedShare.getSubFamilyId().longValue());
+        final UserSigning userSigning = this.userSigningService.getByUserIdAndEndDate(user.getId(), null);
 
+        final String userLevel = user.getSubRole().getRol();
         final boolean hasRole = subRoles.isEmpty()
-                || subRoles.stream().anyMatch(subRole -> subRole.getName().equals(user.getSubRole().getRol()));
-        final boolean hasSigning = false;
+                || subRoles.stream().anyMatch(subRole -> subRole.getName().equals(userLevel));
+        final boolean hasSigning = userSigning != null || Utiles.havePrivileges(userLevel);
 
         model.addAttribute("hasRole", hasRole);
         model.addAttribute("hasSigning", hasSigning);
