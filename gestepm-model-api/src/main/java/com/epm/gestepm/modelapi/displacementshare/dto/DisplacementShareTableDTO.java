@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -20,7 +21,7 @@ public class DisplacementShareTableDTO {
 	private String displacementTitle;
 	
 	@JsonProperty("ds_displacementDate")
-	private Date displacementDate;
+	private LocalDateTime displacementDate;
 	
 	@JsonProperty("ds_round_trip")
 	private Boolean roundTrip;

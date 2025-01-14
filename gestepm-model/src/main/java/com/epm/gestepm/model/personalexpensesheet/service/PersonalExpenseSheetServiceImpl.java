@@ -227,7 +227,7 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
                                                                       final Project project, final User user) {
         final OpenPersonalExpenseSheetMailTemplateDto template = new OpenPersonalExpenseSheetMailTemplateDto();
         template.setLocale(request.getLocale());
-        template.setPersonalExpenseSheetDto(updated);
+        template.setPersonalExpenseSheetDto(updated != null ? updated : original);
         template.setProject(project);
         template.setUser(user);
 

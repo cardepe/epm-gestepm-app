@@ -92,13 +92,8 @@
 
 <div class="row">
     <div class="col">
-        <c:if test="${ !hasRole }">
-            <div class="badge badge-danger mb-1"><spring:message code="share.detail.init.diag.role" /></div>
-        </c:if>
-
-        <c:if test="${ !hasSigning }">
-            <div class="badge badge-warning mb-1"><spring:message code="signing.page.not.enable" /></div>
-        </c:if>
+        <div id="hasNotRoleAlert" class="badge badge-danger mb-1 d-none"><spring:message code="share.detail.init.diag.role" /></div>
+        <div id="hasNotSigningAlert" class="badge badge-warning mb-1 d-none"><spring:message code="signing.page.not.enable" /></div>
     </div>
 </div>
 
@@ -321,7 +316,7 @@
             editBtn.remove();
             disableForm('#editForm');
         } else {
-            updateEditButton();
+            updateEditButton(editBtn);
         }
 
         loadFiles(inspection.files, materialsFile);
@@ -504,19 +499,26 @@
         }
     }
 
-    function getNextAction(currentAction) {
-        if (currentAction === 'DIAGNOSIS') {
-            return 'INTERVENTION'
-        } else if (currentAction === 'INTERVENTION') {
-            return 'FOLLOWING'
-        } else if (currentAction === 'FOLLOWING') {
-            return 'DIAGNOSIS'
+    function updateEditButton(editBtn) {
+        const currentAction = inspection.action;
+
+        const isDisabled = {
+            DIAGNOSIS: !hasRole && !hasSigning,
+            INTERVENTION: !hasSigning,
+            FOLLOWING: !hasSigning,
+        };
+
+        if (isDisabled[currentAction]) {
+            editBtn.disabled = true;
+
+            if (!hasSigning) {
+                $('#hasNotSigningAlert').removeClass('d-none');
+            }
+
+            if (currentAction === 'DIAGNOSIS' && !hasRole) {
+                $('#hasNotRoleAlert').removeClass('d-none');
+            }
         }
-    }
-
-    function updateEditButton() {
-
-        if ()
     }
 
 </script>

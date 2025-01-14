@@ -1614,7 +1614,7 @@
                     <div class="row">
                         <div class="col">
                             <div class="form-group">
-                                <label class="col-form-label"><spring:message code="user.detail.expenses.decline.observations" />
+                                <label class="col-form-label w-100"><spring:message code="user.detail.expenses.decline.observations" />
                                     <textarea name="observations" class="form-control" rows="6"></textarea>
                                 </label>
                             </div>

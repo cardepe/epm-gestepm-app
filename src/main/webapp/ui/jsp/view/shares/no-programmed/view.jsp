@@ -190,6 +190,13 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div id="hasNotRoleAlert" class="badge badge-danger mb-1 d-none"><spring:message code="share.detail.init.diag.role" /></div>
+                            <div id="hasNotSigningAlert" class="badge badge-warning mb-1 d-none"><spring:message code="signing.page.not.enable" /></div>
+                        </div>
+                    </div>
                 </form>
             </div>
 
@@ -230,6 +237,9 @@
     let share;
     let nextAction = '${nextAction}';
     let currentMode;
+
+    let hasRole = ${hasRole};
+    let hasSigning = ${hasSigning};
 
     async function init() {
         const editForm = document.querySelector('#editForm');
@@ -559,12 +569,18 @@
     function createInspection() {
         const form = document.querySelector('#createForm');
         const secondTechnical = form.querySelector('[name="secondTechnical"]');
+        const action = form.querySelector('[name="action"]').value;
+
+        if (!canCreateInspection(action)) {
+            return;
+        }
+
         showLoading();
 
         axios.post('/v1/shares/no-programmed/' + share.id + '/inspections', {
             firstTechnicalId: ${user.id},
             secondTechnicalId: secondTechnical ? secondTechnical.value : null,
-            action: form.querySelector('[name="action"]').value,
+            action: action,
         }).then((response) => {
             const inspection = response.data.data;
             window.location.replace(window.location.pathname + '/inspections/ ' + inspection.id);
@@ -631,6 +647,29 @@
             }).catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());
         }
+    }
+
+    function canCreateInspection(action) {
+        const isDisabled = {
+            DIAGNOSIS: !hasRole && !hasSigning,
+            INTERVENTION: !hasSigning,
+            FOLLOWING: !hasSigning,
+        };
+
+        if (isDisabled[action]) {
+            if (!hasSigning) {
+                $('#hasNotRoleAlert').addClass('d-none');
+                $('#hasNotSigningAlert').removeClass('d-none');
+            }
+
+            if (action === 'DIAGNOSIS' && !hasRole) {
+                $('#hasNotRoleAlert').removeClass('d-none');
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     $(document).ready(async function () {
