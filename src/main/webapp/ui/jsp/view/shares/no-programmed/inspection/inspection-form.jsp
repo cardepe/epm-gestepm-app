@@ -237,7 +237,7 @@
 
     <div class="row">
         <div class="col text-right">
-            <button id="editBtn" type="button" class="btn btn-standard btn-sm movile-full" ${!hasRole || !hasSigning ? 'disabled' : ''}><spring:message code="save" /></button>
+            <button id="editBtn" type="button" class="btn btn-standard btn-sm movile-full"><spring:message code="save" /></button>
         </div>
     </div>
 </form>
@@ -246,6 +246,8 @@
 
 <script>
     let materialsModified = false;
+    let hasRole = ${hasRole};
+    let hasSigning = ${hasSigning};
 
     function save() {
         const editBtn = $('#editBtn');
@@ -281,6 +283,7 @@
 
     function update() {
         const editForm = document.querySelector('#editForm');
+        const editBtn = editForm.querySelector('#editBtn');
 
         if (inspection.description) {
             editForm.querySelector('[name="description"]').value = inspection.description;
@@ -315,8 +318,10 @@
         }
 
         if (share.state === 'CLOSED') {
-            editForm.querySelector('#editBtn').remove();
+            editBtn.remove();
             disableForm('#editForm');
+        } else {
+            updateEditButton();
         }
 
         loadFiles(inspection.files, materialsFile);
@@ -497,6 +502,21 @@
             }).catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());
         }
+    }
+
+    function getNextAction(currentAction) {
+        if (currentAction === 'DIAGNOSIS') {
+            return 'INTERVENTION'
+        } else if (currentAction === 'INTERVENTION') {
+            return 'FOLLOWING'
+        } else if (currentAction === 'FOLLOWING') {
+            return 'DIAGNOSIS'
+        }
+    }
+
+    function updateEditButton() {
+
+        if ()
     }
 
 </script>
