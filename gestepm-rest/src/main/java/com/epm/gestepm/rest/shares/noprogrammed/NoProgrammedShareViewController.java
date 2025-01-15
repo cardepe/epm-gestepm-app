@@ -56,20 +56,14 @@ public class NoProgrammedShareViewController {
 
     private final ProjectService projectService;
 
-    private final SubFamilyService subFamilyService;
-
     private final UserService userService;
 
-    private final UserSigningService userSigningService;
-
-    public NoProgrammedShareViewController(FamilyService familyService, InspectionService inspectionService, NoProgrammedShareService noProgrammedShareService, ProjectService projectService, SubFamilyService subFamilyService, UserService userService, UserSigningService userSigningService) {
+    public NoProgrammedShareViewController(FamilyService familyService, InspectionService inspectionService, NoProgrammedShareService noProgrammedShareService, ProjectService projectService, UserService userService) {
         this.familyService = familyService;
         this.inspectionService = inspectionService;
         this.noProgrammedShareService = noProgrammedShareService;
         this.projectService = projectService;
-        this.subFamilyService = subFamilyService;
         this.userService = userService;
-        this.userSigningService = userSigningService;
     }
 
     @ModelAttribute
@@ -82,7 +76,7 @@ public class NoProgrammedShareViewController {
     @LogExecution(operation = OP_VIEW)
     public String viewNoProgrammedShareDetailPage(@PathVariable final Integer id, final Locale locale, final Model model) {
 
-        final User user = this.loadCommonModelView(locale, model);
+        this.loadCommonModelView(locale, model);
 
         final NoProgrammedShareDto share = this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(id));
 
@@ -102,24 +96,9 @@ public class NoProgrammedShareViewController {
         final List<FamilyDTO> families = familyService.getCommonFamilyDTOsByProjectId(share.getProjectId().longValue(), locale);
         final List<UserDTO> usersTeam = userService.getUserDTOsByProjectId(share.getProjectId().longValue());
 
-        boolean hasRole = false;
-        boolean hasSigning = false;
-
-        if (share.getFamilyId() != null && share.getSubFamilyId() != null) {
-            final List<RoleDTO> subRoles = this.subFamilyService.getSubRolsById(share.getSubFamilyId().longValue());
-            final UserSigning userSigning = this.userSigningService.getByUserIdAndEndDate(user.getId(), null);
-            final String userLevel = user.getSubRole().getRol();
-
-            hasRole = subRoles.isEmpty()
-                    || subRoles.stream().anyMatch(subRole -> subRole.getName().equals(userLevel));
-            hasSigning = userSigning != null || Utiles.havePrivileges(userLevel);
-        }
-
         model.addAttribute("families", families);
         model.addAttribute("usersTeam", usersTeam);
         model.addAttribute("nextAction", ActionEnumDto.getNextAction(lastAction));
-        model.addAttribute("hasRole", hasRole);
-        model.addAttribute("hasSigning", hasSigning);
 
         if (project.getForumId() != null && share.getTopicId() != null) {
             model.addAttribute("forumUrl", forumUrl + "/viewtopic.php?f=" + project.getForumId() + "&t=" + share.getTopicId());

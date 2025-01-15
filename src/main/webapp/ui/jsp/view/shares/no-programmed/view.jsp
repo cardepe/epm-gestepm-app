@@ -238,14 +238,18 @@
     let nextAction = '${nextAction}';
     let currentMode;
 
-    let hasRole = ${hasRole};
-    let hasSigning = ${hasSigning};
+    let hasRole;
+    let hasSigning;
+
+    let userId = ${user.id};
 
     async function init() {
         const editForm = document.querySelector('#editForm');
         const shareId = getShareId();
 
         await getShare(shareId);
+
+        getPermissions();
 
         const familyElement = editForm.querySelector('[name="familyId"]');
 
@@ -305,6 +309,7 @@
                 files: filesData
             }).then(async (response) => {
                 await getShare(response.data.data.id);
+                getPermissions();
                 setWorkingMode();
                 showNotify(messages.shares.noprogrammed.update.success)
             }).catch(error => showNotify(error.response.data.detail, 'danger'))
@@ -407,8 +412,8 @@
 
                     response.data.forEach((element) => {
                         appendElementToList(element, subFamily);
-                    }).catch(error => showNotify(error.response.data.detail, 'danger'));
-                })
+                    })
+                }).catch(error => showNotify(error.response.data.detail, 'danger'));
         }
     }
 
@@ -670,6 +675,13 @@
         }
 
         return true;
+    }
+
+    function getPermissions() {
+        axios.get('/provisional/shares/no-programmed/user-permissions', { params: { shareId: share.id, userId: userId }}).then((response) => {
+            hasRole = response.data.hasRole;
+            hasSigning = response.data.hasSigning;
+        }).catch(error => console.log(error));
     }
 
     $(document).ready(async function () {
