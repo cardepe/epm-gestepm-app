@@ -908,6 +908,7 @@ components:
             - FLY
             - FOOD
             - GAS
+            - GASOIL
             - GASOLINE
             - HOTEL
             - KMS
@@ -1353,6 +1354,7 @@ components:
                   - FLY
                   - FOOD
                   - GAS
+                  - GASOIL
                   - GASOLINE
                   - HOTEL
                   - KMS
@@ -1419,6 +1421,7 @@ components:
                   - FLY
                   - FOOD
                   - GAS
+                  - GASOIL
                   - GASOLINE
                   - HOTEL
                   - KMS

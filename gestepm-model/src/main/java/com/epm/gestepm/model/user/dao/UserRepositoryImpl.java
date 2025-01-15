@@ -1,5 +1,6 @@
 package com.epm.gestepm.model.user.dao;
 
+import com.epm.gestepm.model.personalexpensesheet.dao.entity.PersonalExpenseSheetStatusEnum;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
@@ -7,6 +8,7 @@ import com.epm.gestepm.modelapi.expense.dto.ExpenseUserValidateDTO;
 import com.epm.gestepm.modelapi.expense.dto.ExpenseValidateDTO;
 import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
+import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetStatusEnumDto;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectMemberDTO;
 import com.epm.gestepm.modelapi.role.dto.Role;
@@ -484,7 +486,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			
 			List<Predicate> predicates = new ArrayList<>();
 			predicates.add(cb.equal(usRoot.get("id"), userId));
-			predicates.add(cb.equal(expenseSheetsRoot.get("status"), Constants.STATUS_APPROVED));
+			predicates.add(cb.equal(expenseSheetsRoot.get("status"), PersonalExpenseSheetStatusEnum.APPROVED));
 			predicates.add(cb.equal(usRoot.get("state"), 0));
 			
 			/* Subquery ES count */
@@ -494,7 +496,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			
 			List<Predicate> subPredicates = new ArrayList<>();
 			subPredicates.add(cb.equal(subEsRoot.get("project"), projectsRoot.get("id")));
-			subPredicates.add(cb.equal(subEsRoot.get("status"), Constants.STATUS_APPROVED));
+			subPredicates.add(cb.equal(subEsRoot.get("status"), PersonalExpenseSheetStatusEnumDto.APPROVED));
 			
 			subquery.select(cb.count(subEsRoot.get("id")));
 			subquery.where(cb.and(subPredicates.toArray(new Predicate[subPredicates.size()])));
@@ -524,7 +526,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			Join<User, ExpenseSheet> expenseSheetsRoot = usRoot.join("expenseSheets", JoinType.LEFT);
 			
 			List<Predicate> predicates = new ArrayList<>();
-			predicates.add(cb.equal(expenseSheetsRoot.get("status"), Constants.STATUS_PENDING));
+			predicates.add(cb.equal(expenseSheetsRoot.get("status"), PersonalExpenseSheetStatusEnumDto.PENDING));
 			
 			/* Subquery ES count */
 			
@@ -534,7 +536,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			List<Predicate> subPredicates = new ArrayList<>();
 			subPredicates.add(cb.equal(subEsRoot.get("user"), usRoot.get("id")));
 			subPredicates.add(cb.equal(usRoot.get("state"), 0));
-			subPredicates.add(cb.equal(subEsRoot.get("status"), Constants.STATUS_PENDING));
+			subPredicates.add(cb.equal(subEsRoot.get("status"), PersonalExpenseSheetStatusEnumDto.PENDING));
 			
 			subquery.select(cb.count(subEsRoot.get("id")));
 			subquery.where(cb.and(subPredicates.toArray(new Predicate[subPredicates.size()])));

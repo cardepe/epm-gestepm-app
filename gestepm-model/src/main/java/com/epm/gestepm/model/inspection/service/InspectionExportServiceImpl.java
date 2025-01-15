@@ -229,9 +229,6 @@ public class InspectionExportServiceImpl implements InspectionExportService {
         final float pageWidth = pdfTemplate.getPageSize(pageNumber).getWidth();
         final float pageHeight = pdfTemplate.getPageSize(pageNumber).getHeight();
 
-        final float topMargin = 40;
-        final float leftMargin = 50;
-
         for (Integer id : inspection.getFileIds()) {
 
             final InspectionFileDto file = this.inspectionFileService.findOrNotFound(new InspectionFileByIdFinderDto(id));
@@ -241,13 +238,15 @@ public class InspectionExportServiceImpl implements InspectionExportService {
                 stamper.insertPage(++pageNumber, pdfTemplate.getPageSizeWithRotation(1));
 
                 final Image image = Image.getInstance(Base64.getDecoder().decode(file.getContent()));
-                final Rectangle maxImageSize = new Rectangle(PageSize.A4.getWidth() - (leftMargin * 2), PageSize.A4.getHeight() - (topMargin * 2));
 
                 if (image.getWidth() > pageWidth || image.getHeight() > pageHeight) {
-                    image.scaleToFit(maxImageSize);
+                    image.scaleToFit(pageWidth, pageHeight);
                 }
 
-                image.setAbsolutePosition(leftMargin,  (PageSize.A4.getHeight() - image.getScaledHeight()) - topMargin);
+                float x = (pageWidth - image.getScaledWidth()) / 2;
+                float y = (pageHeight - image.getScaledHeight()) / 2;
+
+                image.setAbsolutePosition(x, y);
 
                 final PdfContentByte canvas = stamper.getOverContent(pageNumber);
                 canvas.addImage(image);

@@ -11,6 +11,7 @@ import com.epm.gestepm.lib.jdbc.api.query.fetch.SQLQueryFetchPage;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.model.inspection.dao.entity.Inspection;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.PersonalExpenseSheet;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.creator.PersonalExpenseSheetCreate;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.deleter.PersonalExpenseSheetDelete;
@@ -29,8 +30,9 @@ import java.util.Optional;
 import static com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType.ASC;
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
+import static com.epm.gestepm.model.inspection.dao.mappers.InspectionRowMapper.*;
 import static com.epm.gestepm.model.personalexpensesheet.dao.constants.PersonalExpenseSheetQueries.*;
-import static com.epm.gestepm.model.personalexpensesheet.dao.mappers.PersonalExpenseSheetRowMapper.COL_PES_ID;
+import static com.epm.gestepm.model.personalexpensesheet.dao.mappers.PersonalExpenseSheetRowMapper.*;
 
 @Component("PersonalExpenseSheetDao")
 @EnableExecutionLog(layerMarker = DAO)
@@ -162,11 +164,22 @@ public class PersonalExpenseSheetDaoImpl implements PersonalExpenseSheetDao {
         this.sqlDatasource.execute(sqlQuery);
     }
 
-    private void setOrder(SQLOrderByType order, String orderBy, SQLQueryFetchMany<PersonalExpenseSheet> sqlQuery) {
-
-        final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id") ? orderBy : COL_PES_ID;
-        final SQLOrderByType orderStatement = order != null ? order : ASC;
-
+    private void setOrder(final SQLOrderByType order, final String orderBy, final SQLQueryFetchMany<PersonalExpenseSheet> sqlQuery) {
+        final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id")
+                ? this.getOrderColumn(orderBy)
+                : COL_PES_ID;
+        final SQLOrderByType orderStatement = order != null
+                ? order
+                : SQLOrderByType.ASC;
         sqlQuery.addOrderBy(orderByStatement, orderStatement);
+    }
+
+    private String getOrderColumn(final String orderBy) {
+        if ("startDate".equals(orderBy)) {
+            return COL_PES_START_DATE;
+        } else if ("project.name".equals(orderBy)) {
+            return COL_PES_PROJECT_ID;
+        }
+        return orderBy;
     }
 }

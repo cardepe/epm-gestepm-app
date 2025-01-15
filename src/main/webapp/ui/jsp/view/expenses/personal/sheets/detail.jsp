@@ -296,6 +296,8 @@
             return '<div class="badge badge-warning">' + messages.priceType.food + '</div>';
         } else if (priceType === 'GAS') {
             return '<div class="badge badge-muted">' + messages.priceType.gas + '</div>';
+        } else if (priceType === 'GASOIL') {
+            return '<div class="badge badge-secondary">' + messages.priceType.gasoil + '</div>';
         } else if (priceType === 'GASOLINE') {
             return '<div class="badge badge-secondary">' + messages.priceType.gasoline + '</div>';
         } else if (priceType === 'HOTEL') {

@@ -21,6 +21,7 @@
                                         <option value="FLY"><spring:message code="price.type.fly" /></option>
                                         <option value="FOOD"><spring:message code="price.type.food" /></option>
                                         <option value="GAS"><spring:message code="price.type.gas" /></option>
+                                        <option value="GASOIL"><spring:message code="price.type.gasoil" /></option>
                                         <option value="GASOLINE"><spring:message code="price.type.gasoline" /></option>
                                         <option value="HOTEL"><spring:message code="price.type.hotel" /></option>
                                         <option value="KMS"><spring:message code="price.type.kms" /></option>

@@ -1,6 +1,7 @@
 package com.epm.gestepm.modelapi.expensesheet.dto;
 
 import com.epm.gestepm.modelapi.expense.dto.Expense;
+import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetStatusEnumDto;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.user.dto.User;
 import lombok.Data;
@@ -43,8 +44,8 @@ public class ExpenseSheet {
 	@JoinColumn(name = "project_id", nullable = false)
 	private Project project;
     
-    @Column(name="status\t")
-    private String status;
+    @Column(name="status")
+    private PersonalExpenseSheetStatusEnumDto status;
     
     @Column(name="observations")
     private String observations;

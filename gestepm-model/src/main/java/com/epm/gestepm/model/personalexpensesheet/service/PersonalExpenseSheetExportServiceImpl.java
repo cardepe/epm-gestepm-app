@@ -132,9 +132,6 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
         final float pageWidth = pdfTemplate.getPageSize(pageNumber).getWidth();
         final float pageHeight = pdfTemplate.getPageSize(pageNumber).getHeight();
 
-        final float topMargin = 40;
-        final float leftMargin = 50;
-
         final List<Integer> fileIds = personalExpense.getFileIds();
 
         final PersonalExpenseFileFilterDto filterDto = new PersonalExpenseFileFilterDto();
@@ -171,13 +168,15 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
                 stamper.insertPage(++pageNumber, pdfTemplate.getPageSizeWithRotation(1));
 
                 final Image image = Image.getInstance(Base64.getDecoder().decode(file.getContent()));
-                final Rectangle maxImageSize = new Rectangle(PageSize.A4.getWidth() - (leftMargin * 2), PageSize.A4.getHeight() - (topMargin * 2));
 
                 if (image.getWidth() > pageWidth || image.getHeight() > pageHeight) {
-                    image.scaleToFit(maxImageSize);
+                    image.scaleToFit(pageWidth, pageHeight);
                 }
 
-                image.setAbsolutePosition(leftMargin, topMargin);
+                float x = (pageWidth - image.getScaledWidth()) / 2;
+                float y = (pageHeight - image.getScaledHeight()) / 2;
+
+                image.setAbsolutePosition(x, y);
 
                 final PdfContentByte canvas = stamper.getOverContent(pageNumber);
                 canvas.addImage(image);

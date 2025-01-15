@@ -50,7 +50,7 @@ public class ModelUtil {
 				List<ExpenseValidateDTO> expensesPending = userService.getExpensesToValidateByUserId(user.getId());
 				model.addAttribute("expensesPending", expensesPending);
 
-			} else if (user.getRole().getId() == Constants.ROLE_ADMINISTRATION_ID) {
+			} else if (user.getRole().getId() == Constants.ROLE_ADMINISTRATION_ID || user.getRole().getId() == Constants.ROLE_ADMIN_ID) {
 
 				List<ExpenseUserValidateDTO> expensesPending = userService.getExpensesToPay();
 				model.addAttribute("expensesPending", expensesPending);

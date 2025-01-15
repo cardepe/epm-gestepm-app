@@ -4,6 +4,7 @@ public enum PriceTypeEnumDto {
     FLY,
     FOOD,
     GAS,
+    GASOIL,
     GASOLINE,
     HOTEL,
     KMS,
