@@ -79,6 +79,13 @@
         },
         "update": {
             "success": "Se ha actualizado el gasto personal {0} con éxito."
+        },
+        "quantity": {
+            "gas": "Kgs",
+            "gasoil": "Litros",
+            "gasoline": "Litros",
+            "kms": "Kms",
+            "default": "Cantidad"
         }
     },
     "shares": {

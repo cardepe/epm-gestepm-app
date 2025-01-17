@@ -1,14 +1,14 @@
 {
     "activitycenters": {
         "create": {
-            "success": "Centre d'activités créé avec succès."
+            "success": "Centre d'activité créé avec succès."
         },
         "update": {
-            "success": "Les paramètres du centre d'activités ont été mis à jour avec succès."
+            "success": "La configuration du centre d'activité a été mise à jour avec succès."
         },
         "delete": {
-            "alert": "Voulez-vous vraiment supprimer ce centre d'activités?",
-            "success": "Centre d'activités supprimé avec succès"
+            "alert": "Êtes-vous sûr de vouloir supprimer ce centre d'activité ?",
+            "success": "Centre d'activité supprimé avec succès."
         }
     },
     "countries": {
@@ -16,11 +16,11 @@
             "success": "Pays créé avec succès."
         },
         "update": {
-            "success": "Les paramètres du pays ont été mis à jour avec succès."
+            "success": "La configuration du pays a été mise à jour avec succès."
         },
         "delete": {
-            "alert": "Voulez-vous vraiment supprimer ce pays?",
-            "success": "Pays supprimé avec succès"
+            "alert": "Êtes-vous sûr de vouloir supprimer ce pays ?",
+            "success": "Pays supprimé avec succès."
         }
     },
     "displacements": {
@@ -28,17 +28,72 @@
             "success": "Déplacement créé avec succès."
         },
         "update": {
-            "success": "Les paramètres du déplacement ont été mis à jour avec succès."
+            "success": "Les informations sur le déplacement ont été mises à jour avec succès."
         },
         "delete": {
-            "alert": "Voulez-vous vraiment supprimer ce déplacement?",
-            "success": "Déplacement supprimé avec succès"
+            "alert": "Êtes-vous sûr de vouloir supprimer ce déplacement ?",
+            "success": "Déplacement supprimé avec succès."
         },
         "publictransport": "Transport public",
         "vehicle": "Véhicule"
     },
+    "inspections": {
+        "title": "Inspection numéro {0}",
+        "intervention": "Intervention",
+        "diagnosis": "Diagnostic",
+        "following": "Suivi",
+        "create": {
+            "success": "Inspection avec l'identifiant {0} créée avec succès."
+        },
+        "update": {
+            "success": "Inspection avec l'identifiant {0} mise à jour avec succès."
+        },
+        "delete": {
+            "alert": "Êtes-vous sûr de vouloir supprimer l'inspection {0} ?",
+            "success": "Inspection nº {0} supprimée avec succès."
+        },
+        "files": {
+            "delete": {
+                "alert": "Êtes-vous sûr de vouloir supprimer la pièce jointe {0} ?",
+                "success": "Pièce jointe {0} supprimée avec succès."
+            }
+        }
+    },
+    "personalExpenseSheet": {
+        "delete": {
+            "alert": "Êtes-vous sûr de vouloir supprimer la feuille de dépenses personnelles {0} ?",
+            "success": "Feuille de dépenses personnelles {0} supprimée avec succès."
+        },
+        "invalidStatus": "La feuille de dépenses n'est pas en état 'en attente' et ne peut pas être modifiée.",
+        "update": {
+            "success": "La feuille de dépenses personnelles {0} a été mise à jour avec succès."
+        }
+    },
+    "personalExpense": {
+        "create": {
+            "success": "La dépense personnelle {0} a été créée avec succès."
+        },
+        "delete": {
+            "alert": "Êtes-vous sûr de vouloir supprimer la dépense personnelle {0} ?",
+            "success": "Dépense personnelle {0} supprimée avec succès."
+        },
+        "update": {
+            "success": "La dépense personnelle {0} a été mise à jour avec succès."
+        },
+        "quantity": {
+            "gas": "Kg",
+            "gasoil": "Litres",
+            "gasoline": "Litres",
+            "kms": "Km",
+            "default": "Quantité"
+        }
+    },
     "shares": {
         "noprogrammed": {
+            "delete": {
+                "success": "Partie d'intervention non programmée nº {0} supprimée avec succès."
+            },
+            "title": "Partie d'intervention non programmée nº {0}",
             "update": {
                 "success": "La partie non programmée a été mise à jour avec succès."
             },
@@ -46,7 +101,49 @@
                 "update": {
                     "success": "L'intervention a été mise à jour avec succès."
                 }
-            }
+            },
+            "files": {
+                "delete": {
+                    "alert": "Êtes-vous sûr de vouloir supprimer la pièce jointe {0} ?",
+                    "success": "Pièce jointe {0} supprimée avec succès."
+                }
+            },
+            "postForumUrl": "Vous pouvez voir l'entrée du forum en cliquant ici."
         }
+    },
+    "priceType": {
+        "fly": "Vols",
+        "food": "Nourriture",
+        "gas": "Gaz",
+        "gasoil": "Gasoil",
+        "gasoline": "Essence",
+        "hotel": "Hôtel",
+        "kms": "Kilomètres",
+        "other": "Autres",
+        "parking": "Parking"
+    },
+    "paymentType": {
+        "epmTarget": "Carte EPM",
+        "other": "Autre"
+    },
+    "actions": {
+        "label": "Actions",
+        "view": "Détail",
+        "edit": "Modifier",
+        "delete": "Supprimer",
+        "pdfFile": "Fichier PDF"
+    },
+    "commons": {
+        "yes": "Oui",
+        "no": "Non"
+    },
+    "select": {
+        "placeholder": "Sélectionnez un élément..."
+    },
+    "status": {
+        "pending": "En attente",
+        "approved": "Approuvé par l'administration",
+        "paid": "Payé",
+        "rejected": "Rejeté"
     }
 }

@@ -143,6 +143,7 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
 
         for (final PersonalExpenseFileDto file : files) {
             if (isPDF(file)) {
+
                 final byte[] pdfBytes = Base64.getDecoder().decode(file.getContent());
                 final InputStream inputStream = new ByteArrayInputStream(pdfBytes);
                 final PdfReader pdfReader = new PdfReader(inputStream);
@@ -150,6 +151,10 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
                 for (int j = 1; j <= pdfReader.getNumberOfPages(); j++) {
 
                     stamper.insertPage(++pageNumber, pdfTemplate.getPageSizeWithRotation(1));
+
+                    if (pdfReader.isEncrypted() && !PdfReader.unethicalreading) {
+                        PdfReader.unethicalreading = true;
+                    }
 
                     final PdfImportedPage page = stamper.getImportedPage(pdfReader, j);
                     final PdfContentByte canvas = stamper.getOverContent(pageNumber);

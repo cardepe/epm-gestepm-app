@@ -1,5 +1,7 @@
 package com.epm.gestepm.modelapi.personalexpensesheet.dto;
 
+import lombok.Data;
+
 public enum PersonalExpenseSheetStatusEnumDto {
     PENDING,
     APPROVED,

@@ -50,7 +50,7 @@
                     <div class="row">
                         <div class="col">
                             <div class="form-group">
-                                <label class="col-form-label w-100"><spring:message code="quantity" />
+                                <label id="quantityLabel" class="col-form-label w-100"><spring:message code="quantity" />
                                     <input name="quantity" type="number" class="form-control" value="1" required>
                                     <span class="text-info only-kms d-none"><em><small>Precio del km/mile: 0.25€</small></em></span>
                                 </label>
@@ -123,15 +123,39 @@
 
     function onChangePriceType() {
         const priceType = form.querySelector('[name="priceType"]');
-        const onlyKms = form.querySelector('.only-kms')
 
         priceType.addEventListener('change', (event) => {
-            if (event.target.value === 'KMS') {
-                onlyKms.classList.remove('d-none');
-            } else {
-                onlyKms.classList.add('d-none');
-            }
+            displayQuantityLabel(event.target.value);
+            displayQuantityInfo(event.target.value);
         });
+    }
+
+    function displayQuantityLabel(priceType) {
+        const label = form.querySelector('#quantityLabel');
+
+        const springMessageNode = label.childNodes[0];
+        if (springMessageNode.nodeType === Node.TEXT_NODE || springMessageNode.nodeType === Node.ELEMENT_NODE) {
+            if (priceType === 'KMS') {
+                springMessageNode.textContent = messages.personalExpense.quantity.kms;
+            } else if (priceType === 'GAS') {
+                springMessageNode.textContent = messages.personalExpense.quantity.gas;
+            } else if (priceType === 'GASOIL') {
+                springMessageNode.textContent = messages.personalExpense.quantity.gasoil;
+            } else if (priceType === 'GASOLINE') {
+                springMessageNode.textContent = messages.personalExpense.quantity.gasoline;
+            } else {
+                springMessageNode.textContent = messages.personalExpense.quantity.default;
+            }
+        }
+    }
+
+    function displayQuantityInfo(priceType) {
+        const onlyKms = form.querySelector('.only-kms')
+        if (priceType === 'KMS') {
+            onlyKms.classList.remove('d-none');
+        } else {
+            onlyKms.classList.add('d-none');
+        }
     }
 
     function createOrUpdate() {

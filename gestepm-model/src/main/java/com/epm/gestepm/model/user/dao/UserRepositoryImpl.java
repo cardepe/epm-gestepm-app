@@ -486,7 +486,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			
 			List<Predicate> predicates = new ArrayList<>();
 			predicates.add(cb.equal(usRoot.get("id"), userId));
-			predicates.add(cb.equal(expenseSheetsRoot.get("status"), PersonalExpenseSheetStatusEnum.APPROVED));
+			predicates.add(cb.equal(expenseSheetsRoot.get("status"), PersonalExpenseSheetStatusEnum.APPROVED.ordinal()));
 			predicates.add(cb.equal(usRoot.get("state"), 0));
 			
 			/* Subquery ES count */
@@ -496,7 +496,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			
 			List<Predicate> subPredicates = new ArrayList<>();
 			subPredicates.add(cb.equal(subEsRoot.get("project"), projectsRoot.get("id")));
-			subPredicates.add(cb.equal(subEsRoot.get("status"), PersonalExpenseSheetStatusEnumDto.APPROVED));
+			subPredicates.add(cb.equal(subEsRoot.get("status"), PersonalExpenseSheetStatusEnumDto.APPROVED.ordinal()));
 			
 			subquery.select(cb.count(subEsRoot.get("id")));
 			subquery.where(cb.and(subPredicates.toArray(new Predicate[subPredicates.size()])));
@@ -526,7 +526,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			Join<User, ExpenseSheet> expenseSheetsRoot = usRoot.join("expenseSheets", JoinType.LEFT);
 			
 			List<Predicate> predicates = new ArrayList<>();
-			predicates.add(cb.equal(expenseSheetsRoot.get("status"), PersonalExpenseSheetStatusEnumDto.PENDING));
+			predicates.add(cb.equal(expenseSheetsRoot.get("status"), PersonalExpenseSheetStatusEnumDto.PENDING.ordinal()));
 			
 			/* Subquery ES count */
 			
@@ -536,7 +536,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			List<Predicate> subPredicates = new ArrayList<>();
 			subPredicates.add(cb.equal(subEsRoot.get("user"), usRoot.get("id")));
 			subPredicates.add(cb.equal(usRoot.get("state"), 0));
-			subPredicates.add(cb.equal(subEsRoot.get("status"), PersonalExpenseSheetStatusEnumDto.PENDING));
+			subPredicates.add(cb.equal(subEsRoot.get("status"), PersonalExpenseSheetStatusEnumDto.PENDING.ordinal()));
 			
 			subquery.select(cb.count(subEsRoot.get("id")));
 			subquery.where(cb.and(subPredicates.toArray(new Predicate[subPredicates.size()])));
