@@ -1134,6 +1134,8 @@ components:
           schema:
             type: object
             properties:
+              userId:
+                type: integer
               startDate:
                 type: string
                 format: date-time
@@ -1172,6 +1174,8 @@ components:
                       x-field-extra-annotation: '@com.fasterxml.jackson.annotation.JsonIgnore'
                       x-stoplight:
                         id: 6ce64ca1txbth
+            required:
+              - userId
     CreateInspection:
       content:
         application/json:
@@ -1203,6 +1207,8 @@ components:
           schema:
             type: object
             properties:
+              userId:
+                type: integer
               action:
                 type: string
                 x-stoplight:
@@ -1279,6 +1285,8 @@ components:
                 type: boolean
                 x-stoplight:
                   id: c5vq4d1j24aah
+            required:
+              - userId
     CreatePersonalExpenseSheet:
       content:
         application/json:

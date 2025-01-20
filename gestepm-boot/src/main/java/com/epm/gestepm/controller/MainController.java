@@ -9,6 +9,7 @@ import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.scheduled.SigningScheduled;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,12 +35,15 @@ public class MainController {
 
 	private final UserService userService;
 
-    public MainController(EmailService emailService, HttpServletRequest request, ProjectService projectService, SMTPService smtpService, UserService userService) {
+	private final SigningScheduled signingScheduled;
+
+    public MainController(EmailService emailService, HttpServletRequest request, ProjectService projectService, SMTPService smtpService, UserService userService, SigningScheduled signingScheduled) {
         this.emailService = emailService;
         this.request = request;
         this.projectService = projectService;
         this.smtpService = smtpService;
         this.userService = userService;
+        this.signingScheduled = signingScheduled;
     }
 
     @GetMapping("/")
@@ -71,6 +75,11 @@ public class MainController {
 		emailTemplate.setParams(new HashMap<>());
 
 		this.emailService.process(emailTemplate);
+	}
+
+	@GetMapping("/v1/test-2")
+	public void toTest2() {
+		this.signingScheduled.dailyPersonalSigningProcess();
 	}
 
 	@GetMapping("/templates/email")

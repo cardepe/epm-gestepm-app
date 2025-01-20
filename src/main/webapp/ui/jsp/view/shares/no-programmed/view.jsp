@@ -240,6 +240,7 @@
 
     let hasRole;
     let hasSigning;
+    let canClose;
 
     let userId = ${user.id};
 
@@ -248,8 +249,7 @@
         const shareId = getShareId();
 
         await getShare(shareId);
-
-        getPermissions();
+        await getPermissions();
 
         const familyElement = editForm.querySelector('[name="familyId"]');
 
@@ -302,6 +302,7 @@
             }
 
             axios.patch('/v1/shares/no-programmed/' + id, {
+                userId: ${user.id},
                 familyId: editForm.querySelector('[name="familyId"]').value,
                 subFamilyId: editForm.querySelector('[name="subFamilyId"]').value,
                 description: editForm.querySelector('[name="description"]').value,
@@ -343,6 +344,7 @@
             showLoading();
 
             axios.patch('/v1/shares/no-programmed/' + id, {
+                userId: ${user.id},
                 state: 'CLOSED'
             }).then(async (response) => {
                 await getShare(response.data.data.id);
@@ -420,6 +422,10 @@
     function setInitialMode() {
         currentMode = 'INITIAL';
 
+        if (!hasRole || !hasSigning) {
+            document.querySelector('#editBtn').classList.add('d-none');
+        }
+
         document.querySelector('#finishBtn').classList.add('d-none');
         document.querySelector('#createInspectionBtn').classList.add('d-none');
     }
@@ -427,8 +433,14 @@
     function setWorkingMode() {
         currentMode = 'WORKING';
 
-        document.querySelector('#finishBtn').classList.remove('d-none');
-        document.querySelector('#createInspectionBtn').classList.remove('d-none');
+        if (!canClose) {
+            document.querySelector('#finishBtn').classList.add('d-none');
+        }
+
+        if (!hasRole || !hasSigning) {
+            document.querySelector('#editBtn').classList.add('d-none');
+            document.querySelector('#createInspectionBtn').classList.add('d-none');
+        }
 
         disableForm('#editForm');
 
@@ -442,7 +454,6 @@
     }
 
     function setCompletedMode() {
-        const needsPrint = currentMode !== 'WORKING';
         currentMode = 'COMPLETED';
 
         document.querySelector('#editBtn').remove();
@@ -677,10 +688,11 @@
         return true;
     }
 
-    function getPermissions() {
-        axios.get('/provisional/shares/no-programmed/user-permissions', { params: { shareId: share.id, userId: userId }}).then((response) => {
+    async function getPermissions() {
+        await axios.get('/provisional/shares/no-programmed/user-permissions', { params: { shareId: share.id, userId: userId }}).then((response) => {
             hasRole = response.data.hasRole;
             hasSigning = response.data.hasSigning;
+            canClose = response.data.canClose;
         }).catch(error => console.log(error));
     }
 

@@ -5,6 +5,7 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.model.inspection.checker.InspectionChecker;
 import com.epm.gestepm.model.inspection.dao.InspectionDao;
 import com.epm.gestepm.model.inspection.dao.entity.Inspection;
 import com.epm.gestepm.model.inspection.dao.entity.creator.InspectionCreate;
@@ -64,6 +65,8 @@ public class InspectionServiceImpl implements InspectionService {
 
     private final HttpServletRequest request;
 
+    private final InspectionChecker inspectionChecker;
+
     private final InspectionDao inspectionDao;
 
     private final InspectionExportService inspectionExportService;
@@ -78,10 +81,9 @@ public class InspectionServiceImpl implements InspectionService {
 
     private final UserService userService;
 
-    private final UserSigningService userSigningService;
-
-    public InspectionServiceImpl(HttpServletRequest request, InspectionDao inspectionDao, InspectionExportService inspectionExportService, NoProgrammedShareService noProgrammedShareService, ProjectService projectService, SMTPService smtpService, TopicService topicService, UserService userService, UserSigningService userSigningService) {
+    public InspectionServiceImpl(HttpServletRequest request, InspectionChecker inspectionChecker, InspectionDao inspectionDao, InspectionExportService inspectionExportService, NoProgrammedShareService noProgrammedShareService, ProjectService projectService, SMTPService smtpService, TopicService topicService, UserService userService) {
         this.request = request;
+        this.inspectionChecker = inspectionChecker;
         this.inspectionDao = inspectionDao;
         this.inspectionExportService = inspectionExportService;
         this.noProgrammedShareService = noProgrammedShareService;
@@ -89,7 +91,6 @@ public class InspectionServiceImpl implements InspectionService {
         this.smtpService = smtpService;
         this.topicService = topicService;
         this.userService = userService;
-        this.userSigningService = userSigningService;
     }
 
     @Override
@@ -162,14 +163,14 @@ public class InspectionServiceImpl implements InspectionService {
         final NoProgrammedShareDto noProgrammedShare =
                 this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(createDto.getShareId()));
 
-        this.checker(createDto.getFirstTechnicalId(), createDto);
+        this.inspectionChecker.checker(noProgrammedShare, createDto);
 
         final InspectionCreate create = getMapper(MapIToInspectionCreate.class).from(createDto);
         create.setStartDate(LocalDateTime.now());
 
         final Inspection result = this.inspectionDao.create(create);
 
-        this.updateNoProgrammedShare(noProgrammedShare.getId(), NoProgrammedShareStateEnumDto.IN_PROGRESS);
+        this.updateNoProgrammedShare(noProgrammedShare.getId(), createDto.getFirstTechnicalId(), NoProgrammedShareStateEnumDto.IN_PROGRESS);
 
         return getMapper(MapIToInspectionDto.class).from(result);
     }
@@ -187,7 +188,7 @@ public class InspectionServiceImpl implements InspectionService {
         final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(
                 new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
 
-        this.checker(inspection.getFirstTechnicalId(), updateDto);
+        this.inspectionChecker.checker(noProgrammedShare, updateDto);
 
         if (updateDto.getEndDate() == null) {
             updateDto.setEndDate(LocalDateTime.now());
@@ -228,27 +229,6 @@ public class InspectionServiceImpl implements InspectionService {
         this.inspectionDao.delete(delete);
     }
 
-    private <T> void checker(final Integer userId, final T dto) {
-        final Supplier<RuntimeException> userNotFound = () -> new UserByIdNotFoundException(userId);
-        final User user = Optional.ofNullable(this.userService.getUserById(userId.longValue()))
-                .orElseThrow(userNotFound);
-
-        final UserSigning userSigning = this.userSigningService.getByUserIdAndEndDate(userId.longValue(), null);
-
-        if (userSigning == null && !Utiles.havePrivileges(user.getSubRole().getRol())) {
-            throw new NoProgrammedShareForbiddenException(userId, user.getSubRole().getRol());
-        }
-
-        if (userSigning != null) {
-            if (dto instanceof InspectionCreateDto) {
-                ((InspectionCreateDto) dto).setUserSigningId(userId);
-            } else if (dto instanceof InspectionUpdateDto) {
-                ((InspectionUpdateDto) dto).setUserSigningId(userId);
-                ((InspectionUpdateDto) dto).setFirstTechnicalId(null);
-            }
-        }
-    }
-
     private void createForumComment(InspectionDto inspection, NoProgrammedShareDto noProgrammedShare) {
 
         if (noProgrammedShare.getTopicId() != null) {
@@ -286,9 +266,10 @@ public class InspectionServiceImpl implements InspectionService {
         }
     }
 
-    private void updateNoProgrammedShare(final Integer id, final NoProgrammedShareStateEnumDto state) {
+    private void updateNoProgrammedShare(final Integer id, final Integer userId, final NoProgrammedShareStateEnumDto state) {
         final NoProgrammedShareUpdateDto noProgrammedShareUpdateDto = new NoProgrammedShareUpdateDto();
         noProgrammedShareUpdateDto.setId(id);
+        noProgrammedShareUpdateDto.setUserId(userId);
         noProgrammedShareUpdateDto.setState(state);
 
         this.noProgrammedShareService.update(noProgrammedShareUpdateDto);

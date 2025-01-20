@@ -7,6 +7,7 @@ import com.epm.gestepm.lib.executiontrace.ExecutionRequestProvider;
 import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareFileNotFoundException;
 import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareForbiddenException;
 import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareNotFoundException;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -24,6 +25,8 @@ public class NoProgrammedShareExceptionHandler extends BaseRestExceptionHandler 
     public static final String NPS_FILE_NOT_FOUND = "no-programmed-share-file-not-found";
 
     public static final String NPS_FORBIDDEN = "no-programmed-share-forbidden";
+
+    public static final String NPS_FORBIDDEN_TL = "no-programmed-share-forbidden-tl";
 
     public NoProgrammedShareExceptionHandler(ExecutionRequestProvider executionRequestProvider, I18nErrorMessageSource i18nErrorMessageSource) {
         super(executionRequestProvider, i18nErrorMessageSource);
@@ -53,7 +56,8 @@ public class NoProgrammedShareExceptionHandler extends BaseRestExceptionHandler 
 
         final Integer id = ex.getId();
         final String subRole = ex.getSubRole();
+        final String message = StringUtils.isNoneBlank(subRole) ? NPS_FORBIDDEN : NPS_FORBIDDEN_TL;
 
-        return toAPIError(NPS_ERROR_CODE, NPS_FORBIDDEN, NPS_FORBIDDEN, id, subRole);
+        return toAPIError(NPS_ERROR_CODE, message, message, id, subRole);
     }
 }

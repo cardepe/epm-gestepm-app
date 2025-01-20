@@ -16,6 +16,8 @@ public class InspectionUpdateDto {
     @NotNull
     private Integer id;
 
+    private Integer userId;
+
     private Integer userSigningId;
 
     private Integer shareId;

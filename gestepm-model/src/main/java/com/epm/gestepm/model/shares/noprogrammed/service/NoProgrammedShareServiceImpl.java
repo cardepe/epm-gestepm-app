@@ -14,11 +14,6 @@ import com.epm.gestepm.model.shares.noprogrammed.dao.entity.finder.NoProgrammedS
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.updater.NoProgrammedShareUpdate;
 import com.epm.gestepm.model.shares.noprogrammed.decorator.NoProgrammedSharePostCreationDecorator;
 import com.epm.gestepm.model.shares.noprogrammed.service.mapper.*;
-import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
-import com.epm.gestepm.modelapi.project.exception.ProjectIsNotStationException;
-import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareStateEnumDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.creator.NoProgrammedShareCreateDto;
@@ -26,14 +21,8 @@ import com.epm.gestepm.modelapi.shares.noprogrammed.dto.deleter.NoProgrammedShar
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.filter.NoProgrammedShareFilterDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.NoProgrammedShareUpdateDto;
-import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareForbiddenException;
 import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareNotFoundException;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.exception.UserByIdNotFoundException;
-import com.epm.gestepm.modelapi.user.service.UserService;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
-import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -133,7 +122,7 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
             msgOut = "New no programmed share created OK",
             errorMsg = "Failed to create new no programmed share")
     public NoProgrammedShareDto create(NoProgrammedShareCreateDto createDto) {
-        this.noProgrammedShareChecker.checker(createDto.getUserId(), createDto.getProjectId(), createDto);
+        this.noProgrammedShareChecker.checker(createDto);
 
         final NoProgrammedShareCreate create = getMapper(MapNPSToNoProgrammedShareCreate.class).from(createDto);
         create.setStartDate(LocalDateTime.now());
@@ -144,18 +133,19 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
     }
 
     @Override
+    @Transactional
     @RequirePermits(value = PRMT_EDIT_NPS, action = "Update no programmed share")
     @LogExecution(operation = OP_UPDATE,
             debugOut = true,
             msgIn = "Updating no programmed share",
             msgOut = "No programmed share updated OK",
             errorMsg = "Failed to update no programmed share")
-    public NoProgrammedShareDto update(NoProgrammedShareUpdateDto updateDto) {
+    public NoProgrammedShareDto update(final NoProgrammedShareUpdateDto updateDto) {
         final NoProgrammedShareByIdFinderDto finderDto = new NoProgrammedShareByIdFinderDto(updateDto.getId());
 
         final NoProgrammedShareDto noProgrammedShareDto = findOrNotFound(finderDto);
 
-        this.noProgrammedShareChecker.checker(noProgrammedShareDto.getUserId(), noProgrammedShareDto.getProjectId(), null);
+        this.noProgrammedShareChecker.checker(updateDto, noProgrammedShareDto);
 
         if (NoProgrammedShareStateEnumDto.CLOSED.equals(updateDto.getState())) {
             updateDto.setEndDate(LocalDateTime.now());

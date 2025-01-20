@@ -15,6 +15,8 @@ public class NoProgrammedShareUpdateDto {
     @NotNull
     private Integer id;
 
+    private Integer userId;
+
     private LocalDateTime startDate;
 
     private LocalDateTime endDate;

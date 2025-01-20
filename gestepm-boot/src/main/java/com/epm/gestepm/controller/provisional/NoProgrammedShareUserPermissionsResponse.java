@@ -11,4 +11,6 @@ public class NoProgrammedShareUserPermissionsResponse {
 
     private Boolean hasSigning;
 
+    private Boolean canClose;
+
 }

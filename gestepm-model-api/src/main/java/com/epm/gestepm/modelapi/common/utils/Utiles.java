@@ -134,6 +134,10 @@ public class Utiles {
 	public static String transform(final LocalDateTime offsetDateTime, final String format) {
 		return offsetDateTime.format(DateTimeFormatter.ofPattern(format));
 	}
+
+	public static LocalDateTime transform(final String dateTime, final String format) {
+		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(format));
+	}
 	
 	/**
 	 * Get DateTime String as Date

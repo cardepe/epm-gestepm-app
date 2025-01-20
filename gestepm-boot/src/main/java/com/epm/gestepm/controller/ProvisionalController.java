@@ -24,6 +24,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
+import static com.epm.gestepm.modelapi.common.utils.classes.Constants.ROLE_ADMIN_ID;
+import static com.epm.gestepm.modelapi.common.utils.classes.Constants.ROLE_PL_ID;
+
 @Controller
 @RequestMapping("/provisional")
 public class ProvisionalController {
@@ -52,6 +55,7 @@ public class ProvisionalController {
 
         boolean hasRole = false;
         boolean hasSigning = false;
+        boolean canClose = false;
 
         if (share.getFamilyId() != null && share.getSubFamilyId() != null) {
             final List<RoleDTO> subRoles = this.subFamilyService.getSubRolsById(share.getSubFamilyId().longValue());
@@ -61,8 +65,9 @@ public class ProvisionalController {
             hasRole = subRoles.isEmpty()
                     || subRoles.stream().anyMatch(subRole -> subRole.getName().equals(userLevel));
             hasSigning = userSigning != null || Utiles.havePrivileges(userLevel);
+            canClose = user.getRole().getId().equals(ROLE_PL_ID) || user.getRole().getId().equals(ROLE_ADMIN_ID);
         }
 
-        return new NoProgrammedShareUserPermissionsResponse(hasRole, hasSigning);
+        return new NoProgrammedShareUserPermissionsResponse(hasRole, hasSigning, canClose);
     }
 }

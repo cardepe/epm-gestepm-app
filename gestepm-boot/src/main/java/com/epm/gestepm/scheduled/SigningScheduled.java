@@ -10,11 +10,8 @@ import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.service.PersonalSigningService;
 import com.epm.gestepm.modelapi.timecontrol.dto.SigningScheduledDTO;
 import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.dto.UserDTO;
 import com.epm.gestepm.modelapi.user.service.UserService;
 import com.mysql.jdbc.StringUtils;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +20,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @Component
 public class SigningScheduled {
@@ -59,13 +54,7 @@ public class SigningScheduled {
 	private ActivityCenterService activityCenterServiceOld;
 	
 	@Autowired
-	private HolidayService holidayService;
-	
-	@Autowired
 	private PersonalSigningService personalSigningService;
-	
-	@Autowired
-	private SMTPService smtpService;
 	
 	@Autowired
 	private UserService userService;
@@ -80,19 +69,19 @@ public class SigningScheduled {
 		
 		try {
 
-			final Integer lunchIntervalStartHour = Integer.parseInt(signingLunchIntervalStart.split(":")[0]);
-			final Integer lunchIntervalStartMinutes = Integer.parseInt(signingLunchIntervalStart.split(":")[1]);
+			final int lunchIntervalStartHour = Integer.parseInt(signingLunchIntervalStart.split(":")[0]);
+			final int lunchIntervalStartMinutes = Integer.parseInt(signingLunchIntervalStart.split(":")[1]);
 
-			final Date lunchIntervalStart = new Date();
-			lunchIntervalStart.setHours(lunchIntervalStartHour);
-			lunchIntervalStart.setMinutes(lunchIntervalStartMinutes);
+			final LocalDateTime lunchIntervalStart = LocalDateTime.now()
+					.withHour(lunchIntervalStartHour)
+					.withMinute(lunchIntervalStartMinutes);
 
-			final Integer lunchIntervalEndHour = Integer.parseInt(signingLunchIntervalEnd.split(":")[0]);
-			final Integer lunchIntervalEndMinutes = Integer.parseInt(signingLunchIntervalEnd.split(":")[1]);
+			final int lunchIntervalEndHour = Integer.parseInt(signingLunchIntervalEnd.split(":")[0]);
+			final int lunchIntervalEndMinutes = Integer.parseInt(signingLunchIntervalEnd.split(":")[1]);
 
-			final Date lunchIntervalEnd = new Date();
-			lunchIntervalEnd.setHours(lunchIntervalEndHour);
-			lunchIntervalEnd.setMinutes(lunchIntervalEndMinutes);
+			final LocalDateTime lunchIntervalEnd = LocalDateTime.now()
+					.withHour(lunchIntervalEndHour)
+					.withMinute(lunchIntervalEndMinutes);
 			
 			// Open connection to FTP
 			FtpClient ftpClient = new FtpClient(signingFtpServer, signingFtpPort, signingFtpUser, signingFtpPassword);
@@ -135,10 +124,10 @@ public class SigningScheduled {
 								String[] parts = lane.split(",");
 								
 								Long userSigningId = Long.parseLong(parts[0]);
-								Date signingDate = Utiles.transformSigningStringToDate(parts[1]);
+								final LocalDateTime signingDate = Utiles.transform(parts[1], "yyyy-MM-dd HH:mm:ss");
 								int signingValue = Integer.parseInt(parts[2]);
 								
-								SigningScheduledDTO signingScheduled = new SigningScheduledDTO(userSigningId, signingDate, signingValue);
+								final SigningScheduledDTO signingScheduled = new SigningScheduledDTO(userSigningId, signingDate, signingValue);
 								
 								if (activityCenterSignings.containsKey(userSigningId)) {
 									activityCenterSignings.get(userSigningId).add(signingScheduled);
@@ -181,7 +170,7 @@ public class SigningScheduled {
 									if (signing.getValue() == 0) {
 
 										final boolean hasLastSigningEnded = personalSigning != null && personalSigning.getEndDate() != null;
-										Date startDate = signing.getDate();
+										LocalDateTime startDate = signing.getDate();
 
 										if (hasLastSigningEnded) {
 											
@@ -189,17 +178,15 @@ public class SigningScheduled {
 											
 											log.info("Registrado el fichaje " + personalSigning.getId() + " por parte del usuario " + user.getId());
 
-											final Date endDate = Date.from(personalSigning.getEndDate().toInstant(ZoneOffset.UTC));
-											final boolean isLunchInterval = endDate.after(lunchIntervalStart) && endDate.before(lunchIntervalEnd);
+											final LocalDateTime endDate = personalSigning.getEndDate();
+											final boolean isLunchInterval = endDate.isAfter(lunchIntervalStart) && endDate.isBefore(lunchIntervalEnd);
 
 											if (isLunchInterval) {
 
-												long duration  = endDate.getTime() - startDate.getTime();
-
-												long diffInMinutes = TimeUnit.MILLISECONDS.toMinutes(duration);
+												long diffInMinutes = Duration.between(startDate, endDate).toMinutes();
 
 												if (diffInMinutes < signingLunchIntervalTime) {
-													startDate = DateUtils.addMinutes(endDate, signingLunchIntervalTime);
+													startDate = endDate.plusMinutes(signingLunchIntervalTime);
 												}
 											}
 
@@ -209,13 +196,13 @@ public class SigningScheduled {
 										if (personalSigning == null) {
 											personalSigning = new PersonalSigning();
 											personalSigning.setUser(user);
-											personalSigning.setStartDate(LocalDateTime.from(startDate.toInstant().atOffset(ZoneOffset.UTC)));
+											personalSigning.setStartDate(startDate);
 										}
 										
 									} else if (signing.getValue() == 1) {
 
 										if (personalSigning != null) {
-											personalSigning.setEndDate(LocalDateTime.from(signing.getDate().toInstant().atOffset(ZoneOffset.UTC)));
+											personalSigning.setEndDate(signing.getDate());
 										} else {
 											log.info("El usuario " + signing.getUserSigningId() + " ha imputado una salida sin entrada previa a las " + signing.getDate());
 										}
@@ -256,69 +243,11 @@ public class SigningScheduled {
 			ftpClient.close();
 			
 			log.info("Carpeta limpiada con éxito");
-			
-			// Send Mail to Invalid User Signings
-			// sendMailsToInvalidSignings(signingUserIdList);
 
 		} catch (Exception e) {
 			log.error(e);
 		}
 		
 		log.info("Finalizada la carga de fichajes personales en la base de datos.");
-	}
-	
-	public void sendMailsToInvalidSignings(List<Long> signingUserIdList) {
-		
-		try {
-			
-			if (!signingUserIdList.isEmpty()) {
-				
-				List<UserDTO> userDTOs = userService.getAllUserDTOs();
-				
-				if (userDTOs != null && !userDTOs.isEmpty()) {
-					
-					// Filter Active Users
-					userDTOs = userDTOs.stream().filter(u -> u.getState() == 0 && u.getSigningId() != null).collect(Collectors.toList());
-				
-					// Map DTO to Id List
-					List<Long> userSigningIds = userDTOs.stream().map(UserDTO::getSigningId).collect(Collectors.toList());
-					
-					// Remove Signing Users
-					List<Long> invalidSigningUserId = ListUtils.removeAll(userSigningIds, signingUserIdList);
-					
-					// Get today Date
-					Date date = Utiles.atStartOfDay(new Date());
-					
-					for (Long userSigningId : invalidSigningUserId) {
-						
-						User userSigning = userService.getUserBySigningId(userSigningId);
-						
-						if (userSigning != null) {
-
-							Boolean workingDay = holidayService.isWorkingDay(userSigning.getId(), userSigning.getActivityCenter().getCountry().getId(), userSigning.getActivityCenter().getId(), date);
-							
-							if (workingDay) {
-								
-								Locale userLocale = null;
-								
-								if (userSigning.getActivityCenter() != null && userSigning.getActivityCenter().getCountry() != null) {
-									userLocale = new Locale(userSigning.getActivityCenter().getCountry().getTag());
-								}
-								
-								if (userLocale == null) {
-									userLocale = new Locale("es");
-								}
-								
-								// Send Mail
-								smtpService.sendSigningInvalidMail(userSigning.getEmail(), userSigning, userLocale);
-							}							
-						}
-					}
-				}					
-			}
-							
-		} catch (Exception e) {
-			log.error(e);
-		}
 	}
 }

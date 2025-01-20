@@ -260,6 +260,7 @@
             const files = await parseFiles(editForm);
 
             axios.patch('/v1' + window.location.pathname, {
+                userId: ${user.id},
                 description: description ? description.value : null,
                 signature: !signaturePad.isEmpty() ? signaturePad.toDataURL() : null,
                 operatorSignature: !signaturePadOp.isEmpty() ? signaturePadOp.toDataURL() : null,

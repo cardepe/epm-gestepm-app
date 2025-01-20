@@ -26,6 +26,8 @@ import java.util.Locale;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
+import static com.epm.gestepm.modelapi.common.utils.classes.Constants.ROLE_ADMIN_ID;
+import static com.epm.gestepm.modelapi.common.utils.classes.Constants.ROLE_PL_ID;
 
 @Controller
 @EnableExecutionLog(layerMarker = VIEW)
