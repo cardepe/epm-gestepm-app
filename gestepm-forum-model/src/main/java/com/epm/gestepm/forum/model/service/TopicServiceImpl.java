@@ -37,16 +37,16 @@ public class TopicServiceImpl implements TopicService {
 
 	private static final Log log = LogFactory.getLog(TopicServiceImpl.class);
 	
-	@Value("${forum.ftp.server}")
+	@Value("${gestepm.forum.ftp.server}")
 	private String forumFtpServer;
 	
-	@Value("${forum.ftp.port}")
+	@Value("${gestepm.forum.ftp.port}")
 	private int forumFtpPort;
 	
-	@Value("${forum.ftp.user}")
+	@Value("${gestepm.forum.ftp.user}")
 	private String forumFtpUser;
 	
-	@Value("${forum.ftp.password}")
+	@Value("${gestepm.forum.ftp.password}")
 	private String forumFtpPassword;
 	
 	@Autowired

@@ -66,7 +66,7 @@ public class UserController {
 
 	private static final Log log = LogFactory.getLog(UserController.class);
 	
-	@Value("${first.year}")
+	@Value("${gestepm.first-year}")
 	private int firstYear;
 	
 	@Autowired

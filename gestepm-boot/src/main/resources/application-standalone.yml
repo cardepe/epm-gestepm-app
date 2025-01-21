@@ -1,0 +1,38 @@
+data:
+  jdbc:
+    datasource:
+      gestepmds:
+        driverClassName: com.mysql.cj.jdbc.Driver
+        username: root
+        password: BWgCGGW3XiesYor5z7Cf
+        jdbcUrl: jdbc:mysql://localhost:3306
+
+gestepm:
+  base:
+    url: http://localhost:8888
+  forum:
+    ftp:
+      server: 92.54.16.198
+      port: 22
+      user: forum
+      password: SQh!Z8ppEdE
+    url: http://localhost
+  mails:
+    admin: cardepe@cyxtec.com
+    rrhh: cardepe@cyxtec.com
+  signing:
+    ftp:
+      server: 92.54.16.80
+      port: 21
+      user: anviz
+      password: Anviz_2020
+
+spring:
+  datasource:
+    jdbcUrl: jdbc:mysql://localhost:3306/bbdd_gestepm?useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: BWgCGGW3XiesYor5z7Cf
+  second-datasource:
+    jdbcUrl: jdbc:mysql://localhost:3306/bbdd_gestepm_forum?useSSL=false
+    username: root
+    password: BWgCGGW3XiesYor5z7Cf

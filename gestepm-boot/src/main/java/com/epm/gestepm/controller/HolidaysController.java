@@ -64,7 +64,7 @@ public class HolidaysController {
 	@Autowired
 	private UserHolidaysService userHolidayService;
 
-	@Value("#{'${rrhh.mails}'.split(',')}")
+	@Value("#{'${gestepm.mails.rrhh}'.split(',')}")
 	private List<String> rrhhMails;
 
 	@GetMapping

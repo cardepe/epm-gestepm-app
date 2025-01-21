@@ -53,10 +53,10 @@ public class SMTPServiceImpl implements SMTPService {
 
 	private static final String DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm:ss";
 	
-	@Value("${base.url}")
+	@Value("${gestepm.base.url}")
 	private String appUrlBase;
 	
-	@Value("${god.mail}")
+	@Value("${gestepm.mails.admin}")
 	private String godMail;
 	
 	@Value("${smtp.mail.from}")

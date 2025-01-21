@@ -10,7 +10,7 @@
 	    <div id="main-menu" class="main-menu collapse navbar-collapse">
 	        <ul class="nav navbar-nav">
 				
-				<spring:eval expression="@environment.getProperty('forum.url')" var="forumUrl" />
+				<spring:eval expression="@environment.getProperty('gestepm.forum.url')" var="forumUrl" />
 				
 				<sec:authorize access="hasAuthority('ROLE_OFICINA')">
 	                <li <c:if test="${fn:startsWith(pageName, '/signing/personal')}">class="active"</c:if>>

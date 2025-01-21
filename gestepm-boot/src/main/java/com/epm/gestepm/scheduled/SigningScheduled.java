@@ -29,25 +29,25 @@ public class SigningScheduled {
 
 	private static final Log log = LogFactory.getLog(SigningScheduled.class);
 	
-	@Value("${signing.ftp.server}")
+	@Value("${gestepm.signing.ftp.server}")
 	private String signingFtpServer;
 	
-	@Value("${signing.ftp.port}")
+	@Value("${gestepm.signing.ftp.port}")
 	private int signingFtpPort;
 	
-	@Value("${signing.ftp.user}")
+	@Value("${gestepm.signing.ftp.user}")
 	private String signingFtpUser;
 	
-	@Value("${signing.ftp.password}")
+	@Value("${gestepm.signing.ftp.password}")
 	private String signingFtpPassword;
 
-	@Value("${signing.lunch.interval.start}")
+	@Value("${gestepm.signing.lunch.interval.start}")
 	private String signingLunchIntervalStart;
 
-	@Value("${signing.lunch.interval.end}")
+	@Value("${gestepm.signing.lunch.interval.end}")
 	private String signingLunchIntervalEnd;
 
-	@Value("${signing.lunch.interval.time}")
+	@Value("${gestepm.signing.lunch.interval.time}")
 	private Integer signingLunchIntervalTime;
 	
 	@Autowired

@@ -45,7 +45,7 @@ import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
 @EnableExecutionLog(layerMarker = VIEW)
 public class NoProgrammedShareViewController {
 
-    @Value("${forum.url}")
+    @Value("${gestepm.forum.url}")
     private String forumUrl;
 
     private final FamilyService familyService;

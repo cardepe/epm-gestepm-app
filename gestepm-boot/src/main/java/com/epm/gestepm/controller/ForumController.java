@@ -38,7 +38,7 @@ public class ForumController {
 
 	private static final Log log = LogFactory.getLog(ForumController.class);
 	
-	@Value("${forum.url}")
+	@Value("${gestepm.forum.url}")
 	private String forumUrl;
 
 	@Autowired

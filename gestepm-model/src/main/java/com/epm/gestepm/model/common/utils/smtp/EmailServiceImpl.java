@@ -14,7 +14,7 @@ import javax.mail.internet.MimeMessage;
 @Service
 public class EmailServiceImpl implements EmailService {
 
-    @Value("${base.url}")
+    @Value("${gestepm.base.url}")
     private String appUrlBase;
 
     private final JavaMailSender emailSender;

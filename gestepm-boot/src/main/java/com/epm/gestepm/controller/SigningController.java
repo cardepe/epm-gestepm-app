@@ -94,10 +94,10 @@ public class SigningController {
 
     private static final Log log = LogFactory.getLog(SigningController.class);
 
-    @Value("${first.year}")
+    @Value("${gestepm.first-year}")
     private int firstYear;
 
-    @Value("#{'${rrhh.mails}'.split(',')}")
+    @Value("#{'${gestepm.mails.rrhh}'.split(',')}")
     private List<String> rrhhMails;
 
     @Autowired

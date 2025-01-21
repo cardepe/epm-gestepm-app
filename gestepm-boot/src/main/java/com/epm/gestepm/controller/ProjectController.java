@@ -73,7 +73,7 @@ public class ProjectController {
 
 	private static final Log log = LogFactory.getLog(ProjectController.class);
 
-	@Value("${first.year}")
+	@Value("${gestepm.first-year}")
 	private int firstYear;
 
 	@Autowired
