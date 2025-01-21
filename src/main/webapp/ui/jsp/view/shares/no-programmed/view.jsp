@@ -422,10 +422,6 @@
     function setInitialMode() {
         currentMode = 'INITIAL';
 
-        if (!hasRole || !hasSigning) {
-            document.querySelector('#editBtn').classList.add('d-none');
-        }
-
         document.querySelector('#finishBtn').classList.add('d-none');
         document.querySelector('#createInspectionBtn').classList.add('d-none');
     }
@@ -435,12 +431,11 @@
 
         if (!canClose) {
             document.querySelector('#finishBtn').classList.add('d-none');
+        } else {
+            document.querySelector('#finishBtn').classList.remove('d-none');
         }
 
-        if (!hasRole || !hasSigning) {
-            document.querySelector('#editBtn').classList.add('d-none');
-            document.querySelector('#createInspectionBtn').classList.add('d-none');
-        }
+        document.querySelector('#createInspectionBtn').classList.remove('d-none');
 
         disableForm('#editForm');
 

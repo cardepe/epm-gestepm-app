@@ -71,7 +71,7 @@ sql:
 
   qry-delete-pe: |
 
-    DELETE FROM ${sch-gestepm}.personal_expense WHERE personal_expense_id IN (:attr_pe_ids)
+    DELETE FROM ${sch-gestepm}.personal_expense WHERE personal_expense_id = :attr_pe_id
 
   filter-pe-by-params: |
 

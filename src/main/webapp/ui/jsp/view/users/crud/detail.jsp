@@ -861,6 +861,7 @@
 			header: false,
 			allDaySlot: false,
 			timeFormat: 'H:mm',
+			timeZone: 'UTC',
 			height: 'parent',
 			events: '/signing/personal/calendar/${userDetail.id}',
 			eventClick: function(info) {
