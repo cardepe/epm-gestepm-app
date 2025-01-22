@@ -58,8 +58,7 @@ public class SigningScheduled {
 	
 	@Autowired
 	private UserService userService;
-	
-	// @Scheduled(cron = "0 * * * * *") // TEST: every minute
+
 	@Scheduled(cron = "0 30 21 * * *") // 21:30:00 Every Day
 	public void dailyPersonalSigningProcess() {
 	

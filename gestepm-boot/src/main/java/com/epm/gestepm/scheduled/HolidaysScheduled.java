@@ -13,12 +13,12 @@ public class HolidaysScheduled {
         this.userService = userService;
     }
 
-    @Scheduled(cron = "0 0 0 1 1 *") // 00:00:00 01/01/yyyy
+    @Scheduled(cron = "0 0 0 1 1 *")
     public void updateCurrentAndLastHolidaysProcess() {
         this.userService.updateHolidaysInNewYear();
     }
 
-    @Scheduled(cron = "0 0 0 1 3 *") // 00:00:00 01/03/yyyy
+    @Scheduled(cron = "0 0 0 1 3 *")
     public void deleteLastHolidaysProcess() {
         this.userService.resetLastYearHolidays();
     }

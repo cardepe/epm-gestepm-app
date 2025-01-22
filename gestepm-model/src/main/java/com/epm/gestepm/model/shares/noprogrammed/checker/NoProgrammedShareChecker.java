@@ -1,6 +1,7 @@
 package com.epm.gestepm.model.shares.noprogrammed.checker;
 
 import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.personalsigning.exception.PersonalSigningForbiddenException;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
 import com.epm.gestepm.modelapi.project.exception.ProjectIsNotStationException;
@@ -19,7 +20,6 @@ import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -89,13 +89,13 @@ public class NoProgrammedShareChecker {
                 ? subFamilyService.getSubRolsById(subFamilyId.longValue())
                 : Collections.emptyList();
 
+        final String level = user.getSubRole().getRol();
         final boolean hasRole = subRoles.isEmpty() || subRoles.stream()
-                .anyMatch(subRole -> subRole.getName().equals(user.getSubRole().getRol()));
-        final boolean hasSigning = userSigning != null || Utiles.havePrivileges(user.getSubRole().getRol());
+                .anyMatch(subRole -> subRole.getName().equals(level));
+        final boolean hasSigning = userSigning != null || Utiles.havePrivileges(level);
 
-        if (!hasRole || !hasSigning) {
-            throw new NoProgrammedShareForbiddenException(userId, user.getSubRole().getRol());
-        }
+        handleCondition(!hasRole, () -> new NoProgrammedShareForbiddenException(userId, level));
+        handleCondition(!hasSigning, () -> new PersonalSigningForbiddenException(userId));
     }
 
     private void populateCreateDto(final NoProgrammedShareCreateDto createDto, final Integer userId) {
@@ -112,6 +112,12 @@ public class NoProgrammedShareChecker {
 
         if (project.getStation() != STATION_ACTIVE) {
             throw new ProjectIsNotStationException(project.getId().intValue());
+        }
+    }
+
+    private void handleCondition(final boolean condition, final Supplier<RuntimeException> exceptionSupplier) {
+        if (condition) {
+            throw exceptionSupplier.get();
         }
     }
 }

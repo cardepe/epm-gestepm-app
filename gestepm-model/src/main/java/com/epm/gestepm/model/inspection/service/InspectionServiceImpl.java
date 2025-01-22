@@ -14,7 +14,6 @@ import com.epm.gestepm.model.inspection.dao.entity.filter.InspectionFilter;
 import com.epm.gestepm.model.inspection.dao.entity.finder.InspectionByIdFinder;
 import com.epm.gestepm.model.inspection.dao.entity.updater.InspectionUpdate;
 import com.epm.gestepm.model.inspection.service.mapper.*;
-import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseInspectionMailTemplateDto;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
@@ -33,13 +32,10 @@ import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareStateEnumDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.NoProgrammedShareUpdateDto;
-import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareForbiddenException;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.exception.UserByIdNotFoundException;
 import com.epm.gestepm.modelapi.user.service.UserService;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
-import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
@@ -188,7 +184,7 @@ public class InspectionServiceImpl implements InspectionService {
         final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(
                 new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
 
-        this.inspectionChecker.checker(noProgrammedShare, updateDto);
+        this.inspectionChecker.checker(noProgrammedShare, inspection, updateDto);
 
         if (updateDto.getEndDate() == null) {
             updateDto.setEndDate(LocalDateTime.now());

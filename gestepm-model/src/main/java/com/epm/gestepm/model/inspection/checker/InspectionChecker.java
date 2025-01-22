@@ -1,8 +1,11 @@
 package com.epm.gestepm.model.inspection.checker;
 
 import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.inspection.dto.ActionEnumDto;
+import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.creator.InspectionCreateDto;
 import com.epm.gestepm.modelapi.inspection.dto.updater.InspectionUpdateDto;
+import com.epm.gestepm.modelapi.personalsigning.exception.PersonalSigningForbiddenException;
 import com.epm.gestepm.modelapi.role.dto.RoleDTO;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareForbiddenException;
@@ -35,14 +38,14 @@ public class InspectionChecker {
     }
 
     public void checker(final NoProgrammedShareDto noProgrammedShare, final InspectionCreateDto dto) {
-        this.checker(dto.getFirstTechnicalId(), noProgrammedShare.getSubFamilyId(), dto);
+        this.checker(dto.getFirstTechnicalId(), noProgrammedShare.getSubFamilyId(), dto.getAction(), dto);
     }
 
-    public void checker(final NoProgrammedShareDto noProgrammedShare, final InspectionUpdateDto inspection) {
-        this.checker(inspection.getUserId(), noProgrammedShare.getSubFamilyId(), null);
+    public void checker(final NoProgrammedShareDto noProgrammedShare, final InspectionDto inspection, final InspectionUpdateDto updateDto) {
+        this.checker(updateDto.getUserId(), noProgrammedShare.getSubFamilyId(), inspection.getAction(), null);
     }
 
-    private void checker(final Integer userId, final Integer subFamilyId, final InspectionCreateDto createDto) {
+    private void checker(final Integer userId, final Integer subFamilyId, final ActionEnumDto action, final InspectionCreateDto createDto) {
         final Supplier<RuntimeException> userNotFound = () -> new UserByIdNotFoundException(userId);
         final User user = Optional.ofNullable(this.userService.getUserById(userId.longValue()))
                 .orElseThrow(userNotFound);
@@ -57,12 +60,24 @@ public class InspectionChecker {
                 || subRoles.stream().anyMatch(subRole -> subRole.getName().equals(userLevel));
         final boolean hasSigning = userSigning != null || Utiles.havePrivileges(userLevel);
 
-        if (!hasRole || !hasSigning) {
-            throw new NoProgrammedShareForbiddenException(userId, user.getSubRole().getRol());
-        }
+        this.checkPermissions(action, hasRole, hasSigning, userId, user.getSubRole().getRol());
 
         if (userSigning != null && createDto != null) {
             createDto.setUserSigningId(userSigning.getId().intValue());
+        }
+    }
+
+    public void checkPermissions(final ActionEnumDto action, final boolean hasRole, final boolean hasSigning,
+                                 final Integer userId, final String level) {
+        if (ActionEnumDto.DIAGNOSIS.equals(action)) {
+            handleCondition(!hasRole, () -> new NoProgrammedShareForbiddenException(userId, level));
+        }
+        handleCondition(!hasSigning, () -> new PersonalSigningForbiddenException(userId));
+    }
+
+    private void handleCondition(final boolean condition, final Supplier<RuntimeException> exceptionSupplier) {
+        if (condition) {
+            throw exceptionSupplier.get();
         }
     }
 }
