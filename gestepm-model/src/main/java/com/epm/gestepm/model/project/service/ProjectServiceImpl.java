@@ -161,11 +161,13 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	
 	@Override
+	@Transactional
 	public void createMember(Long projectId, Long userId) {
 		projectRepository.createMember(projectId, userId);
 	}
 	
 	@Override
+	@Transactional
 	public void deleteMember(Long projectId, Long userId) {
 		projectRepository.deleteMember(projectId, userId);
 	}
@@ -177,6 +179,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	
 	@Override
+	@Transactional
 	public void deleteUserBoss(Long projectId, Long userId) {
 		projectRepository.deleteUserBoss(projectId, userId);
 	}

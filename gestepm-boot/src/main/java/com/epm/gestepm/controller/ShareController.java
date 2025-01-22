@@ -95,9 +95,6 @@ public class ShareController {
     private InterventionShareService interventionShareService;
 
     @Autowired
-    private NoProgrammedShareService noProgrammedShareService;
-
-    @Autowired
     private ConstructionShareService constructionShareService;
 
     @Autowired
