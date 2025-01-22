@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <style>
     .content {
@@ -34,7 +35,7 @@
     <div class="card">
         <div class="card-body">
             <div class="title mb-0">
-                <spring:message code="noprogrammedshare" />
+                <spring:message code="noprogrammedshare"/>
             </div>
 
             <form id="editForm" class="needs-validation">
@@ -75,7 +76,8 @@
                         <div class="d-flex flex-wrap gap-2">
                             <div id="filesFormGroup" class="form-group">
                                 <label class="col-form-label w-100"><spring:message code="files"/>
-                                    <input type="file" class="form-control" name="files" accept=".jpg, .jpeg, .png" multiple>
+                                    <input type="file" class="form-control" name="files" accept=".jpg, .jpeg, .png"
+                                           multiple>
                                 </label>
                             </div>
                         </div>
@@ -97,7 +99,8 @@
                             <spring:message code="description.placeholder" var="placeholder"/>
                             <label class="col-form-label w-100">
                                 <spring:message code="description"/>
-                                <textarea class="form-control" placeholder="${placeholder}" name="description" required></textarea>
+                                <textarea class="form-control" placeholder="${placeholder}" name="description"
+                                          required></textarea>
                             </label>
                         </div>
                     </div>
@@ -106,7 +109,8 @@
                 <div class="row mt-2 actionable">
                     <div class="col text-right">
                         <button id="finishBtn" type="button" class="btn btn-danger btn-sm">Finalizar</button>
-                        <button id="editBtn" type="button" class="btn btn-standard btn-sm movile-full"><spring:message code="save"/></button>
+                        <button id="editBtn" type="button" class="btn btn-standard btn-sm movile-full"><spring:message
+                                code="save"/></button>
                     </div>
                 </div>
             </form>
@@ -122,7 +126,8 @@
                     </div>
                 </div>
                 <div class="col text-right">
-                    <button id="createInspectionBtn" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#createModal">
+                    <button id="createInspectionBtn" type="button" class="btn btn-default btn-sm" data-toggle="modal"
+                            data-target="#createModal">
                         <spring:message code="inspection.add"/>
                     </button>
                 </div>
@@ -131,13 +136,13 @@
             <div class="table-responsive">
                 <table id="dTable" class="table table-striped table-borderer dataTable w-100">
                     <thead>
-                        <tr>
-                            <th><spring:message code="id"/></th>
-                            <th><spring:message code="start.date"/></th>
-                            <th><spring:message code="end.date"/></th>
-                            <th><spring:message code="action"/></th>
-                            <th><spring:message code="actions"/></th>
-                        </tr>
+                    <tr>
+                        <th><spring:message code="id"/></th>
+                        <th><spring:message code="start.date"/></th>
+                        <th><spring:message code="end.date"/></th>
+                        <th><spring:message code="action"/></th>
+                        <th><spring:message code="actions"/></th>
+                    </tr>
                     </thead>
                 </table>
             </div>
@@ -150,7 +155,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title">
-                    <h5><spring:message code="noprogrammedshare" /></h5>
+                    <h5><spring:message code="noprogrammedshare"/></h5>
                 </div>
             </div>
 
@@ -159,13 +164,19 @@
                     <div class="row">
                         <div class="col">
                             <div class="form-group">
-                                <label class="col-form-label w-100"><spring:message code="action" />
-                                    <select name="action" class="form-control" required>
-                                        <option value="DIAGNOSIS"><spring:message code="inspection.type.diagnosis" /></option>
-                                        <option value="INTERVENTION"><spring:message code="inspection.type.intervention" /></option>
-                                        <option value="FOLLOWING"><spring:message code="inspection.type.following" /></option>
+                                <label class="col-form-label w-100"><spring:message code="action.next"/>
+                                    <select name="action" class="form-control" required disabled>
+                                        <option value="DIAGNOSIS"><spring:message
+                                                code="inspection.type.diagnosis"/></option>
+                                        <option value="INTERVENTION"><spring:message
+                                                code="inspection.type.intervention"/></option>
+                                        <option value="FOLLOWING"><spring:message
+                                                code="inspection.type.following"/></option>
                                     </select>
                                 </label>
+                                <div class="w-100 text-right">
+                                    <div class="badge badge-inspection"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -173,15 +184,15 @@
                     <div class="row">
                         <div class="col">
                             <div class="form-group">
-                                <label class="col-form-label w-100"><spring:message code="inspection.second.technical" />
+                                <label class="col-form-label w-100"><spring:message code="inspection.second.technical"/>
                                     <select name="secondTechnical" class="form-control" required>
                                         <option value="" disabled selected="selected">
-                                            <spring:message code="shares.intervention.create.technical.placeholder" />
+                                            <spring:message code="shares.intervention.create.technical.placeholder"/>
                                         </option>
                                         <c:forEach items="${usersTeam}" var="technical">
                                             <c:if test="${ user.id != technical.userId }">
                                                 <option value="${technical.userId}">
-                                                    <spring:message code="${technical.name} ${technical.surnames}" />
+                                                    <spring:message code="${technical.name} ${technical.surnames}"/>
                                                 </option>
                                             </c:if>
                                         </c:forEach>
@@ -193,8 +204,10 @@
 
                     <div class="row">
                         <div class="col">
-                            <div id="hasNotRoleAlert" class="badge badge-danger mb-1 d-none"><spring:message code="share.detail.init.diag.role" /></div>
-                            <div id="hasNotSigningAlert" class="badge badge-warning mb-1 d-none"><spring:message code="signing.page.not.enable" /></div>
+                            <div id="hasNotRoleAlert" class="badge badge-danger mb-1 d-none"><spring:message
+                                    code="share.detail.init.diag.role"/></div>
+                            <div id="hasNotSigningAlert" class="badge badge-warning mb-1 d-none"><spring:message
+                                    code="signing.page.not.enable"/></div>
                         </div>
                     </div>
                 </form>
@@ -204,12 +217,12 @@
                 <div class="w-100">
                     <div class="float-left">
                         <button type="button" class="btn btn-sm" data-dismiss="modal">
-                            <spring:message code="close" />
+                            <spring:message code="close"/>
                         </button>
                     </div>
                     <div class="float-right">
                         <button type="button" class="btn btn-default btn-sm" onclick="createInspection()">
-                            <spring:message code="create" />
+                            <spring:message code="create"/>
                         </button>
                     </div>
                 </div>
@@ -471,11 +484,16 @@
         let columns = ['id', 'startDate', 'endDate', 'action', 'id']
         let endpoint = '/v1/shares/no-programmed/' + share.id + '/inspections';
         let actions = [
-            { action: 'edit', type: 'redirect', url: '/shares/no-programmed/' + share.id + '/inspections/{id}', permission: 'edit_no_programmed_shares' },
-            { action: 'file-pdf', url: '/v1/shares/no-programmed/' + share.id + '/inspections/{id}/export' }
+            {
+                action: 'edit',
+                type: 'redirect',
+                url: '/shares/no-programmed/' + share.id + '/inspections/{id}',
+                permission: 'edit_no_programmed_shares'
+            },
+            {action: 'file-pdf', url: '/v1/shares/no-programmed/' + share.id + '/inspections/{id}/export'}
         ]
         if (share.state !== 'CLOSED') {
-            actions.push({ action: 'delete', permission: 'edit_no_programmed_shares' });
+            actions.push({action: 'delete', permission: 'edit_no_programmed_shares'});
         }
         let expand = []
         let filters = []
@@ -575,6 +593,17 @@
     function updateModalAction(action) {
         const modal = document.querySelector('#createModal');
         modal.querySelector('[name="action"]').value = action;
+
+        const badgeInspection = modal.querySelector('.badge-inspection');
+        badgeInspection.textContent = messages.inspections.next + messages.inspections.types[action.toLowerCase()];
+
+        if (action === 'DIAGNOSIS') {
+            badgeInspection.classList.add('badge-success');
+        } else if (action === 'INTERVENTION') {
+            badgeInspection.classList.add('badge-warning');
+        } else if (action === 'FOLLOWING') {
+            badgeInspection.classList.add('badge-info');
+        }
     }
 
     function createInspection() {
@@ -594,7 +623,7 @@
             action: action,
         }).then((response) => {
             const inspection = response.data.data;
-            window.location.replace(window.location.pathname + '/inspections/ ' + inspection.id);
+            window.location.replace(window.location.pathname + '/inspections/' + inspection.id);
         }).catch(error => showNotify(error.response.data.detail, 'danger'))
             .finally(() => {
                 hideLoading();
@@ -684,7 +713,12 @@
     }
 
     async function getPermissions() {
-        await axios.get('/provisional/shares/no-programmed/user-permissions', { params: { shareId: share.id, userId: userId }}).then((response) => {
+        await axios.get('/provisional/shares/no-programmed/user-permissions', {
+            params: {
+                shareId: share.id,
+                userId: userId
+            }
+        }).then((response) => {
             hasRole = response.data.hasRole;
             hasSigning = response.data.hasSigning;
             canClose = response.data.canClose;

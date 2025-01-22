@@ -42,6 +42,7 @@
         "intervention": "Intervención",
         "diagnosis": "Diagnóstico",
         "following": "Seguimiento",
+        "next": "La siguiente revisión ha de ser del tipo: ",
         "create": {
             "success": "Revisión con id {0} creada con éxito."
         },
@@ -57,6 +58,11 @@
                 "alert": "¿Está seguro que desea eliminar el adjunto {0}?",
                 "success": "Adjunto {0} eliminado con éxito."
             }
+        },
+        "types": {
+            "diagnosis": "Diagnóstico",
+            "intervention": "Intervención",
+            "following": "Seguimiento"
         }
     },
     "personalExpenseSheet": {
