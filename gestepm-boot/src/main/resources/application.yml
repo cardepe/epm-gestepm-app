@@ -50,8 +50,8 @@ hibernate:
 
 lib-java:
   app-locale:
-    supported-locales-iso: "'EN', 'ES'"
-    default-locale: "'EN'"
+    supported-locales-iso: "'ES', 'FR'"
+    default-locale: "'ES'"
   cache-keys:
     app-locale: epm.gestepm.app-locale
     app-locale-list: epm.gestepm.app-locale-list
