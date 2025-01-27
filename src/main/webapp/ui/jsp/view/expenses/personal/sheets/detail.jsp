@@ -64,7 +64,7 @@
                     <div class="col">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100"><spring:message code="start.date"/>
-                                <input name="startDate" type="datetime-local" class="form-control mt-1"/>
+                                <input name="startDate" type="datetime-local" class="form-control mt-1" disabled/>
                             </label>
                         </div>
                     </div>
