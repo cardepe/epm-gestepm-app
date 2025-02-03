@@ -2,6 +2,7 @@ package com.epm.gestepm.model.inspection.service;
 
 import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
+import com.epm.gestepm.model.common.pdf.ImageUtils;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
@@ -37,9 +38,18 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.MemoryCacheImageOutputStream;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -237,7 +247,9 @@ public class InspectionExportServiceImpl implements InspectionExportService {
 
                 stamper.insertPage(++pageNumber, pdfTemplate.getPageSizeWithRotation(1));
 
-                final Image image = Image.getInstance(Base64.getDecoder().decode(file.getContent()));
+                final byte[] imageBytes = Base64.getDecoder().decode(file.getContent());
+                final byte[] compressedBytes = ImageUtils.compressImage(imageBytes, 0.5f);
+                final Image image = Image.getInstance(compressedBytes);
 
                 if (image.getWidth() > pageWidth || image.getHeight() > pageHeight) {
                     image.scaleToFit(pageWidth, pageHeight);

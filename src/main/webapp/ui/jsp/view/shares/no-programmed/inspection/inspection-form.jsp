@@ -254,6 +254,7 @@
             const description = editForm.querySelector('[name="description"]');
             const clientName = editForm.querySelector('[name="clientName"]');
             const equipmentHours = editForm.querySelector('[name="equipmentHours"]');
+            const notify = editForm.querySelector('[name="clientNotif"]');
 
             const materials = dTable.rows().data().toArray().map(row => ({ ...row, id: row.id < 0 ? null : row.id}));
             const materialsFile = await parseMaterialsFile(editForm);
@@ -264,11 +265,12 @@
                 description: description ? description.value : null,
                 signature: !signaturePad.isEmpty() ? signaturePad.toDataURL() : null,
                 operatorSignature: !signaturePadOp.isEmpty() ? signaturePadOp.toDataURL() : null,
-                clientName: clientName ? clientName.value : null,
+                clientName: clientName ? clientName?.value?.trim() : null,
                 materials: materialsModified ? materials : null,
                 materialsFile: materialsFile,
                 equipmentHours: equipmentHours ? equipmentHours.value : null,
-                files: files
+                files: files,
+                notify: notify.checked
             }).then((response) => {
                 const inspection = response.data.data;
                 window.location.replace('/shares/no-programmed/' + inspection.share.id);

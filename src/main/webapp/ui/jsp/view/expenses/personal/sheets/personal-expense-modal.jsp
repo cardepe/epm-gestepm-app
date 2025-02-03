@@ -183,6 +183,8 @@
             files: filesData
         };
 
+        filesData = [];
+
         axios[method](endpoint, data).then((response) => {
             form.reset();
             modal.removeAttribute('data-id');

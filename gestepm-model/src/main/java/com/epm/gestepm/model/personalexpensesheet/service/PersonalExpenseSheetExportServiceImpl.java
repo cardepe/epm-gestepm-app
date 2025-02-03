@@ -2,6 +2,7 @@ package com.epm.gestepm.model.personalexpensesheet.service;
 
 import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
+import com.epm.gestepm.model.common.pdf.ImageUtils;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.personalexpense.dto.PersonalExpenseDto;
 import com.epm.gestepm.modelapi.personalexpense.dto.PersonalExpenseFileDto;
@@ -172,7 +173,9 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
             } else {
                 stamper.insertPage(++pageNumber, pdfTemplate.getPageSizeWithRotation(1));
 
-                final Image image = Image.getInstance(Base64.getDecoder().decode(file.getContent()));
+                final byte[] imageBytes = Base64.getDecoder().decode(file.getContent());
+                final byte[] compressedBytes = ImageUtils.compressImage(imageBytes, 0.5f);
+                final Image image = Image.getInstance(compressedBytes);
 
                 if (image.getWidth() > pageWidth || image.getHeight() > pageHeight) {
                     image.scaleToFit(pageWidth, pageHeight);
