@@ -197,7 +197,7 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
     private void sendMail(final PersonalExpenseSheetDto original, final PersonalExpenseSheetDto updated) {
         final Project project = this.projectService.getProjectById(original.getProjectId().longValue());
         final User user = this.userService.getUserById(original.getUserId().longValue());
-        final List<User> usersToNotify = this.determineUsersToNotify(original, updated, project);
+        final List<User> usersToNotify = this.determineUsersToNotify(updated, project);
 
         final OpenPersonalExpenseSheetMailTemplateDto template = this.buildMailTemplate(original, updated, project, user);
 
@@ -206,17 +206,14 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
                 .forEach(userToNotify -> this.sendMailToUser(template, userToNotify));
     }
 
-    private List<User> determineUsersToNotify(final PersonalExpenseSheetDto original, final PersonalExpenseSheetDto updated,
-                                              final Project project) {
+    private List<User> determineUsersToNotify(final PersonalExpenseSheetDto updated, final Project project) {
         final List<User> usersToNotify = new ArrayList<>();
 
-        if (updated == null || !original.getStatus().isBefore(updated.getStatus())) {
+        if (updated == null || PersonalExpenseSheetStatusEnumDto.APPROVED.equals(updated.getStatus())) {
             usersToNotify.addAll(project.getBossUsers());
         } else if (PersonalExpenseSheetStatusEnumDto.PAID.equals(updated.getStatus()) || PersonalExpenseSheetStatusEnumDto.REJECTED.equals(updated.getStatus())) {
             final User user = this.userService.getUserById(updated.getUserId().longValue());
             usersToNotify.add(user);
-        } else {
-            usersToNotify.addAll(project.getBossUsers());
         }
 
         return usersToNotify;
