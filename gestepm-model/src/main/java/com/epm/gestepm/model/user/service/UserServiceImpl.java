@@ -47,6 +47,11 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findById(id).orElse(null);
 	}
 
+	@Override
+	public List<User> findBySigningIds(List<Long> ids) {
+		return userRepository.findBySigningIds(ids);
+	}
+
 	public User getUserBySigningId(Long signingId) {
 		return userRepository.findBySigningId(signingId);
 	}

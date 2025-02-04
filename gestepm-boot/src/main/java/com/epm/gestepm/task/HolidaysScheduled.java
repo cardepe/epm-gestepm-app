@@ -1,4 +1,4 @@
-package com.epm.gestepm.scheduled;
+package com.epm.gestepm.task;
 
 import com.epm.gestepm.modelapi.user.service.UserService;
 import org.springframework.scheduling.annotation.Scheduled;

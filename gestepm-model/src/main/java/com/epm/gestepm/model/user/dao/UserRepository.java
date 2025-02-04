@@ -4,8 +4,14 @@ import com.epm.gestepm.modelapi.user.dto.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface UserRepository extends CrudRepository<User, Long>, UserRepositoryCustom {
+
+	@Query("SELECT u FROM User u WHERE u.signingId IN :ids")
+	List<User> findBySigningIds(@Param("ids") List<Long> ids);
 
 	User findBySigningId(Long signingId);
 

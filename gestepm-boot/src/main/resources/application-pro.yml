@@ -33,6 +33,10 @@ logging:
     root: ERROR
     com.epm.gestepm: INFO
 
+scheduler:
+  personal-signings:
+    cron: '0 30 21 * * *'
+
 spring:
   datasource:
     jdbcUrl: jdbc:mysql://92.54.16.198:3306/bbdd_gestepm?useSSL=false

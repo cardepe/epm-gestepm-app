@@ -39,8 +39,8 @@ gestepm:
       password: # by environment
     lunch:
       interval:
-        start: 13:00
-        end: 16:00
+        start: '13:00'
+        end: '16:00'
         time: 45
 
 hibernate:
@@ -63,6 +63,10 @@ logging:
   level:
     root: ERROR
     com.epm.gestepm: INFO
+
+scheduler:
+  personal-signings:
+    cron: '0 30 21 * * *'
 
 smtp:
   mail:
