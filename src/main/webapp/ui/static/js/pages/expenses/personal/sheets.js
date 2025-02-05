@@ -17,7 +17,7 @@ function initializeDataTables() {
             permission: 'edit_personal_expenses_sheet',
             condition: {
                 key: 'status',
-                value: [ 'PENDING' ],
+                value: [ undefined ],
                 operation: '==='
             }
         }
@@ -83,7 +83,6 @@ function createPersonalExpenseSheet() {
     showLoading();
 
     axios.post('/v1/expenses/personal/sheets', {
-        userId: userId,
         projectId: projectId,
         description: description
     }).then((response) => {

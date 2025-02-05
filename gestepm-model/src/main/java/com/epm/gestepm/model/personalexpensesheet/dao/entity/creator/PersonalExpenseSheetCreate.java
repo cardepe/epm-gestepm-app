@@ -22,9 +22,6 @@ public class PersonalExpenseSheetCreate implements AuditCreate, CollectableAttri
     private String description;
 
     @NotNull
-    private PersonalExpenseSheetStatusEnum status;
-
-    @NotNull
     private LocalDateTime createdAt;
 
     @NotNull
@@ -37,7 +34,6 @@ public class PersonalExpenseSheetCreate implements AuditCreate, CollectableAttri
 
         map.put(ATTR_PES_PROJECT_ID, this.projectId);
         map.put(ATTR_PES_DESCRIPTION, this.description);
-        map.putEnum(ATTR_PES_STATUS, this.status);
         map.putTimestamp(ATTR_PES_CREATED_AT, this.createdAt);
         map.put(ATTR_PES_CREATED_BY, this.createdBy);
 

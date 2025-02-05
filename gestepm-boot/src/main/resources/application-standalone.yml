@@ -32,6 +32,8 @@ spring:
     jdbcUrl: jdbc:mysql://localhost:3306/bbdd_gestepm?useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: BWgCGGW3XiesYor5z7Cf
+  jpa:
+    show-sql: true
   second-datasource:
     jdbcUrl: jdbc:mysql://localhost:3306/bbdd_gestepm_forum?useSSL=false
     username: root

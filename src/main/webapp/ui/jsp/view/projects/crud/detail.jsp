@@ -2850,7 +2850,7 @@
                 permission: 'edit_personal_expenses_sheet',
                 condition: {
                     key: 'status',
-                    value: ['PENDING', 'APPROVED'],
+                    value: ['PENDING'],
                     operation: '==='
                 }
             },
@@ -2859,7 +2859,7 @@
                 permission: 'edit_personal_expenses_sheet',
                 condition: {
                     key: 'status',
-                    value: ['PENDING', 'APPROVED'],
+                    value: ['PENDING'],
                     operation: '==='
                 }
             },

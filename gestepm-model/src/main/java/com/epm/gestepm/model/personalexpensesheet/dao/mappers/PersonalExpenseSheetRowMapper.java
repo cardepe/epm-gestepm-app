@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.epm.gestepm.lib.jdbc.utils.ResultSetMappingUtils.*;
@@ -38,7 +39,7 @@ public class PersonalExpenseSheetRowMapper extends CommonRowMapper implements Ro
         personalExpenseSheet.setId(resultSet.getInt(COL_PES_ID));
         personalExpenseSheet.setProjectId(resultSet.getInt(COL_PES_PROJECT_ID));
         personalExpenseSheet.setDescription(resultSet.getString(COL_PES_DESCRIPTION));
-        personalExpenseSheet.setStatus(PersonalExpenseSheetStatusEnum.valueOf(resultSet.getString(COL_PES_STATUS)));
+        personalExpenseSheet.setStatus(nullableStatusEnum(resultSet.getString(COL_PES_STATUS)));
         personalExpenseSheet.setObservations(nullableString(resultSet, COL_PES_OBSERVATIONS));
         personalExpenseSheet.setAmount(hasValue(resultSet, COL_PES_PERSONAL_EXPENSE_ID)
                 ? resultSet.getDouble(COL_PES_AMOUNT)
@@ -57,4 +58,10 @@ public class PersonalExpenseSheetRowMapper extends CommonRowMapper implements Ro
         return personalExpenseSheet;
     }
 
+    public static PersonalExpenseSheetStatusEnum nullableStatusEnum(String value) {
+        return Arrays.stream(PersonalExpenseSheetStatusEnum.values())
+                .filter(e -> e.name().equals(value))
+                .findFirst()
+                .orElse(null);
+    }
 }

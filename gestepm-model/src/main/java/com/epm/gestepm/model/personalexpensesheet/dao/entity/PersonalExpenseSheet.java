@@ -20,7 +20,6 @@ public class PersonalExpenseSheet implements AuditCreateApprovePaidDischarge, Se
   @NotNull
   private String description;
 
-  @NotNull
   private PersonalExpenseSheetStatusEnum status;
 
   private String observations;

@@ -40,14 +40,12 @@ sql:
     INSERT INTO ${sch-gestepm}.personal_expense_sheet (
       project_id,
       description,
-      status,
       created_at,
       created_by
     )
     VALUES (
       :attr_pes_project_id,
       :attr_pes_description,
-      :attr_pes_status,
       :attr_pes_created_at,
       :attr_pes_created_by
     )

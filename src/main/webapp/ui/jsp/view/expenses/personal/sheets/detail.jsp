@@ -81,6 +81,8 @@
 
                 <div class="row">
                     <div class="col text-right">
+                        <button id="sendBtn" type="button" class="btn btn-danger btn-sm movile-full"><spring:message
+                                code="send.to.administration"/></button>
                         <button id="editBtn" type="button" class="btn btn-standard btn-sm movile-full"><spring:message
                                 code="save"/></button>
                     </div>
@@ -142,7 +144,7 @@
         initializeSelects();
         initializeDataTables();
 
-        if (personalExpenseSheet.status !== 'PENDING') {
+        if (personalExpenseSheet.status) {
             document.querySelector('#createBtn').remove();
         }
     }
@@ -180,7 +182,7 @@
     function initializeDataTables() {
         let columns = ['id', 'description', 'startDate', 'priceType', 'quantity', 'amount', 'paymentType', 'id']
         let endpoint = '/v1/expenses/personal/sheets/' + personalExpenseSheet.id + '/expenses';
-        let actions = personalExpenseSheet.status === 'PENDING' ? [
+        let actions = !personalExpenseSheet.status ? [
             {
                 action: 'edit',
                 permission: 'edit_personal_expense'
@@ -233,17 +235,31 @@
         project.value = personalExpenseSheet.project.id;
         $(project).selectpicker('refresh');
 
-        editForm.querySelector('[name="startDate"]').value = personalExpenseSheet.startDate;
+        editForm.querySelector('[name="startDate"]').value = personalExpenseSheet.createdAt;
 
         const observations = editForm.querySelector('[name="observations"]');
         if (observations.value) {
             observations.value = personalExpenseSheet.observations;
         }
 
-        if (personalExpenseSheet.status !== 'PENDING') {
+        if (personalExpenseSheet.status) {
             editForm.querySelector('#editBtn').remove();
+            editForm.querySelector('#sendBtn').remove();
             disableForm('#editForm');
         }
+    }
+
+    function send() {
+        const sendBtn = $('#sendBtn');
+
+        sendBtn.click(async () => {
+            axios.patch('/v1' + window.location.pathname, {
+                status: 'PENDING'
+            }).then((response) => {
+                location.reload();
+            }).catch(error => showNotify(error.response.data.detail, 'danger'))
+                .finally(() => hideLoading());
+        });
     }
 
     function save() {
@@ -251,7 +267,7 @@
         const editForm = document.querySelector('#editForm');
 
         editBtn.click(async () => {
-            if (personalExpenseSheet.status != 'PENDING') {
+            if (personalExpenseSheet.status) {
                 showNotify(messages.personalExpenseSheet.invalidStatus, 'info');
                 return;
             }
@@ -324,6 +340,7 @@
         init();
         update();
         save();
+        send();
     });
 
 </script>

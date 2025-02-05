@@ -19,7 +19,6 @@ public class PersonalExpenseSheetDto implements Serializable {
     @NotNull
     private String description;
 
-    @NotNull
     private PersonalExpenseSheetStatusEnumDto status;
 
     private String observations;

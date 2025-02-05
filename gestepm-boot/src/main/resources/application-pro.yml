@@ -29,9 +29,6 @@ gestepm:
 
 logging:
   config: /var/www/gestepm.com/config/logback-spring.xml
-  level:
-    root: ERROR
-    com.epm.gestepm: INFO
 
 scheduler:
   personal-signings:

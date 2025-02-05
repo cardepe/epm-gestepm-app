@@ -13,6 +13,7 @@ import com.epm.gestepm.modelapi.user.service.UserService;
 import com.epm.gestepm.task.config.PersonalSigningFtpClient;
 import com.mysql.jdbc.StringUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -28,7 +29,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_PROCESS;
+import static java.lang.String.format;
 
+@Log
 @Component
 @RequiredArgsConstructor
 public class PersonalSigningTask {
@@ -100,19 +103,32 @@ public class PersonalSigningTask {
 
         PersonalSigning personalSigning = null;
 
-        for (SigningScheduledDTO signing : signings) {
-            User user = userMap.get(signing.getUserSigningId());
+        for (Map.Entry<Long, User> map : userMap.entrySet()) {
+            final List<SigningScheduledDTO> userSignings = signings.stream()
+                    .filter(signing -> map.getKey().equals(signing.getUserSigningId()))
+                    .collect(Collectors.toList());
+            int i = 0;
 
-            if (signing.getValue() == 0) { // Inicio de fichaje
-                personalSigning = processStartSigning(personalSigning, signing.getDate(), lunchStarts, lunchEnds, user);
-            } else if (signing.getValue() == 1 && personalSigning != null) { // Fin de fichaje
-                personalSigning.setEndDate(signing.getDate());
+            for (final SigningScheduledDTO signing : userSignings) {
+                i++;
+
+                if (signing.getValue() == 0) {
+                    personalSigning = processStartSigning(personalSigning, signing.getDate(), lunchStarts, lunchEnds, map.getValue());
+                } else if (signing.getValue() == 1 && personalSigning != null) {
+                    personalSigning.setEndDate(signing.getDate());
+                }
             }
-        }
 
-        if (personalSigning != null && personalSigning.getEndDate() == null) {
-            personalSigning.setEndDate(LocalDateTime.now());
-            this.personalSigningService.save(personalSigning);
+            if (i == userSignings.size() && personalSigning != null) {
+
+                if (personalSigning.getEndDate() == null) {
+                    personalSigning.setEndDate(personalSigning.getStartDate().plusHours(8));
+                }
+
+                this.personalSigningService.save(personalSigning);
+            }
+
+            log.info(format("User %s processed correctly in personal signings task", map.getKey()));
         }
     }
 
@@ -169,7 +185,7 @@ public class PersonalSigningTask {
         try {
             return ftpClient.readFileContent(fileName);
         } catch (IOException e) {
-            throw new RuntimeException(String.format("Error reading fileName '%s'", fileName), e);
+            throw new RuntimeException(format("Error reading fileName '%s'", fileName), e);
         }
     }
 }

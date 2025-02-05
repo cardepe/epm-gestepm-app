@@ -1311,10 +1311,6 @@ components:
           schema:
             type: object
             properties:
-              userId:
-                type: integer
-                x-stoplight:
-                  id: nf30p870lw04d
               projectId:
                 type: integer
                 x-stoplight:
@@ -1324,7 +1320,6 @@ components:
                 x-stoplight:
                   id: 2iejghsz0stp6
             required:
-              - userId
               - projectId
               - description
     UpdatePersonalExpenseSheet:

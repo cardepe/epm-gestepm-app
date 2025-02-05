@@ -38,6 +38,7 @@ import com.epm.gestepm.modelapi.user.exception.UserByIdNotFoundException;
 import com.epm.gestepm.modelapi.user.service.UserService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -306,8 +307,18 @@ public class InspectionServiceImpl implements InspectionService {
         }
 
         if (BooleanUtils.isTrue(notify) && project.getCustomer() != null) {
-            dto.setEmail(project.getCustomer().getMainEmail());
-            this.smtpService.closeInspectionSendMail(dto);
+            final String mainEmail = project.getCustomer().getMainEmail();
+            final String secondaryEmail = project.getCustomer().getSecondaryEmail();
+
+            if (StringUtils.isNoneBlank(mainEmail)) {
+                dto.setEmail(mainEmail);
+                this.smtpService.closeInspectionSendMail(dto);
+            }
+
+            if (StringUtils.isNoneBlank(secondaryEmail)) {
+                dto.setEmail(secondaryEmail);
+                this.smtpService.closeInspectionSendMail(dto);
+            }
         }
     }
 }

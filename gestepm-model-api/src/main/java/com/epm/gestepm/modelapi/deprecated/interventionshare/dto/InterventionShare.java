@@ -45,11 +45,11 @@ public class InterventionShare {
 	private String description;
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "FAMILY")
+	@JoinColumn(name = "FAMILY_ID")
 	private Family family;
 	
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "SUB_FAMILY")
+	@JoinColumn(name = "SUB_FAMILY_ID")
 	private SubFamily subFamily;
 
 	@Column(name = "TOPIC_ID")

@@ -148,16 +148,11 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
     public PersonalExpenseSheetDto create(PersonalExpenseSheetCreateDto createDto) {
 
         final PersonalExpenseSheetCreate create = getMapper(MapPESToPersonalExpenseSheetCreate.class).from(createDto);
-        create.setStatus(PersonalExpenseSheetStatusEnum.PENDING);
 
         this.auditProvider.auditCreate(create);
 
         final PersonalExpenseSheet personalExpenseSheet = this.personalExpenseSheetDao.create(create);
-        final PersonalExpenseSheetDto response = getMapper(MapPESToPersonalExpenseSheetDto.class).from(personalExpenseSheet);
-
-        this.sendMail(response, null);
-
-        return response;
+        return getMapper(MapPESToPersonalExpenseSheetDto.class).from(personalExpenseSheet);
     }
 
     @Override
@@ -192,7 +187,7 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
         final PersonalExpenseSheet updated = this.personalExpenseSheetDao.update(update);
         final PersonalExpenseSheetDto response = getMapper(MapPESToPersonalExpenseSheetDto.class).from(updated);
 
-        this.sendMail(sheet, response);
+        this.sendMail(response);
 
         return response;
     }
@@ -216,58 +211,55 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
         this.personalExpenseSheetDao.delete(delete);
     }
 
-    private void sendMail(final PersonalExpenseSheetDto original, final PersonalExpenseSheetDto updated) {
-        final Project project = this.projectService.getProjectById(original.getProjectId().longValue());
-        final User user = this.userService.getUserById(original.getCreatedBy().longValue());
-        final List<User> usersToNotify = this.determineUsersToNotify(updated, project);
+    private void sendMail(final PersonalExpenseSheetDto personalExpenseSheet) {
+        final Project project = this.projectService.getProjectById(personalExpenseSheet.getProjectId().longValue());
+        final List<User> usersToNotify = this.determineUsersToNotify(personalExpenseSheet, project);
 
-        final OpenPersonalExpenseSheetMailTemplateDto template = this.buildMailTemplate(original, updated, project, user);
+        final OpenPersonalExpenseSheetMailTemplateDto template = this.buildMailTemplate(personalExpenseSheet, project);
 
         usersToNotify.stream()
                 .filter(userToNotify -> userToNotify.getState() == 0)
                 .forEach(userToNotify -> this.sendMailToUser(template, userToNotify));
     }
 
-    private List<User> determineUsersToNotify(final PersonalExpenseSheetDto updated, final Project project) {
+    private List<User> determineUsersToNotify(final PersonalExpenseSheetDto personalExpenseSheet, final Project project) {
         final List<User> usersToNotify = new ArrayList<>();
 
-        if (updated == null || PersonalExpenseSheetStatusEnumDto.APPROVED.equals(updated.getStatus())) {
+        if (PersonalExpenseSheetStatusEnumDto.PENDING.equals(personalExpenseSheet.getStatus()) || PersonalExpenseSheetStatusEnumDto.APPROVED.equals(personalExpenseSheet.getStatus())) {
             usersToNotify.addAll(project.getBossUsers());
-        } else if (PersonalExpenseSheetStatusEnumDto.PAID.equals(updated.getStatus()) || PersonalExpenseSheetStatusEnumDto.REJECTED.equals(updated.getStatus())) {
-            final User user = this.userService.getUserById(updated.getCreatedBy().longValue());
-            usersToNotify.add(user);
+        } else if (PersonalExpenseSheetStatusEnumDto.PAID.equals(personalExpenseSheet.getStatus()) || PersonalExpenseSheetStatusEnumDto.REJECTED.equals(personalExpenseSheet.getStatus())) {
+            usersToNotify.add(Utiles.getCurrentUser());
         }
 
         return usersToNotify;
     }
 
-    private OpenPersonalExpenseSheetMailTemplateDto buildMailTemplate(final PersonalExpenseSheetDto original,
-                                                                      final PersonalExpenseSheetDto updated,
-                                                                      final Project project, final User user) {
+    private OpenPersonalExpenseSheetMailTemplateDto buildMailTemplate(final PersonalExpenseSheetDto personalExpenseSheet,
+                                                                      final Project project) {
         final OpenPersonalExpenseSheetMailTemplateDto template = new OpenPersonalExpenseSheetMailTemplateDto();
         template.setLocale(request.getLocale());
-        template.setPersonalExpenseSheetDto(updated != null ? updated : original);
+        template.setPersonalExpenseSheetDto(personalExpenseSheet);
         template.setProject(project);
-        template.setUser(user);
+        template.setUser(Utiles.getCurrentUser());
 
-        this.selectTemplateName(updated, template);
+        this.selectTemplateName(personalExpenseSheet, template);
 
         return template;
     }
 
-    private void selectTemplateName(final PersonalExpenseSheetDto updated, final OpenPersonalExpenseSheetMailTemplateDto template) {
+    private void selectTemplateName(final PersonalExpenseSheetDto personalExpenseSheet, final OpenPersonalExpenseSheetMailTemplateDto template) {
         final String language = request.getLocale().getLanguage();
 
-        if (updated == null) {
+        if (PersonalExpenseSheetStatusEnumDto.PENDING.equals(personalExpenseSheet.getStatus())) {
             template.setTemplate("expense_user_mail_template_" + language + ".html");
             template.setSubject("smtp.mail.expense.user.subject");
-        } else if (PersonalExpenseSheetStatusEnumDto.APPROVED.equals(updated.getStatus())) {
+        } else if (PersonalExpenseSheetStatusEnumDto.APPROVED.equals(personalExpenseSheet.getStatus())) {
             template.setTemplate("expense_team_leader_mail_template_" + language + ".html");
             template.setSubject("smtp.mail.expense.team.leader.subject");
-        } else if (PersonalExpenseSheetStatusEnumDto.PAID.equals(updated.getStatus())) {
+        } else if (PersonalExpenseSheetStatusEnumDto.PAID.equals(personalExpenseSheet.getStatus())) {
             template.setTemplate("expense_rrhh_mail_template_" + language + ".html");
             template.setSubject("smtp.mail.expense.rrhh.subject");
-        } else if (PersonalExpenseSheetStatusEnumDto.REJECTED.equals(updated.getStatus())) {
+        } else if (PersonalExpenseSheetStatusEnumDto.REJECTED.equals(personalExpenseSheet.getStatus())) {
             template.setTemplate("expense_decline_mail_template_" + language + ".html");
             template.setSubject("smtp.mail.expense.decline.subject");
         }

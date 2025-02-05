@@ -65,8 +65,8 @@ public class InterventionSubShare {
 	@Column(name = "MATERIALS_FILE", nullable = false)
 	private byte[] materialsFile;
 	
-	@Column(name = "MATERIALS_FILE_EXTENSION")
-	private String materialsFileExt;
+	@Column(name = "MATERIALS_FILE_NAME")
+	private String materialsFileName;
 
 	@Column(name = "EQUIPMENT_HOURS")
 	private Integer equipmentHours;

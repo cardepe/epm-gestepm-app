@@ -63,6 +63,7 @@ logging:
   level:
     root: ERROR
     com.epm.gestepm: INFO
+    org.hibernate.SQL: INFO
 
 scheduler:
   personal-signings:
@@ -90,7 +91,7 @@ spring:
     properties:
       hibernate:
         dialect: com.epm.gestepm.modelapi.common.utils.mysql.CommonMySQLDialect
-    show-sql: true
+    show-sql: false
   mail:
     host: smtp.gestepm.com
     port: 25
@@ -99,7 +100,7 @@ spring:
   messages:
     use-code-as-default-message: true
   profiles:
-    default: standalone
+    default: pro
   second-datasource:
     jdbcUrl: # by environment
     username: # by environment
