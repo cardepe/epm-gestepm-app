@@ -15,9 +15,13 @@ import java.util.stream.Collectors;
 @Mapper
 public interface MapPESToPersonalExpenseSheetResponse {
 
-  @Mapping(source = "userId", target = "user.id")
   @Mapping(source = "projectId", target = "project.id")
   @Mapping(source = "personalExpenseIds", target = "personalExpenses", qualifiedByName = "mapPersonalExpenses")
+  @Mapping(source = "createdBy", target = "createdBy.id")
+  @Mapping(source = "approvedBy", target = "approvedBy.id")
+  @Mapping(source = "paidBy", target = "paidBy.id")
+  @Mapping(source = "dischargedAt", target = "rejectedAt")
+  @Mapping(source = "dischargedBy", target = "rejectedBy.id")
   PersonalExpenseSheet from(PersonalExpenseSheetDto dto);
 
   List<PersonalExpenseSheet> from(Page<PersonalExpenseSheetDto> list);

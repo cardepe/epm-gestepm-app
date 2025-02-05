@@ -12,11 +12,11 @@ public interface AuditUpdate extends Auditable {
         // skips
     }
 
-    default String getUpdatedBy() {
+    default Integer getUpdatedBy() {
         return null;
     }
 
-    default void setUpdatedBy(String updatedBy) {
+    default void setUpdatedBy(Integer updatedBy) {
         // skips
     }
 

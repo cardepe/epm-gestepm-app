@@ -12,11 +12,11 @@ public interface AuditDeprecate extends Auditable {
         // skips
     }
 
-    default String getDeprecatedBy() {
+    default Integer getDeprecatedBy() {
         return null;
     }
 
-    default void setDeprecatedBy(String deprecatedBy) {
+    default void setDeprecatedBy(Integer deprecatedBy) {
         // skips
     }
 

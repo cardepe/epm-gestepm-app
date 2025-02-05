@@ -12,11 +12,11 @@ public interface AuditDelete extends Auditable {
         // skips
     }
 
-    default String getDeletedBy() {
+    default Integer getDeletedBy() {
         return null;
     }
 
-    default void setDeletedBy(String deletedBy) {
+    default void setDeletedBy(Integer deletedBy) {
         // skips
     }
 

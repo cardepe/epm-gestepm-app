@@ -23,7 +23,7 @@ public class SecurityAuthenticationManager implements AuthenticationManager  {
 	
 	public Authentication authenticate(Authentication authentication) {
 		
-		if (((String) authentication.getPrincipal()).isEmpty()) {
+		if (authentication.getPrincipal() == null) {
 			log.info("No se ha introducido un nombre de usuario");
 			throw new BadCredentialsException("Debe introducir un nombre de usuario");
 		} else if (((String) authentication.getCredentials()).isEmpty()) {
@@ -81,7 +81,7 @@ public class SecurityAuthenticationManager implements AuthenticationManager  {
 			}
 		}
 
-		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getEmail(),
+		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getId(),
 				user.getPassword(), grantedAuthorities);
 
 		authRequest.setDetails(user);

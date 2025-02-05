@@ -381,6 +381,11 @@ public class Utiles {
 		// Reload from DB
 		return userService.getUserById(user.getId());
 	}
+
+	public static User getCurrentUser() {
+		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return (User) authentication.getDetails();
+	}
 	
 	public static byte[] base64PngToByteArray(String base64Img) {
 		String base64 = base64Img.replace("data:image/png;base64,", "");

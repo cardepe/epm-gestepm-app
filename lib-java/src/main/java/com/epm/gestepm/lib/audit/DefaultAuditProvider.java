@@ -3,6 +3,7 @@ package com.epm.gestepm.lib.audit;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+
 import com.epm.gestepm.lib.executiontrace.ExecutionTimeProvider;
 import com.epm.gestepm.lib.user.UserProvider;
 import com.epm.gestepm.lib.user.data.UserLogin;
@@ -19,11 +20,8 @@ public class DefaultAuditProvider implements AuditProvider {
     }
 
     @Override
-    public String login() {
-
-        final UserLogin login = userProvider.getOrFail(UserLogin.class);
-
-        return login.getValue();
+    public Integer login() {
+        return userProvider.getOrFail(UserLogin.class).getValue();
     }
 
     @Override

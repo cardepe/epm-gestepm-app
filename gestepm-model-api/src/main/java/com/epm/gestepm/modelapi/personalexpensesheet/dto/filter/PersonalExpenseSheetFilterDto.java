@@ -18,15 +18,15 @@ public class PersonalExpenseSheetFilterDto extends OrderableDto implements Usabl
 
   private Integer projectId;
 
-  private Integer userId;
-
   private String description;
-
-  private LocalDateTime startDate;
 
   private PersonalExpenseSheetStatusEnumDto status;
 
   private String observations;
+
+  private LocalDateTime createdAt;
+
+  private Integer createdBy;
 
   @Override
   public String asCacheKey() {
@@ -35,11 +35,11 @@ public class PersonalExpenseSheetFilterDto extends OrderableDto implements Usabl
 
     cacheKeyBuilder.addElement("ids", this.ids);
     cacheKeyBuilder.addElement("projectId", this.projectId);
-    cacheKeyBuilder.addElement("userId", this.userId);
     cacheKeyBuilder.addElement("description", this.description);
-    cacheKeyBuilder.addElement("startDate", this.startDate);
     cacheKeyBuilder.addElement("status", this.status);
     cacheKeyBuilder.addElement("observations", this.observations);
+    cacheKeyBuilder.addElement("createdAt", this.createdAt);
+    cacheKeyBuilder.addElement("createdBy", this.createdBy);
     cacheKeyBuilder.addElement("orderable", super.toString());
 
     return cacheKeyBuilder.toString();

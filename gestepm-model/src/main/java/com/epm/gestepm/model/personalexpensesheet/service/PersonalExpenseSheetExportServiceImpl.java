@@ -73,7 +73,7 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
     @Override
     public byte[] generate(PersonalExpenseSheetDto personalExpenseSheet) {
         try {
-            final User user = this.userService.getUserById(personalExpenseSheet.getUserId().longValue());
+            final User user = this.userService.getUserById(personalExpenseSheet.getCreatedBy().longValue());
             final Project project = this.projectService.getProjectById(personalExpenseSheet.getProjectId().longValue());
 
             final String language = localeProvider.getLocale().orElse("es");
@@ -85,7 +85,7 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
             final AcroFields acroFields = stamper.getAcroFields();
 
             acroFields.setField("pageNumber", personalExpenseSheet.getId().toString());
-            acroFields.setField("creationDate", Utiles.transform(personalExpenseSheet.getStartDate(), DATE_FORMAT));
+            acroFields.setField("creationDate", Utiles.transform(personalExpenseSheet.getCreatedAt(), DATE_FORMAT));
             acroFields.setField("userName", user.getFullName().toUpperCase());
             acroFields.setField("projectName", project.getName().toUpperCase());
 

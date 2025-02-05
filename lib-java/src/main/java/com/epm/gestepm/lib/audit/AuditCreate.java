@@ -12,11 +12,11 @@ public interface AuditCreate extends Auditable {
         // skips
     }
 
-    default String getCreatedBy() {
+    default Integer getCreatedBy() {
         return null;
     }
 
-    default void setCreatedBy(String createdBy) {
+    default void setCreatedBy(Integer createdBy) {
         // skips
     }
 

@@ -12,11 +12,11 @@ public interface AuditLastAccess extends Auditable {
         // skips
     }
 
-    default String getLastAccessedBy() {
+    default Integer getLastAccessedBy() {
         return null;
     }
 
-    default void setLastAccessedBy(String lastAccessedBy) {
+    default void setLastAccessedBy(Integer lastAccessedBy) {
         // skips
     }
 

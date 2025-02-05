@@ -251,7 +251,7 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("projectId", dto.getProject().getId().toString());
 		params.put("username", dto.getUser().getFullName());
 		params.put("projectName", dto.getProject().getName());
-		params.put("noticeDate", Utiles.transform(dto.getPersonalExpenseSheetDto().getStartDate(), DATE_TIME_FORMAT));
+		params.put("noticeDate", Utiles.transform(dto.getPersonalExpenseSheetDto().getCreatedAt(), DATE_TIME_FORMAT));
 		params.put("description", dto.getPersonalExpenseSheetDto().getDescription());
 
 		if (StringUtils.isNoneBlank(dto.getPersonalExpenseSheetDto().getObservations())) {

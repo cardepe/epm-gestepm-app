@@ -1,9 +1,11 @@
 package com.epm.gestepm.model.personalexpensesheet.service;
 
+import com.epm.gestepm.lib.audit.AuditProvider;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.lib.user.UserProvider;
 import com.epm.gestepm.model.personalexpensesheet.dao.PersonalExpenseSheetDao;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.PersonalExpenseSheet;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.PersonalExpenseSheetStatusEnum;
@@ -13,6 +15,8 @@ import com.epm.gestepm.model.personalexpensesheet.dao.entity.filter.PersonalExpe
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.finder.PersonalExpenseSheetByIdFinder;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.updater.PersonalExpenseSheetUpdate;
 import com.epm.gestepm.model.personalexpensesheet.service.mapper.*;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenPersonalExpenseSheetMailTemplateDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetDto;
@@ -22,6 +26,7 @@ import com.epm.gestepm.modelapi.personalexpensesheet.dto.deleter.PersonalExpense
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.filter.PersonalExpenseSheetFilterDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.finder.PersonalExpenseSheetByIdFinderDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.updater.PersonalExpenseSheetUpdateDto;
+import com.epm.gestepm.modelapi.personalexpensesheet.exception.PersonalExpenseSheetForbiddenException;
 import com.epm.gestepm.modelapi.personalexpensesheet.exception.PersonalExpenseSheetNotFoundException;
 import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetService;
 import com.epm.gestepm.modelapi.project.dto.Project;
@@ -34,6 +39,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -49,6 +55,8 @@ import static org.mapstruct.factory.Mappers.getMapper;
 @EnableExecutionLog(layerMarker = SERVICE)
 public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetService {
 
+    private final AuditProvider auditProvider;
+
     private final HttpServletRequest request;
 
     private final PersonalExpenseSheetDao personalExpenseSheetDao;
@@ -59,7 +67,8 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
 
     private final UserService userService;
 
-    public PersonalExpenseSheetServiceImpl(HttpServletRequest request, PersonalExpenseSheetDao personalExpenseSheetDao, ProjectService projectService, SMTPService smtpService, UserService userService) {
+    public PersonalExpenseSheetServiceImpl(AuditProvider auditProvider, HttpServletRequest request, PersonalExpenseSheetDao personalExpenseSheetDao, ProjectService projectService, SMTPService smtpService, UserService userService) {
+        this.auditProvider = auditProvider;
         this.request = request;
         this.personalExpenseSheetDao = personalExpenseSheetDao;
         this.projectService = projectService;
@@ -139,8 +148,9 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
     public PersonalExpenseSheetDto create(PersonalExpenseSheetCreateDto createDto) {
 
         final PersonalExpenseSheetCreate create = getMapper(MapPESToPersonalExpenseSheetCreate.class).from(createDto);
-        create.setStartDate(LocalDateTime.now());
         create.setStatus(PersonalExpenseSheetStatusEnum.PENDING);
+
+        this.auditProvider.auditCreate(create);
 
         final PersonalExpenseSheet personalExpenseSheet = this.personalExpenseSheetDao.create(create);
         final PersonalExpenseSheetDto response = getMapper(MapPESToPersonalExpenseSheetDto.class).from(personalExpenseSheet);
@@ -159,6 +169,10 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
             errorMsg = "Failed to update personal expense sheet")
     public PersonalExpenseSheetDto update(PersonalExpenseSheetUpdateDto updateDto) {
 
+        final User currentUser = Utiles.getCurrentUser();
+
+        this.checkUserPermissions(updateDto.getId(), currentUser, updateDto.getStatus());
+
         final PersonalExpenseSheetByIdFinderDto finderDto = new PersonalExpenseSheetByIdFinderDto();
         finderDto.setId(updateDto.getId());
 
@@ -166,6 +180,14 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
 
         final PersonalExpenseSheetUpdate update = getMapper(MapPESToPersonalExpenseSheetUpdate.class).from(updateDto,
                 getMapper(MapPESToPersonalExpenseSheetUpdate.class).from(sheet));
+
+        if (PersonalExpenseSheetStatusEnum.APPROVED.equals(update.getStatus())) {
+            this.auditProvider.auditApprove(update);
+        } else if (PersonalExpenseSheetStatusEnum.PAID.equals(update.getStatus())) {
+            this.auditProvider.auditPaid(update);
+        } else if (PersonalExpenseSheetStatusEnum.REJECTED.equals(update.getStatus())) {
+            this.auditProvider.auditDischarge(update);
+        }
 
         final PersonalExpenseSheet updated = this.personalExpenseSheetDao.update(update);
         final PersonalExpenseSheetDto response = getMapper(MapPESToPersonalExpenseSheetDto.class).from(updated);
@@ -196,7 +218,7 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
 
     private void sendMail(final PersonalExpenseSheetDto original, final PersonalExpenseSheetDto updated) {
         final Project project = this.projectService.getProjectById(original.getProjectId().longValue());
-        final User user = this.userService.getUserById(original.getUserId().longValue());
+        final User user = this.userService.getUserById(original.getCreatedBy().longValue());
         final List<User> usersToNotify = this.determineUsersToNotify(updated, project);
 
         final OpenPersonalExpenseSheetMailTemplateDto template = this.buildMailTemplate(original, updated, project, user);
@@ -212,7 +234,7 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
         if (updated == null || PersonalExpenseSheetStatusEnumDto.APPROVED.equals(updated.getStatus())) {
             usersToNotify.addAll(project.getBossUsers());
         } else if (PersonalExpenseSheetStatusEnumDto.PAID.equals(updated.getStatus()) || PersonalExpenseSheetStatusEnumDto.REJECTED.equals(updated.getStatus())) {
-            final User user = this.userService.getUserById(updated.getUserId().longValue());
+            final User user = this.userService.getUserById(updated.getCreatedBy().longValue());
             usersToNotify.add(user);
         }
 
@@ -254,5 +276,18 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
     private void sendMailToUser(final OpenPersonalExpenseSheetMailTemplateDto template, final User user) {
         template.setEmail(user.getEmail());
         smtpService.sendPersonalExpenseSheetSendMail(template);
+    }
+
+    private void checkUserPermissions(final Integer personalExpenseSheetId, final User user, final PersonalExpenseSheetStatusEnumDto status) {
+        final Long roleId = user.getRole().getId();
+        final List<Boolean> conditions = Arrays.asList(
+                PersonalExpenseSheetStatusEnumDto.APPROVED.equals(status) && roleId < Constants.ROLE_ADMINISTRATION_ID,
+                PersonalExpenseSheetStatusEnumDto.PAID.equals(status) && roleId < Constants.ROLE_PL_ID,
+                PersonalExpenseSheetStatusEnumDto.REJECTED.equals(status) && roleId < Constants.ROLE_PL_ID
+        );
+
+        if (conditions.stream().anyMatch(condition -> condition)) {
+            throw new PersonalExpenseSheetForbiddenException(personalExpenseSheetId);
+        }
     }
 }

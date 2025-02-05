@@ -41,8 +41,8 @@ public class MDCUtils {
         return get(USER_LOGIN_KEY);
     }
 
-    public static void putUser(String user) {
-        put(USER_LOGIN_KEY, user);
+    public static void putUser(Integer userId) {
+        put(USER_LOGIN_KEY, userId.toString());
     }
 
     public static List<String> getPermits() {

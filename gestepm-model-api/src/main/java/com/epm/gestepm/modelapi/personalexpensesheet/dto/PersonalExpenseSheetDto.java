@@ -14,16 +14,10 @@ public class PersonalExpenseSheetDto implements Serializable {
     private Integer id;
 
     @NotNull
-    private Integer userId;
-
-    @NotNull
     private Integer projectId;
 
     @NotNull
     private String description;
-
-    @NotNull
-    private LocalDateTime startDate;
 
     @NotNull
     private PersonalExpenseSheetStatusEnumDto status;
@@ -33,5 +27,23 @@ public class PersonalExpenseSheetDto implements Serializable {
     private Double amount;
 
     private Set<Integer> personalExpenseIds;
+
+    @NotNull
+    private LocalDateTime createdAt;
+
+    @NotNull
+    private Integer createdBy;
+
+    private LocalDateTime approvedAt;
+
+    private Integer approvedBy;
+
+    private LocalDateTime paidAt;
+
+    private Integer paidBy;
+
+    private LocalDateTime dischargedAt;
+
+    private Integer dischargedBy;
 
 }

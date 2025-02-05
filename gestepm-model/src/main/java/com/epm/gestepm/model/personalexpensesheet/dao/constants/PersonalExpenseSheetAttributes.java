@@ -18,4 +18,19 @@ public abstract class PersonalExpenseSheetAttributes {
 
   public static final String ATTR_PES_OBSERVATIONS = "attr_pes_observations";
 
+  public static final String ATTR_PES_CREATED_AT = "attr_pes_created_at";
+
+  public static final String ATTR_PES_CREATED_BY = "attr_pes_created_by";
+
+  public static final String ATTR_PES_APPROVED_AT = "attr_pes_approved_at";
+
+  public static final String ATTR_PES_APPROVED_BY = "attr_pes_approved_by";
+
+  public static final String ATTR_PES_PAID_AT = "attr_pes_paid_at";
+
+  public static final String ATTR_PES_PAID_BY = "attr_pes_paid_by";
+
+  public static final String ATTR_PES_DISCHARGED_AT = "attr_pes_discharged_at";
+
+  public static final String ATTR_PES_DISCHARGED_BY = "attr_pes_discharged_by";
 }

@@ -18,7 +18,7 @@ public class MockUserProvider implements UserProvider {
 
         data = new HashMap<>();
 
-        data.put(UserLogin.class, new UserLogin("mockeduser"));
+        data.put(UserLogin.class, new UserLogin(1));
         data.put(UserEmail.class, new UserEmail("mock@mocked.com"));
         data.put(UserPermits.class, new UserPermits(List.of()));
     }

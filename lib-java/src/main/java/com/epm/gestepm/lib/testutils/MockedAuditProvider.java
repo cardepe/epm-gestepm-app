@@ -6,8 +6,8 @@ import com.epm.gestepm.lib.audit.AuditProvider;
 public class MockedAuditProvider implements AuditProvider {
 
     @Override
-    public String login() {
-        return "mockeduser";
+    public Integer login() {
+        return 1;
     }
 
     @Override

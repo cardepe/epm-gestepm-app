@@ -5,14 +5,20 @@ sql:
     SELECT
       pes.personal_expense_sheet_id AS id_pagination,
       pes.personal_expense_sheet_id,
-      pes.user_id,
       pes.project_id,
       pes.description,
-      pes.start_date,
       pes.status,
       pes.observations,
       pe.personal_expense_id,
-      pe.amount
+      pe.amount,
+      pes.created_at,
+      pes.created_by,
+      pes.approved_at,
+      pes.approved_by,
+      pes.paid_at,
+      pes.paid_by,
+      pes.discharged_at,
+      pes.discharged_by
     FROM ${sch-gestepm}.personal_expense_sheet pes
     LEFT JOIN ${sch-gestepm}.personal_expense pe ON pes.personal_expense_sheet_id = pe.personal_expense_sheet_id
 
@@ -32,18 +38,18 @@ sql:
   qry-create-pes: |
     
     INSERT INTO ${sch-gestepm}.personal_expense_sheet (
-      user_id,
       project_id,
       description,
-      start_date,
-      status
+      status,
+      created_at,
+      created_by
     )
     VALUES (
-      :attr_pes_user_id,
       :attr_pes_project_id,
       :attr_pes_description,
-      :attr_pes_start_date,
-      :attr_pes_status
+      :attr_pes_status,
+      :attr_pes_created_at,
+      :attr_pes_created_by
     )
 
   qry-update-pes: |
@@ -53,9 +59,14 @@ sql:
     SET
       project_id = :attr_pes_project_id,
       description = :attr_pes_description,
-      start_date = :attr_pes_start_date,
       status = :attr_pes_status,
-      observations = :attr_pes_observations
+      observations = :attr_pes_observations,
+      approved_at = :attr_pes_approved_at,
+      approved_by = :attr_pes_approved_by,
+      paid_at = :attr_pes_paid_at,
+      paid_by = :attr_pes_paid_by,
+      discharged_at = :attr_pes_discharged_at,
+      discharged_by = :attr_pes_discharged_by
     WHERE
       personal_expense_sheet_id = :attr_pes_id
 
@@ -91,7 +102,7 @@ sql:
 
   predicate-for-pes-user-id: |
 
-    pes.user_id = :attr_pes_user_id
+    pes.created_by = :attr_pes_created_by
 
   predicate-for-pes-project-id: |
     
@@ -103,7 +114,7 @@ sql:
 
   predicate-for-pes-start-date: |
     
-    pes.start_date > :attr_pes_start_date
+    pes.created_at > :attr_pes_created_at
 
   predicate-for-pes-status: |
 

@@ -952,15 +952,10 @@ components:
       properties:
         id:
           type: integer
-        user:
-          $ref: '#/components/schemas/User'
         project:
           $ref: '#/components/schemas/Project'
         description:
           type: string
-        startDate:
-          type: string
-          format: date-time
         status:
           type: string
           enum:
@@ -982,11 +977,34 @@ components:
           uniqueItems: true
           items:
             $ref: '#/components/schemas/PersonalExpense'
+        createdAt:
+          type: string
+          format: date-time
+          x-stoplight:
+            id: 840jyj1hfgq49
+        createdBy:
+          $ref: '#/components/schemas/User'
+        approvedAt:
+          type: string
+          format: date-time
+        approvedBy:
+          $ref: '#/components/schemas/User'
+        paidAt:
+          type: string
+          format: date-time
+        paidBy:
+          $ref: '#/components/schemas/User'
+        rejectedAt:
+          type: string
+          format: date-time
+        rejectedBy:
+          $ref: '#/components/schemas/User'
       required:
         - id
         - description
-        - startDate
         - status
+        - createdAt
+        - createdBy
   securitySchemes:
     bearerAuth:
       type: http

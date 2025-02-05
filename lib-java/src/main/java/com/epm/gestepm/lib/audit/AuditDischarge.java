@@ -12,11 +12,11 @@ public interface AuditDischarge extends Auditable {
         // skips
     }
 
-    default String getDischargedBy() {
+    default Integer getDischargedBy() {
         return null;
     }
 
-    default void setDischargedBy(String dischargedBy) {
+    default void setDischargedBy(Integer dischargedBy) {
         // skips
     }
 

@@ -189,7 +189,7 @@ public class PersonalExpenseSheetController extends BaseController implements Pe
         final String fileName = messageSource.getMessage("expense.pdf.name",
                 new Object[] {
                         personalExpenseSheet.getId(),
-                        Utiles.transform(personalExpenseSheet.getStartDate(), dateFormat)
+                        Utiles.transform(personalExpenseSheet.getCreatedAt(), dateFormat)
                 }, locale) + ".pdf";
 
         final HttpHeaders headers = new HttpHeaders();

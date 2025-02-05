@@ -8,9 +8,6 @@ import javax.validation.constraints.NotNull;
 public class PersonalExpenseSheetCreateDto {
 
     @NotNull
-    private Integer userId;
-
-    @NotNull
     private Integer projectId;
 
     @NotNull

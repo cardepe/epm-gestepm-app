@@ -56,7 +56,7 @@ public class PersonalExpenseSheetViewController {
         final User user = this.loadCommonModelView(locale, model);
 
         final PersonalExpenseSheetFilterDto filterDto = new PersonalExpenseSheetFilterDto();
-        filterDto.setUserId(user.getId().intValue());
+        filterDto.setCreatedBy(user.getId().intValue());
 
         final List<PersonalExpenseSheetDto> personalExpenseSheets
                 = this.personalExpenseSheetService.list(filterDto);

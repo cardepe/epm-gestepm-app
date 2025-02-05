@@ -16,8 +16,6 @@ public class PersonalExpenseSheetUpdateDto {
 
     private String description;
 
-    private LocalDateTime startDate;
-
     private PersonalExpenseSheetStatusEnumDto status;
 
     private String observations;

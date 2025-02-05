@@ -6,27 +6,26 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class UserLoginResolver implements UserDataResolver<UserLogin> {
 
-  @Override
-  public UserLogin resolve() {
+    @Override
+    public UserLogin resolve() {
 
-    UserLogin userLogin = null;
+        UserLogin userLogin = null;
 
-    final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    if (authentication != null) {
+        if (authentication != null) {
 
-      final Object principal = authentication.getPrincipal();
-      final Boolean authenticated = authentication.isAuthenticated();
+            final Object principal = authentication.getPrincipal();
+            final boolean authenticated = authentication.isAuthenticated();
 
-      if (authenticated && principal != null) {
+            if (authenticated && principal != null && !"anonymousUser".equals(principal)) {
 
-        final String login = principal.toString();
+                final Integer userId = Integer.valueOf(principal.toString());
 
-        userLogin = new UserLogin(login);
-      }
+                userLogin = new UserLogin(userId);
+            }
+        }
+
+        return userLogin;
     }
-
-    return userLogin;
-  }
-
 }

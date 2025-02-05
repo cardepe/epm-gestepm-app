@@ -4,6 +4,16 @@ import java.time.LocalDateTime;
 
 public interface AuditProvider {
 
+    default void auditApprove(AuditApprove auditApprove) {
+        auditApprove.setApprovedBy(login());
+        auditApprove.setApprovedAt(time());
+    }
+
+    default void clearApprove(AuditApprove auditApprove) {
+        auditApprove.setApprovedBy(null);
+        auditApprove.setApprovedAt(null);
+    }
+    
     default void auditLastAccess(AuditLastAccess auditLastAccess) {
         auditLastAccess.setLastAccessedBy(login());
         auditLastAccess.setLastAccessedAt(time());
@@ -64,7 +74,17 @@ public interface AuditProvider {
         auditDeprecate.setDeprecatedAt(null);
     }
 
-    String login();
+    default void auditPaid(AuditPaid auditPaid) {
+        auditPaid.setPaidBy(login());
+        auditPaid.setPaidAt(time());
+    }
+
+    default void clearPaid(AuditPaid auditPaid) {
+        auditPaid.setPaidBy(null);
+        auditPaid.setPaidAt(null);
+    }
+
+    Integer login();
 
     LocalDateTime time();
 

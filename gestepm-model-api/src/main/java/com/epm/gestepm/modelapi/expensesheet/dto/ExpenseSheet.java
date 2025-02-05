@@ -21,14 +21,14 @@ public class ExpenseSheet {
 	@Column(name = "personal_expense_sheet_id", unique = true, nullable = false, precision = 10)
 	private Long id;
 
-	@Column(name = "start_date", nullable = false)
+	@Column(name = "created_at", nullable = false)
 	private Date creationDate;
 
 	@Column(name = "description", nullable = false, length = 64)
 	private String name;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "created_by", nullable = false)
 	private User user;
 
 	@ManyToOne(optional = false)

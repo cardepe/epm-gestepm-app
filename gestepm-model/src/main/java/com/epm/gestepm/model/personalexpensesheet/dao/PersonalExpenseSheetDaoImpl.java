@@ -175,8 +175,8 @@ public class PersonalExpenseSheetDaoImpl implements PersonalExpenseSheetDao {
     }
 
     private String getOrderColumn(final String orderBy) {
-        if ("startDate".equals(orderBy)) {
-            return COL_PES_START_DATE;
+        if ("createdAt".equals(orderBy)) {
+            return COL_PES_CREATED_AT;
         } else if ("project.name".equals(orderBy)) {
             return COL_PES_PROJECT_ID;
         }

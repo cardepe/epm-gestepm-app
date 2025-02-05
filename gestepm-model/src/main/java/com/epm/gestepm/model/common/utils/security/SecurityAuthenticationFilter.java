@@ -58,7 +58,7 @@ public class SecurityAuthenticationFilter extends UsernamePasswordAuthentication
 					} else {
 					
 						// Login y asignación de role en Spring Security
-						UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(email, password);
+						UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getId(), password);
 						authRequest.setDetails(user);
 			
 						Authentication autenticacion = this.getAuthenticationManager().authenticate(authRequest);
