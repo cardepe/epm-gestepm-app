@@ -5,6 +5,7 @@ import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectTableDTO;
+import com.epm.gestepm.modelapi.user.dto.User;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface ProjectService {
 	Project save(Project project);
 	void delete(Long id);
 	List<ProjectListDTO> getAllProjectsDTOs();
-	List<ProjectListDTO> getProjectsDTOByUserId(Long userId);
+	List<ProjectListDTO> getProjectsByUser(User user);
 	List<ProjectListDTO> getBossProjectsDTOByUserId(Long userId);
 	List<ProjectListDTO> getStationDTOs();
 	List<ProjectTableDTO> getAllProjectsDataTables(PaginationCriteria pagination, Object[] params);

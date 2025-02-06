@@ -933,7 +933,7 @@ public class ShareController {
             log.info("El usuario " + user.getId() + " ha accedido a la vista de Partes de Trabajo");
 
             // Recover user projects
-            List<ProjectListDTO> projects = projectService.getProjectsDTOByUserId(user.getId());
+            List<ProjectListDTO> projects = projectService.getProjectsByUser(user);
 
             model.addAttribute("projects", projects);
 

@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -111,8 +112,18 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	
 	@Override
-	public List<ProjectListDTO> getProjectsDTOByUserId(Long userId) {
-		return projectRepository.findProjectsDTOByUserId(userId);
+	public List<ProjectListDTO> getProjectsByUser(final User user) {
+		final List<Project> projects = Stream.concat(user.getProjects().stream(), user.getResponsableProjects().stream())
+				.distinct()
+				.collect(Collectors.toList());
+
+		return projects.stream()
+				.map(project -> new ProjectListDTO(
+						project.getId(),
+						project.getName(),
+						project.getStation(),
+						project.getCustomer() != null ? project.getCustomer().getMainEmail() : null))
+				.collect(Collectors.toList());
 	}
 	
 	@Override

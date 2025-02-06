@@ -8,6 +8,7 @@ import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetDto
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetStatusEnumDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.filter.PersonalExpenseSheetFilterDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetService;
+import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.user.dto.User;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
@@ -99,7 +101,7 @@ public class PersonalExpenseSheetViewController {
 
         final List<ProjectListDTO> projects = user.getRole().getId() == Constants.ROLE_ADMIN_ID || user.getRole().getId() == Constants.ROLE_TECHNICAL_SUPERVISOR_ID
                 ? this.projectService.getAllProjectsDTOs()
-                : this.projectService.getProjectsDTOByUserId(user.getId());
+                : this.projectService.getProjectsByUser(user);
 
         model.addAttribute("projects", projects);
     }

@@ -194,7 +194,7 @@ public class SigningController {
             if (user.getRole().getId() == Constants.ROLE_ADMIN_ID || user.getRole().getId() == Constants.ROLE_TECHNICAL_SUPERVISOR_ID) {
                 projects = projectService.getAllProjectsDTOs();
             } else {
-                projects = projectService.getProjectsDTOByUserId(userId);
+                projects = projectService.getProjectsByUser(user);
             }
 
             final List<Project> displacementProjects = this.projectService.findDisplacementProjects();

@@ -311,7 +311,7 @@ public class UserController {
 			if (user.getRole().getId() == Constants.ROLE_ADMIN_ID || user.getRole().getId() == Constants.ROLE_TECHNICAL_SUPERVISOR_ID) {
 				projects = projectService.getAllProjectsDTOs();
 			} else {
-				projects = projectService.getProjectsDTOByUserId(user.getId());
+				projects = projectService.getProjectsByUser(user);
 			}
 
 			final List<ManualSigningType> manualSigningTypes = this.manualSigningTypeService.findAll();
