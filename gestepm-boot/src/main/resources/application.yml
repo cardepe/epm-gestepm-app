@@ -114,6 +114,8 @@ spring:
       enabled: true
       max-file-size: 50MB
       max-request-size: 50MB
+  thymeleaf:
+    enabled: false
 
 server:
   port: ${port:8888}

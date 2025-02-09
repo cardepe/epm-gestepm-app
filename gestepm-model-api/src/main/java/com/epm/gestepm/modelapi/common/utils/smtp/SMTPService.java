@@ -23,10 +23,6 @@ public interface SMTPService {
 	
 	void sendCloseConstructionShareMail(String to, ConstructionShare share, byte[] pdfGenerated, Locale locale);
 	
-	void openNoProgrammedShareSendMail(final OpenNoProgrammedShareMailTemplateDto dto);
-	void closeNoProgrammedShareSendMail(final CloseNoProgrammedShareMailTemplateDto dto);
-	void closeInspectionSendMail(final CloseInspectionMailTemplateDto dto);
-	
 	void sendCloseProgrammedShareMail(String to, InterventionPrShare share, byte[] pdfGenerated, Locale locale);
 
 	void sendCloseWorkShareMail(String to, WorkShare share, byte[] pdfGenerated, Locale locale);

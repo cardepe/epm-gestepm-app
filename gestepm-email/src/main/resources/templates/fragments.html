@@ -1,0 +1,37 @@
+<th:block th:fragment="close-inspection">
+    <p th:text="#{email.inspection.close.line.1(${fullName}, ${action}, ${inspectionId}, ${forumTitle}, ${projectName}, ${createdAt}, ${closedAt})}"></p>
+    <p th:text="#{email.inspection.close.line.2}"></p>
+    <p>
+        <th:block th:text="#{email.inspection.close.line.3}"></th:block>
+        <a th:href="@{'https://gestepm.com/shares/no-programmed/' + ${noProgrammedShareId} + '/inspection/' + ${inspectionId}}" th:text="@{'https://gestepm.com/shares/no-programmed/' + ${noProgrammedShareId} + '/inspection/' + ${inspectionId}}"></a>.
+    </p>
+    <p>
+        <th:block th:text="#{email.inspection.close.line.4}"></th:block>
+        <a th:href="@{'http://forum.gestepm.com/' + ${forumUrl}}" th:text="@{'http://forum.gestepm.com/' + ${forumUrl}}"></a>.
+    </p>
+</th:block>
+
+<th:block th:fragment="close-no-programmed-share">
+    <p th:text="#{email.noprogrammedshare.close.line.1(${fullName}, ${noProgrammedShareId}, ${forumTitle}, ${projectName}, ${createdAt}, ${closedAt})}"></p>
+    <p>
+        <th:block th:text="#{email.noprogrammedshare.close.line.2}"></th:block>
+        <a th:href="@{'https://gestepm.com/shares/no-programmed/' + ${noProgrammedShareId}}" th:text="@{'https://gestepm.com/shares/no-programmed/' + ${noProgrammedShareId}}"></a>.
+    </p>
+    <p>
+        <th:block th:text="#{email.noprogrammedshare.close.line.3}"></th:block>
+        <a th:href="@{'http://forum.gestepm.com/' + ${forumUrl}}" th:text="@{'http://forum.gestepm.com/' + ${forumUrl}}"></a>.
+    </p>
+</th:block>
+
+<th:block th:fragment="open-no-programmed-share">
+    <p th:text="#{email.noprogrammedshare.open.line.1(${fullName}, ${noProgrammedShareId}, ${forumTitle}, ${createdAt}, ${projectName})}"></p>
+    <p th:text="#{email.noprogrammedshare.open.line.2(${description})}"></p>
+    <p>
+        <th:block th:text="#{email.noprogrammedshare.open.line.3}"></th:block>
+        <a th:href="@{'https://gestepm.com/shares/no-programmed/' + ${noProgrammedShareId}}" th:text="@{'https://gestepm.com/shares/no-programmed/' + ${noProgrammedShareId}}"></a>.
+    </p>
+    <p>
+        <th:block th:text="#{email.noprogrammedshare.open.line.4}"></th:block>
+        <a th:href="@{'http://forum.gestepm.com/' + ${forumUrl}}" th:text="@{'http://forum.gestepm.com/' + ${forumUrl}}"></a>.
+    </p>
+</th:block>

@@ -1,6 +1,10 @@
 package com.epm.gestepm.model.inspection.service;
 
+import com.epm.gestepm.emailapi.dto.Attachment;
+import com.epm.gestepm.emailapi.dto.emailgroup.CloseInspectionGroup;
+import com.epm.gestepm.emailapi.service.EmailService;
 import com.epm.gestepm.forum.model.api.service.TopicService;
+import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
@@ -14,6 +18,7 @@ import com.epm.gestepm.model.inspection.dao.entity.filter.InspectionFilter;
 import com.epm.gestepm.model.inspection.dao.entity.finder.InspectionByIdFinder;
 import com.epm.gestepm.model.inspection.dao.entity.updater.InspectionUpdate;
 import com.epm.gestepm.model.inspection.service.mapper.*;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseInspectionMailTemplateDto;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
@@ -36,20 +41,22 @@ import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareSer
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.exception.UserByIdNotFoundException;
 import com.epm.gestepm.modelapi.user.service.UserService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
@@ -59,10 +66,17 @@ import static org.mapstruct.factory.Mappers.getMapper;
 
 @Service
 @Validated
+@AllArgsConstructor
 @EnableExecutionLog(layerMarker = SERVICE)
 public class InspectionServiceImpl implements InspectionService {
 
+    private final EmailService emailService;
+
     private final HttpServletRequest request;
+
+    private final MessageSource messageSource;
+
+    private final LocaleProvider localeProvider;
 
     private final InspectionChecker inspectionChecker;
 
@@ -74,23 +88,9 @@ public class InspectionServiceImpl implements InspectionService {
 
     private final ProjectService projectService;
 
-    private final SMTPService smtpService;
-
     private final TopicService topicService;
 
     private final UserService userService;
-
-    public InspectionServiceImpl(HttpServletRequest request, InspectionChecker inspectionChecker, InspectionDao inspectionDao, InspectionExportService inspectionExportService, NoProgrammedShareService noProgrammedShareService, ProjectService projectService, SMTPService smtpService, TopicService topicService, UserService userService) {
-        this.request = request;
-        this.inspectionChecker = inspectionChecker;
-        this.inspectionDao = inspectionDao;
-        this.inspectionExportService = inspectionExportService;
-        this.noProgrammedShareService = noProgrammedShareService;
-        this.projectService = projectService;
-        this.smtpService = smtpService;
-        this.topicService = topicService;
-        this.userService = userService;
-    }
 
     @Override
     @RequirePermits(value = PRMT_READ_I, action = "List inspections")
@@ -276,11 +276,9 @@ public class InspectionServiceImpl implements InspectionService {
 
     private void sendMail(final InspectionDto inspection, final Boolean notify) {
         final byte[] pdf = this.inspectionExportService.generate(inspection);
+        final String base64PDF = Base64.getEncoder().encodeToString(pdf);
 
-        final Supplier<RuntimeException> userNotFound = () -> new UserByIdNotFoundException(inspection.getFirstTechnicalId());
-        final User firstTechnical = Optional.ofNullable(this.userService.getUserById(inspection.getFirstTechnicalId().longValue()))
-                .orElseThrow(userNotFound);
-
+        final User user = Utiles.getCurrentUser();
         final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService
                 .findOrNotFound(new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
 
@@ -288,37 +286,58 @@ public class InspectionServiceImpl implements InspectionService {
         final Project project = Optional.ofNullable(this.projectService.getProjectById(noProgrammedShare.getProjectId().longValue()))
                 .orElseThrow(projectNotFound);
 
-        final CloseInspectionMailTemplateDto dto = new CloseInspectionMailTemplateDto();
-        dto.setLocale(request.getLocale());
-        dto.setEmail(firstTechnical.getEmail());
-        dto.setNoProgrammedShare(noProgrammedShare);
-        dto.setInspection(inspection);
-        dto.setUser(firstTechnical);
-        dto.setProject(project);
-        dto.setPdf(pdf);
+        final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));
+        final String fileName = this.messageSource.getMessage("shares.no.programmed.pdf.name", new Object[] {
+                inspection.getShareId().toString(),
+                inspection.getId().toString(),
+                Utiles.transform(inspection.getStartDate(), "yyyyMMdd")
+        }, locale) + ".pdf";
 
-        this.smtpService.closeInspectionSendMail(dto);
+        final Attachment attachment = new Attachment();
+        attachment.setFileName(fileName);
+        attachment.setFileData(base64PDF);
+        attachment.setContentType("application/pdf");
 
-        if (CollectionUtils.isNotEmpty(project.getResponsables())) {
-            project.getResponsables().forEach(responsible -> {
-                dto.setEmail(responsible.getEmail());
-                this.smtpService.closeInspectionSendMail(dto);
-            });
-        }
+        final String action = this.messageSource.getMessage(inspection.getAction().toString().toLowerCase(), new Object[] {}, locale);
+        final String subject = messageSource.getMessage("email.inspection.close.subject", new Object[] {
+                action,
+                fileName
+        }, locale);
+
+        final Set<String> emails = new HashSet<>();
+        emails.add(user.getEmail());
+        emails.addAll(project.getResponsables().stream().map(User::getEmail).collect(Collectors.toSet()));
 
         if (BooleanUtils.isTrue(notify) && project.getCustomer() != null) {
             final String mainEmail = project.getCustomer().getMainEmail();
             final String secondaryEmail = project.getCustomer().getSecondaryEmail();
 
             if (StringUtils.isNoneBlank(mainEmail)) {
-                dto.setEmail(mainEmail);
-                this.smtpService.closeInspectionSendMail(dto);
+                emails.add(mainEmail);
             }
 
             if (StringUtils.isNoneBlank(secondaryEmail)) {
-                dto.setEmail(secondaryEmail);
-                this.smtpService.closeInspectionSendMail(dto);
+                emails.add(secondaryEmail);
             }
         }
+
+        final CloseInspectionGroup emailGroup = new CloseInspectionGroup();
+        emailGroup.setEmails(new ArrayList<>(emails));
+        emailGroup.setSubject(subject);
+        emailGroup.setLocale(locale);
+        emailGroup.setNoProgrammedShareId(noProgrammedShare.getId());
+        emailGroup.setInspectionId(inspection.getId());
+        emailGroup.setFullName(user.getFullName());
+        emailGroup.setProjectName(project.getName());
+        emailGroup.setCreatedAt(inspection.getStartDate());
+        emailGroup.setClosedAt(inspection.getEndDate());
+        emailGroup.setAction(action);
+        emailGroup.setForumTitle(noProgrammedShare.getForumTitle());
+        emailGroup.setForumUrl(ObjectUtils.allNotNull(project.getForumId(), noProgrammedShare.getTopicId())
+                ? "viewtopic.php?f=" + project.getForumId() + "&t=" + noProgrammedShare.getTopicId().toString()
+                : "-");
+        emailGroup.setAttachments(List.of(attachment));
+
+        this.emailService.sendEmail(emailGroup);
     }
 }

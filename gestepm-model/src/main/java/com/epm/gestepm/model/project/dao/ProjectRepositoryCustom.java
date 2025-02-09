@@ -11,7 +11,6 @@ import com.epm.gestepm.modelapi.project.dto.ProjectTableDTO;
 public interface ProjectRepositoryCustom {
 	Project findByIdAndBossId(Long id, Long bossId);
 	List<ProjectListDTO> findAllProjectsDTOs();
-	List<ProjectListDTO> findProjectsDTOByUserId(Long userId);
 	List<ProjectListDTO> findBossProjectsDTOByUserId(Long userId);
 	List<ProjectListDTO> findStationDTOs();
 	Long findAllProjectsCount(Object[] params);

@@ -6,9 +6,9 @@ function getI18n(locale) {
 	let messages;
 
 	$.ajax({
+		async: false,
 		url: '/ui/static/js/i18n/' + locale + '.json',
 		dataType: 'json',
-		async: false,
 		success: function (data) {
 			messages = data;
 		}
@@ -81,7 +81,8 @@ function loadDisplacements(activityCenterId, callback) {
 }
 
 $(document).ready(function () {
-	messages = getI18n('es');
+	const locale = document.documentElement.lang;
+	messages = getI18n(locale);
 	hideLoading();
 });
 

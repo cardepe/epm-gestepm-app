@@ -1,6 +1,7 @@
 package com.epm.gestepm.modelapi.common.utils.smtp.dto;
 
 import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.NoProgrammedShareUpdateDto;
 import com.epm.gestepm.modelapi.user.dto.User;
 import lombok.Data;
@@ -18,7 +19,7 @@ public class OpenNoProgrammedShareMailTemplateDto {
     private String email;
 
     @NotNull
-    private NoProgrammedShareUpdateDto noProgrammedShare;
+    private NoProgrammedShareDto noProgrammedShare;
 
     @NotNull
     private User user;

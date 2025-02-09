@@ -80,32 +80,6 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
     }
 
     @Override
-    public List<ProjectListDTO> findProjectsDTOByUserId(Long userId) {
-
-        final CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<ProjectListDTO> query = cb.createQuery(ProjectListDTO.class);
-
-        final Root<User> u = query.from(User.class);
-        final Join<User, Project> p = u.join("projects", JoinType.LEFT);
-        final Join<Project, User> pr = u.join("responsableProjects", JoinType.LEFT);
-        final Join<Project, Customer> c = p.join("customer", JoinType.LEFT);
-
-        query.multiselect(
-                p.get("id"),
-                p.get("name"),
-                p.get("station"),
-                c.get("mainEmail")
-        );
-
-        final Predicate userMatches = cb.equal(u.get("id"), userId);
-
-        query.where(userMatches);
-        query.orderBy(cb.asc(p.get("name")));
-
-        return entityManager.createQuery(query).getResultList();
-    }
-
-    @Override
     public List<ProjectListDTO> findBossProjectsDTOByUserId(Long userId) {
 
         try {

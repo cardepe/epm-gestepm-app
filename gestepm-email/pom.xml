@@ -10,7 +10,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>gestepm-model</artifactId>
+    <artifactId>gestepm-email</artifactId>
     <name>${project.groupId}:${project.artifactId}</name>
 
     <dependencies>
@@ -18,21 +18,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>lib-java</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>gestepm-model-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>gestepm-master-data-api</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>gestepm-forum-model-api</artifactId>
         </dependency>
 
         <dependency>

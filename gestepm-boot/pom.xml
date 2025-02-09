@@ -47,6 +47,11 @@
             <artifactId>gestepm-master-data</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>gestepm-email</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org" th:with="lang=${#locale.language}" th:lang="${locale}">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            p {
+                font-size: 14px;
+                color: #000;
+            }
+
+            .smallInfoText {
+                font-size: 12px;
+                color: #016163;
+                font-style: italic;
+            }
+
+            .smallInfoA {
+                color: #016163;
+                font-weight: bold;
+                text-decoration: none;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <div th:insert="fragments :: ${bodyTemplate}"></div>
+        <br />
+        <img th:src="@{https://epmgastech.com/wp-content/uploads/2018/08/Logo_EPM_web.png}" alt="Logo_EPM_web"/>
+        <br /><br />
+        <span th:class="smallInfoText">
+            <th:block th:text="#{email.footer}"></th:block>
+            <a th:href="@{https://gestepm.com/}" th:class="smallInfoA">GestEPM</a>.
+        </span>
+    </body>
+</html>

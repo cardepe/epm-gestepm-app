@@ -53,12 +53,6 @@ public class SMTPServiceImpl implements SMTPService {
 
 	private static final String DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm:ss";
 	
-	@Value("${gestepm.base.url}")
-	private String appUrlBase;
-	
-	@Value("${gestepm.mails.admin}")
-	private String godMail;
-	
 	@Value("${smtp.mail.from}")
 	private String smtpMailFrom;
 	
@@ -114,97 +108,7 @@ public class SMTPServiceImpl implements SMTPService {
 
 		loadPDFTemplateAndSendMail(share, "cs", pdfGenerated, smtpMailFrom, to, subject, "construction_share_close_mail_template_" + locale.getLanguage() + ".html", params, locale);
 	}
-	
-	@Async
-	public void openNoProgrammedShareSendMail(final OpenNoProgrammedShareMailTemplateDto dto) {
-		final Locale locale = dto.getLocale();
-		final NoProgrammedShareUpdateDto noProgrammedShare = dto.getNoProgrammedShare();
-		final User user = dto.getUser();
-		final Project project = dto.getProject();
 
-		log.info("Preparando la plantilla de correo: intervention_share_open_mail_template_" + locale.getLanguage() + ".html");
-
-		final String subject = messageSource.getMessage("smtp.mail.intervention.share.open.subject", new Object[] {
-				noProgrammedShare.getForumTitle(),
-				project.getName()
-		}, locale);
-		
-		final Map<String, String> params = new HashMap<>();
-		params.put("id", noProgrammedShare.getId().toString());
-		params.put("username", user.getFullName());
-		params.put("projectName", project.getName());
-		params.put("startDate", Utiles.transform(noProgrammedShare.getStartDate(), DATE_TIME_FORMAT));
-		params.put("description", noProgrammedShare.getDescription());
-		params.put("idUrl", noProgrammedShare.getId().toString());
-		params.put("forumUrl", project.getForumId() == null || noProgrammedShare.getTopicId() == null
-				? "-" : "viewtopic.php?f=" + project.getForumId() + "&t=" + noProgrammedShare.getTopicId().toString());
-		params.put("forumTitle", noProgrammedShare.getForumTitle());
-		
-		loadTemplateAndSendMail(smtpMailFrom, dto.getEmail(), subject, "intervention_share_open_mail_template_" + locale.getLanguage() + ".html", params);
-	}
-	
-	@Async
-	public void closeNoProgrammedShareSendMail(final CloseNoProgrammedShareMailTemplateDto dto) {
-		final Locale locale = dto.getLocale();
-		final NoProgrammedShareDto noProgrammedShare = dto.getNoProgrammedShare();
-		final User user = dto.getUser();
-		final Project project = dto.getProject();
-
-		log.info("Preparando la plantilla de correo: intervention_share_close_mail_template_" + locale.getLanguage() + ".html");
-
-		final String subject = messageSource.getMessage("smtp.mail.intervention.share.close.subject", new Object[] {
-				noProgrammedShare.getForumTitle(),
-				project.getName()
-		}, locale);
-		
-		final Map<String, String> params = new HashMap<>();
-		params.put("id", noProgrammedShare.getId().toString());
-		params.put("username", user.getFullName());
-		params.put("projectName", project.getName());
-		params.put("startDate", Utiles.transform(noProgrammedShare.getStartDate(), DATE_TIME_FORMAT));
-		params.put("endDate", Utiles.transform(noProgrammedShare.getEndDate(), DATE_TIME_FORMAT));
-		params.put("idUrl", noProgrammedShare.getId().toString());
-		params.put("forumUrl", "viewtopic.php?f=" + project.getForumId() + "&t=" + noProgrammedShare.getTopicId());
-		params.put("forumTitle", noProgrammedShare.getForumTitle());
-		
-		loadTemplateAndSendMail(smtpMailFrom, dto.getEmail(), subject, "intervention_share_close_mail_template_" + locale.getLanguage() + ".html", params);
-	}
-	
-	@Async
-	public void closeInspectionSendMail(final CloseInspectionMailTemplateDto dto) {
-		final Locale locale = dto.getLocale();
-		final NoProgrammedShareDto noProgrammedShare = dto.getNoProgrammedShare();
-		final InspectionDto inspection = dto.getInspection();
-		final User user = dto.getUser();
-		final Project project = dto.getProject();
-
-		log.info("Preparando la plantilla de correo: intervention_sub_share_close_mail_template_" + locale.getLanguage() + ".html");
-
-		final String fileName = messageSource.getMessage("shares.no.programmed.pdf.name", new Object[] {
-				inspection.getShareId().toString(),
-				inspection.getId().toString(),
-				Utiles.transform(inspection.getStartDate(), "yyyyMMdd")
-		}, locale) + ".pdf";
-		final String action = this.messageSource.getMessage(dto.getInspection().getAction().toString().toLowerCase(), new Object[] {}, locale);
-		final String subject = messageSource.getMessage("smtp.mail.intervention.sub.share.close.subject", new Object[] {
-				fileName,
-				action
-		}, locale);
-		
-		final Map<String, String> params = new HashMap<>();
-		params.put("id", inspection.getId().toString());
-		params.put("username", user.getFullName());
-		params.put("projectName", project.getName());
-		params.put("startDate", Utiles.transform(inspection.getStartDate(), DATE_TIME_FORMAT));
-		params.put("endDate", Utiles.transform(inspection.getEndDate(), DATE_TIME_FORMAT));
-		params.put("subShareType", action);
-		params.put("idUrl", noProgrammedShare.getId().toString());
-		params.put("forumUrl", "viewtopic.php?f=" + project.getForumId() + "&t=" + noProgrammedShare.getTopicId());
-		params.put("forumTitle", noProgrammedShare.getForumTitle());
-		
-		loadPDFTemplateAndSendMail(inspection, "is", dto.getPdf(), smtpMailFrom, dto.getEmail(), subject, "intervention_sub_share_close_mail_template_" + locale.getLanguage() + ".html", params, locale);
-	}
-	
 	@Async
 	public void sendCloseProgrammedShareMail(String to, InterventionPrShare share, byte[] pdfGenerated, Locale locale) {
 		

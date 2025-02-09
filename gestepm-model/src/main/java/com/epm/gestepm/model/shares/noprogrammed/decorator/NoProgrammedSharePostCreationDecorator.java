@@ -1,9 +1,18 @@
 package com.epm.gestepm.model.shares.noprogrammed.decorator;
 
+import com.epm.gestepm.emailapi.dto.emailgroup.CloseNoProgrammedShareGroup;
+import com.epm.gestepm.emailapi.dto.emailgroup.OpenNoProgrammedShareGroup;
+import com.epm.gestepm.emailapi.service.EmailService;
 import com.epm.gestepm.forum.model.api.service.TopicService;
+import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.model.shares.noprogrammed.dao.NoProgrammedShareDao;
+import com.epm.gestepm.model.shares.noprogrammed.dao.entity.NoProgrammedShare;
+import com.epm.gestepm.model.shares.noprogrammed.dao.entity.creator.NoProgrammedShareFileCreate;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.updater.NoProgrammedShareUpdate;
+import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSToNoProgrammedShareDto;
+import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSToNoProgrammedShareUpdate;
 import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSToNoProgrammedShareUpdateDto;
+import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseNoProgrammedShareMailTemplateDto;
@@ -21,25 +30,32 @@ import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.exception.UserByIdNotFoundException;
 import com.epm.gestepm.modelapi.user.service.UserService;
 import com.itextpdf.xmp.impl.Base64;
+import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.mapstruct.factory.Mappers.getMapper;
 
+@Data
 @Component
 @Validated
 public class NoProgrammedSharePostCreationDecorator {
+
+    private final EmailService emailService;
 
     private final FamilyService familyService;
 
@@ -57,102 +73,118 @@ public class NoProgrammedSharePostCreationDecorator {
 
     private final UserService userService;
 
-    public NoProgrammedSharePostCreationDecorator(FamilyService familyService, HttpServletRequest request, NoProgrammedShareDao noProgrammedShareDao, ProjectService projectService, SMTPService smtpService, SubFamilyService subFamilyService, TopicService topicService, UserService userService) {
-        this.familyService = familyService;
-        this.request = request;
-        this.noProgrammedShareDao = noProgrammedShareDao;
-        this.projectService = projectService;
-        this.smtpService = smtpService;
-        this.subFamilyService = subFamilyService;
-        this.topicService = topicService;
-        this.userService = userService;
-    }
+    private final MessageSource messageSource;
 
-    public void createForumEntryAndUpdate(final NoProgrammedShareDto noProgrammedShare, NoProgrammedShareUpdate update) {
+    private final LocaleProvider localeProvider;
+
+    public void createForumEntryAndUpdate(final NoProgrammedShareDto noProgrammedShare, final Set<NoProgrammedShareFileCreate> files) {
         final Project project = this.projectService.getProjectById(Long.valueOf(noProgrammedShare.getProjectId()));
         final Long forumId = project.getForumId();
-        final String forumTitle = this.getForumTitle(update);
+        final String forumTitle = this.getForumTitle(noProgrammedShare);
         final String ip = request.getLocalAddr();
-        final List<MultipartFile> files = CollectionUtils.isNotEmpty(update.getFiles())
-                ? update.getFiles().stream()
+        final List<MultipartFile> multipartFiles = CollectionUtils.isNotEmpty(files)
+                ? files.stream()
                 .map(file -> convertToMultipartFile(file.getName(), Base64.decode(file.getContent()).getBytes()))
                 .collect(Collectors.toList())
                 : new ArrayList<>();
 
+        final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));
         final User user = this.userService.getUserById(Long.valueOf(noProgrammedShare.getUserId()));
 
-        topicService.create(forumTitle, update.getDescription(), forumId, ip, user.getUsername(), files)
-                .thenApply(topic -> {
-                    update.setId(noProgrammedShare.getId());
-                    update.setTopicId(topic.getId().intValue());
-                    update.setForumTitle(forumTitle);
-
-                    return this.noProgrammedShareDao.update(update);
+        topicService.create(forumTitle, noProgrammedShare.getDescription(), forumId, ip, user.getUsername(), multipartFiles)
+                .whenComplete((topic, throwable) -> {
+                    final NoProgrammedShareDto dto = throwable == null
+                            ? this.updateWithForumInfo(noProgrammedShare, topic.getId().intValue(), forumTitle)
+                            : noProgrammedShare;
+                    this.sendOpenEmail(dto, user, project, locale);
                 });
-
-        final NoProgrammedShareUpdateDto dto = getMapper(MapNPSToNoProgrammedShareUpdateDto.class).from(update);
-
-        final OpenNoProgrammedShareMailTemplateDto template = new OpenNoProgrammedShareMailTemplateDto();
-        template.setLocale(request.getLocale());
-        template.setNoProgrammedShare(dto);
-        template.setEmail(user.getEmail());
-        template.setUser(user);
-        template.setProject(project);
-
-        this.sendMail(template);
     }
 
-    public static MultipartFile convertToMultipartFile(String fileName, byte[] content) {
+    private static MultipartFile convertToMultipartFile(String fileName, byte[] content) {
         return new MockMultipartFile("file", fileName, "application/octet-stream", content);
     }
 
-    private String getForumTitle(final NoProgrammedShareUpdate updateDto) {
-        final Family family = this.familyService.getById(updateDto.getFamilyId().longValue());
-        final SubFamily subFamily = this.subFamilyService.getById(updateDto.getSubFamilyId().longValue());
+    private NoProgrammedShareDto updateWithForumInfo(final NoProgrammedShareDto noProgrammedShare, final Integer topicId, final String forumTitle) {
+        final NoProgrammedShareUpdate update = getMapper(MapNPSToNoProgrammedShareUpdate.class).from(noProgrammedShare);
+        update.setId(noProgrammedShare.getId());
+        update.setTopicId(topicId);
+        update.setForumTitle(forumTitle);
 
-        final String familyName = ("es".equalsIgnoreCase(request.getLocale().getLanguage()) ? family.getNameES() : family.getNameFR())
+        return getMapper(MapNPSToNoProgrammedShareDto.class).from(this.noProgrammedShareDao.update(update));
+    }
+
+    private String getForumTitle(final NoProgrammedShareDto noProgrammedShare) {
+        final String language = this.localeProvider.getLocale().orElse("es");
+        final Family family = this.familyService.getById(noProgrammedShare.getFamilyId().longValue());
+        final SubFamily subFamily = this.subFamilyService.getById(noProgrammedShare.getSubFamilyId().longValue());
+
+        final String familyName = ("es".equalsIgnoreCase(language) ? family.getNameES() : family.getNameFR())
                 + (StringUtils.isNoneBlank(family.getBrand()) ? " " + family.getBrand() : "")
                 + (StringUtils.isNoneBlank(family.getModel()) ? " " + family.getModel() : "")
                 + (StringUtils.isNoneBlank(family.getEnrollment()) ? " " + family.getEnrollment() : "");
 
-        return StringUtils.joinWith(" ", String.valueOf(updateDto.getId()), Utiles.getDateFormatted(updateDto.getStartDate(), "yyMMdd"),
-                familyName, "es".equals(request.getLocale().getLanguage()) ? subFamily.getNameES() : subFamily.getNameFR());
+        return StringUtils.joinWith(" ", String.valueOf(noProgrammedShare.getId()), Utiles.getDateFormatted(noProgrammedShare.getStartDate(), "yyMMdd"),
+                familyName, "es".equals(language) ? subFamily.getNameES() : subFamily.getNameFR());
     }
 
-    private void sendMail(final OpenNoProgrammedShareMailTemplateDto template) {
-        this.smtpService.openNoProgrammedShareSendMail(template);
+    private void sendOpenEmail(final NoProgrammedShareDto noProgrammedShare, final User createdBy, final Project project, final Locale locale) {
+        final String subject = this.messageSource.getMessage("email.noprogrammedshare.open.subject", new Object[] {
+                noProgrammedShare.getForumTitle(),
+                project.getName()
+        }, locale);
 
-        if (CollectionUtils.isNotEmpty(template.getProject().getResponsables())) {
-            template.getProject().getResponsables().forEach(responsible -> {
-                template.setEmail(responsible.getEmail());
-                smtpService.openNoProgrammedShareSendMail(template);
-            });
-        }
+        final Set<String> emails = new HashSet<>();
+        emails.add(createdBy.getEmail());
+        emails.addAll(project.getResponsables().stream().map(User::getEmail).collect(Collectors.toSet()));
+
+        final OpenNoProgrammedShareGroup emailGroup = new OpenNoProgrammedShareGroup();
+        emailGroup.setEmails(new ArrayList<>(emails));
+        emailGroup.setSubject(subject);
+        emailGroup.setLocale(locale);
+        emailGroup.setFullName(createdBy.getFullName());
+        emailGroup.setNoProgrammedShareId(noProgrammedShare.getId());
+        emailGroup.setProjectName(project.getName());
+        emailGroup.setCreatedAt(noProgrammedShare.getStartDate());
+        emailGroup.setDescription(noProgrammedShare.getDescription());
+        emailGroup.setForumTitle(noProgrammedShare.getForumTitle());
+        emailGroup.setForumUrl(ObjectUtils.allNotNull(project.getForumId(), noProgrammedShare.getTopicId())
+                ? "viewtopic.php?f=" + project.getForumId() + "&t=" + noProgrammedShare.getTopicId().toString()
+                : "-");
+
+        this.emailService.sendEmail(emailGroup);
     }
 
-    public void sendMailFinal(final NoProgrammedShareDto noProgrammedShare) {
-        final Supplier<RuntimeException> userNotFound = () -> new UserByIdNotFoundException(noProgrammedShare.getUserId());
-        final User firstTechnical = Optional.ofNullable(this.userService.getUserById(noProgrammedShare.getUserId().longValue()))
-                .orElseThrow(userNotFound);
+    public void sendCloseEmail(final NoProgrammedShareDto noProgrammedShare) {
+        final User user = Utiles.getCurrentUser();
 
         final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(noProgrammedShare.getProjectId());
         final Project project = Optional.ofNullable(this.projectService.getProjectById(noProgrammedShare.getProjectId().longValue()))
                 .orElseThrow(projectNotFound);
 
-        final CloseNoProgrammedShareMailTemplateDto dto = new CloseNoProgrammedShareMailTemplateDto();
-        dto.setLocale(request.getLocale());
-        dto.setEmail(firstTechnical.getEmail());
-        dto.setNoProgrammedShare(noProgrammedShare);
-        dto.setUser(firstTechnical);
-        dto.setProject(project);
+        final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));
+        final String subject = this.messageSource.getMessage("email.noprogrammedshare.close.subject", new Object[] {
+                noProgrammedShare.getForumTitle(),
+                project.getName()
+        }, locale);
 
-        this.smtpService.closeNoProgrammedShareSendMail(dto);
+        final Set<String> emails = new HashSet<>();
+        emails.add(user.getEmail());
+        emails.addAll(project.getResponsables().stream().map(User::getEmail).collect(Collectors.toSet()));
 
-        if (project.getResponsables() != null && !project.getResponsables().isEmpty()) {
-            for (final User responsible : project.getResponsables()) {
-                dto.setEmail(responsible.getEmail());
-                this.smtpService.closeNoProgrammedShareSendMail(dto);
-            }
-        }
+        final CloseNoProgrammedShareGroup emailGroup = new CloseNoProgrammedShareGroup();
+        emailGroup.setEmails(new ArrayList<>(emails));
+        emailGroup.setSubject(subject);
+        emailGroup.setLocale(locale);
+        emailGroup.setFullName(user.getFullName());
+        emailGroup.setNoProgrammedShareId(noProgrammedShare.getId());
+        emailGroup.setProjectName(project.getName());
+        emailGroup.setCreatedAt(noProgrammedShare.getStartDate());
+        emailGroup.setClosedAt(noProgrammedShare.getEndDate());
+        emailGroup.setForumTitle(noProgrammedShare.getForumTitle());
+        emailGroup.setForumUrl(ObjectUtils.allNotNull(project.getForumId(), noProgrammedShare.getTopicId())
+                ? "viewtopic.php?f=" + project.getForumId() + "&t=" + noProgrammedShare.getTopicId().toString()
+                : "-");
+
+        this.emailService.sendEmail(emailGroup);
     }
 }

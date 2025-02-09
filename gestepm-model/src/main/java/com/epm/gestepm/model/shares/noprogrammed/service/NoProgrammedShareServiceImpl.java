@@ -158,12 +158,12 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
 
         final NoProgrammedShareDto result = getMapper(MapNPSToNoProgrammedShareDto.class).from(updated);
 
-        if (result.getTopicId() == null) {
-            this.noProgrammedSharePostCreationDecorator.createForumEntryAndUpdate(result, update);
+        if (result.getTopicId() == null && NoProgrammedShareStateEnumDto.INITIALIZED.equals(updateDto.getState())) {
+            this.noProgrammedSharePostCreationDecorator.createForumEntryAndUpdate(result, update.getFiles());
         }
 
         if (NoProgrammedShareStateEnumDto.CLOSED.equals(updateDto.getState())) {
-            this.noProgrammedSharePostCreationDecorator.sendMailFinal(result);
+            this.noProgrammedSharePostCreationDecorator.sendCloseEmail(result);
         }
 
         return result;

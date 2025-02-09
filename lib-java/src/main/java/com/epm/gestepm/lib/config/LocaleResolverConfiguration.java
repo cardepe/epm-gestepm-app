@@ -21,9 +21,9 @@ public class LocaleResolverConfiguration {
     @Bean
     public ResourceBundleMessageSource messageSource() {
         final ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.setBasenames("i18n/messages", "i18n/errors", "i18n/front");
+        messageSource.setBasenames("i18n/messages", "i18n/errors", "i18n/front", "i18n/emails");
         messageSource.setUseCodeAsDefaultMessage(true);
-        // messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
 
