@@ -211,7 +211,6 @@
 
     let locale = '${locale}';
     let userId = ${user.id};
-    let roleId = ${user.role.id}
 
     $(document).ready(function () {
         initializeDataTables();

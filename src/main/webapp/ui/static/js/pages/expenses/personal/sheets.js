@@ -23,7 +23,7 @@ function initializeDataTables() {
         }
     ]
     let expand = ['project']
-    let filters = roleId === 5 || roleId === 8 ? [] : [{'createdBy': userId}]
+    let filters = [{'createdBy': userId}]
     let orderable = [[0, 'DESC']]
     let columnDefs = [
         {
