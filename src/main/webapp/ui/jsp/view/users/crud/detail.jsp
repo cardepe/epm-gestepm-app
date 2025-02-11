@@ -1678,7 +1678,7 @@
 			}
 		]
 		let expand = ['project']
-		let filters = [{'userId': ${userDetail.id}}]
+		let filters = [{'createdBy': ${userDetail.id}}]
 		let orderable = [[0, 'DESC']]
 		let columnDefs = [
 			{
