@@ -83,9 +83,9 @@ public class PersonalExpenseSheetController extends BaseController implements Pe
                                                                                               final Boolean links, final Set<String> expand,
                                                                                               final Long offset, final Long limit, final String order,
                                                                                               final String orderBy, final List<Integer> ids, final Integer projectId,
-                                                                                              final Integer userId, final String description, final LocalDateTime startDate,
+                                                                                              final Integer createdBy, final String description, final LocalDateTime startDate,
                                                                                               final String status, final String observations) {
-        final PersonalExpenseSheetListRestRequest req = new PersonalExpenseSheetListRestRequest(ids, projectId, userId, description, startDate, status, observations);
+        final PersonalExpenseSheetListRestRequest req = new PersonalExpenseSheetListRestRequest(ids, projectId, createdBy, description, startDate, status, observations);
 
         this.setCommon(req, meta, links, expand);
         this.setDefaults(req);

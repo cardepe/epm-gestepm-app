@@ -39,8 +39,8 @@ paths:
         - schema:
             type: integer
           in: query
-          name: userId
-          description: User identificator.
+          name: createdBy
+          description: User creator identificator.
         - schema:
             type: string
           in: query

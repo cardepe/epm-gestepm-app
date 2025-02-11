@@ -17,7 +17,7 @@ public class PersonalExpenseSheetListRestRequest extends RestRequest {
 
     private Integer projectId;
 
-    private Integer userId;
+    private Integer createdBy;
 
     private String description;
 
