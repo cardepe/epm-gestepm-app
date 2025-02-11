@@ -273,8 +273,8 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
     private void checkUserPermissions(final Integer personalExpenseSheetId, final User user, final PersonalExpenseSheetStatusEnumDto status) {
         final Long roleId = user.getRole().getId();
         final List<Boolean> conditions = Arrays.asList(
-                PersonalExpenseSheetStatusEnumDto.APPROVED.equals(status) && roleId < Constants.ROLE_ADMINISTRATION_ID,
-                PersonalExpenseSheetStatusEnumDto.PAID.equals(status) && roleId < Constants.ROLE_PL_ID,
+                PersonalExpenseSheetStatusEnumDto.APPROVED.equals(status) && roleId < Constants.ROLE_PL_ID,
+                PersonalExpenseSheetStatusEnumDto.PAID.equals(status) && roleId < Constants.ROLE_ADMINISTRATION_ID,
                 PersonalExpenseSheetStatusEnumDto.REJECTED.equals(status) && roleId < Constants.ROLE_PL_ID
         );
 

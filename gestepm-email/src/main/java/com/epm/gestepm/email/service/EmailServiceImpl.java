@@ -33,8 +33,6 @@ import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_PROCESS;
 @EnableExecutionLog(layerMarker = SERVICE)
 public class EmailServiceImpl implements EmailService {
 
-    private static final String EMAIL_TO = "You";
-
     @Value("${spring.mail.username}")
     private String from;
 
@@ -63,8 +61,7 @@ public class EmailServiceImpl implements EmailService {
             context.setVariables(variables);
             final String htmlContent = this.templateEngine.process("main.html", context);
 
-            helper.setTo(EMAIL_TO);
-            helper.setBcc(emailData.getEmails().toArray(new String[0]));
+            helper.setTo(emailData.getEmails().toArray(new String[0]));
             helper.setSubject(emailData.getSubject());
             helper.setText(htmlContent, true);
             helper.setFrom(this.from);
