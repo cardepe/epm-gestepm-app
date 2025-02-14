@@ -199,7 +199,7 @@
             {
                 targets: 2,
                 render: function (data) {
-                    return moment(data).format('DD-MM-YYYY');
+                    return moment(data).format('DD-MM-YYYY HH:mm');
                 }
             },
             {

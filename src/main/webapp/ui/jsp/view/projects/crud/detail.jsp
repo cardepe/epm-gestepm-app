@@ -2837,7 +2837,7 @@
     }
 
     function initializePersonalExpensesDataTables() {
-        let columns = ['id', 'description', 'project.name', 'status', 'startDate', 'amount', 'id']
+        let columns = ['id', 'description', 'project.name', 'status', 'createdAt', 'amount', 'id']
         let endpoint = '/v1/expenses/personal/sheets';
         let actions = [
             {
