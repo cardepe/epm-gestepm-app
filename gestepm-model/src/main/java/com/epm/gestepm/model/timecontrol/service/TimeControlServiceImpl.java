@@ -25,9 +25,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,7 +43,7 @@ public class TimeControlServiceImpl implements TimeControlService {
 	private MessageSource messageSource;
 	
 	@Autowired
-	private PersonalSigningRepository personalSigingRepository;
+	private PersonalSigningRepository personalSigningRepository;
 	
 	@Autowired
 	private UserRepository userRepository;
@@ -61,43 +59,40 @@ public class TimeControlServiceImpl implements TimeControlService {
 	
 	@Override
 	public List<TimeControlTableDTO> getTimeControlTableDTOByDateAndUser(int month, int year, Long userId, Long activityCenter, Locale locale) {
-		
-		int minDay = 1;
-		int maxDay = Utiles.getDaysOfMonth(month, year);
 
-		final LocalDateTime startDate = LocalDateTime.of(year, month, minDay, 0, 0, 0);
-		final LocalDateTime endDate = LocalDateTime.of(year, month, maxDay, 23, 59, 59);
+		final int monthMaxDay = YearMonth.of(year, month).lengthOfMonth();
+		final LocalDateTime startMonth = YearMonth.of(year, month).atDay(LocalDate.MIN.getDayOfMonth()).atStartOfDay();
+		final LocalDateTime endMonth = YearMonth.of(year, month).atDay(monthMaxDay).atTime(LocalTime.MAX);
 
-		User user = userRepository.findById(userId).get();
-		String username = user.getName() + " " + user.getSurnames();
+		final User user = userRepository.findById(userId).get();
 		long journeyMillis = (long) (user.getWorkingHours() * (60 * 60 * 1000));
-		
-		List<TimeControlTableDTO> timeControlsMap = new ArrayList<>();
 
-		List<DisplacementShare> displacementShares = displacementShareRepository.findWeekSigningsByUserId(startDate, endDate, userId, 1);
-		List<PersonalSigning> personalSignings = personalSigingRepository.findWeekSigningsByUserId(startDate, endDate, userId);
-		List<UserSigning> userSignings = userSigningRepository.findWeekSigningsByUserId(startDate, endDate, userId);
-		List<UserManualSigning> userManualSignings = userManualSigningRepository.findWeekManualSigningsByUserId(startDate, endDate, userId);
+		final List<TimeControlTableDTO> timeControlsMap = new ArrayList<>();
+
+		final List<DisplacementShare> displacementShares = displacementShareRepository.findWeekSigningsByUserId(startMonth, endMonth, userId, 1);
+		final List<PersonalSigning> personalSignings = personalSigningRepository.findWeekSigningsByUserId(startMonth, endMonth, userId);
+		final List<UserSigning> userSignings = userSigningRepository.findWeekSigningsByUserId(startMonth, endMonth, userId);
+		final List<UserManualSigning> userManualSignings = userManualSigningRepository.findWeekManualSigningsByUserId(startMonth, endMonth, userId);
 
 		if (displacementShares.isEmpty() && personalSignings.isEmpty() && userSignings.isEmpty() && userManualSignings.isEmpty()) {
 			return new ArrayList<>();
 		}
+
+		final List<Holiday> holidays = holidayRepository.findHolidaysByActivityCenter(activityCenter);
+		final List<UserHoliday> userHolidays = userHolidaysRepository.findHolidaysByUserId(userId, year);
 		
-		List<Holiday> holidays = holidayRepository.findHolidaysByActivityCenter(activityCenter);
-		List<UserHoliday> userHolidays = userHolidaysRepository.findHolidaysByUserId(userId, year);
-		
-		for (int i = 1; i <= maxDay; i++) {
-			
-			Date timeControlDate = Utiles.transformSimpleStringToDate((i < 10 ? "0" : "") + i + "-" + (month < 10 ? "0" : "") + month + "-" + year);
-			
-			if (timeControlDate.after(new Date())) {
+		for (int i = 1; i <= monthMaxDay; i++) {
+
+			final LocalDateTime timeControlDate = YearMonth.of(year, month).atDay(i).atStartOfDay();
+
+			if (timeControlDate.isAfter(LocalDateTime.now())) {
 				break;
 			}
 			
 			TimeControlTableDTO timeControl = new TimeControlTableDTO();
 			timeControl.setCustomId(userId, timeControlDate);
-			timeControl.setDate(LocalDateTime.from(timeControlDate.toInstant().atOffset(ZoneOffset.UTC)));
-			timeControl.setUsername(username);
+			timeControl.setDate(timeControlDate);
+			timeControl.setUsername(user.getFullName());
 
 			UserManualSigning userManualFullDay = isUserManualFullDay(timeControlDate, userManualSignings);
 
@@ -116,16 +111,16 @@ public class TimeControlServiceImpl implements TimeControlService {
 			timeControl.setJourney(user.getWorkingHours());
 			
 			List<DisplacementShare> todayDisplacementShares = displacementShares.stream()
-					.filter(s -> DateUtils.isSameDay(Date.from(s.getDisplacementDate().toInstant(ZoneOffset.UTC)), timeControlDate)).collect(Collectors.toList());
+					.filter(s -> Utiles.isSameDay(s.getDisplacementDate(), timeControlDate)).collect(Collectors.toList());
 			
 			List<PersonalSigning> todayPersonalSignings = personalSignings.stream()
-					.filter(s -> DateUtils.isSameDay(Date.from(s.getStartDate().toInstant(ZoneOffset.UTC)), timeControlDate)).collect(Collectors.toList());
+					.filter(s -> Utiles.isSameDay(s.getStartDate(), timeControlDate)).collect(Collectors.toList());
 			
 			List<UserSigning> todayUserSignings = userSignings.stream()
-					.filter(s -> DateUtils.isSameDay(Date.from(s.getStartDate().toInstant(ZoneOffset.UTC)), timeControlDate)).collect(Collectors.toList());
+					.filter(s -> Utiles.isSameDay(s.getStartDate(), timeControlDate)).collect(Collectors.toList());
 
 			List<UserManualSigning> todayUserManualSignings = userManualSignings.stream()
-					.filter(s -> DateUtils.isSameDay(Date.from(s.getStartDate().toInstant(ZoneOffset.UTC)), timeControlDate)).collect(Collectors.toList());
+					.filter(s -> Utiles.isSameDay(s.getStartDate(), timeControlDate)).collect(Collectors.toList());
 			
 			Date checkInDate = null;
 			Date checkOutDate = null;
@@ -251,8 +246,8 @@ public class TimeControlServiceImpl implements TimeControlService {
 
 					TimeControlTableDTO manualTimeControl = new TimeControlTableDTO();
 					manualTimeControl.setCustomId(userId, timeControlDate);
-					manualTimeControl.setDate(LocalDateTime.from(timeControlDate.toInstant().atOffset(ZoneOffset.UTC)));
-					manualTimeControl.setUsername(username);
+					manualTimeControl.setDate(timeControlDate);
+					manualTimeControl.setUsername(user.getFullName());
 					manualTimeControl.setReason("1" + ums.getManualSigningType().getName());
 					manualTimeControl.setStartHour(ums.getStartDate());
 					manualTimeControl.setEndHour(ums.getEndDate());
@@ -272,7 +267,7 @@ public class TimeControlServiceImpl implements TimeControlService {
 		final LocalDateTime endDate = startDate.withHour(23).withMinute(59).withSecond(59);
 
 		final List<DisplacementShare> displacementShares = displacementShareRepository.findWeekSigningsByUserId(startDate, endDate, userId, 1);
-		final List<PersonalSigning> personalSignings = personalSigingRepository.findWeekSigningsByUserId(startDate, endDate, userId);
+		final List<PersonalSigning> personalSignings = personalSigningRepository.findWeekSigningsByUserId(startDate, endDate, userId);
 		final List<UserSigning> userSignings = userSigningRepository.findWeekSigningsByUserId(startDate, endDate, userId);
 
 		final TimeControlTableDTO timeControl = new TimeControlTableDTO();
@@ -398,32 +393,26 @@ public class TimeControlServiceImpl implements TimeControlService {
 
 		final LocalDateTime endDate = startDate.withHour(23).withMinute(59).withSecond(59);
 		
-		List<TimeControlDetailTableDTO> registers = new ArrayList<>();
+		final List<TimeControlDetailTableDTO> registers = new ArrayList<>();
 
-		List<DisplacementShare> displacementShares = displacementShareRepository.findWeekSigningsByUserId(startDate, endDate, userId, 1);
-		List<PersonalSigning> personalSignings = personalSigingRepository.findWeekSigningsByUserId(startDate, endDate, userId);
-		List<UserSigning> userSignings = userSigningRepository.findWeekSigningsByUserId(startDate, endDate, userId);
-		List<UserManualSigning> userManualSignings = userManualSigningRepository.findWeekManualSigningsByUserId(startDate, endDate, userId);
+		final List<DisplacementShare> displacementShares = displacementShareRepository.findWeekSigningsByUserId(startDate, endDate, userId, 1);
+		final List<PersonalSigning> personalSignings = personalSigningRepository.findWeekSigningsByUserId(startDate, endDate, userId);
+		final List<UserSigning> userSignings = userSigningRepository.findWeekSigningsByUserId(startDate, endDate, userId);
+		final List<UserManualSigning> userManualSignings = userManualSigningRepository.findWeekManualSigningsByUserId(startDate, endDate, userId);
 		
 		for (DisplacementShare ds : displacementShares) {
-			
-			Calendar datee = Calendar.getInstance();
-			datee.setTime(Date.from(ds.getDisplacementDate().toInstant(ZoneOffset.UTC)));
-			long t = datee.getTimeInMillis();
-			Date afterAddingMins = new Date(t + (ds.getManualHours() * 60000));
-			
-			TimeControlDetailTableDTO tcDTO = new TimeControlDetailTableDTO();
-			tcDTO.setStartHour(Date.from(ds.getDisplacementDate().toInstant(ZoneOffset.UTC)));
-			tcDTO.setEndHour(afterAddingMins);
+			final TimeControlDetailTableDTO tcDTO = new TimeControlDetailTableDTO();
+			tcDTO.setStartHour(ds.getDisplacementDate());
+			tcDTO.setEndHour(ds.getDisplacementDate().plusHours(ds.getManualHours()));
 			tcDTO.setType(messageSource.getMessage("shares.displacement.title", null, locale));
 			
 			registers.add(tcDTO);
 		}
 		
 		for (PersonalSigning ps : personalSignings) {
-			TimeControlDetailTableDTO tcDTO = new TimeControlDetailTableDTO();
-			tcDTO.setStartHour(Date.from(ps.getStartDate().toInstant(ZoneOffset.UTC)));
-			tcDTO.setEndHour(Date.from(ps.getEndDate().toInstant(ZoneOffset.UTC)));
+			final TimeControlDetailTableDTO tcDTO = new TimeControlDetailTableDTO();
+			tcDTO.setStartHour(ps.getStartDate());
+			tcDTO.setEndHour(ps.getEndDate());
 			tcDTO.setType(messageSource.getMessage("signing.personal.title", null, locale));
 			
 			registers.add(tcDTO);
@@ -431,8 +420,8 @@ public class TimeControlServiceImpl implements TimeControlService {
 		
 		for (UserSigning ps : userSignings) {
 			TimeControlDetailTableDTO tcDTO = new TimeControlDetailTableDTO();
-			tcDTO.setStartHour(Date.from(ps.getStartDate().toInstant(ZoneOffset.UTC)));
-			tcDTO.setEndHour(Date.from(ps.getEndDate().toInstant(ZoneOffset.UTC)));
+			tcDTO.setStartHour(ps.getStartDate());
+			tcDTO.setEndHour(ps.getEndDate());
 			tcDTO.setType(messageSource.getMessage("signing.calendar.title", null, locale));
 			
 			registers.add(tcDTO);
@@ -441,8 +430,8 @@ public class TimeControlServiceImpl implements TimeControlService {
 		for (UserManualSigning ums : userManualSignings) {
 
 			final TimeControlDetailTableDTO tcDTO = new TimeControlDetailTableDTO();
-			tcDTO.setStartHour(Date.from(ums.getStartDate().toInstant(ZoneOffset.UTC)));
-			tcDTO.setEndHour(Date.from(ums.getEndDate().toInstant(ZoneOffset.UTC)));
+			tcDTO.setStartHour(ums.getStartDate());
+			tcDTO.setEndHour(ums.getEndDate());
 			tcDTO.setType(ums.getManualSigningType().getName());
 
 			registers.add(tcDTO);
@@ -457,25 +446,13 @@ public class TimeControlServiceImpl implements TimeControlService {
 		return holidays.stream().anyMatch(h -> h.getDay() == day && h.getMonth() == month);
 	}
 	
-	private boolean isUserHoliday(Date date, List<UserHoliday> userHolidays) {
-		return userHolidays.stream().anyMatch(h -> h.getDate().compareTo(date) == 0);
+	private boolean isUserHoliday(LocalDateTime date, List<UserHoliday> userHolidays) {
+		return userHolidays.stream().anyMatch(h -> Utiles.convertToLocalDateTimeViaInstant(h.getDate()).isEqual(date));
 	}
 
-	private UserManualSigning isUserManualFullDay(Date date, List<UserManualSigning> userManualSignings) {
-
+	private UserManualSigning isUserManualFullDay(LocalDateTime currentDate, List<UserManualSigning> userManualSignings) {
 		for (UserManualSigning ums : userManualSignings) {
-
-			final Date startDate = Date.from(ums.getStartDate().toInstant(ZoneOffset.UTC));
-
-			final Calendar cal1 = Calendar.getInstance();
-			final Calendar cal2 = Calendar.getInstance();
-
-			cal1.setTime(date);
-			cal2.setTime(startDate);
-
-			boolean sameDay = cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR) && cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR);
-
-			if (sameDay) {
+			if (Utiles.isSameDay(currentDate, ums.getStartDate())) {
 				final long workingHours = ums.getUser().getWorkingHours().longValue();
 				final long journeyDefaultTime = workingHours * 60 * 60 * 1000;
 				final long journeyTime = Duration.between(ums.getStartDate(), ums.getEndDate()).toMillis();
@@ -483,7 +460,6 @@ public class TimeControlServiceImpl implements TimeControlService {
 				return journeyTime >= journeyDefaultTime ? ums : null;
 			}
 		}
-
 		return null;
 	}
 }

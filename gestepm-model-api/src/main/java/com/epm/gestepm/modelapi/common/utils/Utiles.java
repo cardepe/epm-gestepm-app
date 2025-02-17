@@ -273,7 +273,7 @@ public class Utiles {
 		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");  
 		return dateFormat.format(date);  
 	}
-	
+
 	/**
 	 * Get Date as String from Date
 	 * @param date
@@ -422,11 +422,13 @@ public class Utiles {
 		return yearMonthObject.lengthOfMonth();
 	}
 	
-	public static boolean isWeekend(Date date) {
-		Calendar c = Calendar.getInstance();
-		c.setTime(date);
-		
-		return c.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || c.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY;
+	public static boolean isWeekend(final LocalDateTime localDateTime) {
+		final DayOfWeek day = localDateTime.getDayOfWeek();
+		return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
+	}
+
+	public static boolean isSameDay(final LocalDateTime dt1, final LocalDateTime dt2) {
+		return dt1.toLocalDate().equals(dt2.toLocalDate());
 	}
 	
 	public static String getStringDateWithMillis(long millis) {

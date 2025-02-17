@@ -1,10 +1,13 @@
 package com.epm.gestepm.modelapi.userholiday.dto;
 
 import com.epm.gestepm.modelapi.user.dto.User;
+import lombok.Data;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 
+@Data
 @Entity
 @Table(name = "user_holidays")
 public class UserHoliday {
@@ -27,43 +30,4 @@ public class UserHoliday {
 	@Column(name="OBSERVATIONS")
     private String observations;
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public String getObservations() {
-		return observations;
-	}
-
-	public void setObservations(String observations) {
-		this.observations = observations;
-	}
 }

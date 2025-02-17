@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -16,9 +17,9 @@ public class TimeControlDetailTableDTO {
 	private String type;
 	
 	@JsonProperty("tc_startHour")
-	private Date startHour;
+	private LocalDateTime startHour;
 	
 	@JsonProperty("tc_endHour")
-	private Date endHour;
+	private LocalDateTime endHour;
 
 }

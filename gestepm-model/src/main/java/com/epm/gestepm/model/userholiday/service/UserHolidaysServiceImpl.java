@@ -107,10 +107,7 @@ public class UserHolidaysServiceImpl implements UserHolidaysService {
 				if (!yearCalendarDtos.isEmpty()) {
 
 					final YearCalendarDTO yearCalendarDto = yearCalendarDtos.get(0);
-
-					final String fullName = uh.getUser().getName() + " " + uh.getUser().getSurnames();
-
-					yearCalendarDto.addUsername(fullName);
+					yearCalendarDto.addUsername(uh.getUser().getFullName());
 
 				} else {
 
@@ -137,12 +134,5 @@ public class UserHolidaysServiceImpl implements UserHolidaysService {
 	@Override
 	public Long getUserHolidaysCountByUser(Long userId) {
 		return userHolidaysRepository.findUserHolidaysCountByUserId(userId);
-	}
-	
-	private UserHoliday findUserHolidayByDate(List<UserHoliday> userHolidays, Date date) {
-		return userHolidays.stream()
-				.filter(userHoliday -> userHoliday.getDate().toInstant().equals(date.toInstant()))
-				.findAny()
-				.orElse(null);
 	}
 }

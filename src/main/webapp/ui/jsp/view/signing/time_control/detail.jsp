@@ -11,8 +11,7 @@
 				<div class="page-header float-left">
 					<div class="page-title">
 						<h1 class="text-uppercase">
-							<spring:message code="time.control.detail.title"
-								arguments="${actualDate}" />
+							<spring:message code="time.control.detail.title" arguments="${actualDate}" />
 						</h1>
 					</div>
 				</div>

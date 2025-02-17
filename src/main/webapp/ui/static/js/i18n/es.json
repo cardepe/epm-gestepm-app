@@ -148,8 +148,8 @@
     },
     "status": {
         "pending": "Pendiente",
-        "approved": "Aprobado por administración",
-        "paid": "Pagado",
+        "approved": "Aprobado",
+        "paid": "Aprobado por administración",
         "rejected": "Cancelado"
     }
 }

@@ -40,8 +40,8 @@ public class TimeControlTableDTO {
 	@JsonProperty("tc_difference")
 	private String difference;
 
-	public void setCustomId(Long userId, Date date) {
-		String strDate = Utiles.getDateFormatted(date);
+	public void setCustomId(Long userId, LocalDateTime date) {
+		final String strDate = Utiles.getDateFormatted(date, "dd-MM-yyyy");
 		this.id = userId + ";" + strDate;
 	}
 }
