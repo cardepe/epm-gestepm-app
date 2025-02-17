@@ -15,11 +15,13 @@ function initializeDataTables() {
         {
             action: 'delete',
             permission: 'edit_personal_expenses_sheet',
-            condition: {
-                key: 'status',
-                value: [ undefined ],
-                operation: '==='
-            }
+            conditionGroups: [
+                {
+                    conditions: [
+                        { key: 'status', value: [ undefined ], operation: '===' }
+                    ]
+                }
+            ]
         }
     ]
     let expand = ['project']

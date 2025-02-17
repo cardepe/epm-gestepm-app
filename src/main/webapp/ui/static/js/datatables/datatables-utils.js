@@ -262,13 +262,13 @@ function printActions(data, actions, id) {
         }
 
         if (a.action === 'validate') {
-            if (checkConditions(data, a.condition)) {
+            if (checkConditionGroups(data, a.conditionGroups)) {
                 buttonHtml += '<em class="far fa-thumbs-up" onclick="validate(' + id + ')"></em>';
             }
         }
 
         if (a.action === 'decline') {
-            if (checkConditions(data, a.condition)) {
+            if (checkConditionGroups(data, a.conditionGroups)) {
                 buttonHtml += '<em class="far fa-thumbs-down" onclick="decline(' + id + ')"></em>';
             }
         }
@@ -284,7 +284,7 @@ function printActions(data, actions, id) {
         }
 
         if (a.action === 'delete') { // FIXME: } && a.permission && authentication.permissions.includes(a.permission)) {
-            if (checkConditions(data, a.condition)) {
+            if (checkConditionGroups(data, a.conditionGroups)) {
                 buttonHtml += '<em class="far fa-trash-alt" onclick="remove(' + id + ')"></em>';
             }
         }
@@ -299,21 +299,26 @@ function printActions(data, actions, id) {
     return buttonHtml;
 }
 
-function checkConditions(data, condition) {
-
-    if (condition) {
-        if (condition.key === 'status') {
-            if (condition.operation === '!==') {
-                if (condition.value.includes(data.status)) {
-                    return false;
+function checkConditionGroups(data, conditionGroups) {
+    return conditionGroups.some(group => {
+        return group.conditions.every(condition => {
+            if (condition.key === 'status') {
+                if (condition.operation === '!==') {
+                    return !condition.value.includes(data.status);
+                } else if (condition.operation === '===') {
+                    return condition.value.includes(data.status);
                 }
-            } else if (condition.operation === '===') {
-                if (!condition.value.includes(data.status)) {
-                    return false;
+            } else if (condition.key === 'roleId') {
+                console.log(condition);
+                if (condition.operation === '>=') {
+                    if (condition.value.includes('ROLE_PL_ID')) {
+                        return condition.current >= 4;
+                    } else if (condition.value.includes('ROLE_ADMINISTRATION_ID')) {
+                        return condition.current >= 7;
+                    }
                 }
             }
-        }
-    }
-
-    return true;
+            return false;
+        });
+    });
 }

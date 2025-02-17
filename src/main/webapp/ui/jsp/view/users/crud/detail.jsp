@@ -80,21 +80,21 @@
 					</div>
 					<div class="col-sm-12 col-md-9 bg-light overflow-auto">
 						<div class="tab-content" id="v-pills-tabContent">
-						
+
 							<div class="tab-pane fade" id="v-pills-absences" role="tabpanel" aria-labelledby="v-pills-absences-tab">
-						  	
+
 						  		<div class="row">
 						  			<div class="col">
 								  		<div class="title mb-4 pb-2">
 											<spring:message code="user.detail.absences" />
 										</div>
 									</div>
-									
+
 									<div class="col text-right">
 										<button type="button" class="btn btn-standard btn-sm" data-toggle="modal" data-target="#createModal"><spring:message code="user.detail.absences.create" /></button>
 									</div>
 								</div>
-						  	
+
 						  		<div class="table-responsive">
 								  	<table id="dTableAbsences" class="table table-striped table-borderer dataTable w-100">
 										<caption class="d-none">
@@ -111,9 +111,9 @@
 									</table>
 								</div>
 						  	</div>
-		
+
 						  	<div class="tab-pane fade" id="v-pills-signing" role="tabpanel" aria-labelledby="v-pills-signing-tab">
-						  	
+
 						  		<div class="row">
 						  			<div class="col">
 								  		<div class="title mb-4 pb-2">
@@ -140,16 +140,16 @@
 										</div>
 									</div>
 								</div>
-						  	
+
 						  		<div class="row h-100">
-						  			<div class="col-md-12 calendar-content">					  			
+						  			<div class="col-md-12 calendar-content">
 									  	<div id="calendar" class="h-100"></div>
 						  			</div>
 						  		</div>
 						  	</div>
-						  	
+
 						  	<div class="tab-pane fade" id="v-pills-forum" role="tabpanel" aria-labelledby="v-pills-forum-tab">
-						  	
+
 						  		<div class="row">
 						  			<div class="col">
 								  		<div class="title mb-4 pb-2">
@@ -157,7 +157,7 @@
 										</div>
 									</div>
 								</div>
-								
+
 								<c:choose>
 									<c:when test="${not empty userDetail.username}">
 										<span><spring:message code="user.detail.user.username" />: ${userDetail.username}</span>
@@ -165,7 +165,7 @@
 									<c:otherwise>
 										<form id="userForumForm" method="POST" action="/forum/create">
 											<input name="userId" type="hidden" value="${userDetail.id}" />
-											
+
 											<div class="row">
 												<div class="col text-center">
 													<span class="font-italic"><spring:message code="user.detail.forum.empty" /></span>
@@ -190,9 +190,9 @@
 									</c:otherwise>
 								</c:choose>
 						  	</div>
-						  	
+
 						  	<div class="tab-pane fade" id="v-pills-expenses" role="tabpanel" aria-labelledby="v-pills-expenses-tab">
-						  	
+
 						  		<div class="row">
 						  			<div class="col">
 								  		<div class="title mb-4 pb-2">
@@ -217,9 +217,9 @@
 									</table>
 								</div>
 						  	</div>
-						
+
 							<div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
-								
+
 								<form id="userInfoForm" class="needs-validation">
 									<div class="row">
 							  			<div class="col">
@@ -227,60 +227,60 @@
 												<spring:message code="user.detail.info" />
 											</div>
 										</div>
-											
+
 										<div class="col text-right">
 											<button id="saveUserBtn" type="button" class="btn btn-accent btn-sm"><spring:message code="save" /></button>
 											<button id="editUserBtn" type="button" class="btn btn-standard btn-sm" ${user.role.id == jspUtil.getRolId('ROLE_JEFE_PROJECTO') ? 'disabled' : ''}><spring:message code="edit" /></button>
 										</div>
 									</div>
-									
+
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
-												<label for="name" class="col-form-label"> 
+												<label for="name" class="col-form-label">
 													<spring:message code="user.detail.user.name" />
 												</label>
 												<input id="name" name="name" type="text" class="form-control" value="${userDetail.name}" required readonly />
 											</div>
 										</div>
-										
+
 										<div class="col-md-6">
 											<div class="form-group">
-												<label for="surnames" class="col-form-label"> 
+												<label for="surnames" class="col-form-label">
 													<spring:message code="user.detail.user.surnames" />
 												</label>
 												<input id="surnames" name="surnames" type="text" class="form-control" value="${userDetail.surnames}" required readonly />
 											</div>
 										</div>
 									</div>
-									
+
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
-												<label for="email" class="col-form-label"> 
+												<label for="email" class="col-form-label">
 													<spring:message code="user.detail.user.email" />
 												</label>
 												<input id="email" name="email" type="email" class="form-control" value="${userDetail.email}" required readonly />
 											</div>
 										</div>
-										
+
 										<div class="col-md-6">
 											<div class="form-group">
-												<label for="password" class="col-form-label"> 
+												<label for="password" class="col-form-label">
 													<spring:message code="user.detail.user.password" />
 												</label>
 												<input id="password" name="password" type="password" class="form-control" value="${userDetail.password}" required readonly />
 											</div>
 										</div>
 									</div>
-									
+
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
-												<label for="countryId" class="col-form-label"> 
+												<label for="countryId" class="col-form-label">
 													<spring:message code="user.detail.user.country" />
 												</label>
-												
+
 												<select id="countryId" name="countryId" class="form-control" required disabled>
 													<c:forEach items="${countries}" var="country">
 														<option value="${country.id}" ${userDetail.activityCenter.country.id == country.id ? 'selected' : ''}>${country.name}</option>
@@ -288,13 +288,13 @@
 												</select>
 											</div>
 										</div>
-										
+
 										<div class="col-md-6">
 											<div class="form-group">
-												<label for="activityCenterId" class="col-form-label"> 
+												<label for="activityCenterId" class="col-form-label">
 													<spring:message code="user.detail.user.activity.center" />
 												</label>
-												
+
 												<select id="activityCenterId" name="activityCenterId" class="form-control" required disabled>
 													<c:forEach items="${activityCenters}" var="activityCenter">
 														<option value="${activityCenter.id}" ${userDetail.activityCenter.id == activityCenter.id ? 'selected' : ''}>${activityCenter.name}</option>
@@ -303,14 +303,14 @@
 											</div>
 										</div>
 									</div>
-									
+
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
-												<label for="roleId" class="col-form-label"> 
+												<label for="roleId" class="col-form-label">
 													<spring:message code="user.detail.user.role" />
 												</label>
-												
+
 												<select id="roleId" name="roleId" class="form-control" required disabled>
 													<c:forEach items="${roles}" var="role">
 														<option value="${role.id}" ${userDetail.role.id == role.id ? 'selected' : ''}>
@@ -320,13 +320,13 @@
 												</select>
 											</div>
 										</div>
-										
+
 										<div class="col-md-6">
 											<div class="form-group">
-												<label for="subRoleId" class="col-form-label"> 
+												<label for="subRoleId" class="col-form-label">
 													<spring:message code="user.detail.user.subrole" />
 												</label>
-												
+
 												<select id="subRoleId" name="subRoleId" class="form-control" required disabled>
 													<c:forEach items="${subRoles}" var="subRole">
 														<option value="${subRole.id}" ${userDetail.subRole.id == subRole.id ? 'selected' : ''}>
@@ -337,36 +337,36 @@
 											</div>
 										</div>
 									</div>
-									
+
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
-												<label for="workingHours" class="col-form-label"> 
+												<label for="workingHours" class="col-form-label">
 													<spring:message code="user.detail.user.working.hours" />
 												</label>
-												
+
 												<input id="workingHours" name="workingHours" type="number" class="form-control" value="${userDetail.workingHours}" required readonly />
 											</div>
 										</div>
-										
+
 										<div class="col-md-6">
 											<div class="form-group">
-												<label for="signingId" class="col-form-label"> 
+												<label for="signingId" class="col-form-label">
 													<spring:message code="users.table.signingid" />
 												</label>
-												
+
 												<input id="signingId" name="signingId" type="number" class="form-control" value="${userDetail.signingId}" required readonly />
 											</div>
 										</div>
 									</div>
-									
+
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
-												<label for="stateInput" class="col-form-label"> 
+												<label for="stateInput" class="col-form-label">
 													<spring:message code="user.detail.user.state" />
 												</label>
-												
+
 												<select id="stateInput" name="state" class="form-control" required disabled>
 													<option value="0" ${userDetail.state == 0 ? 'selected' : ''}>
 														<spring:message code="user.detail.state.active" />
@@ -380,9 +380,9 @@
 									</div>
 								</form>
 							</div>
-							
+
 							<div class="tab-pane fade" id="v-pills-projects" role="tabpanel" aria-labelledby="v-pills-projects-tab">
-						  	
+
 						  		<div class="row">
 						  			<div class="col">
 								  		<div class="title mb-4 pb-2">
@@ -396,7 +396,7 @@
 										</div>
 									</sec:authorize>
 								</div>
-						  	
+
 						  		<div class="table-responsive">
 								  	<table id="dTableProjects" class="table table-striped table-borderer dataTable w-100">
 										<caption class="d-none">
@@ -414,9 +414,9 @@
 									</table>
 								</div>
 						  	</div>
-						  	
+
 						  	<div class="tab-pane fade" id="v-pills-holidays" role="tabpanel" aria-labelledby="v-pills-holidays-tab">
-						  	
+
 						  		<div class="row">
 						  			<div class="col">
 								  		<div class="title mb-4 pb-2">
@@ -424,7 +424,7 @@
 										</div>
 									</div>
 								</div>
-						  	
+
 						  		<div class="table-responsive">
 								  	<table id="dTableHolidays" class="table table-striped table-borderer dataTable w-100">
 										<caption class="d-none">
@@ -441,7 +441,7 @@
 									</table>
 								</div>
 						  	</div>
-						</div>			
+						</div>
 					</div>
 				</div>
 			</div>
@@ -466,17 +466,17 @@
 						<div class="col">
 							<select id="absenceType" class="form-control input" style="width: 100%" name="absenceType">
 								<c:forEach items="${absenceTypes}" var="absenceType">
-									<option value="${absenceType.id}">				
+									<option value="${absenceType.id}">
 										<spring:message code="${absenceType.name}" />
 									</option>
 								</c:forEach>
-							</select>			
-						</div>	
+							</select>
+						</div>
 					</div>
-					
+
 					<div class="row mt-4">
 						<div class="col">
-							<input type="date" class="form-control input" id="date" name="date">			
+							<input type="date" class="form-control input" id="date" name="date">
 						</div>
 					</div>
 				</form>
@@ -510,14 +510,14 @@
 				<form id="editSigningForm">
 					<input id="shareId" name="shareId" type="hidden" />
 					<input id="shareType" name="shareType" type="hidden" />
-					
+
 					<div class="row">
 						<div class="col-6">
-							<input type="datetime-local" class="form-control input" id="startDate" name="startDate">			
+							<input type="datetime-local" class="form-control input" id="startDate" name="startDate">
 						</div>
-						
+
 						<div class="col-6">
-							<input type="datetime-local" class="form-control input" id="endDate" name="endDate">			
+							<input type="datetime-local" class="form-control input" id="endDate" name="endDate">
 						</div>
 					</div>
 
@@ -692,8 +692,8 @@
 										<spring:message code="${year}" />
 									</option>
 								</c:forEach>
-							</select>			
-						</div>	
+							</select>
+						</div>
 					</div>
 				</div>
 				<div class="modal-footer clearfix">
@@ -729,12 +729,12 @@
 						<div class="col">
 							<select id="projectDropdown" class="form-control input selectpicker" data-style="userSelectPicker" data-live-search="true" multiple style="width: 100%" name="projectId">
 								<c:forEach items="${notProjects}" var="notProject">
-									<option value="${notProject.id}">				
+									<option value="${notProject.id}">
 										<spring:message code="${notProject.projectName}" />
 									</option>
 								</c:forEach>
-							</select>			
-						</div>	
+							</select>
+						</div>
 					</div>
 				</form>
 			</div>
@@ -805,7 +805,7 @@
 			<div class="modal-body">
 				<form id="declineHolidayForm">
 					<input type="hidden" id="deHolidayId" />
-					
+
 					<div class="row">
 						<div class="col">
 							<div class="form-group">
@@ -886,33 +886,33 @@
 				} else if (shareType === 'ums') {
 					$('#editSigningModalTitle').text("${jspUtil.parseTagToText('shares.edit.ps.title')}");
 				}
-				
+
 				viewShare(shareId, shareType);
 			}
 		});
 
 		calendar.render();
 	});
-	
+
 	$('#previousButton').click(function() {
 		calendar.prev();
 	});
-	
+
 	$('#nextButton').click(function() {
 		calendar.next();
 	});
 	/* End Calendar */
-	
+
 	$(document).ready(function() {
 
 		getLocation();
 
 		/* Select 2 */
-		
+
 		$('#projectDropdown').selectpicker();
-		
+
 		/* End Select 2 */
-		
+
 		/* Datatables */
 		var dTableHolidays = $('#dTableHolidays').DataTable({
 			"lengthChange": false,
@@ -936,13 +936,13 @@
 			"columnDefs": [
 				{ "targets": [0], "visible": false },
 				{ "className": "text-center", "targets": "_all" },
-				{  
+				{
 				    "render": function ( data, type, row ) {
                     	return moment(data).format('DD/MM/YYYY');
                 	},
                 	"targets": 1
                 },
-				{  
+				{
 					"className": "text-right",
 				    "render": function ( data, type, row ) {
                         return parseStatus(data);
@@ -978,11 +978,11 @@
 			],
 			"columnDefs": [
 				{ "targets": [0], "visible": false },
-				{  
+				{
 				    "render": function ( data, type, row ) {
                     	return moment(data).format('DD/MM/YYYY');
                 	},
-                	"targets": 2 
+                	"targets": 2
                 },
 				{ "className": "text-center", "targets": "_all" },
 				{ "defaultContent": "${tableActionButtons}", "orderable": false, "targets": -1 }
@@ -1018,7 +1018,7 @@
 			"columnDefs": [
 				{ "targets": [0], "visible": false },
 				{ "className": "text-center", "targets": "_all" },
-				{  
+				{
 				    "render": function ( data, type, row ) {
                     	return moment(data).format('DD/MM/YYYY');
                 	},
@@ -1032,13 +1032,13 @@
 			}
 		});
 		/* End Datatables */
-		
+
 		$('#editUserBtn').click(function() {
 
 			$('#saveUserBtn').toggle();
 
 			var editingMode = $('#saveUserBtn').css('display') != 'none';
-			
+
 			$('#name').attr('readonly', !editingMode);
 			$('#surnames').attr('readonly', !editingMode);
 			$('#email').attr('readonly', !editingMode);
@@ -1058,9 +1058,9 @@
 				$('#userInfoForm').addClass('was-validated');
 			} else {
 				showLoading();
-				
+
 				$('#userInfoForm').removeClass('was-validated');
-				
+
 				$.ajax({
 					type: "POST",
 					url: "/users/${userDetail.id}/update",
@@ -1081,7 +1081,7 @@
 		$('#addAbsence').click(function() {
 
 			showLoading();
-			
+
 			$.ajax({
 				type: "POST",
 				url: "/users/${userDetail.id}/absences/create",
@@ -1097,13 +1097,13 @@
 				}
 			});
 
-			$('#createModal').modal('hide');		
+			$('#createModal').modal('hide');
 		});
 
 		$('#editSigningBtn').click(function() {
 
 			showLoading();
-			
+
 			$.ajax({
 				type: "POST",
 				url: "/signing/share/update",
@@ -1119,13 +1119,13 @@
 				}
 			});
 
-			$('#editSigningModal').modal('hide');	
+			$('#editSigningModal').modal('hide');
 		});
 
 		$('#createUserForum').click(function() {
 
 			showLoading();
-			
+
 			$.ajax({
 				type: "POST",
 				url: "/forum/create",
@@ -1174,7 +1174,7 @@
 		$('#addProject').click(function() {
 
 			showLoading();
-			
+
 			$.ajax({
 				type: "POST",
 				url: "/users/${userDetail.id}/projects/create",
@@ -1190,7 +1190,7 @@
 				}
 			});
 
-			$('#createProjectModal').modal('hide');	
+			$('#createProjectModal').modal('hide');
 		});
 
 		$('#addDeclineHolidayBtn').click(function() {
@@ -1198,7 +1198,7 @@
 			showLoading();
 
 			var holidayId = $('#deHolidayId').val();
-			
+
 			$.ajax({
 				type: "POST",
 				url: "/holidays/decline/" + holidayId,
@@ -1214,7 +1214,7 @@
 				}
 			});
 
-			$('#declineHolidayModal').modal('hide');	
+			$('#declineHolidayModal').modal('hide');
 		});
 
 		// Clear project dropdown
@@ -1288,7 +1288,7 @@
 		var workingHours = $('#workingHours').val();
 		var signingId = $('#signingId').val();
 		var stateInput = $('#stateInput').val();
-		
+
 		return !name || !surnames || !email || !isValidEmailAddress(email) || !password || !roleId || !subRoleId || !workingHours || !signingId || !stateInput;
 	}
 
@@ -1348,7 +1348,7 @@
 		} else if (type === 'ums') {
 			url = '/signing/manual/' + id;
 		}
-		
+
 		return $.ajax({
 		    url: url,
 		    type: 'GET'
@@ -1366,16 +1366,16 @@
 			}
 		});
 	}
-	
+
 	async function viewShare(id, type) {
 		var share = await getShare(id, type);
-		
+
 		if (type === 'ds') {
 			var hours = share.manualHours.split(':')[0];
 			var minutes = share.manualHours.split(':')[1];
-			
+
 			var endDate = moment(share.displacementDate).add(minutes, 'm').add(hours, 'h').format().split('+')[0];
-			
+
 			$('#startDate').val(share.displacementDate);
 			$('#endDate').val(endDate);
 
@@ -1400,22 +1400,22 @@
 
 		$('#shareId').val(id);
 		$('#shareType').val(type);
-		
+
 		$('#editSigningModal').modal('show');
 	}
-	
+
 	function parseActionButtons() {
-		
+
 		var tableRows = $('#dTableAbsences tbody tr');
-		
+
 		tableRows.each(function() {
-			
+
 			var absenceId = $(this).attr('id');
 			var lastColumn = $(this).children().last();
 			var emList = lastColumn.children();
-			
+
 			emList.each(function(index) {
-				
+
 				if (index == 0) {
 					$(this).attr('onclick', 'deleteAbsence(' + absenceId + ')');
 				}
@@ -1426,13 +1426,13 @@
 	function parseProjectActionButtons() {
 
 		var tableRows = $('#dTableProjects tbody tr');
-		
+
 		tableRows.each(function() {
-			
+
 			var projectId = $(this).attr('id');
 			var lastColumn = $(this).children().last();
 			var emList = lastColumn.children();
-			
+
 			emList.each(function(index) {
 
 				if (index == 0) {
@@ -1445,7 +1445,7 @@
 	function deleteAbsence(absenceId) {
 
 		showLoading();
-		
+
 		$.ajax({
 			type: "POST",
 			url: "/users/${userDetail.id}/absences/delete/" + absenceId,
@@ -1465,14 +1465,14 @@
 		var tableRows = $('#dTableHolidays tbody tr');
 
 		tableRows.each(function() {
-			
+
 			var holidayId = $(this).attr('id');
 			var status = jQuery($(this).children().get(1));
 			var lastColumn = $(this).children().last();
 			var emList = lastColumn.children();
-			
+
 			emList.each(function(index) {
-				
+
 				if (index == 0) { // validate
 					$(this).attr('onclick', 'validateHoliday(' + holidayId + ')');
 
@@ -1487,18 +1487,18 @@
 					}
 				} else if (index == 2) { // trash
 					$(this).attr('onclick', 'deleteHoliday(' + holidayId + ')');
-					
+
 					if (canValidate(status)) {
 						$(this).remove();
 					}
-				}				
+				}
 			});
 		});
 	}
 
 	function validateHoliday(holidayId) {
 		showLoading();
-		
+
 		$.ajax({
 			type: "POST",
 			url: "/holidays/validate/" + holidayId,
@@ -1517,7 +1517,7 @@
 
 	function declineHoliday(holidayId) {
 		showLoading();
-		
+
 		$.ajax({
 			type: "POST",
 			url: "/holidays/decline/" + holidayId,
@@ -1539,7 +1539,7 @@
 
 		if (ok) {
 			showLoading();
-			
+
 			$.ajax({
 				type: "DELETE",
 				url: "/holidays/delete/" + holidayId,
@@ -1580,7 +1580,7 @@
 
 	function deleteProject(projectId) {
 		showLoading();
-		
+
 		$.ajax({
 			type: "DELETE",
 			url: "/users/${userDetail.id}/projects/delete/" + projectId,
@@ -1620,7 +1620,7 @@
 			}
 		});
 	}
-	
+
 </script>
 
 <script>
@@ -1656,20 +1656,38 @@
 			{
 				action: 'validate',
 				permission: 'edit_personal_expenses_sheet',
-				condition: {
-					key: 'status',
-					value: ['APPROVED'],
-					operation: '==='
-				}
+				conditionGroups: [
+					{
+						conditions: [
+							{ key: 'status', value: ['PENDING'], operation: '===' },
+							{ key: 'roleId', value: ['ROLE_PL_ID'], operation: '>=', current: ${user.role.id} }
+						],
+					},
+					{
+						conditions: [
+							{ key: 'status', value: ['APPROVED'], operation: '===' },
+							{ key: 'roleId', value: ['ROLE_ADMINISTRATION_ID'], operation: '>=', current: ${user.role.id} }
+						]
+					}
+				]
 			},
 			{
 				action: 'decline',
 				permission: 'edit_personal_expenses_sheet',
-				condition: {
-					key: 'status',
-					value: ['APPROVED'],
-					operation: '==='
-				}
+                conditionGroups: [
+                    {
+                        conditions: [
+                            { key: 'status', value: ['PENDING'], operation: '===' },
+                            { key: 'roleId', value: ['ROLE_PL_ID'], operation: '>=', current: ${user.role.id} }
+                        ],
+                    },
+                    {
+                        conditions: [
+                            { key: 'status', value: ['APPROVED'], operation: '===' },
+                            { key: 'roleId', value: ['ROLE_ADMINISTRATION_ID'], operation: '>=', current: ${user.role.id} }
+                        ]
+                    }
+                ]
 			},
 			{
 				action: 'view',

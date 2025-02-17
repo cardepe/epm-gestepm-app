@@ -2848,20 +2848,38 @@
             {
                 action: 'validate',
                 permission: 'edit_personal_expenses_sheet',
-                condition: {
-                    key: 'status',
-                    value: ['PENDING'],
-                    operation: '==='
-                }
+                conditionGroups: [
+                    {
+                        conditions: [
+                            { key: 'status', value: ['PENDING'], operation: '===' },
+                            { key: 'roleId', value: ['ROLE_PL_ID'], operation: '>=', current: ${user.role.id} }
+                        ],
+                    },
+                    {
+                        conditions: [
+                            { key: 'status', value: ['APPROVED'], operation: '===' },
+                            { key: 'roleId', value: ['ROLE_ADMINISTRATION_ID'], operation: '>=', current: ${user.role.id} }
+                        ]
+                    }
+                ]
             },
             {
                 action: 'decline',
                 permission: 'edit_personal_expenses_sheet',
-                condition: {
-                    key: 'status',
-                    value: ['PENDING'],
-                    operation: '==='
-                }
+                conditionGroups: [
+                    {
+                        conditions: [
+                            { key: 'status', value: ['PENDING'], operation: '===' },
+                            { key: 'roleId', value: ['ROLE_PL_ID'], operation: '>=', current: ${user.role.id} }
+                        ],
+                    },
+                    {
+                        conditions: [
+                            { key: 'status', value: ['APPROVED'], operation: '===' },
+                            { key: 'roleId', value: ['ROLE_ADMINISTRATION_ID'], operation: '>=', current: ${user.role.id} }
+                        ]
+                    }
+                ]
             },
             {
                 action: 'view',
