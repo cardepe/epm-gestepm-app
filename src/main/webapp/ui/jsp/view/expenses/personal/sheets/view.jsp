@@ -30,7 +30,7 @@
 
 <div class="content">
     <div class="row">
-        <div class="col-xs-12 col">
+        <div class="col-xs-12 col-md-3">
             <div class="card">
                 <div class="card-body">
                     <div class="stat-widget-five">
@@ -40,7 +40,7 @@
                         <div class="stat-content">
                             <div class="text-left dib">
                                 <div class="stat-text"><span class="count">${amountPENDING}</span></div>
-                                <div class="stat-heading">pendientes en ${countPENDING} hojas</div>
+                                <div class="stat-heading"><spring:message code="personal.expenses.sheets.pending.description" arguments="${countPENDING}"/></div>
                             </div>
                         </div>
                     </div>
@@ -48,7 +48,7 @@
             </div>
         </div>
 
-        <div class="col-xs-12 col">
+        <div class="col-xs-12 col-md-3">
             <div class="card">
                 <div class="card-body">
                     <div class="stat-widget-five">
@@ -58,7 +58,7 @@
                         <div class="stat-content">
                             <div class="text-left dib">
                                 <div class="stat-text"><span class="count">${amountAPPROVED}</span></div>
-                                <div class="stat-heading">aprobados en ${countAPPROVED} hojas</div>
+                                <div class="stat-heading"><spring:message code="personal.expenses.sheets.approved.description" arguments="${countAPPROVED}"/></div>
                             </div>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
             </div>
         </div>
 
-        <div class="col-xs-12 col">
+        <div class="col-xs-12 col-md-3">
             <div class="card">
                 <div class="card-body">
                     <div class="stat-widget-five">
@@ -76,7 +76,7 @@
                         <div class="stat-content">
                             <div class="text-left dib">
                                 <div class="stat-text"><span class="count">${amountPAID}</span></div>
-                                <div class="stat-heading">pagados en ${countPAID} hojas</div>
+                                <div class="stat-heading"><spring:message code="personal.expenses.sheets.paid.description" arguments="${countPAID}"/></div>
                             </div>
                         </div>
                     </div>
@@ -84,7 +84,7 @@
             </div>
         </div>
 
-        <div class="col-xs-12 col">
+        <div class="col-xs-12 col-md-3">
             <div class="card">
                 <div class="card-body">
                     <div class="stat-widget-five">
@@ -94,25 +94,7 @@
                         <div class="stat-content">
                             <div class="text-left dib">
                                 <div class="stat-text"><span class="count">${amountREJECTED}</span></div>
-                                <div class="stat-heading">denegados en ${countREJECTED} hojas</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xs-12 col">
-            <div class="card">
-                <div class="card-body">
-                    <div class="stat-widget-five">
-                        <div class="stat-icon dib text-info">
-                            <i class="pe-7s-cash"></i>
-                        </div>
-                        <div class="stat-content">
-                            <div class="text-left dib">
-                                <div class="stat-text"><span class="count">${totalAmountPENDING}</span></div>
-                                <div class="stat-heading">pendientes de cobrar</div>
+                                <div class="stat-heading"><spring:message code="personal.expenses.sheets.rejected.description" arguments="${countREJECTED}"/></div>
                             </div>
                         </div>
                     </div>

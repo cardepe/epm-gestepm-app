@@ -300,25 +300,26 @@ function printActions(data, actions, id) {
 }
 
 function checkConditionGroups(data, conditionGroups) {
-    return conditionGroups.some(group => {
-        return group.conditions.every(condition => {
-            if (condition.key === 'status') {
-                if (condition.operation === '!==') {
-                    return !condition.value.includes(data.status);
-                } else if (condition.operation === '===') {
-                    return condition.value.includes(data.status);
-                }
-            } else if (condition.key === 'roleId') {
-                console.log(condition);
-                if (condition.operation === '>=') {
-                    if (condition.value.includes('ROLE_PL_ID')) {
-                        return condition.current >= 4;
-                    } else if (condition.value.includes('ROLE_ADMINISTRATION_ID')) {
-                        return condition.current >= 7;
+    if (conditionGroups) {
+        return conditionGroups.some(group => {
+            return group.conditions.every(condition => {
+                if (condition.key === 'status') {
+                    if (condition.operation === '!==') {
+                        return !condition.value.includes(data.status);
+                    } else if (condition.operation === '===') {
+                        return condition.value.includes(data.status);
+                    }
+                } else if (condition.key === 'roleId') {
+                    if (condition.operation === '>=') {
+                        if (condition.value.includes('ROLE_PL_ID')) {
+                            return condition.current >= 4;
+                        } else if (condition.value.includes('ROLE_ADMINISTRATION_ID')) {
+                            return condition.current >= 7;
+                        }
                     }
                 }
-            }
-            return false;
+                return false;
+            });
         });
-    });
+    }
 }
