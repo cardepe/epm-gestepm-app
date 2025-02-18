@@ -22,6 +22,9 @@ public class UserManualSigningTableDTO {
 	@JsonProperty("ums_endDate")
 	private LocalDateTime endDate;
 
+	@JsonProperty("ums_description")
+	private String description;
+
 	@JsonProperty("ums_hasFile")
 	private Boolean hasFile;
 

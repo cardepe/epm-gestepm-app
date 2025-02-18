@@ -140,6 +140,7 @@
                                     <th id="thType"><spring:message code="signing.page.table.type.name" /></th>
                                     <th id="thStartDate"><spring:message code="signing.page.table.start.date" /></th>
                                     <th id="thEndDate"><spring:message code="signing.page.table.end.date" /></th>
+                                    <th id="thDescription"><spring:message code="signing.page.table.description" /></th>
                                     <th id="thActions" class="all"><spring:message code="signing.page.table.actions" /></th>
                                 </tr>
                             </thead>
@@ -188,6 +189,7 @@
                 { "data": "ums_manualTypeId" },
                 { "data": "ums_startDate" },
                 { "data": "ums_endDate" },
+                { "data": "ums_description" },
                 { "data": null }
             ],
             "columnDefs": [
@@ -198,6 +200,10 @@
                         else { return moment(data).format('DD/MM/YYYY HH:mm'); }
                     },
                     "targets": [2, 3]
+                },
+                {
+                    targets: 4,
+                    defaultContent: '-'
                 },
                 { "defaultContent": "${tableActionButtons}", "orderable": false, "targets": -1 }
             ],

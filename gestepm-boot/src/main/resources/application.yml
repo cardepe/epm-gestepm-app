@@ -48,6 +48,11 @@ hibernate:
   hbm2ddl:
     auto: validate
 
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES
+    iv-generator-classname: org.jasypt.iv.NoIvGenerator
+
 lib-java:
   app-locale:
     supported-locales-iso: "'ES', 'FR'"

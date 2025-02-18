@@ -4,7 +4,7 @@ data:
       gestepmds:
         driverClassName: com.mysql.cj.jdbc.Driver
         username: bbdd_free
-        password: A_42BcTiu
+        password: ENC(WHrJ8zMpkOHli4iLFTu5SGRSRa6QaBdc)
         jdbcUrl: jdbc:mysql://92.54.16.198:3306
 
 gestepm:
@@ -15,7 +15,7 @@ gestepm:
       server: 92.54.16.198
       port: 22
       user: forum
-      password: SQh!Z8ppEdE
+      password: ENC(Nu6ZHsfSqsI2jroCXMcK+JSto2xQ22lq)
     url: http://forum.gestepm.com
   mails:
     admin: jrodriguez@epmgastech.com
@@ -25,7 +25,7 @@ gestepm:
       server: 92.54.16.80
       port: 21
       user: anviz
-      password: Anviz_2020
+      password: ENC(Z3mcTbnwemui5IchrCL8+j8L1K234WNL)
 
 logging:
   config: /var/www/gestepm.com/config/logback-spring.xml
@@ -38,8 +38,8 @@ spring:
   datasource:
     jdbcUrl: jdbc:mysql://92.54.16.198:3306/bbdd_gestepm?useSSL=false
     username: bbdd_free
-    password: A_42BcTiu
+    password: ENC(2TSB3ue5IJNeQys8H+E7rkJpcmsFYf6+)
   second-datasource:
     jdbcUrl: jdbc:mysql://92.54.16.198:3306/bbdd_gestepm_forum?useSSL=false
     username: bbdd_forum
-    password: AxPGWjwL4!
+    password: ENC(b4iLfyklo32MlmjXDOIIMHVYfvMAMkB4)

@@ -40,6 +40,7 @@ public class UserManualSigningRepositoryImpl implements UserManualSigningReposit
 					root.get("manualSigningType").get("name"),
 					root.get("startDate"),
 					root.get("endDate"),
+					root.get("description"),
 					cb.isNotNull(root.get("justification"))
 			);
 

@@ -52,7 +52,7 @@
                             <div class="form-group">
                                 <label id="quantityLabel" class="col-form-label w-100"><spring:message code="quantity" />
                                     <input name="quantity" type="number" class="form-control" value="1" required>
-                                    <span class="text-info only-kms d-none"><em><small>Precio del km/mile: 0.25€</small></em></span>
+                                    <span class="text-info only-kms d-none"><em><small><spring:message code="price.type.kms.info" /></small></em></span>
                                 </label>
                             </div>
                         </div>
@@ -125,9 +125,25 @@
         const priceType = form.querySelector('[name="priceType"]');
 
         priceType.addEventListener('change', (event) => {
-            displayQuantityLabel(event.target.value);
-            displayQuantityInfo(event.target.value);
+            const priceType = event.target.value;
+            displayQuantityLabel(priceType);
+            displayQuantityInfo(priceType);
+            displayAmountInput(priceType);
         });
+
+        onChangeQuantity();
+    }
+
+    function onChangeQuantity() {
+        const quantity = form.querySelector('[name="quantity"]');
+        const priceType = form.querySelector('[name="priceType"]');
+        const amount = form.querySelector('[name="amount"]');
+
+        quantity.addEventListener('input', (event) => {
+            if (priceType.value === 'KMS') {
+                amount.value = event.target.value * 0.25;
+            }
+        })
     }
 
     function displayQuantityLabel(priceType) {
@@ -156,6 +172,10 @@
         } else {
             onlyKms.classList.add('d-none');
         }
+    }
+
+    function displayAmountInput(priceType) {
+        form.querySelector('[name="amount"]').disabled = priceType === 'KMS';
     }
 
     function createOrUpdate() {
