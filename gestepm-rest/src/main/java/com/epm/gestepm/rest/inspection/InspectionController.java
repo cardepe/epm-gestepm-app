@@ -202,5 +202,31 @@ public class InspectionController extends BaseController implements InspectionV1
 
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
+
+    @Override
+    @RequirePermits(value = PRMT_READ_I, action = "Export inspection materials")
+    @LogExecution(operation = OP_READ)
+    public ResponseEntity<Resource> exportInspectionMaterialsV1(Integer shareId, final Integer inspectionId) {
+
+        final String language = this.localeProvider.getLocale().orElse("es");
+        final java.util.Locale locale = new java.util.Locale(language);
+
+        final InspectionDto inspection = this.inspectionService.findOrNotFound(new InspectionByIdFinderDto(inspectionId));
+
+        final byte[] pdf = this.inspectionExportService.generateMaterials(inspection);
+        final Resource resource = new ByteArrayResource(pdf);
+        final String fileName = messageSource.getMessage("shares.no.programmed.materials.pdf.name",
+                new Object[] {
+                        inspection.getShareId().toString(),
+                        inspection.getId().toString(),
+                        Utiles.transform(inspection.getStartDate(), "yyyyMMdd")
+                }, locale) + ".pdf";
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    }
 }
 

@@ -531,6 +531,26 @@ paths:
       operationId: export-inspection-v1
       description: export-inspection-v1
       parameters: []
+  '/v1/shares/no-programmed/{shareId}/inspections/{inspectionId}/export-materials':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+      - $ref: '#/components/parameters/Inspection-Id'
+    get:
+      summary: V1 - Export inspection materials
+      tags:
+        - inspection-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/InspectionExport'
+        '404':
+          description: inspection-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: export-inspection-materials-v1
+      description: export-inspection-materials-v1
+      parameters: []
   /v1/users:
     get:
       summary: V1 - List users

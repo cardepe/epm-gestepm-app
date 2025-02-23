@@ -83,8 +83,6 @@
                     <div class="col text-right">
                         <button id="sendBtn" type="button" class="btn btn-danger btn-sm movile-full"><spring:message
                                 code="send.to.administration"/></button>
-                        <button id="editBtn" type="button" class="btn btn-standard btn-sm movile-full"><spring:message
-                                code="save"/></button>
                     </div>
                 </div>
             </form>
@@ -243,7 +241,6 @@
         }
 
         if (personalExpenseSheet.status) {
-            editForm.querySelector('#editBtn').remove();
             editForm.querySelector('#sendBtn').remove();
             disableForm('#editForm');
         }
@@ -251,22 +248,9 @@
 
     function send() {
         const sendBtn = $('#sendBtn');
-
-        sendBtn.click(async () => {
-            axios.patch('/v1' + window.location.pathname, {
-                status: 'PENDING'
-            }).then((response) => {
-                location.reload();
-            }).catch(error => showNotify(error.response.data.detail, 'danger'))
-                .finally(() => hideLoading());
-        });
-    }
-
-    function save() {
-        const editBtn = $('#editBtn');
         const editForm = document.querySelector('#editForm');
 
-        editBtn.click(async () => {
+        sendBtn.click(async () => {
             if (personalExpenseSheet.status) {
                 showNotify(messages.personalExpenseSheet.invalidStatus, 'info');
                 return;
@@ -276,18 +260,16 @@
 
             const description = editForm.querySelector('[name="description"]');
             const projectId = editForm.querySelector('[name="projectId"]');
-            const startDate = editForm.querySelector('[name="startDate"]');
 
             axios.patch('/v1' + window.location.pathname, {
                 description: description ? description.value : null,
                 projectId: projectId ? projectId.value : null,
-                startDate: startDate ? startDate.value : null
+                status: 'PENDING'
             }).then((response) => {
-                personalExpenseSheet = response.data.data;
-                showNotify(messages.personalExpenseSheet.update.success.replace('{0}', personalExpenseSheet.id))
+                location.reload();
             }).catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());
-        })
+        });
     }
 
     function remove(id) {
