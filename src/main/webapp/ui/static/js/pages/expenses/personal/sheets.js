@@ -18,7 +18,7 @@ function initializeDataTables() {
             conditionGroups: [
                 {
                     conditions: [
-                        { key: 'status', value: [ undefined ], operation: '===' }
+                        { key: 'status', value: [ undefined, 'PENDING' ], operation: '===' }
                     ]
                 }
             ]

@@ -321,7 +321,6 @@
         await getPersonalExpenseShare();
         init();
         update();
-        save();
         send();
     });
 
