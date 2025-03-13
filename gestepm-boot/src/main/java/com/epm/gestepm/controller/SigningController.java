@@ -100,6 +100,9 @@ public class SigningController {
     @Value("#{'${gestepm.mails.rrhh}'.split(',')}")
     private List<String> rrhhMails;
 
+    @Value("${gestepm.virtual-project-ids}")
+    private List<Integer> virtualProjectIds;
+
     @Autowired
     private ConstructionShareService constructionShareService;
 
@@ -221,9 +224,11 @@ public class SigningController {
 
     @ResponseBody
     @PostMapping
-    public ResponseEntity<String> signingAction(@ModelAttribute UserSigningDTO userSigningDTO, Locale locale) {
+    public ResponseEntity<Object> signingAction(@ModelAttribute UserSigningDTO userSigningDTO, Locale locale) {
 
         try {
+
+            final Map<String, Object> response = new HashMap<>();
 
             // Recover user
             User user = Utiles.getUsuario();
@@ -263,6 +268,8 @@ public class SigningController {
                 // Save
                 userSigning = userSigningService.save(userSigning);
 
+                response.put("isVirtualProject", virtualProjectIds.contains(userSigningDTO.getProject().intValue()));
+
                 if (userSigningDTO.getUserId() == null) {
                     log.info("El usuario " + signingUser.getId() + " ha empezado el fichaje " + userSigning.getId());
                 } else {
@@ -280,10 +287,10 @@ public class SigningController {
                 log.info("El usuario " + signingUser.getId() + " ha finalizado el fichaje " + currentUserSigning.getId());
             }
 
-            return new ResponseEntity<>(messageSource.getMessage("signing.manual.create.success", new Object[]{}, locale), HttpStatus.OK);
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            log.error(e);
+            e.printStackTrace();
             return new ResponseEntity<>(messageSource.getMessage("signing.page.action.error", new Object[]{}, locale), HttpStatus.NOT_MODIFIED);
         }
     }
