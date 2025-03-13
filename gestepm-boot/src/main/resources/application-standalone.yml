@@ -26,6 +26,7 @@ gestepm:
       port: 21
       user: anviz
       password: ENC(NYzgQAOhEcIHkL6CsncRrE/S/tnAckZx)
+  virtual-project-ids: 251
 
 spring:
   datasource:

@@ -42,7 +42,7 @@ gestepm:
         start: '13:00'
         end: '16:00'
         time: 45
-  virtual-project-ids: 251
+  virtual-project-ids: # by environment
 
 hibernate:
   dialect: com.epm.gestepm.modelapi.common.utils.mysql.CommonMySQLDialect
