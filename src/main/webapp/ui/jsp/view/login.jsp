@@ -43,6 +43,13 @@
 
 <body class="my-login-page">
 
+<style>
+    .app-version {
+        font-size: 11px;
+        font-weight: bold;
+    }
+</style>
+
 <input id="lang" type="hidden" value="<%=language%>"/>
 
 <section class="h-100">
@@ -100,7 +107,8 @@
                     </div>
                 </div>
                 <div class="footer">
-                    <spring:message code="login.copyright"/>
+                    <p class="app-version">v.${appVersion}</p>
+                    <span><spring:message code="login.copyright"/></span>
                 </div>
             </div>
         </div>

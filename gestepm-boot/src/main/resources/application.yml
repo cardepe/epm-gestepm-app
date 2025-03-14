@@ -1,3 +1,6 @@
+app:
+  version: @project.version@
+
 context:
   initializer:
     classes: com.epm.gestepm.lib.contextinit.AdditionalYmlPropertiesContextInitializer
