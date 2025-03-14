@@ -28,9 +28,6 @@ gestepm:
       password: ENC(Z3mcTbnwemui5IchrCL8+j8L1K234WNL)
   virtual-project-ids: 251
 
-logging:
-  config: /var/www/gestepm.com/config/logback-spring.xml
-
 scheduler:
   personal-signings:
     cron: '0 30 21 * * *'
