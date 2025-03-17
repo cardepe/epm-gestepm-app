@@ -5,6 +5,8 @@ sql:
     SELECT
       i.inspection_id AS id_pagination,
       i.inspection_id,
+      pr.id AS project_id,
+      pr.name AS project_name,
       i.user_signing_id,
       i.no_programmed_share_id,
       i.action,
@@ -12,6 +14,7 @@ sql:
       i.end_date,
       i.description,
       i.first_technical,
+      CONCAT(ft.name, ft.surnames) AS first_technical_name,
       i.second_technical,
       i.signature,
       i.operator_signature,
@@ -29,6 +32,8 @@ sql:
     LEFT JOIN ${sch-gestepm}.no_programmed_share nps ON i.no_programmed_share_id = nps.no_programmed_share_id
     LEFT JOIN ${sch-gestepm}.inspection_file ifi ON i.inspection_id = ifi.inspection_id
     LEFT JOIN ${sch-gestepm}.inspection_material im ON i.inspection_id = im.inspection_id
+    LEFT JOIN ${sch-gestepm}.projects pr ON nps.project_id = pr.ID
+    LEFT JOIN ${sch-gestepm}.users ft ON i.first_technical = ft.ID
 
     #whereToken #filter
 

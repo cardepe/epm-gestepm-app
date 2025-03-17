@@ -182,6 +182,7 @@ public class ShareMapper {
 		UserManualSigningDTO userManualSigningDTO = new UserManualSigningDTO();
 
 		userManualSigningDTO.setId(userManualSigning.getId());
+		userManualSigningDTO.setManualTypeId(userManualSigning.getManualSigningType().getId());
 		userManualSigningDTO.setStartDate(userManualSigning.getStartDate());
 		userManualSigningDTO.setEndDate(userManualSigning.getEndDate());
 		userManualSigningDTO.setDescription(userManualSigning.getDescription());

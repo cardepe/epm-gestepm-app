@@ -1274,7 +1274,9 @@ public class ProjectController {
 	}
 	
 	private Object[] filterByShare(Long projectId, Integer pageNumber, Integer pageSize) {
-		
+
+		// TODO: need refactor for MULTIQUERY.
+
 		List<ShareTableDTO> shareTableDTOs = new ArrayList<>();
 
 		List<ShareTableDTO> csShareTableDTOs = constructionShareService.getShareTableByProjectId(projectId);

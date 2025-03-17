@@ -15,6 +15,12 @@ public class InspectionDto implements Serializable {
     @NotNull
     private Integer id;
 
+    @NotNull
+    private Integer projectId;
+
+    @NotNull
+    private String projectName;
+
     private Integer userSigningId;
 
     @NotNull
@@ -32,6 +38,9 @@ public class InspectionDto implements Serializable {
 
     @NotNull
     private Integer firstTechnicalId;
+
+    @NotNull
+    private String firstTechnicalName;
 
     private Integer secondTechnicalId;
 
@@ -53,12 +62,4 @@ public class InspectionDto implements Serializable {
 
     private List<Integer> fileIds;
 
-    public Integer getOrder(final List<Integer> inspectionIds) {
-        return inspectionIds.indexOf(this.id) + 1;
-    }
-
-    public Integer getInspectionTypeNumber(final List<Integer> inspectionIds) {
-        final int index = inspectionIds.indexOf(this.id);
-        return ((index - 1) / 3) + 1;
-    }
 }

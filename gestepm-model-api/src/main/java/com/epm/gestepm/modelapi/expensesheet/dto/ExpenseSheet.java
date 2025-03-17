@@ -36,6 +36,7 @@ public class ExpenseSheet {
 	private Project project;
     
     @Column(name="status")
+	@Enumerated(EnumType.STRING)
     private PersonalExpenseSheetStatusEnumDto status;
     
     @Column(name="observations")
