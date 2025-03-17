@@ -599,7 +599,7 @@
 
 					<div id="createShareManualTypeRow" class="row mt-2" style="display: none">
 						<div class="col">
-							<select id="createShareManualTypeDropdown" class="form-control input" name="manualTypeId">
+							<select id="createShareManualTypeDropdown" class="form-control input" name="manualTypeId" onchange="updateForm(this.value)">
 								<option></option>
 								<c:forEach items="${manualSigningTypes}" var="manualSigningType">
 									<option value="${manualSigningType.id}">
@@ -635,6 +635,14 @@
 
 						<div class="col-sm-12 col-md-6">
 							<input type="datetime-local" style="font-size: 12px" class="form-control" id="endDateInput" name="endDate">
+						</div>
+					</div>
+
+					<div id="row-desc" class="row mt-2" style="display: none">
+						<div class="col">
+							<div class="form-group">
+								<textarea style="font-size: 12px" id="descriptionInput" class="form-control" name="description" rows="3"></textarea>
+							</div>
 						</div>
 					</div>
 				</form>
@@ -1258,6 +1266,7 @@
 		$('#createShareActivityCenterRow').hide();
 		$('#createShareDateRow').hide();
 		$('#createShareDisplacementDateRow').hide();
+		$('#row-desc').hide();
 
 		if (signingType === 'us' || signingType === 'ps' || signingType === 'ums') {
 			$('#createShareDateRow').show();
@@ -1302,6 +1311,7 @@
 		let displacementDate = $('#createSigningForm #displacementDateInput').val();
 		let startDate = $('#createSigningForm #startDateInput').val();
 		let endDate = $('#createSigningForm #endDateInput').val();
+		// let description = $('#createSigningForm #descriptionInput').val();
 
 		if (type === 'us') {
 			manualType = true;
@@ -1380,6 +1390,11 @@
 			$('#endDate').val(endDate);
 
 		} else {
+
+			if (type === 'ums') {
+				share.manualTypeId === 8 ? $('#editSigningForm #description').show() : $('#editSigningForm #description').hide();
+			}
+
 			var form = document.forms['editSigningForm'];
 			initForm(share, form);
 		}
@@ -1619,6 +1634,15 @@
 				showNotify(e.responseText, 'danger');
 			}
 		});
+	}
+
+	function updateForm(type) {
+
+		if (type == 8) {
+			$('#row-desc').show();
+		} else {
+			$('#row-desc').hide();
+		}
 	}
 
 </script>
