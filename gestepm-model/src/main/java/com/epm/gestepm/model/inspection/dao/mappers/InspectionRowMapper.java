@@ -18,6 +18,10 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
 
     public static final String COL_I_ID = "inspection_id";
 
+    public static final String COL_I_PROJECT_ID = "project_id";
+
+    public static final String COL_I_PROJECT_NAME = "project_name";
+
     public static final String COL_I_USER_SIGNING_ID = "user_signing_id";
 
     public static final String COL_I_SHARE_ID = "no_programmed_share_id";
@@ -31,6 +35,8 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
     public static final String COL_I_DESCRIPTION = "description";
 
     public static final String COL_I_FIRST_TECHNICAL = "first_technical";
+
+    public static final String COL_I_FIRST_TECHNICAL_NAME = "first_technical_name";
 
     public static final String COL_I_SECOND_TECHNICAL = "second_technical";
 
@@ -64,6 +70,8 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
         final Inspection inspection = new Inspection();
 
         inspection.setId(rs.getInt(COL_I_ID));
+        inspection.setProjectId(rs.getInt(COL_I_PROJECT_ID));
+        inspection.setProjectName(rs.getString(COL_I_PROJECT_NAME));
         inspection.setUserSigningId(nullableInt(rs, COL_I_USER_SIGNING_ID));
         inspection.setShareId(rs.getInt(COL_I_SHARE_ID));
         inspection.setAction(ActionEnum.valueOf(rs.getString(COL_I_ACTION)));
@@ -71,6 +79,7 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
         inspection.setEndDate(nullableLocalDateTime(rs, COL_I_END_DATE));
         inspection.setDescription(nullableString(rs, COL_I_DESCRIPTION));
         inspection.setFirstTechnicalId(rs.getInt(COL_I_FIRST_TECHNICAL));
+        inspection.setFirstTechnicalName(rs.getString(COL_I_FIRST_TECHNICAL_NAME));
         inspection.setSecondTechnicalId(nullableInt(rs, COL_I_SECOND_TECHNICAL));
         inspection.setSignature(nullableString(rs, COL_I_SIGNATURE));
         inspection.setOperatorSignature(nullableString(rs, COL_I_OPERATOR_SIGNATURE));

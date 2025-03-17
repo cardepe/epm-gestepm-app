@@ -113,7 +113,7 @@ public class LogExecutionAspect {
 
         if (execution.logOut()) {
 
-            final String shortOutputData = isVoid(joinPoint) ? ", result <void>" : shortOutputData(methodReturnValue);
+            final String shortOutputData = isVoid(joinPoint) ? ", result <void>" : shortOutputData(methodReturnValue, execution.displayEnabled());
 
             String logMsg = execution.msgOut();
             logMsg = logMsg.isBlank() ? execution.msg() : logMsg;

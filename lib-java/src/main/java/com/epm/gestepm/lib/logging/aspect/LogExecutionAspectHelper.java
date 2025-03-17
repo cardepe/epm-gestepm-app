@@ -37,7 +37,7 @@ public class LogExecutionAspectHelper {
     private LogExecutionAspectHelper() {
     }
 
-    public static String shortOutputData(Object result) {
+    public static String shortOutputData(Object result, boolean displayEnabled) {
 
         final String empty = ", result <empty>";
         final String oneItem = ", result <%s>";
@@ -46,14 +46,20 @@ public class LogExecutionAspectHelper {
 
             final Optional<?> optionalValue = (Optional<?>) result;
 
-            return optionalValue.isPresent() ? String.format(oneItem, optionalValue.get().getClass().getSimpleName())
+            return optionalValue.isPresent()
+                    ? displayEnabled
+                            ? optionalValue.get().toString()
+                            : String.format(oneItem, optionalValue.get().getClass().getSimpleName())
                     : empty;
 
         } else if (result instanceof List) {
 
-            final int listSize = ((List<?>) result).size();
-
-            return String.format(", result <List of size[%d]>", listSize);
+            if (displayEnabled) {
+                return String.format(", result <List of size[%s]>", result);
+            } else {
+                final int listSize = ((List<?>) result).size();
+                return String.format(", result <List of size[%d]>", listSize);
+            }
 
         } else if ((result != null)
                 && Arrays.asList(Boolean.class, Integer.class)
@@ -67,7 +73,11 @@ public class LogExecutionAspectHelper {
             return String.format(", result <byte[%d]>", length);
 
         } else {
-            return result != null ? String.format(oneItem, result.getClass().getSimpleName()) : empty;
+            return result != null
+                    ? displayEnabled
+                        ? result.toString()
+                        : String.format(oneItem, result.getClass().getSimpleName())
+                    : empty;
         }
     }
 
