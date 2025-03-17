@@ -37,4 +37,6 @@ public @interface LogExecution {
 
     String level() default "INFO";
 
+    boolean displayEnabled() default false;
+
 }

@@ -16,6 +16,12 @@ public class Inspection implements Serializable {
   @NotNull
   private Integer id;
 
+  @NotNull
+  private Integer projectId;
+
+  @NotNull
+  private String projectName;
+
   private Integer userSigningId;
 
   @NotNull
@@ -33,6 +39,9 @@ public class Inspection implements Serializable {
 
   @NotNull
   private Integer firstTechnicalId;
+
+  @NotNull
+  private String firstTechnicalName;
 
   private Integer secondTechnicalId;
 
