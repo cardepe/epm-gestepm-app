@@ -161,7 +161,6 @@ public class PersonalSigningTask {
     }
 
     private List<SigningScheduledDTO> buildSignings(final String fileContent) {
-        final Map<Long, List<SigningScheduledDTO>> signings = new HashMap<>();
         final List<String> lines = Arrays.asList(fileContent.split("\n"));
 
         return lines.stream()
