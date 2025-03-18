@@ -26,7 +26,7 @@ gestepm:
       port: 21
       user: anviz
       password: ENC(Z3mcTbnwemui5IchrCL8+j8L1K234WNL)
-  virtual-project-ids: 251
+  virtual-project-ids: 251, 344
 
 scheduler:
   personal-signings:
