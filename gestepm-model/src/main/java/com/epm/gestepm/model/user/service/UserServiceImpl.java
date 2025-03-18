@@ -18,23 +18,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;
 
 	@Override
+	@Transactional
 	public User save(User user) {
 		return userRepository.save(user);
 	}
 
 	@Override
+	@Transactional
 	public void deleteUserById(Long id) {
 		userRepository.deleteById(id);
 	}
 
 	@Override
+	@Transactional
 	public void deleteUser(User user) {
 		userRepository.delete(user);
 	}
