@@ -126,7 +126,7 @@
 						<div class="col-sm-12 col-md-6">
 							<div class="form-group">
 								<label for="displacement" class="col-form-label"><spring:message code="shares.displacement.table.activity.center" /></label>
-								<select id="displacement" name="displacement" class="form-control" onchange="loadDisplacement()" required>
+								<select id="displacement" name="activityCenter" class="form-control" onchange="loadDisplacement()" required>
 									<option disabled selected="selected">
 										<spring:message code="shares.displacement.table.activity.center" />
 									</option>

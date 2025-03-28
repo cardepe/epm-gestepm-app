@@ -34,6 +34,8 @@ public class ProvisionalController {
 
     private final NoProgrammedShareService noProgrammedShareService;
 
+    private final SubFamilyService subFamilyService;
+
     private final UserService userService;
 
     @ResponseBody
@@ -43,12 +45,17 @@ public class ProvisionalController {
         final User user = this.userService.getUserById(userId.longValue());
         final NoProgrammedShareDto share = this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(shareId));
 
+        boolean hasRole = false;
         boolean canClose = false;
 
         if (share.getFamilyId() != null && share.getSubFamilyId() != null) {
+            final List<RoleDTO> subRoles = this.subFamilyService.getSubRolsById(share.getSubFamilyId().longValue());
+            final String userLevel = user.getSubRole().getRol();
+
+            hasRole = subRoles.isEmpty() || subRoles.stream().anyMatch(subRole -> subRole.getName().equals(userLevel));
             canClose = user.getRole().getId().equals(ROLE_PL_ID) || user.getRole().getId().equals(ROLE_ADMIN_ID);
         }
 
-        return new NoProgrammedShareUserPermissionsResponse(canClose);
+        return new NoProgrammedShareUserPermissionsResponse(hasRole, canClose);
     }
 }
