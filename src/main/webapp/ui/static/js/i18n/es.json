@@ -94,6 +94,14 @@
             "default": "Cantidad"
         }
     },
+    "projects": {
+        "empty": "Debes seleccionar un proyecto."
+    },
+    "signings": {
+        "teleworking": {
+            "startDate": "Fecha de inicio: {0}"
+        }
+    },
     "shares": {
         "noprogrammed": {
             "delete": {
@@ -133,6 +141,7 @@
         "other": "Otro"
     },
     "actions": {
+        "finish": "Finalizar",
         "label": "Acciones",
         "view": "Detalle",
         "edit": "Editar",
@@ -143,7 +152,7 @@
         "yes": "Sí",
         "no": "No"
     },
-    "select": {
+    "select2": {
         "placeholder": "Seleccione un elemento..."
     },
     "status": {

@@ -51,7 +51,7 @@
 					<li class="menu-item-has-children dropdown <c:if test="${(fn:startsWith(pageName, '/signing') || fn:startsWith(pageName, '/signing/manual'))  && !fn:startsWith(pageName, '/signing/personal')}">active</c:if>">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon far fa-clock"></i><spring:message code="sidebar.signing.page" /></a>
 						<ul class="sub-menu children dropdown-menu">
-							<li><i class="fa fa-play"></i><a href="/signing"><spring:message code="sidebar.signing.automatic" /></a></li>
+							<li><i class="fa fa-home"></i><a href="/signings/teleworking"><spring:message code="sidebar.signing.teleworking" /></a></li>
 							<li><i class="fas fa-pencil-alt"></i><a href="/signing/manual"><spring:message code="sidebar.signing.manual" /></a></li>
 							<sec:authorize access="hasAuthority('ROLE_JEFE_PROYECTO')">
 								<li><i class="fas fa-edit"></i><a href="/signing/modified-list"><spring:message code="sidebar.signing.modified.list" /></a></li>

@@ -37,7 +37,7 @@ public class ConstructionShare {
 	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 	
-	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "USER_SIGNING_ID")
 	private UserSigning userSigning;
 	

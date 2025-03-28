@@ -502,10 +502,6 @@ public class Utiles {
 
 		return stringBuilder.toString();
 	}
-
-	public static boolean havePrivileges(String role) {
-		return role.equals("NIVEL 3");
-	}
 	
 	public static String getExceptionDump(Exception ex) {
 	    StringBuilder result = new StringBuilder();

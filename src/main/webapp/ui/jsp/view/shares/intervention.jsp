@@ -55,10 +55,10 @@ em[disabled] {
 							<div class="row mt-4">
 								<div class="col">
 									<div class="form-group">
-										<select id="projectDropdown" class="form-control input" name="project" required ${ havePrivileges ? '' : 'disabled' }>
+										<select id="projectDropdown" class="form-control input" name="project" required>
 											<option></option>
 											<c:forEach items="${projects}" var="project">
-												<option value="${project.id}" data-info="${project.station};${project.customerEmail}" ${ userSigning.project.id == project.id ? 'selected' : '' }>
+												<option value="${project.id}" data-info="${project.station};${project.customerEmail}">
 													<spring:message code="${project.name}" />
 												</option>
 											</c:forEach>
@@ -76,12 +76,6 @@ em[disabled] {
 									</div>
 								</div>
 							</div>
-							
-							<c:if test="${ userSigning == null && !havePrivileges }">
-								<div class="alert alert-danger" style="font-size: 12px" role="alert">
-									<spring:message code="signing.page.not.enable" />
-								</div>
-							</c:if>
 						</div>
 					</div>
 				</div>
@@ -1385,7 +1379,7 @@ em[disabled] {
 			"drawCallback": function(settings) {
 				offset = settings._iDisplayStart;
 				limit = settings._iDisplayLength;
-				parseActionButtons('${userRole}', ${ userSigning != null }, ${ havePrivileges }, '${ userSigning.project.name }');
+				parseActionButtons('${userRole}');
 			},
 			"initComplete": function() {
 				const queryParams = new URLSearchParams(window.location.search);

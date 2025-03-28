@@ -551,6 +551,125 @@ paths:
       operationId: export-inspection-materials-v1
       description: export-inspection-materials-v1
       parameters: []
+  /v1/signings/teleworking:
+    get:
+      summary: V1 - List teleworking signings
+      responses:
+        '200':
+          $ref: '#/components/responses/TeleworkingSigningList'
+      operationId: list-teleworking-signings-v1
+      description: list-teleworking-signings-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by teleworking signing identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: userIds
+          description: Filter by user identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: projectIds
+          description: Filter by project identificator.
+        - schema:
+            type: boolean
+          in: query
+          name: current
+          description: Filter by current teleworking signings.
+      tags:
+        - teleworking-signing-v1
+    post:
+      summary: V1 - Create teleworking signing
+      operationId: create-teleworking-signing-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/TeleworkingSigning'
+        '404':
+          description: user-not-found | project-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: create-teleworking-signing-v1
+      tags:
+        - teleworking-signing-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateTeleworkingSigning'
+  '/v1/signings/teleworking/{teleworkingSigningId}':
+    parameters:
+      - $ref: '#/components/parameters/Teleworking-Signing-Id'
+    get:
+      summary: V1 - Find teleworking signing
+      tags:
+        - teleworking-signing-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/TeleworkingSigning'
+        '404':
+          description: teleworking-signing-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-teleworking-signing-by-id-v1
+      description: find-teleworking-signing-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+    patch:
+      summary: V1 - Update teleworking signing
+      operationId: update-teleworking-signing-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/TeleworkingSigning'
+        '404':
+          description: teleworking-signing-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: update-teleworking-signing-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateTeleworkingSigning'
+      tags:
+        - teleworking-signing-v1
+    delete:
+      summary: V1 - Delete teleworking signing
+      operationId: delete-teleworking-signing-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: teleworking-signing-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: delete-teleworking-signing-v1
+      tags:
+        - teleworking-signing-v1
   /v1/users:
     get:
       summary: V1 - List users
@@ -1025,6 +1144,41 @@ components:
         - status
         - createdAt
         - createdBy
+    TeleworkingSigning:
+      title: TeleworkingSigning
+      x-stoplight:
+        id: csduyvebbu1tk
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        project:
+          $ref: '#/components/schemas/Project'
+        startedAt:
+          type: string
+          x-stoplight:
+            id: 6tuljgwe6vldd
+          format: date-time
+        startedLocation:
+          type: string
+          x-stoplight:
+            id: ion8zuj2aasab
+        closedAt:
+          type: string
+          x-stoplight:
+            id: am40gxt2tb2bo
+          format: date-time
+        closedLocation:
+          type: string
+          x-stoplight:
+            id: c339v3olkdaxa
+      required:
+        - id
+        - user
+        - project
+        - startedAt
   securitySchemes:
     bearerAuth:
       type: http
@@ -1148,6 +1302,30 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/PersonalExpense'
+    TeleworkingSigning:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                $ref: '#/components/schemas/TeleworkingSigning'
+    TeleworkingSigningList:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TeleworkingSigning'
   requestBodies:
     CreateNoProgrammedShare:
       content:
@@ -1511,6 +1689,42 @@ components:
               - quantity
               - amount
               - paymentType
+    CreateTeleworkingSigning:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userId:
+                type: integer
+                x-stoplight:
+                  id: 7kz5d7032gyti
+              projectId:
+                type: integer
+                x-stoplight:
+                  id: skucltu5mg4mu
+              startedLocation:
+                type: string
+                x-stoplight:
+                  id: jtsz60adt2sku
+            required:
+              - userId
+              - projectId
+    UpdateTeleworkingSigning:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              startedAt:
+                type: string
+                x-stoplight:
+                  id: y319m8k3jhtoo
+                format: date-time
+              closedLocation:
+                type: string
+                x-stoplight:
+                  id: sssa78w366kr3
   parameters:
     Share-Id:
       name: shareId
@@ -1547,6 +1761,13 @@ components:
       schema:
         type: integer
       description: File identificator.
+    Teleworking-Signing-Id:
+      name: teleworkingSigningId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Teleworking signing identificator.
 tags:
   - name: personal-expense-sheet-v1
     description: V1 - Personal Expense Sheets
@@ -1560,5 +1781,7 @@ tags:
     description: V1 - No Programmed Share
   - name: no-programmed-share-file-v1
     description: V1 - No Programmed Share File
+  - name: teleworking-signing-v1
+    description: V1 - Teleworking Signing
   - name: user-v1
     description: V1 - User

@@ -28,23 +28,13 @@ import static com.epm.gestepm.modelapi.common.utils.classes.Constants.ROLE_ADMIN
 import static com.epm.gestepm.modelapi.common.utils.classes.Constants.ROLE_PL_ID;
 
 @Controller
+@AllArgsConstructor
 @RequestMapping("/provisional")
 public class ProvisionalController {
 
     private final NoProgrammedShareService noProgrammedShareService;
 
-    private final SubFamilyService subFamilyService;
-
     private final UserService userService;
-
-    private final UserSigningService userSigningService;
-
-    public ProvisionalController(NoProgrammedShareService noProgrammedShareService, SubFamilyService subFamilyService, UserService userService, UserSigningService userSigningService) {
-        this.noProgrammedShareService = noProgrammedShareService;
-        this.subFamilyService = subFamilyService;
-        this.userService = userService;
-        this.userSigningService = userSigningService;
-    }
 
     @ResponseBody
     @GetMapping("/shares/no-programmed/user-permissions")
@@ -53,21 +43,12 @@ public class ProvisionalController {
         final User user = this.userService.getUserById(userId.longValue());
         final NoProgrammedShareDto share = this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(shareId));
 
-        boolean hasRole = false;
-        boolean hasSigning = false;
         boolean canClose = false;
 
         if (share.getFamilyId() != null && share.getSubFamilyId() != null) {
-            final List<RoleDTO> subRoles = this.subFamilyService.getSubRolsById(share.getSubFamilyId().longValue());
-            final UserSigning userSigning = this.userSigningService.getByUserIdAndEndDate(user.getId(), null);
-            final String userLevel = user.getSubRole().getRol();
-
-            hasRole = subRoles.isEmpty()
-                    || subRoles.stream().anyMatch(subRole -> subRole.getName().equals(userLevel));
-            hasSigning = userSigning != null || Utiles.havePrivileges(userLevel);
             canClose = user.getRole().getId().equals(ROLE_PL_ID) || user.getRole().getId().equals(ROLE_ADMIN_ID);
         }
 
-        return new NoProgrammedShareUserPermissionsResponse(hasRole, hasSigning, canClose);
+        return new NoProgrammedShareUserPermissionsResponse(canClose);
     }
 }
