@@ -670,6 +670,63 @@ paths:
       description: delete-teleworking-signing-v1
       tags:
         - teleworking-signing-v1
+  /v1/time-controls:
+    get:
+      summary: V1 - List time controls
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResHolidayList'
+      operationId: list-time-controls-v1
+      description: list-time-controls-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: integer
+            items:
+              type: integer
+          in: query
+          name: userId
+          description: Search by user identificator.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: startDate
+          description: Search by start date.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: endDate
+          description: Search by end date.
+        - schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - CONSTRUCTION_SHARES
+                - DISPLACEMENT_SHARES
+                - INSPECTIONS
+                - MANUAL_SIGNINGS
+                - PERSONAL_SIGNINGS
+                - PROGRAMMED_SHARES
+                - WORK_SHARES
+          in: query
+          name: types
+          description: List of types to filter.
+      tags:
+        - time-control-v1
+    parameters: []
   /v1/users:
     get:
       summary: V1 - List users
@@ -1179,6 +1236,45 @@ components:
         - user
         - project
         - startedAt
+    TimeControl:
+      title: TimeControl
+      x-stoplight:
+        id: gwjw3a4nc9le4
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+          x-stoplight:
+            id: jxoa1eylpmel0
+          enum:
+            - CONSTRUCTION_SHARES
+            - DISPLACEMENT_SHARES
+            - INSPECTIONS
+            - MANUAL_SIGNINGS
+            - PERSONAL_SIGNINGS
+            - PROGRAMMED_SHARES
+            - WORK_SHARES
+        description:
+          type: string
+          x-stoplight:
+            id: oriki5m2mchi5
+        startDate:
+          type: string
+          x-stoplight:
+            id: h08k04i7nbv7l
+          format: date-time
+        endDate:
+          type: string
+          x-stoplight:
+            id: 6hy6vr2ibobsu
+          format: date-time
+      required:
+        - id
+        - type
+        - startDate
+        - endDate
   securitySchemes:
     bearerAuth:
       type: http
@@ -1326,6 +1422,19 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/TeleworkingSigning'
+    TimeControlList:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeControl'
   requestBodies:
     CreateNoProgrammedShare:
       content:
@@ -1783,5 +1892,7 @@ tags:
     description: V1 - No Programmed Share File
   - name: teleworking-signing-v1
     description: V1 - Teleworking Signing
+  - name: time-control-v1
+    description: V1 - Time control
   - name: user-v1
     description: V1 - User

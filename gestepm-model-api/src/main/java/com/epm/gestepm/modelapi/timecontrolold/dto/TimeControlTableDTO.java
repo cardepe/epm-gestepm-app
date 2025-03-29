@@ -1,11 +1,10 @@
-package com.epm.gestepm.modelapi.timecontrol.dto;
+package com.epm.gestepm.modelapi.timecontrolold.dto;
 
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 public class TimeControlTableDTO {

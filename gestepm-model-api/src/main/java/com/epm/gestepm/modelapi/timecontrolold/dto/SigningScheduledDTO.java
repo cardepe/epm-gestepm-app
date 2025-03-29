@@ -1,4 +1,4 @@
-package com.epm.gestepm.modelapi.timecontrol.dto;
+package com.epm.gestepm.modelapi.timecontrolold.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

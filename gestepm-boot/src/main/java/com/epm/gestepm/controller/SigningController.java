@@ -23,7 +23,6 @@ import com.epm.gestepm.modelapi.inspection.service.InspectionService;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
-import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.deprecated.interventionsubshare.service.InterventionSubShareService;
 import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
 import com.epm.gestepm.modelapi.manualsigningtype.service.ManualSigningTypeService;
@@ -34,16 +33,15 @@ import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningDTO;
 import com.epm.gestepm.modelapi.personalsigning.service.PersonalSigningService;
 import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.shares.ShareDecorator;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
-import com.epm.gestepm.modelapi.timecontrol.dto.TimeControlDetailTableDTO;
-import com.epm.gestepm.modelapi.timecontrol.dto.TimeControlTableDTO;
-import com.epm.gestepm.modelapi.timecontrol.service.TimeControlService;
+import com.epm.gestepm.modelapi.timecontrolold.dto.TimeControlDetailTableDTO;
+import com.epm.gestepm.modelapi.timecontrolold.dto.TimeControlTableDTO;
+import com.epm.gestepm.modelapi.timecontrolold.service.TimeControlOldService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.dto.UserDTO;
 import com.epm.gestepm.modelapi.user.dto.UserTableDTO;
@@ -54,9 +52,7 @@ import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningDTO;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningTableDTO;
 import com.epm.gestepm.modelapi.usermanualsigning.service.UserManualSigningService;
 import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigningDTO;
 import com.epm.gestepm.modelapi.usersigning.dto.UserSigningShareDTO;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigningTableDTO;
 import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
@@ -143,7 +139,7 @@ public class SigningController {
     private SMTPService smtpService;
 
     @Autowired
-    private TimeControlService timeControlService;
+    private TimeControlOldService timeControlOldService;
 
     @Autowired
     private UserService userService;
@@ -679,7 +675,7 @@ public class SigningController {
                 selectedYear = year;
             }
 
-            List<TimeControlTableDTO> timeControlTable = timeControlService.getTimeControlTableDTOByDateAndUser(selectedMonth, selectedYear, userDetail.getId(), userDetail.getActivityCenter().getId(), locale);
+            List<TimeControlTableDTO> timeControlTable = timeControlOldService.getTimeControlTableDTOByDateAndUser(selectedMonth, selectedYear, userDetail.getId(), userDetail.getActivityCenter().getId(), locale);
 
             DataTableResults<TimeControlTableDTO> dataTableResult = new DataTableResults<>();
             dataTableResult.setDraw(dataTableInRQ.getDraw());
@@ -717,7 +713,7 @@ public class SigningController {
             log.info("El usuario " + user.getId() + " ha accedido a la vista detalle de Control Horario " + id);
 
             // Get TimeControl info
-            TimeControlTableDTO timeControlDTO = timeControlService.getTimeControlDetail(startDate, id);
+            TimeControlTableDTO timeControlDTO = timeControlOldService.getTimeControlDetail(startDate, id);
 
             if (timeControlDTO.getDifference().startsWith("-")) {
                 timeControlDTO.setDifference("<span style=\"color: red\">" + timeControlDTO.getDifference().replace("-", "") + "</span>");
@@ -752,7 +748,7 @@ public class SigningController {
                                                                                   Locale locale) {
         final DataTableRequest<Object> dataTableInRQ = new DataTableRequest<>(request);
 
-        final List<TimeControlDetailTableDTO> timeControlTable = timeControlService.getTimeControlDetailTableDTOByDateAndUser(date, id, locale);
+        final List<TimeControlDetailTableDTO> timeControlTable = timeControlOldService.getTimeControlDetailTableDTOByDateAndUser(date, id, locale);
 
         final DataTableResults<TimeControlDetailTableDTO> dataTableResult = new DataTableResults<>();
         dataTableResult.setDraw(dataTableInRQ.getDraw());
@@ -1169,7 +1165,7 @@ public class SigningController {
     private void getTodaySingingTimer(Long userId, Model model) {
 
         final LocalDateTime startDate = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0);
-        final TimeControlTableDTO tcDTO = timeControlService.getTimeControlDetail(startDate, userId);
+        final TimeControlTableDTO tcDTO = timeControlOldService.getTimeControlDetail(startDate, userId);
 
         model.addAttribute("todayTimer", tcDTO.getTotalHours());
     }

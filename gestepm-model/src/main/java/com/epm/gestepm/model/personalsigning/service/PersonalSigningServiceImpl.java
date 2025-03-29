@@ -19,8 +19,8 @@ import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionSha
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningResumeDTO;
 import com.epm.gestepm.modelapi.personalsigning.service.PersonalSigningService;
-import com.epm.gestepm.modelapi.timecontrol.dto.TimeControlTableDTO;
-import com.epm.gestepm.modelapi.timecontrol.service.TimeControlService;
+import com.epm.gestepm.modelapi.timecontrolold.dto.TimeControlTableDTO;
+import com.epm.gestepm.modelapi.timecontrolold.service.TimeControlOldService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
@@ -72,7 +72,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 	private PersonalSigningRepository personalSigingRepository;
 
 	@Autowired
-	private TimeControlService timeControlService;
+	private TimeControlOldService timeControlOldService;
 
 	@Autowired
 	private UserSigningRepository userSigningRepository;
@@ -586,7 +586,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 
 	private void generateMonthsSigningsWoffuInfo(XSSFWorkbook workbook, Sheet sheet, User user, int month, int year, Locale locale) {
 
-		final List<TimeControlTableDTO> timeControlList = this.timeControlService.getTimeControlTableDTOByDateAndUser(month, year, user.getId(), user.getActivityCenter().getId(), locale);
+		final List<TimeControlTableDTO> timeControlList = this.timeControlOldService.getTimeControlTableDTOByDateAndUser(month, year, user.getId(), user.getActivityCenter().getId(), locale);
 		final List<DatesModel> signingDates = getSigningDates(user.getId(), month, year);
 
 		int rowNumber = 1;
