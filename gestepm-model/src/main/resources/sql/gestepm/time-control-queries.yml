@@ -75,6 +75,7 @@ sql:
 
     -- [AND
       -- ${sql.predicate-for-tc-user-id}
+      -- ${sql.predicate-for-tc-end-date}
       -- ${sql.predicate-for-tc-date}
       -- ${sql.predicate-for-tc-types}
     -- AND]
@@ -86,6 +87,10 @@ sql:
   predicate-for-tc-date: |
     
     end_date BETWEEN :attr_tc_start_date AND :attr_tc_end_date
+
+  predicate-for-tc-end-date: |
+    
+    end_date IS NOT NULL
 
   predicate-for-tc-types: |
 

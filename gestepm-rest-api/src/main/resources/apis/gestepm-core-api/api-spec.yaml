@@ -675,25 +675,15 @@ paths:
       summary: V1 - List time controls
       responses:
         '200':
-          description: '**OK**'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResHolidayList'
+          $ref: '#/components/responses/TimeControlList'
       operationId: list-time-controls-v1
       description: list-time-controls-v1
       parameters:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
-        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
-        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
-        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
-        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
         - schema:
             type: integer
-            items:
-              type: integer
           in: query
           name: userId
           description: Search by user identificator.
@@ -1244,6 +1234,8 @@ components:
       properties:
         id:
           type: integer
+        user:
+          $ref: '#/components/schemas/User'
         type:
           type: string
           x-stoplight:
