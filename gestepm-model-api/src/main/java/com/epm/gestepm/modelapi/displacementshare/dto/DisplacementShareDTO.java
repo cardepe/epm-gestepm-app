@@ -2,12 +2,14 @@ package com.epm.gestepm.modelapi.displacementshare.dto;
 
 import com.epm.gestepm.modelapi.displacement.dto.DisplacementDTO;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
 @Data
 public class DisplacementShareDTO {
 
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime displacementDate;
 
 	private Long activityCenter;
@@ -21,7 +23,7 @@ public class DisplacementShareDTO {
 	private String projectId;
 	
 	private Integer manualDisplacement;
-	
+
 	private DisplacementDTO displacement;
 
 }

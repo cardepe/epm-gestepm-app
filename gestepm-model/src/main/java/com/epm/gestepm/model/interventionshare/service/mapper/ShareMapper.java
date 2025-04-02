@@ -164,33 +164,6 @@ public class ShareMapper {
 		return workShare;
 	}
 	
-	public static PersonalSigningDTO mapUserSigningToDTO(UserSigning userSigning) {
-		
-		PersonalSigningDTO userSigningShareDTO = new PersonalSigningDTO();
-		
-		userSigningShareDTO.setId(userSigning.getId());
-		userSigningShareDTO.setStartDate(userSigning.getStartDate());
-		userSigningShareDTO.setEndDate(userSigning.getEndDate());
-		userSigningShareDTO.setStartLocation(userSigning.getStartLocation());
-		userSigningShareDTO.setEndLocation(userSigning.getEndLocation());
-		
-		return userSigningShareDTO;
-	}
-
-	public static UserManualSigningDTO mapUserManualSigningToDTO(UserManualSigning userManualSigning) {
-
-		UserManualSigningDTO userManualSigningDTO = new UserManualSigningDTO();
-
-		userManualSigningDTO.setId(userManualSigning.getId());
-		userManualSigningDTO.setManualTypeId(userManualSigning.getManualSigningType().getId());
-		userManualSigningDTO.setStartDate(userManualSigning.getStartDate());
-		userManualSigningDTO.setEndDate(userManualSigning.getEndDate());
-		userManualSigningDTO.setDescription(userManualSigning.getDescription());
-		userManualSigningDTO.setGeolocation(userManualSigning.getLocation());
-
-		return userManualSigningDTO;
-	}
-	
 	public static WorkShareDTO mapWorkShareToDTO(WorkShare workShare) {
 		
 		WorkShareDTO workShareDTO = new WorkShareDTO();

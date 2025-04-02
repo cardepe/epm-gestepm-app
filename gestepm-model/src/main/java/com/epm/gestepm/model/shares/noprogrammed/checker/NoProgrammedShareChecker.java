@@ -1,7 +1,5 @@
 package com.epm.gestepm.model.shares.noprogrammed.checker;
 
-import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.personalsigning.exception.PersonalSigningForbiddenException;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
 import com.epm.gestepm.modelapi.project.exception.ProjectIsNotStationException;
@@ -14,8 +12,6 @@ import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareF
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.exception.UserByIdNotFoundException;
 import com.epm.gestepm.modelapi.user.service.UserService;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
-import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -35,18 +31,15 @@ public class NoProgrammedShareChecker {
 
     private final UserService userService;
 
-    private final UserSigningService userSigningService;
-
     public void checker(final NoProgrammedShareCreateDto dto) {
-        this.checker(dto.getUserId(), dto.getProjectId(), null, dto, null);
+        this.checker(dto.getUserId(), dto.getProjectId(), dto, null);
     }
 
     public void checker(final NoProgrammedShareUpdateDto updateDto, final NoProgrammedShareDto dto) {
-        this.checker(updateDto.getUserId(), dto.getProjectId(), updateDto.getSubFamilyId(), null, updateDto);
+        this.checker(updateDto.getUserId(), dto.getProjectId(), null, updateDto);
     }
 
-    private void checker(final Integer userId, final Integer projectId, final Integer subFamilyId,
-                         final NoProgrammedShareCreateDto createDto, final NoProgrammedShareUpdateDto updateDto) {
+    private void checker(final Integer userId, final Integer projectId, final NoProgrammedShareCreateDto createDto, final NoProgrammedShareUpdateDto updateDto) {
         final boolean closeShare = updateDto != null && NoProgrammedShareStateEnumDto.CLOSED.equals(updateDto.getState());
 
         final Supplier<RuntimeException> userNotFound = () -> new UserByIdNotFoundException(userId);
@@ -55,13 +48,8 @@ public class NoProgrammedShareChecker {
 
         if (closeShare) {
             this.validateCloseSharePermission(user);
-        } else {
-            this.validateUserAccess(user, userId, subFamilyId);
-
-            if (createDto != null) {
-                this.validateProject(projectId);
-                this.populateCreateDto(createDto, userId);
-            }
+        } else if (createDto != null) {
+            this.validateProject(projectId);
         }
     }
 
@@ -71,35 +59,12 @@ public class NoProgrammedShareChecker {
         }
     }
 
-    private void validateUserAccess(final User user, final Integer userId, final Integer subFamilyId) {
-        final UserSigning userSigning = userSigningService.getByUserIdAndEndDate(userId.longValue(), null);
-
-        final String level = user.getSubRole().getRol();
-        final boolean hasSigning = userSigning != null || Utiles.havePrivileges(level);
-
-        handleCondition(!hasSigning, () -> new PersonalSigningForbiddenException(userId));
-    }
-
-    private void populateCreateDto(final NoProgrammedShareCreateDto createDto, final Integer userId) {
-        final UserSigning userSigning = userSigningService.getByUserIdAndEndDate(userId.longValue(), null);
-
-        if (userSigning != null) {
-            createDto.setUserSigningId(userSigning.getId().intValue());
-        }
-    }
-
     private void validateProject(final Integer projectId) {
         final Project project = Optional.ofNullable(projectService.getProjectById(projectId.longValue()))
                 .orElseThrow(() -> new ProjectByIdNotFoundException(projectId));
 
         if (project.getStation() != STATION_ACTIVE) {
             throw new ProjectIsNotStationException(project.getId().intValue());
-        }
-    }
-
-    private void handleCondition(final boolean condition, final Supplier<RuntimeException> exceptionSupplier) {
-        if (condition) {
-            throw exceptionSupplier.get();
         }
     }
 }

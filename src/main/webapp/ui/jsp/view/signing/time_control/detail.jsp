@@ -137,7 +137,6 @@
 									<th id="thType"><spring:message code="time.control.detail.table.type" /></th>
 									<th id="thStartHour"><spring:message code="time.control.detail.table.start.hour" /></th>
 									<th id="thEndHour"><spring:message code="time.control.detail.table.end.hour" /></th>
-<%-- 									<th id="thActions"><spring:message code="projects.table.actions" /></th> --%>
 								</tr>
 							</thead>
 						</table>
@@ -148,48 +147,57 @@
 	</div>
 </div>
 
-<jsp:useBean id="jspUtil" class="com.epm.gestepm.modelapi.common.utils.JspUtil"/>
-
 <script>
-	
+
+	const locale = '${locale}';
+	const currentDate = '${actualDate}';
+
 	$(document).ready(function() {
 
-		/* Datatables */
-		dTable = $('#dTable').DataTable({
-			"lengthChange": false,
-			"searching": false,
-			"responsive": true,
-			"processing": true,
-			"serverSide": true,
-			"iDisplayLength": 31,
-			"ordering": false,
-			"ajax": "/signing/personal/time-control/${id}/dt?date=${actualDate}",
-			"rowId": "tc_id",
-			"language": {
-				"url": "/ui/static/lang/datatables/${locale}.json"
+		const startOfDay = moment(currentDate).startOf('day').format('YYYY-MM-DDTHH:mm:ss');
+		const endOfDay = moment(currentDate).endOf('day').format('YYYY-MM-DDTHH:mm:ss');
+
+		const columns = [
+			{ data: 'type' },
+			{ data: 'startDate' },
+			{ data: 'endDate' }
+		]
+		const endpoint = '/v1/time-controls?userId=${id}&startDate=' + startOfDay + '&endDate=' + endOfDay;
+		const columnDefs = [
+			{
+				className: 'text-center',
+				targets: '_all'
 			},
-			"columns": [
-				{ "data": "tc_type" },
-				{ "data": "tc_startHour" },
-				{ "data": "tc_endHour" }
-			],
-			"columnDefs": [
-				{ "className": "text-center", "orderable": false, "targets": "_all" },
-                {  
-				    "render": function ( data, type, row ) {
-					    if (!data) {
-						    return '';
-						}
-						
-					    return moment(data).format('HH:mm:ss');
-                	},
-                	"targets": [1, 2]
-                }
-			],
-			"dom": "<'top'>rt<'bottom'><'clear'>"
+			{
+				targets: 0,
+				render: function (data) {
+					return getSigningText(data);
+				}
+			},
+			{
+				targets: [1, 2],
+				render: function (data) {
+					return moment(data).format('HH:mm:ss');
+				}
+			}
+		]
+
+		dTable = $('#dTable').DataTable({
+			lengthChange: false,
+			searching: false,
+			responsive: true,
+			processing: true,
+			serverSide: true,
+			ordering: false,
+			ajax: endpoint,
+			rowId: 'id',
+			language: {
+				url: '/ui/static/lang/datatables/${locale}.json'
+			},
+			columns: columns,
+			columnDefs: columnDefs,
+			dom: "<'top'>rt<'bottom'><'clear'>"
 		});
-		/* End Datatables */
-		
 	});
-	
+
 </script>

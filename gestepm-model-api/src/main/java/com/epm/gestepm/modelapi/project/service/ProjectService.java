@@ -23,6 +23,7 @@ public interface ProjectService {
 	List<ProjectListDTO> getProjectsByUser(User user);
 	List<ProjectListDTO> getBossProjectsDTOByUserId(Long userId);
 	List<ProjectListDTO> getStationDTOs();
+	List<ProjectListDTO> getTeleworkingProjects(boolean isTeleworking);
 	List<ProjectTableDTO> getAllProjectsDataTables(PaginationCriteria pagination, Object[] params);
 	List<ProjectTableDTO> getProjectsByUserMemberDataTables(Long userId, PaginationCriteria pagination, Object[] params);
 	List<ProjectTableDTO> getProjectsByUserBossDataTables(Long userId, PaginationCriteria pagination, Object[] params);

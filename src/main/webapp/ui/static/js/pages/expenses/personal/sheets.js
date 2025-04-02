@@ -60,7 +60,7 @@ function initializeSelects() {
     selects.forEach(select => {
         $(select).selectpicker({
             liveSearch: true,
-            noneSelectedText: messages.select.placeholder
+            noneSelectedText: messages.select2.placeholder
         });
     });
 }

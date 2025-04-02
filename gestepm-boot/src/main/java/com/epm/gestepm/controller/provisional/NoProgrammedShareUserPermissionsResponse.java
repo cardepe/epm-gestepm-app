@@ -9,8 +9,6 @@ public class NoProgrammedShareUserPermissionsResponse {
 
     private Boolean hasRole;
 
-    private Boolean hasSigning;
-
     private Boolean canClose;
 
 }

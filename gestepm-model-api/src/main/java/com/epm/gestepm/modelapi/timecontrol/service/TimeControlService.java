@@ -1,14 +1,13 @@
 package com.epm.gestepm.modelapi.timecontrol.service;
 
-import com.epm.gestepm.modelapi.timecontrol.dto.TimeControlDetailTableDTO;
-import com.epm.gestepm.modelapi.timecontrol.dto.TimeControlTableDTO;
+import com.epm.gestepm.modelapi.timecontrol.dto.TimeControlDto;
+import com.epm.gestepm.modelapi.timecontrol.dto.filter.TimeControlFilterDto;
 
-import java.time.LocalDateTime;
+import javax.validation.Valid;
 import java.util.List;
-import java.util.Locale;
 
 public interface TimeControlService {
-	List<TimeControlTableDTO> getTimeControlTableDTOByDateAndUser(int month, int year, Long userId, Long activityCenter, Locale locale);
-	TimeControlTableDTO getTimeControlDetail(LocalDateTime startDate, Long userId);
-	List<TimeControlDetailTableDTO> getTimeControlDetailTableDTOByDateAndUser(LocalDateTime startDate, Long userId, Locale locale);
+
+    List<@Valid TimeControlDto> list(@Valid TimeControlFilterDto filterDto);
+
 }
