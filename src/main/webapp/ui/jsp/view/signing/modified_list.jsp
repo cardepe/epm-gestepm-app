@@ -200,17 +200,15 @@
 
 	function parseShareType(data) {
 
-		if (data === 'ds') {
+		if (data === 'DISPLACEMENT_SHARES') {
 			return '<div class="badge badge-secondary"> ${jspUtil.parseTagToText('ds')} </div>';
-		} else if (data === 'ps') {
+		} else if (data === 'PERSONAL_SIGNINGS') {
 			return '<span class="badge badge-primary"> ${jspUtil.parseTagToText('ps')} </span>';
-		} else if (data === 'us') {
-			return '<span class="badge badge-success"> ${jspUtil.parseTagToText('us')} </span>';
-		} else if (data === 'ums') {
+		} else if (data === 'MANUAL_SIGNINGS') {
 			return '<span class="badge badge-info"> ${jspUtil.parseTagToText('ums')} </span>';
+		} else {
+			return '<span class="badge badge-success"> ${jspUtil.parseTagToText('us')} </span>';
 		}
-
-		return '';
 	}
 
 	function approveModifiedSigning(id) {

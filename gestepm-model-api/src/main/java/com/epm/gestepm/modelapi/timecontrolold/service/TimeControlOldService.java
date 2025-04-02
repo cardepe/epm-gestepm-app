@@ -10,5 +10,4 @@ import java.util.Locale;
 public interface TimeControlOldService {
 	List<TimeControlTableDTO> getTimeControlTableDTOByDateAndUser(int month, int year, Long userId, Long activityCenter, Locale locale);
 	TimeControlTableDTO getTimeControlDetail(LocalDateTime startDate, Long userId);
-	List<TimeControlDetailTableDTO> getTimeControlDetailTableDTOByDateAndUser(LocalDateTime startDate, Long userId, Locale locale);
 }

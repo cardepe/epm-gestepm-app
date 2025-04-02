@@ -5,6 +5,7 @@ import com.epm.gestepm.model.displacementshare.dao.DisplacementShareRepository;
 import com.epm.gestepm.model.interventionprshare.dao.InterventionPrShareRepository;
 import com.epm.gestepm.model.interventionshare.dao.InterventionShareRepository;
 import com.epm.gestepm.model.personalsigning.dao.PersonalSigningRepository;
+import com.epm.gestepm.model.timecontrol.service.TimeControlServiceImpl;
 import com.epm.gestepm.model.user.service.mapper.SigningMapper;
 import com.epm.gestepm.model.usersigning.dao.UserSigningRepository;
 import com.epm.gestepm.model.workshare.dao.WorkShareRepository;
@@ -19,6 +20,10 @@ import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionSha
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningResumeDTO;
 import com.epm.gestepm.modelapi.personalsigning.service.PersonalSigningService;
+import com.epm.gestepm.modelapi.timecontrol.dto.TimeControlDto;
+import com.epm.gestepm.modelapi.timecontrol.dto.TimeControlTypeEnumDto;
+import com.epm.gestepm.modelapi.timecontrol.dto.filter.TimeControlFilterDto;
+import com.epm.gestepm.modelapi.timecontrol.service.TimeControlService;
 import com.epm.gestepm.modelapi.timecontrolold.dto.TimeControlTableDTO;
 import com.epm.gestepm.modelapi.timecontrolold.service.TimeControlOldService;
 import com.epm.gestepm.modelapi.user.dto.User;
@@ -75,11 +80,11 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 	private TimeControlOldService timeControlOldService;
 
 	@Autowired
-	private UserSigningRepository userSigningRepository;
-
-	@Autowired
 	private WorkShareRepository workShareRepository;
-	
+
+    @Autowired
+    private TimeControlService timeControlService;
+
 	@Override
 	public PersonalSigning save(PersonalSigning personalSigning) {
 		return personalSigingRepository.save(personalSigning);
@@ -704,44 +709,26 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 		final LocalDateTime startDate = LocalDateTime.of(year, month, minDay, 0, 0, 0);
 		final LocalDateTime endDate = LocalDateTime.of(year, month, maxDay, 23, 59, 59);
 
-		final List<DisplacementShare> displacementShares = displacementShareRepository.findWeekSigningsByUserId(startDate, endDate, userId, 1);
-		List<PersonalSigning> personalSignings = personalSigingRepository.findWeekSigningsByUserId(startDate, endDate, userId);
-		List<UserSigning> userSignings = userSigningRepository.findWeekSigningsByUserId(startDate, endDate, userId);
+		final TimeControlFilterDto filterDto = new TimeControlFilterDto();
+		filterDto.setUserId(userId.intValue());
+		filterDto.setStartDate(startDate);
+		filterDto.setEndDate(endDate);
+
+		final List<TimeControlDto> timeControls = this.timeControlService.list(filterDto);
+
+		final List<TimeControlDto> imputableTimeControls = timeControls.stream()
+				.filter(tc -> !TimeControlTypeEnumDto.MANUAL_SIGNINGS.equals(tc.getType()))
+				.collect(Collectors.toList());
 
 		final List<DatesModel> todayDates = new ArrayList<>();
 
-		displacementShares.forEach(ds -> {
-
-			final Calendar date = Calendar.getInstance();
-			date.setTime(Date.from(ds.getDisplacementDate().toInstant(ZoneOffset.UTC)));
-
-			final long t = date.getTimeInMillis();
-			final Date afterAddingMins = new Date(t + (ds.getManualHours() * 60000));
-
+		for (TimeControlDto dto : imputableTimeControls) {
 			final DatesModel dm = new DatesModel();
-			dm.setStartDate(Date.from(ds.getDisplacementDate().toInstant(ZoneOffset.UTC)));
-			dm.setEndDate(afterAddingMins);
+			dm.setStartDate(Date.from(dto.getStartDate().toInstant(ZoneOffset.UTC)));
+			dm.setEndDate(Date.from(dto.getEndDate().toInstant(ZoneOffset.UTC)));
 
 			todayDates.add(dm);
-		});
-
-		personalSignings.forEach(ps -> {
-
-			final DatesModel dm = new DatesModel();
-			dm.setStartDate(Date.from(ps.getStartDate().toInstant(ZoneOffset.UTC)));
-			dm.setEndDate(Date.from(ps.getEndDate().toInstant(ZoneOffset.UTC)));
-
-			todayDates.add(dm);
-		});
-
-		userSignings.forEach(us -> {
-
-			final DatesModel dm = new DatesModel();
-			dm.setStartDate(Date.from(us.getStartDate().toInstant(ZoneOffset.UTC)));
-			dm.setEndDate(Date.from(us.getEndDate().toInstant(ZoneOffset.UTC)));
-
-			todayDates.add(dm);
-		});
+		}
 
 		return todayDates;
 	}

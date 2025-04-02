@@ -8,7 +8,7 @@
         },
         "delete": {
             "alert": "Êtes-vous sûr de vouloir supprimer ce centre d'activité ?",
-            "success": "Centre d'activité supprimé avec succès"
+            "success": "Centre d'activité supprimé avec succès."
         }
     },
     "countries": {
@@ -20,7 +20,7 @@
         },
         "delete": {
             "alert": "Êtes-vous sûr de vouloir supprimer ce pays ?",
-            "success": "Pays supprimé avec succès"
+            "success": "Pays supprimé avec succès."
         }
     },
     "displacements": {
@@ -28,30 +28,31 @@
             "success": "Déplacement créé avec succès."
         },
         "update": {
-            "success": "Les informations sur le déplacement ont été mises à jour avec succès."
+            "success": "Les informations du déplacement ont été mises à jour avec succès."
         },
         "delete": {
             "alert": "Êtes-vous sûr de vouloir supprimer ce déplacement ?",
-            "success": "Déplacement supprimé avec succès"
+            "success": "Déplacement supprimé avec succès."
         },
-        "publictransport": "Transports publics",
+        "publictransport": "Transport public",
         "vehicle": "Véhicule"
     },
     "inspections": {
+        "name": "Révision",
         "title": "Révision numéro {0}",
         "intervention": "Intervention",
         "diagnosis": "Diagnostic",
         "following": "Suivi",
-        "next": "La prochaine révision doit être du type : ",
+        "next": "La prochaine révision doit être de type : ",
         "create": {
             "success": "Révision avec id {0} créée avec succès."
         },
         "update": {
             "success": "Révision avec id {0} mise à jour avec succès."
         },
-        "delete" : {
+        "delete": {
             "alert": "Êtes-vous sûr de vouloir supprimer la révision {0} ?",
-            "success": "Révision n° {0} supprimée avec succès."
+            "success": "Révision nº {0} supprimée avec succès."
         },
         "files": {
             "delete": {
@@ -68,29 +69,29 @@
     "personalExpenseSheet": {
         "delete": {
             "alert": "Êtes-vous sûr de vouloir supprimer la feuille de dépenses personnelles {0} ?",
-            "success": "Feuille de dépenses personnelles {0} supprimée avec succès"
+            "success": "Feuille de dépenses personnelles {0} supprimée avec succès."
         },
-        "invalidStatus": "La feuille de dépenses n'est pas en état en attente et ne peut pas être modifiée.",
+        "invalidStatus": "La feuille de dépenses n'est pas en attente et ne peut pas être modifiée.",
         "update": {
-            "success": "Feuille de dépenses personnelles {0} mise à jour avec succès."
+            "success": "La feuille de dépenses personnelles {0} a été mise à jour avec succès."
         }
     },
     "personalExpense": {
         "create": {
-            "success": "Dépense personnelle {0} créée avec succès."
+            "success": "La dépense personnelle {0} a été créée avec succès."
         },
         "delete": {
             "alert": "Êtes-vous sûr de vouloir supprimer la dépense personnelle {0} ?",
-            "success": "Dépense personnelle {0} supprimée avec succès"
+            "success": "Dépense personnelle {0} supprimée avec succès."
         },
         "update": {
-            "success": "Dépense personnelle {0} mise à jour avec succès."
+            "success": "La dépense personnelle {0} a été mise à jour avec succès."
         },
         "quantity": {
-            "gas": "Kg",
+            "gas": "Kgs",
             "gasoil": "Litres",
             "gasoline": "Litres",
-            "kms": "Km",
+            "kms": "Kms",
             "default": "Quantité"
         }
     },
@@ -98,16 +99,29 @@
         "empty": "Vous devez sélectionner un projet."
     },
     "signings": {
+        "manual": {
+            "name": "Absence"
+        },
         "teleworking": {
             "startDate": "Date de début : {0}"
+        },
+        "personal": {
+            "name": "Pointage horaire personnel"
         }
     },
     "shares": {
+        "name": "Rapport",
+        "construction": {
+            "name": "Rapport de construction"
+        },
+        "displacement": {
+            "name": "Rapport de déplacement"
+        },
         "noprogrammed": {
             "delete": {
-                "success": "Rapport d'intervention non programmé n° {0} supprimé avec succès."
+                "success": "Rapport d'intervention non programmé nº {0} supprimé avec succès."
             },
-            "title": "Rapport d'intervention non programmé n° {0}",
+            "title": "Rapport d'intervention non programmé nº {0}",
             "update": {
                 "success": "Le rapport non programmé a été mis à jour avec succès."
             },
@@ -122,14 +136,20 @@
                     "success": "Pièce jointe {0} supprimée avec succès."
                 }
             },
-            "postForumUrl": "Vous pouvez consulter l'entrée sur le forum en cliquant ici."
+            "postForumUrl": "Vous pouvez voir l'entrée du forum en cliquant ici."
+        },
+        "programmed": {
+            "name": "Rapport programmé"
+        },
+        "work": {
+            "name": "Rapport de travail"
         }
     },
     "priceType": {
         "fly": "Vols",
         "food": "Nourriture",
         "gas": "Gaz",
-        "gasoil": "Gasoil",
+        "gasoil": "Gazole",
         "gasoline": "Essence",
         "hotel": "Hôtel",
         "kms": "Kilomètres",
@@ -141,7 +161,7 @@
         "other": "Autre"
     },
     "actions": {
-        "finish": "Fin",
+        "finish": "Terminer",
         "label": "Actions",
         "view": "Détail",
         "edit": "Éditer",
@@ -153,7 +173,7 @@
         "no": "Non"
     },
     "select2": {
-        "placeholder": "Sélectionner un élément..."
+        "placeholder": "Sélectionnez un élément..."
     },
     "status": {
         "pending": "En attente",

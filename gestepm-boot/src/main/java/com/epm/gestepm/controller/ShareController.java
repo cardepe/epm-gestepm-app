@@ -33,13 +33,10 @@ import com.epm.gestepm.modelapi.deprecated.interventionshare.service.Interventio
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
-import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.dto.UserDTO;
 import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
 import com.epm.gestepm.modelapi.user.service.UserService;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
-import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShareDTO;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShareTableDTO;

@@ -1,11 +1,9 @@
 package com.epm.gestepm.model.inspection.checker;
 
-import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.inspection.dto.ActionEnumDto;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.creator.InspectionCreateDto;
 import com.epm.gestepm.modelapi.inspection.dto.updater.InspectionUpdateDto;
-import com.epm.gestepm.modelapi.personalsigning.exception.PersonalSigningForbiddenException;
 import com.epm.gestepm.modelapi.role.dto.RoleDTO;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareForbiddenException;
@@ -13,8 +11,6 @@ import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.exception.UserByIdNotFoundException;
 import com.epm.gestepm.modelapi.user.service.UserService;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
-import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +32,11 @@ public class InspectionChecker {
     }
 
     public void checker(final NoProgrammedShareDto noProgrammedShare, final InspectionDto inspection, final InspectionUpdateDto updateDto) {
-        this.checker(updateDto.getUserId(), noProgrammedShare.getSubFamilyId(), inspection.getAction(), null);
+        this.checker(updateDto.getUserId() != null ? updateDto.getUserId() : updateDto.getFirstTechnicalId(),
+                noProgrammedShare.getSubFamilyId(),
+                inspection.getAction(),
+                null
+        );
     }
 
     private void checker(final Integer userId, final Integer subFamilyId, final ActionEnumDto action, final InspectionCreateDto createDto) {

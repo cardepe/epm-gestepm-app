@@ -3,8 +3,6 @@ package com.epm.gestepm.controller;
 import com.epm.gestepm.lib.file.FileUtils;
 import com.epm.gestepm.model.inspection.service.mapper.MapIToInspectionUpdateDto;
 import com.epm.gestepm.model.interventionshare.service.mapper.ShareMapper;
-import com.epm.gestepm.model.user.service.mapper.SigningMapper;
-import com.epm.gestepm.modelapi.common.utils.CalendarDTO;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
@@ -23,7 +21,6 @@ import com.epm.gestepm.modelapi.inspection.service.InspectionService;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
-import com.epm.gestepm.modelapi.deprecated.interventionsubshare.service.InterventionSubShareService;
 import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
 import com.epm.gestepm.modelapi.manualsigningtype.service.ManualSigningTypeService;
 import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigning;
@@ -34,7 +31,6 @@ import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningDTO;
 import com.epm.gestepm.modelapi.personalsigning.service.PersonalSigningService;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
-import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.shares.ShareDecorator;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
@@ -51,9 +47,7 @@ import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningDTO;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningTableDTO;
 import com.epm.gestepm.modelapi.usermanualsigning.service.UserManualSigningService;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.usersigning.dto.UserSigningShareDTO;
-import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
 import org.apache.commons.io.FilenameUtils;
@@ -96,9 +90,6 @@ public class SigningController {
     @Value("#{'${gestepm.mails.rrhh}'.split(',')}")
     private List<String> rrhhMails;
 
-    @Value("${gestepm.virtual-project-ids}")
-    private List<Integer> virtualProjectIds;
-
     @Autowired
     private ConstructionShareService constructionShareService;
 
@@ -110,9 +101,6 @@ public class SigningController {
 
     @Autowired
     private InterventionPrShareService interventionPrShareService;
-
-    @Autowired
-    private InterventionSubShareService interventionSubShareService;
 
     @Autowired
     private InspectionService inspectionService;
@@ -143,9 +131,6 @@ public class SigningController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private UserSigningService userSigningService;
 
     @Autowired
     private UserManualSigningService userManualSigningService;
@@ -447,59 +432,6 @@ public class SigningController {
         }
     }
 
-    @ResponseBody
-    @GetMapping(value = "/personal/calendar")
-    public ResponseEntity<List<CalendarDTO>> getPersonalCalendar(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-                                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
-                                                                 Locale locale) {
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Generate CalendarDTO List
-            List<CalendarDTO> calendarDTOs = generateSigninCalendar(start, end, user.getId(), locale);
-
-            // Return data
-            return new ResponseEntity<>(calendarDTOs, HttpStatus.OK);
-
-        } catch (InvalidUserSessionException e) {
-            log.error(e);
-            return null;
-        }
-    }
-
-    @ResponseBody
-    @GetMapping(value = "/personal/calendar/{id}")
-    public ResponseEntity<List<CalendarDTO>> getPersonalCalendar(@PathVariable Long id,
-                                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-                                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end,
-                                                                 Locale locale) {
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Get user role
-            Role role = user.getRole();
-
-            if (role.getId() < Constants.ROLE_PL_ID) {
-                return new ResponseEntity<>(new ArrayList<>(), HttpStatus.UNAUTHORIZED);
-            }
-
-            // Generate CalendarDTO List
-            List<CalendarDTO> calendarDTOs = generateSigninCalendar(start, end, id, locale);
-
-            // Return data
-            return new ResponseEntity<>(calendarDTOs, HttpStatus.OK);
-
-        } catch (InvalidUserSessionException e) {
-            log.error(e);
-            return null;
-        }
-    }
-
     @GetMapping("/personal/{id}/excel")
     public HttpEntity<ByteArrayResource> generateExcel(@PathVariable Long id, @RequestParam(required = false) Integer month, @RequestParam(required = false) Integer year, Locale locale) throws IOException {
 
@@ -741,53 +673,12 @@ public class SigningController {
     }
 
     @ResponseBody
-    @GetMapping("/personal/time-control/{id}/dt")
-    public DataTableResults<TimeControlDetailTableDTO> timeControlDetailDatatable(@PathVariable Long id,
-                                                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime date,
-                                                                                  HttpServletRequest request,
-                                                                                  Locale locale) {
-        final DataTableRequest<Object> dataTableInRQ = new DataTableRequest<>(request);
-
-        final List<TimeControlDetailTableDTO> timeControlTable = timeControlOldService.getTimeControlDetailTableDTOByDateAndUser(date, id, locale);
-
-        final DataTableResults<TimeControlDetailTableDTO> dataTableResult = new DataTableResults<>();
-        dataTableResult.setDraw(dataTableInRQ.getDraw());
-        dataTableResult.setData(timeControlTable);
-        dataTableResult.setRecordsTotal(String.valueOf(timeControlTable.size()));
-        dataTableResult.setRecordsFiltered(Long.toString(timeControlTable.size()));
-
-        if (!timeControlTable.isEmpty() && !dataTableInRQ.getPaginationRequest().isFilterByEmpty()) {
-            dataTableResult.setRecordsFiltered(Integer.toString(timeControlTable.size()));
-        }
-
-        return dataTableResult;
-    }
-
-    @ResponseBody
     @GetMapping("/personal/{id}")
     public PersonalSigningDTO getPersonalSigning(@PathVariable Long id) {
 
         PersonalSigning personalSigning = personalSigningService.getById(id);
 
         return ShareMapper.mapPersonalSigningToDTO(personalSigning);
-    }
-
-    @ResponseBody
-    @GetMapping("/user/{id}")
-    public PersonalSigningDTO getUserSigning(@PathVariable Long id) {
-
-        UserSigning userSigning = userSigningService.getById(id);
-
-        return ShareMapper.mapUserSigningToDTO(userSigning);
-    }
-
-    @ResponseBody
-    @GetMapping("/manual/{id}")
-    public UserManualSigningDTO getUserManualSigning(@PathVariable Long id) {
-
-        UserManualSigning userManualSigning = userManualSigningService.getById(id);
-
-        return ShareMapper.mapUserManualSigningToDTO(userManualSigning);
     }
 
     @GetMapping("/modified-list")
@@ -872,45 +763,23 @@ public class SigningController {
 
             switch (signingType) {
 
-                case "ds":
-
-                    long diffInMinutes = Duration.between(startDate, endDate).toMinutes();
-
-                    final DisplacementShare displacementShare = this.displacementShareService.getDisplacementShareById(signingId);
-                    displacementShare.setDisplacementDate(startDate);
-                    displacementShare.setManualHours(Math.toIntExact(diffInMinutes));
-
-                    displacementShareService.save(displacementShare);
-
-                    break;
-
-                case "ps":
-
-                    final PersonalSigning personalSigning = personalSigningService.getById(signingId);
-                    personalSigning.setStartDate(startDate);
-                    personalSigning.setEndDate(endDate);
-
-                    personalSigningService.save(personalSigning);
-
-                    break;
-
-                case "us":
-
-                    final UserSigning userSigning = userSigningService.getById(signingId);
-                    userSigning.setStartDate(startDate);
-                    userSigning.setEndDate(endDate);
-
-                    userSigningService.save(userSigning);
-
-                    break;
-
-                case "ums":
+                case "MANUAL_SIGNINGS":
 
                     final UserManualSigning userManualSigning = userManualSigningService.getById(signingId);
                     userManualSigning.setStartDate(startDate);
                     userManualSigning.setEndDate(endDate);
 
                     userManualSigningService.save(userManualSigning);
+
+                    break;
+
+                case "PERSONAL_SIGNINGS":
+
+                    final PersonalSigning personalSigning = personalSigningService.getById(signingId);
+                    personalSigning.setStartDate(startDate);
+                    personalSigning.setEndDate(endDate);
+
+                    personalSigningService.save(personalSigning);
 
                     break;
 
@@ -955,86 +824,15 @@ public class SigningController {
 
             final User user = Utiles.getUsuario();
 
-            final List<User> projectManagers = new ArrayList<>();
-            final LocalDateTime ts = LocalDateTime.now();
-            final LocalDateTime startDate = userSigningShareDTO.getStartDate();
-            final LocalDateTime endDate = userSigningShareDTO.getEndDate();
-
-            switch (userSigningShareDTO.getShareType()) {
-
-                case "cs":
-
-                    final ConstructionShare constructionShare = constructionShareService.getConstructionShareById(userSigningShareDTO.getShareId());
-                    projectManagers.addAll(constructionShare.getProject().getBossUsers());
-
-                    break;
-
-                case "ds":
-
-                    final DisplacementShare displacementShare = displacementShareService.getDisplacementShareById(userSigningShareDTO.getShareId());
-                    projectManagers.addAll(displacementShare.getProject().getBossUsers());
-
-                    break;
-
-                case "ips":
-
-                    final InterventionPrShare interventionPrShare = interventionPrShareService.getInterventionPrShareById(userSigningShareDTO.getShareId());
-                    projectManagers.addAll(interventionPrShare.getProject().getBossUsers());
-
-                    break;
-
-                case "is":
-
-                    final Integer inspectionId = userSigningShareDTO.getShareId().intValue();
-                    final InspectionDto inspection = this.inspectionService.findOrNotFound(new InspectionByIdFinderDto(inspectionId));
-                    final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
-                    final Project project = this.projectService.getProjectById(noProgrammedShare.getProjectId().longValue());
-
-                    projectManagers.addAll(project.getBossUsers());
-
-                    break;
-
-                case "ps":
-
-                    // Need someone to notify?
-
-                    break;
-
-                case "ws":
-
-                    final WorkShare workShare = workShareService.getWorkShareById(userSigningShareDTO.getShareId());
-                    projectManagers.addAll(workShare.getProject().getBossUsers());
-
-                    break;
-
-                case "us":
-
-                    final UserSigning userSigning = userSigningService.getById(userSigningShareDTO.getShareId());
-                    projectManagers.addAll(userSigning.getProject().getBossUsers());
-
-                    break;
-
-                case "ums":
-
-                    // Need someone to notify?
-
-                    break;
-
-                default:
-                    break;
-            }
-
             final ModifiedSigning modifiedSigning = new ModifiedSigning();
             modifiedSigning.setSigningId(userSigningShareDTO.getShareId());
             modifiedSigning.setTypeId(userSigningShareDTO.getShareType());
             modifiedSigning.setUser(user);
-            modifiedSigning.setRequestDate(ts);
-            modifiedSigning.setStartDate(startDate);
-            modifiedSigning.setEndDate(endDate);
+            modifiedSigning.setRequestDate(LocalDateTime.now());
+            modifiedSigning.setStartDate(userSigningShareDTO.getStartDate());
+            modifiedSigning.setEndDate(userSigningShareDTO.getEndDate());
 
             this.modifiedSigningService.save(modifiedSigning);
-
-            projectManagers.forEach(pm -> this.smtpService.sendSigningModifyMail(pm.getEmail(), modifiedSigning, locale));
 
             log.info("Solicitud de actualización del registro " + userSigningShareDTO.getShareId() + " de tipo " + userSigningShareDTO.getShareType() + " por parte del usuario " + user.getId());
 
@@ -1060,52 +858,7 @@ public class SigningController {
 
             switch (userSigningShareDTO.getShareType()) {
 
-                case "cs":
-
-                    ConstructionShare constructionShare = constructionShareService.getConstructionShareById(userSigningShareDTO.getShareId());
-                    constructionShare.setStartDate(startDate);
-                    constructionShare.setEndDate(endDate);
-
-                    constructionShareService.save(constructionShare);
-
-                    break;
-
-                case "ds":
-
-                    long diffInMinutes = Duration.between(startDate, endDate).toMinutes();
-
-                    DisplacementShare displacementShare = displacementShareService.getDisplacementShareById(userSigningShareDTO.getShareId());
-                    displacementShare.setDisplacementDate(startDate);
-                    displacementShare.setManualHours(Math.toIntExact(diffInMinutes));
-
-                    displacementShareService.save(displacementShare);
-
-                    break;
-
-                case "ips":
-
-                    InterventionPrShare interventionPrShare = interventionPrShareService.getInterventionPrShareById(userSigningShareDTO.getShareId());
-                    interventionPrShare.setStartDate(startDate);
-                    interventionPrShare.setEndDate(endDate);
-
-                    interventionPrShareService.save(interventionPrShare);
-
-                    break;
-
-                case "is":
-
-                    final Integer inspectionId = userSigningShareDTO.getShareId().intValue();
-                    final InspectionDto inspection = this.inspectionService.findOrNotFound(new InspectionByIdFinderDto(inspectionId));
-
-                    final InspectionUpdateDto update = getMapper(MapIToInspectionUpdateDto.class).from(inspection);
-                    update.setStartDate(startDate);
-                    update.setEndDate(endDate);
-
-                    this.inspectionService.update(update);
-
-                    break;
-
-                case "ps":
+                case "PERSONAL_SIGNINGS":
 
                     PersonalSigning personalSigning = personalSigningService.getById(userSigningShareDTO.getShareId());
                     personalSigning.setStartDate(startDate);
@@ -1115,27 +868,7 @@ public class SigningController {
 
                     break;
 
-                case "ws":
-
-                    WorkShare workShare = workShareService.getWorkShareById(userSigningShareDTO.getShareId());
-                    workShare.setStartDate(startDate);
-                    workShare.setEndDate(endDate);
-
-                    workShareService.save(workShare);
-
-                    break;
-
-                case "us":
-
-                    UserSigning userSigning = userSigningService.getById(userSigningShareDTO.getShareId());
-                    userSigning.setStartDate(startDate);
-                    userSigning.setEndDate(endDate);
-
-                    userSigningService.save(userSigning);
-
-                    break;
-
-                case "ums":
+                case "MANUAL_SIGNINGS":
 
                     UserManualSigning userManualSigning = userManualSigningService.getById(userSigningShareDTO.getShareId());
                     userManualSigning.setStartDate(startDate);
@@ -1147,7 +880,6 @@ public class SigningController {
 
                 default:
                     break;
-
             }
 
             // Log info
@@ -1168,35 +900,6 @@ public class SigningController {
         final TimeControlTableDTO tcDTO = timeControlOldService.getTimeControlDetail(startDate, userId);
 
         model.addAttribute("todayTimer", tcDTO.getTotalHours());
-    }
-
-    private List<CalendarDTO> generateSigninCalendar(LocalDateTime startDate, LocalDateTime endDate, Long userId, Locale locale) {
-
-        List<CalendarDTO> calendarDTOs = new ArrayList<>();
-
-        // Loading Displacement Share Week Signing (Manual Displacements)
-        List<DisplacementShare> displacementShares = displacementShareService.getWeekSigningsByUserId(startDate, endDate, userId, 1);
-        List<CalendarDTO> displacementShareCalendarDTOs = SigningMapper.mapDisplacementSharesToCalendarDTOs(displacementShares, messageSource, locale);
-
-        // Loading Personal Week Signing
-        List<PersonalSigning> personalSignings = personalSigningService.getWeekSigningsByUserId(startDate, endDate, userId);
-        List<CalendarDTO> personalSigningCalendarDTOs = SigningMapper.mapPersonalSigningsToCalendarDTOs(personalSignings, messageSource, locale);
-
-        // Loading User Week Signing
-        List<UserSigning> userSignings = userSigningService.getWeekSigningsByUserId(startDate, endDate, userId);
-        List<CalendarDTO> userSigningCalendarDTOs = SigningMapper.mapUserSigningsToCalendarDTOs(userSignings, messageSource, locale);
-
-        // Loading Manual Signing
-        List<UserManualSigning> userManualSignings = userManualSigningService.getWeekManualSigningsByUserId(startDate, endDate, userId);
-        List<CalendarDTO> userManualSigningCalendarDTOs = SigningMapper.mapUserManualSigningsToCalendarDTOs(userManualSignings, messageSource, locale);
-
-        // Add result to a simplificated list
-        calendarDTOs.addAll(displacementShareCalendarDTOs);
-        calendarDTOs.addAll(personalSigningCalendarDTOs);
-        calendarDTOs.addAll(userSigningCalendarDTOs);
-        calendarDTOs.addAll(userManualSigningCalendarDTOs);
-
-        return calendarDTOs;
     }
 
 }

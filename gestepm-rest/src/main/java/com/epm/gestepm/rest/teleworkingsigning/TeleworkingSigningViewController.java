@@ -4,10 +4,12 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
+import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.teleworkingsigning.dto.TeleworkingSigningDto;
 import com.epm.gestepm.modelapi.teleworkingsigning.dto.filter.TeleworkingSigningFilterDto;
+import com.epm.gestepm.modelapi.teleworkingsigning.dto.finder.TeleworkingSigningByIdFinderDto;
 import com.epm.gestepm.modelapi.teleworkingsigning.service.TeleworkingSigningService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import org.springframework.stereotype.Controller;
@@ -65,6 +67,12 @@ public class TeleworkingSigningViewController {
         final User user = this.loadCommonModelView(locale, model);
 
         this.loadProjects(model);
+
+        final TeleworkingSigningDto teleworkingSigning = this.teleworkingSigningService.findOrNotFound(new TeleworkingSigningByIdFinderDto(id));
+        model.addAttribute("teleworkingSigning", teleworkingSigning);
+
+        final Project project = this.projectService.getProjectById(teleworkingSigning.getProjectId().longValue());
+        model.addAttribute("projectName", project.getName());
 
         return "teleworking-signing-detail";
     }

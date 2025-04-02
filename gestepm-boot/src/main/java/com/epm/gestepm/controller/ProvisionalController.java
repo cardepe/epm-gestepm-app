@@ -1,9 +1,6 @@
 package com.epm.gestepm.controller;
 
 import com.epm.gestepm.controller.provisional.NoProgrammedShareUserPermissionsResponse;
-import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
-import com.epm.gestepm.modelapi.project.dto.ProjectTableDTO;
 import com.epm.gestepm.modelapi.role.dto.RoleDTO;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
@@ -11,17 +8,13 @@ import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareSer
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.service.UserService;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
-import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static com.epm.gestepm.modelapi.common.utils.classes.Constants.ROLE_ADMIN_ID;
