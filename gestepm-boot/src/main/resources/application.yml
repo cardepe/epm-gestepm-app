@@ -103,9 +103,13 @@ spring:
     show-sql: false
   mail:
     host: smtp.gestepm.com
-    port: 25
+    port: 587
     username: info@gestepm.com
-    password: O0,c4xYk&!
+    password: ENC(oB0aqi5yOwc5rOAcJEpqLTKa2vZkc6E3)
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
   messages:
     use-code-as-default-message: true
   profiles:
