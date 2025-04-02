@@ -11,8 +11,7 @@
             <div class="col-12 col-lg-10">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <div id="action-badge" class="badge"></div>
-                        <h1 class="text-uppercase pt-1 pb-0"><spring:message code="personal.expenses.sheet"/></h1>
+                        <h1 class="text-uppercase"><spring:message code="personal.expenses.sheet"/></h1>
                     </div>
                 </div>
             </div>

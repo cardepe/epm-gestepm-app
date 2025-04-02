@@ -135,7 +135,12 @@ public class ProjectServiceImpl implements ProjectService {
 	public List<ProjectListDTO> getStationDTOs() {
 		return projectRepository.findStationDTOs();
 	}
-	
+
+	@Override
+	public List<ProjectListDTO> getTeleworkingProjects(boolean isTeleworking) {
+		return this.projectRepository.findByTeleworking(isTeleworking);
+	}
+
 	@Override
 	public List<ProjectTableDTO> getProjectsByUserMemberDataTables(Long userId, PaginationCriteria pagination, Object[] params) {
 		return projectRepository.findProjectsByUserMemberDataTables(userId, pagination, params);

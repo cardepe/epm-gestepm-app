@@ -123,6 +123,22 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
     }
 
     @Override
+    public List<ProjectListDTO> findByTeleworking(boolean teleworking) {
+
+        final CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        final CriteriaQuery<ProjectListDTO> cQuery = cb.createQuery(ProjectListDTO.class);
+
+        final Root<Project> root = cQuery.from(Project.class);
+
+        cQuery.multiselect(root.get("id"), root.get("name")).where(teleworking
+                ? cb.isTrue(root.get("teleworking"))
+                : cb.isFalse(root.get("teleworking"))
+        );
+
+        return entityManager.createQuery(cQuery).getResultList();
+    }
+
+    @Override
     public List<ProjectTableDTO> findAllProjectsDataTables(PaginationCriteria pagination, Object[] params) {
 
         try {

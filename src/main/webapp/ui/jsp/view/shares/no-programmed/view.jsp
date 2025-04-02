@@ -206,8 +206,6 @@
                         <div class="col">
                             <div id="hasNotRoleAlert" class="badge badge-danger mb-1 d-none"><spring:message
                                     code="share.detail.init.diag.role"/></div>
-                            <div id="hasNotSigningAlert" class="badge badge-warning mb-1 d-none"><spring:message
-                                    code="signing.page.not.enable"/></div>
                         </div>
                     </div>
                 </form>
@@ -252,7 +250,6 @@
     let currentMode;
 
     let hasRole;
-    let hasSigning;
     let canClose;
 
     let userId = ${user.id};
@@ -690,22 +687,8 @@
     }
 
     function canCreateInspection(action) {
-        const isDisabled = {
-            DIAGNOSIS: !hasRole && !hasSigning,
-            INTERVENTION: !hasSigning,
-            FOLLOWING: !hasSigning,
-        };
-
-        if (isDisabled[action]) {
-            if (!hasSigning) {
-                $('#hasNotRoleAlert').addClass('d-none');
-                $('#hasNotSigningAlert').removeClass('d-none');
-            }
-
-            if (action === 'DIAGNOSIS' && !hasRole) {
-                $('#hasNotRoleAlert').removeClass('d-none');
-            }
-
+        if (action === 'DIAGNOSIS' && !hasRole) {
+            $('#hasNotRoleAlert').removeClass('d-none');
             return false;
         }
 
@@ -720,7 +703,6 @@
             }
         }).then((response) => {
             hasRole = response.data.hasRole;
-            hasSigning = response.data.hasSigning;
             canClose = response.data.canClose;
         }).catch(error => console.log(error));
     }

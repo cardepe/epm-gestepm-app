@@ -33,13 +33,10 @@ import com.epm.gestepm.modelapi.deprecated.interventionshare.service.Interventio
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
-import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.dto.UserDTO;
 import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
 import com.epm.gestepm.modelapi.user.service.UserService;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
-import com.epm.gestepm.modelapi.usersigning.service.UserSigningService;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShareDTO;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShareTableDTO;
@@ -116,9 +113,6 @@ public class ShareController {
     private UserService userService;
 
     @Autowired
-    private UserSigningService userSigningService;
-
-    @Autowired
     private MessageSource messageSource;
 
     @Autowired
@@ -139,13 +133,7 @@ public class ShareController {
             log.info("El usuario " + user.getId() + " ha accedido a la vista de Partes de Intervención");
 
             // Recover user projects
-            List<ProjectListDTO> projects = projectService.getAllProjectsDTOs();
-
-            // Get Current UserSigning
-            UserSigning currentUserSigning = userSigningService.getByUserIdAndEndDate(user.getId(), null);
-
-            // Have Privileges
-            boolean havePrivileges = Utiles.havePrivileges(user.getSubRole().getRol());
+            List<ProjectListDTO> projects = this.projectService.getTeleworkingProjects(false);
 
             // Recover users
             List<UserDTO> usersDTO = null;
@@ -175,8 +163,6 @@ public class ShareController {
             sharesType[3] = "ws";
 
             model.addAttribute("projects", projects);
-            model.addAttribute("userSigning", currentUserSigning);
-            model.addAttribute("havePrivileges", havePrivileges);
             model.addAttribute("sharesType", sharesType);
             model.addAttribute("actualDate", Utiles.transformDateToString(actualDate));
             model.addAttribute("language", locale.getLanguage());
@@ -333,13 +319,6 @@ public class ShareController {
             // Recover user
             User user = Utiles.getUsuario();
 
-            // Get Current UserSigning
-            UserSigning currentUserSigning = userSigningService.getByUserIdAndEndDate(user.getId(), null);
-
-            if (currentUserSigning == null && !Utiles.havePrivileges(user.getSubRole().getRol())) {
-                return new ResponseEntity<>(messageSource.getMessage("signing.page.not.enable", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-            }
-
             // Get share project
             Project project = projectService.getProjectById(interventionPrDTO.getProjectId());
 
@@ -349,25 +328,10 @@ public class ShareController {
 
             // Map Intervention share
             InterventionPrShare interventionPrShare = ShareMapper.mapDTOToInterventionPrShare(interventionPrDTO, user, project, interventionPrDTO.getDispShareId());
-            interventionPrShare.setUserSigning(currentUserSigning);
             interventionPrShare.setStartDate(LocalDateTime.now());
 
             // Save intervention
             interventionPrShare = interventionPrShareService.save(interventionPrShare);
-
-//			// Send Emails
-//			smtpService.sendOpenProgrammedShareMail(user.getEmail(), interventionPrShare, locale);
-//			
-//			if (interventionPrShare.getProject().getResponsables() != null && !interventionPrShare.getProject().getResponsables().isEmpty()) {
-//				
-//				for (User responsable : interventionPrShare.getProject().getResponsables()) {
-//					smtpService.sendOpenProgrammedShareMail(responsable.getEmail(), interventionPrShare, locale);
-//				}
-//			}
-//			
-//			if (Boolean.TRUE.equals(interventionPrDTO.getClientNotif()) && interventionPrShare.getProject().getCustomer() != null) {
-//				smtpService.sendOpenProgrammedShareMail(interventionPrShare.getProject().getCustomer().getMainEmail(), interventionPrShare, locale);
-//			}
 
             // Log info
             log.info("Creado nuevo parte de intervención " + interventionPrShare.getId() + " por parte del usuario " + user.getId());
@@ -565,14 +529,6 @@ public class ShareController {
             // Recover user
             User user = Utiles.getUsuario();
 
-            // Get Current UserSigning
-            UserSigning currentUserSigning = userSigningService.getByUserIdAndEndDate(user.getId(), null);
-
-            if (currentUserSigning == null && !Utiles.havePrivileges(user.getSubRole().getRol())) {
-                response.setMsg(messageSource.getMessage("signing.page.not.enable", new Object[]{}, locale));
-                return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-            }
-
             // Get share project
             Project project = projectService.getProjectById(constructionDTO.getProjectId());
 
@@ -582,21 +538,10 @@ public class ShareController {
 
             // Map Intervention share stepper
             ConstructionShare constructionShare = ShareMapper.mapDTOToConstructionShare(constructionDTO, user, project, constructionDTO.getDispShareId());
-            constructionShare.setUserSigning(currentUserSigning);
             constructionShare.setStartDate(LocalDateTime.now());
 
             // Save intervention
             constructionShare = constructionShareService.save(constructionShare);
-
-//			// Send Emails
-//			smtpService.sendOpenConstructionShareMail(user.getEmail(), constructionShare, locale);
-//			
-//			if (constructionShare.getProject().getResponsables() != null && !constructionShare.getProject().getResponsables().isEmpty()) {
-//				
-//				for (User responsable : constructionShare.getProject().getResponsables()) {
-//					smtpService.sendOpenConstructionShareMail(responsable.getEmail(), constructionShare, locale);
-//				}
-//			}
 
             // Log info
             log.info("Creado nuevo parte de intervención " + constructionShare.getId() + " por parte del usuario " + user.getId());
@@ -957,13 +902,6 @@ public class ShareController {
             // Recover user
             User user = Utiles.getUsuario();
 
-            // Get Current UserSigning
-            UserSigning currentUserSigning = userSigningService.getByUserIdAndEndDate(user.getId(), null);
-
-            if (currentUserSigning == null && !Utiles.havePrivileges(user.getSubRole().getRol())) {
-                return new ResponseEntity<>(messageSource.getMessage("signing.page.not.enable", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-            }
-
             // Get share project
             Project project = projectService.getProjectById(workShareDTO.getProjectId());
 
@@ -973,21 +911,10 @@ public class ShareController {
 
             // Map Intervention share stepper
             WorkShare workShare = ShareMapper.mapDTOToWorkShare(workShareDTO, user, project);
-            workShare.setUserSigning(currentUserSigning);
             workShare.setStartDate(LocalDateTime.now());
 
             // Save intervention
             workShare = workShareService.save(workShare);
-
-//			// Send Emails
-//			smtpService.sendOpenWorkShareMail(user.getEmail(), workShare, locale);
-//			
-//			if (workShare.getProject().getResponsables() != null && !workShare.getProject().getResponsables().isEmpty()) {
-//				
-//				for (User responsable : workShare.getProject().getResponsables()) {
-//					smtpService.sendOpenWorkShareMail(responsable.getEmail(), workShare, locale);
-//				}
-//			}
 
             // Log info
             log.info("Creado nuevo parte de trabajo " + workShare.getId() + " por parte del usuario " + user.getId());

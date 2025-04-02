@@ -126,7 +126,7 @@
 						<div class="col-sm-12 col-md-6">
 							<div class="form-group">
 								<label for="displacement" class="col-form-label"><spring:message code="shares.displacement.table.activity.center" /></label>
-								<select id="displacement" name="displacement" class="form-control" onchange="loadDisplacement()" required>
+								<select id="displacement" name="activityCenter" class="form-control" onchange="loadDisplacement()" required>
 									<option disabled selected="selected">
 										<spring:message code="shares.displacement.table.activity.center" />
 									</option>
@@ -207,17 +207,19 @@
 					<div class="row">
 						<div class="col-sm-12 col-md-6">
 							<div class="form-group">
-								<label for="displacement" class="col-form-label"><spring:message code="shares.displacement.table.activity.center" /></label>
-								<select id="displacement" name="displacement" class="form-control" readonly disabled>
-									<option disabled selected="selected">
-										<spring:message code="shares.displacement.table.activity.center" />
-									</option>
-									<c:forEach items="${teamLeaders}" var="teamLeader">
-										<option value="${teamLeader.userId}">
-											<spring:message code="${teamLeader.name} ${teamLeader.surnames}" />
+								<label class="col-form-label">
+									<spring:message code="shares.displacement.table.activity.center" />
+									<select name="displacement" class="form-control" readonly disabled>
+										<option disabled selected="selected">
+											<spring:message code="shares.displacement.table.activity.center" />
 										</option>
-									</c:forEach>
-								</select>
+										<c:forEach items="${teamLeaders}" var="teamLeader">
+											<option value="${teamLeader.userId}">
+												<spring:message code="${teamLeader.name} ${teamLeader.surnames}" />
+											</option>
+										</c:forEach>
+									</select>
+								</label>
 							</div>
 						</div>
 						<div class="col-sm-12 col-md-6">
@@ -388,6 +390,17 @@
 		 });
 	}
 
+	function getShare(id) {
+		return $.ajax({
+			url: '/shares/displacement/' + id,
+			type: 'GET'
+		});
+	}
+
+	function getActivityCenterByProject(projectId) {
+		return axios.get('/v1/activity-centers', { params: { projectIds: [projectId] }}).data.data;
+	}
+
 	function loadDisplacement() {
 		let id =  $('#displacement').val();
 
@@ -417,6 +430,18 @@
 		}
 
 		return 'UNDEFINED';
+	}
+
+	async function viewShare(id) {
+		const share = await getShare(id);
+
+		var msg = await getActivityCenterByProject(share.projectId);
+		msg = '<option disabled selected="selected">-</option>' + msg;
+		$('#viewDispForm #activityCenter').html(msg);
+
+		var form = document.forms['viewDispForm'];
+		initForm(share, form);
+		$('#viewModal').modal('show');
 	}
 
 </script>

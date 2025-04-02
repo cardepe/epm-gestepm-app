@@ -1,20 +1,16 @@
 package com.epm.gestepm.task;
 
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
-import com.epm.gestepm.masterdata.api.activitycenter.dto.ActivityCenterDto;
-import com.epm.gestepm.masterdata.api.activitycenter.dto.filter.ActivityCenterFilterDto;
-import com.epm.gestepm.masterdata.api.activitycenter.service.ActivityCenterService;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.service.PersonalSigningService;
-import com.epm.gestepm.modelapi.timecontrol.dto.SigningScheduledDTO;
+import com.epm.gestepm.modelapi.timecontrolold.dto.SigningScheduledDTO;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.service.UserService;
 import com.epm.gestepm.task.config.PersonalSigningFtpClient;
 import com.mysql.jdbc.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;

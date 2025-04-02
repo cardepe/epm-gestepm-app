@@ -32,12 +32,12 @@
     </definition>
     
     <!-- Signing -->
-    <definition name="signing-page" extends="fullFrameLayaout">
-        <put-attribute name="body" value="/ui/jsp/view/signing/signing.jsp" />
+    <definition name="teleworking-signings" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/signings/teleworking/view.jsp" />
     </definition>
-    
-    <definition name="signing-detail" extends="fullFrameLayaout">
-        <put-attribute name="body" value="/ui/jsp/view/signing/crud/detail.jsp" />
+
+    <definition name="teleworking-signing-detail" extends="fullFrameLayaout">
+        <put-attribute name="body" value="/ui/jsp/view/signings/teleworking/detail.jsp" />
     </definition>
 
     <definition name="manual-signing" extends="fullFrameLayaout">

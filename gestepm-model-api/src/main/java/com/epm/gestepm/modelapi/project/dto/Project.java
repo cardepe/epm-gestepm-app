@@ -12,11 +12,13 @@ import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
+import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+@Data
 @Entity
 @Table(name = "projects")
 public class Project {
@@ -55,6 +57,9 @@ public class Project {
 	@Column(name = "FORUM_ID")
 	private Long forumId;
 
+	@Column(name = "teleworking")
+	private boolean teleworking;
+
 	@OneToMany(mappedBy = "project")
 	private List<InterventionShare> interventionShares;
 	
@@ -90,180 +95,5 @@ public class Project {
 	
 	@OneToOne(mappedBy = "project", cascade = CascadeType.REMOVE)
     private Customer customer;
-	
-	public Long getId() {
-		return id;
-	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getStation() {
-		return station;
-	}
-
-	public void setStation(int station) {
-		this.station = station;
-	}
-
-	public List<Project> getProjects() {
-		return projects;
-	}
-
-	public void setProjects(List<Project> projects) {
-		this.projects = projects;
-	}
-
-	public List<User> getResponsables() {
-		return responsables;
-	}
-
-	public void setResponsables(List<User> responsables) {
-		this.responsables = responsables;
-	}
-
-	public Double getObjectiveCost() {
-		return objectiveCost;
-	}
-
-	public void setObjectiveCost(Double objectiveCost) {
-		this.objectiveCost = objectiveCost;
-	}
-
-	public Date getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(Date startDate) {
-		this.startDate = startDate;
-	}
-
-	public Date getObjectiveDate() {
-		return objectiveDate;
-	}
-
-	public void setObjectiveDate(Date objectiveDate) {
-		this.objectiveDate = objectiveDate;
-	}
-
-	public ActivityCenter getActivityCenter() {
-		return activityCenter;
-	}
-
-	public void setActivityCenter(ActivityCenter activityCenter) {
-		this.activityCenter = activityCenter;
-	}
-
-	public Long getForumId() {
-		return forumId;
-	}
-
-	public void setForumId(Long forumId) {
-		this.forumId = forumId;
-	}
-
-	public List<InterventionShare> getInterventionShares() {
-		return interventionShares;
-	}
-
-	public void setInterventionShares(List<InterventionShare> interventionShares) {
-		this.interventionShares = interventionShares;
-	}
-	
-	public List<InterventionPrShare> getInterventionPrShares() {
-		return interventionPrShares;
-	}
-
-	public void setInterventionPrShares(List<InterventionPrShare> interventionPrShares) {
-		this.interventionPrShares = interventionPrShares;
-	}
-
-	public List<DisplacementShare> getDisplacementShares() {
-		return displacementShares;
-	}
-
-	public void setDisplacementShares(List<DisplacementShare> displacementShares) {
-		this.displacementShares = displacementShares;
-	}
-
-	public List<WorkShare> getWorkShares() {
-		return workShares;
-	}
-
-	public void setWorkShares(List<WorkShare> workShares) {
-		this.workShares = workShares;
-	}
-
-	public List<User> getUsers() {
-		return users;
-	}
-
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
-
-	public List<UserSigning> getUserSignings() {
-		return userSignings;
-	}
-
-	public void setUserSignings(List<UserSigning> userSignings) {
-		this.userSignings = userSignings;
-	}
-
-	public List<Displacement> getDisplacements() {
-		return displacements;
-	}
-
-	public void setDisplacements(List<Displacement> displacements) {
-		this.displacements = displacements;
-	}
-
-	public List<Family> getFamilies() {
-		return families;
-	}
-
-	public void setFamilies(List<Family> families) {
-		this.families = families;
-	}
-
-	public List<MaterialRequired> getMaterialsRequired() {
-		return materialsRequired;
-	}
-
-	public void setMaterialsRequired(List<MaterialRequired> materialsRequired) {
-		this.materialsRequired = materialsRequired;
-	}
-
-	public List<User> getBossUsers() {
-		return bossUsers;
-	}
-
-	public void setBossUsers(List<User> bossUsers) {
-		this.bossUsers = bossUsers;
-	}
-
-	public List<ExpenseSheet> getExpenseSheets() {
-		return expenseSheets;
-	}
-
-	public void setExpenseSheets(List<ExpenseSheet> expenseSheets) {
-		this.expenseSheets = expenseSheets;
-	}
-
-	public Customer getCustomer() {
-		return customer;
-	}
-
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
 }
