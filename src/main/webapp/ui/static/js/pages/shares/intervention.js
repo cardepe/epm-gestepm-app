@@ -2,7 +2,7 @@ function parseId(data) {
 	return data.split('_')[0];
 }
 
-function parseActionButtons(userRole, userSigningState, hasPrivileges, projectId) {
+function parseActionButtons(userRole) {
 	var tableRows = $('#dTable tbody tr');
 	var table = $('#dTable').DataTable();
 
@@ -32,7 +32,7 @@ function parseActionButtons(userRole, userSigningState, hasPrivileges, projectId
 					$(this).wrap('<a href="/shares/no-programmed/' + id + '"></a>');
 				}
 				
-			} else if (index == 1) { // calendar (close)
+			} else if (index == 1) {
 				
 				if (shareType === 'is') {
 					$(this).remove();
@@ -41,12 +41,7 @@ function parseActionButtons(userRole, userSigningState, hasPrivileges, projectId
 					if (data.st_endDate) {
 						$(this).remove();
 					} else {
-						
-						if (!hasPrivileges && (!userSigningState || projectId !== data.st_projectId)) {
-							$(this).attr('disabled', 'disabled');
-						} else {
-							$(this).attr('onclick', 'closeShare(' + id + ', "' + shareType + '", "' + data.st_startDate + '")');
-						}						
+						$(this).attr('onclick', 'closeShare(' + id + ', "' + shareType + '", "' + data.st_startDate + '")');
 					}					
 				}
 			} else if (index == 2) {
@@ -113,7 +108,5 @@ function createNoProgrammedShare(userId, projectId) {
 		const shareId = response.data.data.id;
 		window.location.href = '/shares/no-programmed/' + shareId;
 	}).catch(error => showNotify(error.response.data.detail, 'danger'))
-		.finally(() => {
-			hideLoading();
-		});
+		.finally(() => hideLoading());
 }

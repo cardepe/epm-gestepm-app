@@ -1,0 +1,95 @@
+sql:
+
+  qry-list-of-ts: |
+
+    SELECT
+      ts.teleworking_signing_id AS id_pagination,
+      ts.teleworking_signing_id,
+      ts.user_id,
+      ts.project_id,
+      pr.name AS project_name,
+      ts.started_at,
+      ts.started_location,
+      ts.closed_at,
+      ts.closed_location
+    FROM ${sch-gestepm}.teleworking_signing ts
+    LEFT JOIN ${sch-gestepm}.projects pr ON ts.project_id = pr.id
+
+    #whereToken #filter
+
+  qry-page-of-ts: |
+
+    ${sql.paginated-query-group-prefix}
+    ${sql.qry-list-of-ts}
+    ${sql.paginated-query-suffix}
+
+  qry-count-of-ts: |
+
+    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    FROM (${sql.qry-list-of-ts}) final
+
+  qry-create-ts: |
+
+    INSERT INTO ${sch-gestepm}.teleworking_signing (
+      user_id,
+      project_id,
+      started_at,
+      started_location
+    )
+    VALUES (
+      :attr_ts_user_id,
+      :attr_ts_project_id,
+      :attr_ts_started_at,
+      :attr_ts_started_location
+    )
+
+  qry-update-ts: |
+
+    UPDATE
+      ${sch-gestepm}.teleworking_signing
+    SET
+      started_at = :attr_ts_started_at,
+      closed_at = :attr_ts_closed_at,
+      closed_location = :attr_ts_closed_location
+    WHERE
+      teleworking_signing_id = :attr_ts_id
+
+  qry-delete-ts: |
+
+    DELETE FROM ${sch-gestepm}.teleworking_signing WHERE teleworking_signing_id = :attr_ts_id
+
+  filter-ts-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-ts-ids}
+      -- ${sql.predicate-for-ts-u-id}
+      -- ${sql.predicate-for-ts-p-id}
+      -- ${sql.predicate-for-ts-current}
+    -- AND]
+
+  filter-ts-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-ts-id}
+    -- AND]
+
+  predicate-for-ts-id: |
+
+    ts.teleworking_signing_id = :attr_ts_id
+
+  predicate-for-ts-ids: |
+
+    ts.teleworking_signing_id IN (:attr_ts_ids)
+
+  predicate-for-ts-u-id: |
+
+    ts.user_id IN (:attr_ts_u_id)
+
+  predicate-for-ts-p-id: |
+
+    ts.project_id IN (:attr_ts_p_id)
+
+  predicate-for-ts-current: |
+    
+    (:attr_ts_current IS TRUE AND ts.closed_at IS NULL) OR (:attr_ts_current IS FALSE AND ts.closed_at IS NOT NULL)
+

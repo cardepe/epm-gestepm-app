@@ -93,7 +93,6 @@
 <div class="row">
     <div class="col">
         <div id="hasNotRoleAlert" class="badge badge-danger mb-1 d-none"><spring:message code="share.detail.init.diag.role" /></div>
-        <div id="hasNotSigningAlert" class="badge badge-warning mb-1 d-none"><spring:message code="signing.page.not.enable" /></div>
     </div>
 </div>
 
@@ -242,7 +241,6 @@
 <script>
     let materialsModified = false;
     let hasRole = ${hasRole};
-    let hasSigning = ${hasSigning};
 
     function save() {
         const editBtn = $('#editBtn');
@@ -505,22 +503,9 @@
     function updateEditButton(editBtn) {
         const currentAction = inspection.action;
 
-        const isDisabled = {
-            DIAGNOSIS: !hasRole && !hasSigning,
-            INTERVENTION: !hasSigning,
-            FOLLOWING: !hasSigning,
-        };
-
-        if (isDisabled[currentAction]) {
+        if (currentAction === 'DIAGNOSIS' && !hasRole) {
             editBtn.disabled = true;
-
-            if (!hasSigning) {
-                $('#hasNotSigningAlert').removeClass('d-none');
-            }
-
-            if (currentAction === 'DIAGNOSIS' && !hasRole) {
-                $('#hasNotRoleAlert').removeClass('d-none');
-            }
+            $('#hasNotRoleAlert').removeClass('d-none');
         }
     }
 

@@ -1,0 +1,97 @@
+sql:
+
+  qry-list-of-tc: |
+    
+    SELECT *
+    FROM (
+      SELECT
+        id,
+        user_id,
+        start_date,
+        end_date,
+        null AS description,
+        'CONSTRUCTION_SHARES' AS type
+      FROM ${sch-gestepm}.construction_shares
+      UNION
+      SELECT
+        id,
+        user_id,
+        displacement_date AS start_date,
+        DATE_ADD(displacement_date, INTERVAL manual_hours MINUTE) AS end_date,
+        null AS description,
+        'DISPLACEMENT_SHARES' AS type
+      FROM ${sch-gestepm}.displacement_shares
+      UNION
+      SELECT
+        inspection_id AS id,
+        first_technical AS user_id,
+        start_date,
+        end_date,
+        null AS description,
+        'INSPECTIONS' AS type
+      FROM ${sch-gestepm}.inspection
+      UNION
+      SELECT
+        ums.id,
+        user_id,
+        start_date,
+        end_date,
+        mst.NAME AS description,
+        'MANUAL_SIGNINGS' AS type
+      FROM ${sch-gestepm}.user_manual_signings ums
+      LEFT JOIN ${sch-gestepm}.manual_signing_type mst on ums.MANUAL_SIGNING_TYPE_ID = mst.ID
+      UNION
+      SELECT
+        id,
+        user_id,
+        start_date,
+        end_date,
+        null AS description,
+        'PERSONAL_SIGNINGS' AS type
+      FROM ${sch-gestepm}.personal_signings
+      UNION
+      SELECT
+        id,
+        user_id,
+        start_date,
+        end_date,
+        null AS description,
+        'PROGRAMMED_SHARES' AS type
+      FROM ${sch-gestepm}.intervention_pr_shares
+      UNION
+        SELECT
+        id,
+        user_id,
+        start_date,
+        end_date,
+        null AS description,
+        'WORK_SHARES' AS type
+      FROM ${sch-gestepm}.work_shares
+    ) AS sublist
+    
+    #whereToken #filter
+
+  filter-tc-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-tc-user-id}
+      -- ${sql.predicate-for-tc-end-date}
+      -- ${sql.predicate-for-tc-date}
+      -- ${sql.predicate-for-tc-types}
+    -- AND]
+
+  predicate-for-tc-user-id: |
+
+    user_id = :attr_tc_user_id
+
+  predicate-for-tc-date: |
+    
+    end_date BETWEEN :attr_tc_start_date AND :attr_tc_end_date
+
+  predicate-for-tc-end-date: |
+    
+    end_date IS NOT NULL
+
+  predicate-for-tc-types: |
+
+    type IN (:attr_tc_types)

@@ -38,6 +38,7 @@
         "vehicle": "Vehículo"
     },
     "inspections": {
+        "name": "Revisión",
         "title": "Revisión número {0}",
         "intervention": "Intervención",
         "diagnosis": "Diagnóstico",
@@ -94,7 +95,28 @@
             "default": "Cantidad"
         }
     },
+    "projects": {
+        "empty": "Debes seleccionar un proyecto."
+    },
+    "signings": {
+        "manual": {
+            "name": "Ausencia"
+        },
+        "teleworking": {
+            "startDate": "Fecha de inicio: {0}"
+        },
+        "personal": {
+            "name": "Fichaje de horario personal"
+        }
+    },
     "shares": {
+        "name": "Parte",
+        "construction": {
+            "name": "Parte de construcción"
+        },
+        "displacement": {
+            "name": "Parte de desplazamiento"
+        },
         "noprogrammed": {
             "delete": {
                 "success": "Parte de intervención no programado nº {0} eliminado con éxito."
@@ -115,6 +137,12 @@
                 }
             },
             "postForumUrl": "Puede ver la entrada en el foro clicando aquí."
+        },
+        "programmed": {
+            "name": "Parte programado"
+        },
+        "work": {
+            "name": "Parte de trabajo"
         }
     },
     "priceType": {
@@ -133,6 +161,7 @@
         "other": "Otro"
     },
     "actions": {
+        "finish": "Finalizar",
         "label": "Acciones",
         "view": "Detalle",
         "edit": "Editar",
@@ -143,7 +172,7 @@
         "yes": "Sí",
         "no": "No"
     },
-    "select": {
+    "select2": {
         "placeholder": "Seleccione un elemento..."
     },
     "status": {

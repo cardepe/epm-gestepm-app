@@ -126,14 +126,14 @@
 												<sec:authorize access="hasAuthority('ROLE_JEFE_PROYECTO')">
 													<button type="button" class="btn btn-success btn-sm mr-1" data-toggle="modal" data-target="#createSigningModal"><spring:message code="user.detail.signing.admin.btn" /></button>
 												</sec:authorize>
-												<a href="/signing?user=${userDetail.id}" class="btn btn-warning btn-sm mr-1 text-white"><spring:message code="user.detail.signing" /></a>
+												<a href="/signings/teleworking?user=${userDetail.id}" class="btn btn-warning btn-sm mr-1 text-white"><spring:message code="user.detail.signing.teleworking" /></a>
 												<a href="/signing/manual?user=${userDetail.id}" class="btn btn-warning btn-sm mr-1 text-white"><spring:message code="user.detail.signing.manual" /></a>
 												<a href="/signing/personal/time-control?user=${userDetail.id}" class="btn btn-warning btn-sm mr-1 text-white"><spring:message code="signing.hours.bag" /></a>
 												<button type="button" class="btn btn-primary btn-sm mr-1" data-toggle="modal" data-target="#signinExportModal"><spring:message code="user.detail.signing.gen" /></button>
-												<button id="previousButton" type="button" class="btn btn-primary btn-sm mr-1">
+												<button type="button" class="btn btn-primary btn-sm mr-1" onclick="calendar.prev()">
 													<span class="fc-icon fc-icon-chevron-left"></span>
 												</button>
-												<button id="nextButton" type="button" class="btn btn-primary btn-sm">
+												<button type="button" class="btn btn-primary btn-sm" onclick="calendar.next()">
 													<span class="fc-icon fc-icon-chevron-right"></span>
 												</button>
 											</div>
@@ -506,6 +506,7 @@
 					</h5>
 				</div>
 			</div>
+
 			<div class="modal-body">
 				<form id="editSigningForm">
 					<input id="shareId" name="shareId" type="hidden" />
@@ -520,24 +521,9 @@
 							<input type="datetime-local" class="form-control input" id="endDate" name="endDate">
 						</div>
 					</div>
-
-					<div class="row mt-2">
-						<div class="col-6">
-							<a target="_blank" id="startLocation" style="font-size: 10px" class="btn btn-sm btn-success w-100"><spring:message code="signing.geolocation.start" /></a>
-						</div>
-
-						<div class="col-6">
-							<a target="_blank" id="endLocation" style="font-size: 10px" class="btn btn-sm btn-success w-100"><spring:message code="signing.geolocation.end" /></a>
-						</div>
-					</div>
-
-					<div class="row mt-2">
-						<div class="col">
-							<textarea id="description" class="form-control" style="font-size: 12px" rows="3" readonly></textarea>
-						</div>
-					</div>
 				</form>
 			</div>
+
 			<div class="modal-footer clearfix">
 				<div class="w-100">
 					<div class="float-left">
@@ -576,10 +562,8 @@
 								<option disabled selected="selected">
 									<spring:message code="signing.type.selectable" />
 								</option>
-								<option value="us"><spring:message code="signing.calendar.title" /></option>
 								<option value="ps"><spring:message code="signing.personal.title" /></option>
 								<option value="ums"><spring:message code="signing.manual.calendar.title" /></option>
-								<option value="ds"><spring:message code="shares.displacement.title" /></option>
 							</select>
 						</div>
 					</div>
@@ -842,8 +826,7 @@
 <jsp:useBean id="jspUtil" class="com.epm.gestepm.modelapi.common.utils.JspUtil" />
 
 <script>
-	var calendar;
-
+	let calendar;
 
 	document.addEventListener('DOMContentLoaded', function() {
 
@@ -860,7 +843,7 @@
 		});
 
 		/* Calendar */
-		var calendarEl = document.getElementById('calendar');
+		const calendarEl = document.getElementById('calendar');
 
 		calendar = new FullCalendar.Calendar(calendarEl, {
 			locale: 'es',
@@ -871,43 +854,35 @@
 			timeFormat: 'H:mm',
 			timeZone: 'UTC',
 			height: 'parent',
-			events: '/signing/personal/calendar/${userDetail.id}',
+			events: function (fetchInfo, successCallback, failureCallback) {
+				const params = {
+					userId: ${user.id},
+					startDate: fetchInfo.startStr,
+					endDate: fetchInfo.endStr
+				};
+
+				axios.get('/v1/time-controls', { params: params }).then((response) => {
+					let timeControls = response.data.data.map(timeControl => ({
+						id: timeControl.id,
+						title: getTitle(timeControl),
+						start: timeControl.startDate,
+						end: timeControl.endDate,
+						color: getColor(timeControl.type),
+						textColor: '#fff',
+						extendedProps: {
+							type: timeControl.type
+						}
+					}));
+
+					successCallback(timeControls);
+				}).catch(error => failureCallback(error));
+			},
 			eventClick: function(info) {
-
-				var shareId = info.event.id.split('_')[0];
-				var shareType = info.event.id.split('_')[1];
-
-				if (shareType === 'cs') {
-					$('#editSigningModalTitle').text("${jspUtil.parseTagToText('shares.edit.cs.title')}");
-				} else if (shareType === 'ds') {
-					$('#editSigningModalTitle').text("${jspUtil.parseTagToText('shares.edit.ds.title')}");
-				} else if (shareType === 'ips') {
-					$('#editSigningModalTitle').text("${jspUtil.parseTagToText('shares.edit.ips.title')}");
-				} else if (shareType === 'is') {
-					$('#editSigningModalTitle').text("${jspUtil.parseTagToText('shares.edit.is.title')}");
-				} else if (shareType === 'ps') {
-					$('#editSigningModalTitle').text("${jspUtil.parseTagToText('shares.edit.ps.title')}");
-				} else if (shareType === 'ws') {
-					$('#editSigningModalTitle').text("${jspUtil.parseTagToText('shares.edit.ws.title')}");
-				} else if (shareType === 'us') {
-					$('#editSigningModalTitle').text("${jspUtil.parseTagToText('shares.edit.ps.title')}");
-				} else if (shareType === 'ums') {
-					$('#editSigningModalTitle').text("${jspUtil.parseTagToText('shares.edit.ps.title')}");
-				}
-
-				viewShare(shareId, shareType);
+				loadModalForm(info.event);
 			}
 		});
 
 		calendar.render();
-	});
-
-	$('#previousButton').click(function() {
-		calendar.prev();
-	});
-
-	$('#nextButton').click(function() {
-		calendar.next();
 	});
 	/* End Calendar */
 
@@ -1244,9 +1219,7 @@
 
 				const selectedSigningType = $('#createSigningForm #signingTypeDropdown').val();
 
-				if (selectedSigningType == 'us') {
-					submitSigning('/signing');
-				} else if (selectedSigningType == 'ps'){
+				if (selectedSigningType == 'ps'){
 					submitSigning('/signing/personal');
 				} else if (selectedSigningType == 'ums') {
 					submitSigning('/signing/manual');
@@ -1268,11 +1241,11 @@
 		$('#createShareDisplacementDateRow').hide();
 		$('#row-desc').hide();
 
-		if (signingType === 'us' || signingType === 'ps' || signingType === 'ums') {
+		if (signingType === 'ps' || signingType === 'ums') {
 			$('#createShareDateRow').show();
 		}
 
-		if (signingType === 'us' || signingType === 'ds') {
+		if (signingType === 'ds') {
 			$('#createShareProjectRow').show();
 		}
 
@@ -1338,83 +1311,25 @@
 		return !type || !project || !manualType || !activityCenter  || !manualHours || !displacementDate || !startDate || !endDate;
 	}
 
-	function getShare(id, type) {
-		var url = '';
+	function loadModalForm(calendarSigning) {
+		const allowedTypes = ['MANUAL_SIGNINGS', 'PERSONAL_SIGNINGS'];
 
-		if (type === 'cs') {
-			url = '/shares/intervention/construction/' + id;
-		} else if (type === 'ds') {
-			url = '/shares/displacement/' + id;
-		} else if (type === 'ips') {
-			url = '/shares/intervention/programmed/' + id;
-		} else if (type === 'is') {
-			url = '/shares/no-programmed/' + id;
-		} else if (type === 'ps') {
-			url = '/signing/personal/' + id;
-		} else if (type === 'ws') {
-			url = '/shares/work/' + id;
-		} else if (type === 'us') {
-			url = '/signing/user/' + id;
-		} else if (type === 'ums') {
-			url = '/signing/manual/' + id;
+		const id = calendarSigning.id;
+		const type = calendarSigning.extendedProps.type;
+
+		if (!allowedTypes.some(allowedType => type.includes(allowedType))) {
+			return;
 		}
 
-		return $.ajax({
-		    url: url,
-		    type: 'GET'
-		});
-	}
+		const startDate = new Date(calendarSigning.start).toISOString().slice(0, 16);
+		const endDate = new Date(calendarSigning.end).toISOString().slice(0, 16);
 
-	function initForm(share, form) {
-		Object.keys(share).forEach(function (key) {
-			if (form.elements[key]) {
-				if (form.elements[key].type === 'checkbox') {
-					form.elements[key].checked = share[key];
-				} else {
-					form.elements[key].value = share[key];
-				}
-			}
-		});
-	}
+		const form = document.querySelector('#editSigningForm');
 
-	async function viewShare(id, type) {
-		var share = await getShare(id, type);
-
-		if (type === 'ds') {
-			var hours = share.manualHours.split(':')[0];
-			var minutes = share.manualHours.split(':')[1];
-
-			var endDate = moment(share.displacementDate).add(minutes, 'm').add(hours, 'h').format().split('+')[0];
-
-			$('#startDate').val(share.displacementDate);
-			$('#endDate').val(endDate);
-
-		} else {
-
-			if (type === 'ums') {
-				share.manualTypeId === 8 ? $('#editSigningForm #description').show() : $('#editSigningForm #description').hide();
-			}
-
-			var form = document.forms['editSigningForm'];
-			initForm(share, form);
-		}
-
-		$('#startLocation').show();
-		$('#endLocation').show();
-
-		if (type === 'ums') {
-			$('#startLocation').attr("href", "https://www.google.com/maps/place/" + share.geolocation);
-			$('#endLocation').hide();
-		} else if (type === 'us') {
-			$('#startLocation').attr("href", "https://www.google.com/maps/place/" + share.startLocation);
-			$('#endLocation').attr("href", "https://www.google.com/maps/place/" + share.endLocation);
-		} else {
-			$('#startLocation').hide();
-			$('#endLocation').hide();
-		}
-
-		$('#shareId').val(id);
-		$('#shareType').val(type);
+		form.querySelector('[name="shareId"]').value = id;
+		form.querySelector('[name="shareType"]').value = type;
+		form.querySelector('[name="startDate"]').value = startDate;
+		form.querySelector('[name="endDate"]').value = endDate;
 
 		$('#editSigningModal').modal('show');
 	}
@@ -1813,4 +1728,21 @@
 		}
 		return null;
 	}
+
+	function getTitle(timeControl) {
+		return timeControl.description ? timeControl.description : getSigningText(timeControl.type);
+	}
+
+	function getColor(type) {
+		if (type === 'DISPLACEMENT_SHARES') {
+			return '#CC00C8';
+		} else if (type === 'MANUAL_SIGNINGS') {
+			return '#D8E112';
+		} else if (type === 'PERSONAL_SIGNINGS') {
+			return '#0062CC';
+		} else {
+			return '#12E1DE';
+		}
+	}
+
 </script>

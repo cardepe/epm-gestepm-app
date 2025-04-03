@@ -107,3 +107,23 @@ function toBase64(file) {
 		reader.readAsDataURL(file);
 	});
 }
+
+function getSigningText(type) {
+	if (type === 'CONSTRUCTION_SHARES') {
+		return messages.shares.construction.name;
+	} else if (type === 'DISPLACEMENT_SHARES') {
+		return messages.shares.displacement.name;
+	} else if (type === 'INSPECTIONS') {
+		return messages.inspections.name;
+	} else if (type === 'MANUAL_SIGNINGS') {
+		return messages.signings.manual.name;
+	} else if (type === 'PERSONAL_SIGNINGS') {
+		return messages.signings.personal.name;
+	} else if (type === 'PROGRAMMED_SHARES') {
+		return messages.shares.programmed.name;
+	} else if (type === 'WORK_SHARES') {
+		return messages.shares.work.name;
+	}
+
+	return '';
+}

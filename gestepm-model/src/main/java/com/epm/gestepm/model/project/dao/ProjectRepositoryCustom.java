@@ -13,6 +13,7 @@ public interface ProjectRepositoryCustom {
 	List<ProjectListDTO> findAllProjectsDTOs();
 	List<ProjectListDTO> findBossProjectsDTOByUserId(Long userId);
 	List<ProjectListDTO> findStationDTOs();
+	List<ProjectListDTO> findByTeleworking(boolean teleworking);
 	Long findAllProjectsCount(Object[] params);
 	Long findProjectsCountByUserMember(Long userId, Object[] params);
 	Long findProjectsCountByUserBoss(Long userId, Object[] params);
