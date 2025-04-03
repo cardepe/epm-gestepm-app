@@ -12,7 +12,7 @@ function initializeDataTables() {
         }
     ]
     const expand = ['project']
-    const filters = [{'userId': userId, 'current': false}]
+    const filters = [{ 'userIds': userId, 'current': false }]
     const orderable = [[0, 'DESC']]
     const columnDefs = [
         {
@@ -52,7 +52,7 @@ function initializeSelects() {
 async function getCurrentTeleworking() {
     await axios.get(endpoint, {
         params: {
-            userId: userId,
+            userIds: userId,
             current: true,
             offset: 0,
             limit: 1,

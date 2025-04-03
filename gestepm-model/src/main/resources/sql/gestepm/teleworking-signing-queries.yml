@@ -83,13 +83,13 @@ sql:
 
   predicate-for-ts-u-id: |
 
-    ts.user_id IN (:attr_ts_u_id)
+    ts.user_id IN (:attr_ts_user_id)
 
   predicate-for-ts-p-id: |
 
-    ts.project_id IN (:attr_ts_p_id)
+    ts.project_id IN (:attr_ts_project_id)
 
   predicate-for-ts-current: |
     
-    (:attr_ts_current IS TRUE AND ts.closed_at IS NULL) OR (:attr_ts_current IS FALSE AND ts.closed_at IS NOT NULL)
+    ((:attr_ts_current IS TRUE AND ts.closed_at IS NULL) OR (:attr_ts_current IS FALSE AND ts.closed_at IS NOT NULL))
 
