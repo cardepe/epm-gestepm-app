@@ -88,7 +88,7 @@
 	<c:if test="${ fn:startsWith(pageName, '/signing') || fn:startsWith(pageName, '/users/') }">
 
 		<!-- Location -->
-		<script type="text/javascript" src="/ui/static/js/location.js"></script>
+		<script type="text/javascript" src="/ui/static/js/location.js?v=<%= System.currentTimeMillis() %>"></script>
 
 	</c:if>
 	
@@ -112,7 +112,7 @@
 		<script type="text/javascript" src="/webjars/datatables/1.10.20/js/dataTables.bootstrap4.min.js"></script>
 		<script type="text/javascript" src="/webjars/datatables-responsive/2.2.3/js/dataTables.responsive.js"></script>
 		<script type="text/javascript" src="/webjars/datatables-responsive/2.2.3/js/responsive.bootstrap4.js"></script>
-		<script type="text/javascript" src="/ui/static/js/datatables/datatables-utils.js"></script>
+		<script type="text/javascript" src="/ui/static/js/datatables/datatables-utils.js?v=<%= System.currentTimeMillis() %>"></script>
 	</c:if>
 		
 	<c:if test="${fn:startsWith(pageName,'/projects/') || fn:startsWith(pageName,'/users/') || fn:startsWith(pageName, '/admin/families')}">
@@ -134,10 +134,10 @@
 		
 	<!-- JS Custom -->
 	<script type="text/javascript" src="/ui/static/js/elaadmin.js"></script>
-	<script type="text/javascript" src="/ui/static/js/script.js"></script>
+	<script type="text/javascript" src="/ui/static/js/script.js?v=<%= System.currentTimeMillis() %>"></script>
 
 	<!-- JS PageName -->
-	<script type="text/javascript" src="/ui/static/js/pages${pageName}.js"></script>
+	<script type="text/javascript" src="/ui/static/js/pages${pageName}.js?v=<%= System.currentTimeMillis() %>"></script>
 </head>
 
 <body>
