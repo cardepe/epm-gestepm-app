@@ -28,7 +28,7 @@
     <script src="/webjars/popper.js/1.14.3/umd/popper.min.js"></script>
 	<script src="/webjars/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 	
-	<script src="/ui/static/js/pages/login.js"></script>
+	<script src="/ui/static/js/pages/login.js?v=<%= System.currentTimeMillis() %>"></script>
 </body>
 
 </html>

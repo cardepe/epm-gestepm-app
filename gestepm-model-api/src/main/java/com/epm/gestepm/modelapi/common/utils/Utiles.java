@@ -4,7 +4,6 @@ import com.epm.gestepm.modelapi.common.config.ApplicationContextProvider;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
 import com.epm.gestepm.modelapi.user.service.UserService;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.MessageSource;
@@ -12,11 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.xml.bind.DatatypeConverter;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
@@ -25,7 +19,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -35,20 +28,6 @@ import static java.lang.Integer.parseInt;
 public class Utiles {
 
 	private static final Log log = LogFactory.getLog(Utiles.class);
-	
-	private Utiles() { }	
-
-	/**
-	 * Converter of bytes to base64.
-	 * @param bytes
-	 * @return
-	 */
-	public static String convertBytesToBase64(byte[] bytes) {
-		if (bytes == null)
-			return "";
-
-		return new String(Base64.getEncoder().encode(bytes));
-	}
 	
 	/**
 	 * Encript String to MD5 String.
@@ -88,23 +67,6 @@ public class Utiles {
 			return null;
 		}
 	}
-	
-	public static LocalDateTime transformSimpleStringToLocalDateTime(String dateTimeInString) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-		return LocalDateTime.parse(dateTimeInString, formatter);
-	}
-	
-	public static Date transformSigningStringToDate(String dateTimeInString) {
-		
-		try {
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // dd-MM-yyyy HH:mm:ss
-			return simpleDateFormat.parse(dateTimeInString);
-		} catch (ParseException ex) {
-			log.error("Error al parsear la fecha de fichaje: " + ex);
-		}
-		
-		return null;
-	}
 
 	public static LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
 		
@@ -114,22 +76,6 @@ public class Utiles {
 		
 		return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 	}
-	
-	/**
-	 * Get DateTime String as Timestamp
-	 * @param timestamp
-	 * @return
-	 */
-	public static String transformTimestampToString(Timestamp timestamp) {
-		Date date = new Date();
-		date.setTime(timestamp.getTime());
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		return dateFormat.format(date);
-	}
-
-	public static String transformToString(final LocalDateTime offsetDateTime) {
-		return offsetDateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
-	}
 
 	public static String transform(final LocalDateTime offsetDateTime, final String format) {
 		return offsetDateTime.format(DateTimeFormatter.ofPattern(format));
@@ -138,28 +84,7 @@ public class Utiles {
 	public static LocalDateTime transform(final String dateTime, final String format) {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(format));
 	}
-	
-	/**
-	 * Get DateTime String as Date
-	 * @param date
-	 * @return
-	 */
-	public static String transformFormattedDateToString(Date date) {
-		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-		return dateFormat.format(date);
-	}
-	
-	/**
-	 * Transform String (ISO) to Date.
-	 * @param date
-	 * @return
-	 */
-	public static Date transformStringToDate(String date) {
-		LocalDateTime odt = LocalDateTime.parse(date);
-		Instant instant = odt.toInstant(ZoneOffset.UTC);
-		return Date.from(instant);
-	}
-	
+
 	/**
 	 * Transform Date to String (ISO).
 	 * @param date
@@ -171,47 +96,7 @@ public class Utiles {
 		df.setTimeZone(tz);
 		return df.format(date);
 	}
-	
-	/**
-	 * Get Date as start of day.
-	 * @param date
-	 * @return
-	 */
-	public static Date atStartOfDay(Date date) {
-	    LocalDateTime localDateTime = dateToLocalDateTime(date);
-	    LocalDateTime startOfDay = localDateTime.with(LocalTime.MIN);
-	    return localDateTimeToDate(startOfDay);
-	}
 
-	/**
-	 * Get Date as end of day.
-	 * @param date
-	 * @return
-	 */
-	public static Date atEndOfDay(Date date) {
-	    LocalDateTime localDateTime = dateToLocalDateTime(date);
-	    LocalDateTime endOfDay = localDateTime.with(LocalTime.MAX);
-	    return localDateTimeToDate(endOfDay);
-	}
-
-	/**
-	 * Converter Date to LocalDateTime.
-	 * @param date
-	 * @return
-	 */
-	private static LocalDateTime dateToLocalDateTime(Date date) {
-	    return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
-	}
-
-	/**
-	 * Converter LocalDateTime to Date.
-	 * @param localDateTime
-	 * @return
-	 */
-	public static Date localDateTimeToDate(LocalDateTime localDateTime) {
-	    return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
-	}
-	
 	/**
 	 * Get Date as String from timestamp
 	 * @param timestamp
@@ -231,29 +116,7 @@ public class Utiles {
 	public static String getDateFormatted(final LocalDateTime offsetDateTime, String pattern) {
 		return offsetDateTime.format(DateTimeFormatter.ofPattern(pattern));
 	}
-	
-	/**
-	 * Get Date as String from timestamp
-	 * @param timestamp
-	 * @return
-	 */
-	public static String getDateFormattedForForum(Timestamp timestamp) {
-		Date date = new Date();
-		date.setTime(timestamp.getTime());
-		DateFormat dateFormat = new SimpleDateFormat("yyMMdd");  
-		return dateFormat.format(date);  
-	}
-	
-	/**
-	 * Get Date as String from Date
-	 * @param date
-	 * @return
-	 */
-	public static String getDateFormattedENG(Date date) {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
-		return dateFormat.format(date);  
-	}
-	
+
 	/**
 	 * Get Date as String from Date ESP
 	 * @param date
@@ -275,16 +138,6 @@ public class Utiles {
 	}
 
 	/**
-	 * Get Date as String from Date
-	 * @param date
-	 * @return
-	 */
-	public static String getDateTimeFormatted(Date date) {
-		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-		return dateFormat.format(date);  
-	}
-	
-	/**
 	 * Get Time as String from Date
 	 * @param date
 	 * @return
@@ -292,16 +145,6 @@ public class Utiles {
 	public static String getTimeFormatted(Date date) {
 		DateFormat dateFormat = new SimpleDateFormat("HH:mm");  
 		return dateFormat.format(date);  
-	}
-
-	public static String getTimeFullFormatted(Date date) {
-		DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-		return dateFormat.format(date);
-	}
-	
-	private static String getStringDate(Date date) {
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-		return formatter.format(date);
 	}
 	
 	public static int hourTimeToMinutes(String hourTime) {
@@ -323,47 +166,9 @@ public class Utiles {
 
 		return isNegative ? totalMinutes * -1 : totalMinutes;
 	}
-	
-	public static Timestamp getTimeStamp(Date date, String hour) {
-		
-		try {
-			
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-			
-			// Parse for Edge Chronium
-			if (hour.length() > 5) {
-				hour = hour.substring(0, 5);
-			}
-			
-			String stringDate = getStringDate(date) + StringUtils.SPACE + hour;
-		    Date parsedDate = dateFormat.parse(stringDate);
-		    return new Timestamp(parsedDate.getTime());
-		} catch (ParseException e) {
-			log.error(e);
-			return null;
-		}
-	}
-	
-	public static LocalDateTime getLocalDateTime(Date date, String hour) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-		
-		// Parse for Edge Chronium
-		if (hour.length() > 8) {
-			hour = hour.substring(0, 8);
-		} else if (hour.length() == 5) {
-			hour += ":00";
-		}
-		
-		String stringDate = getStringDate(date) + StringUtils.SPACE + hour;
-	    return LocalDateTime.parse(stringDate, formatter);
-	}
-	
+
 	public static String getDateAsText(int month, int year, Locale locale, MessageSource messageSource) {
 		return messageSource.getMessage("month." + month, null, locale) + "-" + year;
-	}
-	
-	public static long calculateMinutesBetweenDates(LocalDateTime date1, LocalDateTime date2) {
-		return ChronoUnit.MINUTES.between(date1, date2);
 	}
 
 	public static User getUsuario() throws InvalidUserSessionException {
@@ -458,49 +263,12 @@ public class Utiles {
 		cal.set(Calendar.MILLISECOND, 0);
 	}
 
-	public static Date getEndDayDate(Date date) {
-
-		final Calendar cal = Calendar.getInstance();
-
-		cal.setTime(date);
-		cal.set(Calendar.HOUR_OF_DAY, 23);
-		cal.set(Calendar.MINUTE, 59);
-		cal.set(Calendar.SECOND, 59);
-		cal.set(Calendar.MILLISECOND, 999);
-
-		return cal.getTime();
-	}
-
-	public static Date getEndDayDate(Calendar cal) {
-
-		cal.set(Calendar.HOUR_OF_DAY, 23);
-		cal.set(Calendar.MINUTE, 59);
-		cal.set(Calendar.SECOND, 59);
-		cal.set(Calendar.MILLISECOND, 999);
-
-		return cal.getTime();
-	}
-
 	public static void setEndDay(Calendar cal) {
 
 		cal.set(Calendar.HOUR_OF_DAY, 23);
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
 		cal.set(Calendar.MILLISECOND, 999);
-	}
-	
-	public static String convert(InputStream inputStream, Charset charset) throws IOException {
-
-		StringBuilder stringBuilder = new StringBuilder();
-		String line = null;
-
-		try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, charset))) {
-			while ((line = bufferedReader.readLine()) != null) {
-				stringBuilder.append(line);
-			}
-		}
-
-		return stringBuilder.toString();
 	}
 	
 	public static String getExceptionDump(Exception ex) {
