@@ -72,25 +72,6 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 	}
 	
 	@Override
-	public List<ShareTableDTO> findShareTableByUserSigningId(Long userSigningId) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<ShareTableDTO> cq = cb.createQuery(ShareTableDTO.class);
-			
-			Root<DisplacementShare> root = cq.from(DisplacementShare.class);
-
-			cq.multiselect(root.get("id"), root.get("project").get("name"), cb.concat(cb.concat(root.get("user").get("name"), " "), root.get("user").get("surnames")), root.get("displacementDate"), cb.function("date_add_minute", LocalDateTime.class, root.get("displacementDate"), root.get("manualHours")), cb.literal("ds")).where(cb.equal(root.get("userSigning"), userSigningId));
-			
-			return entityManager.createQuery(cq).getResultList();
-			
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
-	}
-	
-	@Override
 	public List<DisplacementShareTableDTO> findDisplacementSharesByUserDataTables(Long userId, PaginationCriteria pagination) {
 		
 		try {

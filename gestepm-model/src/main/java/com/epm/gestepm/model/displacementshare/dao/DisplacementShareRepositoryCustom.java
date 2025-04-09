@@ -13,7 +13,6 @@ public interface DisplacementShareRepositoryCustom {
 
 	Long findDisplacementSharesCountByUserId(Long userId);
 	List<ShareTableDTO> findShareTableByProjectId(Long projectId);
-	List<ShareTableDTO> findShareTableByUserSigningId(Long userSigningId);
 	List<DisplacementShareTableDTO> findDisplacementSharesByUserDataTables(Long userId, PaginationCriteria pagination);
 	List<DisplacementShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId, Integer manual);
 	List<ExpensesMonthDTO> findTimeMonthDTOByProjectId(Long projectId, Integer year);

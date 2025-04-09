@@ -33,7 +33,6 @@ public class InspectionCreate implements CollectableAttributes {
     public AttributeMap collectAttributes() {
         final AttributeMap map = new AttributeMap();
 
-        map.put(ATTR_I_USER_SIGNING_ID, this.userSigningId);
         map.put(ATTR_I_SHARE_ID, this.shareId);
         map.putEnum(ATTR_I_ACTION, this.action);
         map.put(ATTR_I_START_DATE, this.startDate);

@@ -14,7 +14,7 @@ import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareService;
+import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareOldService;
 import com.epm.gestepm.modelapi.customer.dto.Customer;
 import com.epm.gestepm.modelapi.customer.dto.CustomerDTO;
 import com.epm.gestepm.modelapi.customer.service.CustomerService;
@@ -80,7 +80,7 @@ public class ProjectController {
 	private ActivityCenterService activityCenterServiceOld;
 	
 	@Autowired
-	private ConstructionShareService constructionShareService;
+	private ConstructionShareOldService constructionShareOldService;
 	
 	@Autowired
 	private DisplacementShareService displacementShareService;
@@ -1279,7 +1279,7 @@ public class ProjectController {
 
 		List<ShareTableDTO> shareTableDTOs = new ArrayList<>();
 
-		List<ShareTableDTO> csShareTableDTOs = constructionShareService.getShareTableByProjectId(projectId);
+		List<ShareTableDTO> csShareTableDTOs = constructionShareOldService.getShareTableByProjectId(projectId);
 		List<ShareTableDTO> dsShareTableDTOs = displacementShareService.getShareTableByProjectId(projectId);
 		List<ShareTableDTO> ipsShareTableDTOs = interventionPrShareService.getShareTableByProjectId(projectId);
 		List<ShareTableDTO> isShareTableDTOs = this.getInspections(projectId.intValue());

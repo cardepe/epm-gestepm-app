@@ -14,7 +14,6 @@ public interface WorkShareRepositoryCustom {
 	List<ShareTableDTO> findShareTableByActivityCenterId(Long id, Long activityCenterId, Long projectId, Integer progress);
 	Long findWorkSharesCountByUserId(Long userId);
 	List<ShareTableDTO> findShareTableByProjectId(Long projectId);
-	List<ShareTableDTO> findShareTableByUserSigningId(Long userSigningId);
 	List<WorkShareTableDTO> findWorkSharesByUserDataTables(Long userId, PaginationCriteria pagination);
 	List<WorkShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId);
 	List<WorkShare> findWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId);

@@ -21,8 +21,6 @@ public class InspectionDto implements Serializable {
     @NotNull
     private String projectName;
 
-    private Integer userSigningId;
-
     @NotNull
     private Integer shareId;
 

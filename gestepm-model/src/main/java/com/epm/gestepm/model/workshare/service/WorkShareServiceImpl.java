@@ -95,11 +95,6 @@ public class WorkShareServiceImpl implements WorkShareService {
 	}
 	
 	@Override
-	public List<ShareTableDTO> getShareTableByUserSigningId(Long userSigningId) {
-		return workShareDao.findShareTableByUserSigningId(userSigningId);
-	}
-	
-	@Override
 	public Long getWorkSharesCountByUser(Long userId) {
 		return workShareDao.findWorkSharesCountByUserId(userId);
 	}
@@ -107,11 +102,6 @@ public class WorkShareServiceImpl implements WorkShareService {
 	@Override
 	public List<WorkShareTableDTO> getWorkSharesByUserDataTables(Long userId, PaginationCriteria pagination) {
 		return workShareDao.findWorkSharesByUserDataTables(userId, pagination);
-	}
-	
-	@Override
-	public List<WorkShare> getWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
-		return workShareDao.findWeekSigningsByUserId(startDate, endDate, userId);
 	}
 
 	@Override

@@ -19,9 +19,6 @@ import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningDTO;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
-import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningDTO;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShareDTO;
 import com.epm.gestepm.modelapi.worksharefile.dto.WorkShareFile;
@@ -79,7 +76,7 @@ public class ShareMapper {
 		return displacementShareDTO;
 	}
 	
-	public static ConstructionShare mapDTOToConstructionShare(ConstructionDTO constructionDTO, User user, Project project, Long dispShareId) {
+	public static ConstructionShare mapDTOToConstructionShare(ConstructionDTO constructionDTO, User user, Project project) {
 		
 		ConstructionShare constructionShare = new ConstructionShare();
 		
@@ -88,9 +85,6 @@ public class ShareMapper {
 		constructionShare.setObservations(constructionDTO.getObservations());
 		constructionShare.setProject(project);
 		constructionShare.setUser(user);
-		constructionShare.setMaterials(constructionDTO.getMaterials());
-		constructionShare.setMrSignature(constructionDTO.getMrSignature());
-		constructionShare.setDisplacementShareId(dispShareId);
 		
 		return constructionShare;
 	}

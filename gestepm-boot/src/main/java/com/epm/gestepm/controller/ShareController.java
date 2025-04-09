@@ -10,7 +10,7 @@ import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionDTO;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
-import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareService;
+import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareOldService;
 import com.epm.gestepm.modelapi.displacement.dto.Displacement;
 import com.epm.gestepm.modelapi.displacement.service.DisplacementService;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
@@ -92,7 +92,7 @@ public class ShareController {
     private InterventionShareService interventionShareService;
 
     @Autowired
-    private ConstructionShareService constructionShareService;
+    private ConstructionShareOldService constructionShareOldService;
 
     @Autowired
     private InterventionPrShareService interventionPrShareService;
@@ -188,7 +188,7 @@ public class ShareController {
 
         if (!isTypeFiltered || "cs".equals(type)) {
 
-            final List<ShareTableDTO> constructionShares = constructionShareService.getShareTableByActivityCenterId(id, activityCenterId, projectId, progress);
+            final List<ShareTableDTO> constructionShares = constructionShareOldService.getShareTableByActivityCenterId(id, activityCenterId, projectId, progress);
             shareTableDTOs.addAll(constructionShares);
         }
 
@@ -537,11 +537,11 @@ public class ShareController {
             }
 
             // Map Intervention share stepper
-            ConstructionShare constructionShare = ShareMapper.mapDTOToConstructionShare(constructionDTO, user, project, constructionDTO.getDispShareId());
+            ConstructionShare constructionShare = ShareMapper.mapDTOToConstructionShare(constructionDTO, user, project);
             constructionShare.setStartDate(LocalDateTime.now());
 
             // Save intervention
-            constructionShare = constructionShareService.save(constructionShare);
+            constructionShare = constructionShareOldService.save(constructionShare);
 
             // Log info
             log.info("Creado nuevo parte de intervención " + constructionShare.getId() + " por parte del usuario " + user.getId());
@@ -568,18 +568,18 @@ public class ShareController {
             User user = Utiles.getUsuario();
 
             // Map Intervention share stepper
-            ConstructionShare constructionShare = constructionShareService.getConstructionShareById(constructionDTO.getId());
+            ConstructionShare constructionShare = constructionShareOldService.getConstructionShareById(constructionDTO.getId());
             constructionShare.setEndDate(LocalDateTime.now());
             constructionShare.setObservations(constructionDTO.getObservations());
             constructionShare.setSignatureOp(constructionDTO.getSignatureOp());
 
             // Save intervention
-            constructionShare = constructionShareService.create(constructionShare, constructionDTO.getFiles());
+            constructionShare = constructionShareOldService.create(constructionShare, constructionDTO.getFiles());
 
             // Log info
             log.info("Parte de intervención " + constructionShare.getId() + " finalizado por parte del usuario " + user.getId());
 
-            byte[] pdfGenerated = constructionShareService.generateConstructionSharePdf(constructionShare, locale);
+            byte[] pdfGenerated = constructionShareOldService.generateConstructionSharePdf(constructionShare, locale);
 
             // Send Emails
             smtpService.sendCloseConstructionShareMail(user.getEmail(), constructionShare, pdfGenerated, locale);
@@ -615,14 +615,14 @@ public class ShareController {
             User user = Utiles.getUsuario();
 
             // Get
-            ConstructionShare constructionShare = constructionShareService.getConstructionShareById(constructionDTO.getId());
+            ConstructionShare constructionShare = constructionShareOldService.getConstructionShareById(constructionDTO.getId());
 
             constructionShare.setStartDate(constructionDTO.getStartDate());
             constructionShare.setEndDate(constructionDTO.getEndDate());
             constructionShare.setObservations(constructionDTO.getObservations());
 
             // Save intervention
-            constructionShare = constructionShareService.save(constructionShare);
+            constructionShare = constructionShareOldService.save(constructionShare);
 
             // Log info
             log.info("Actualizado parte de construccion " + constructionShare.getId() + " por parte del usuario " + user.getId());
@@ -640,7 +640,7 @@ public class ShareController {
     @GetMapping("/intervention/construction/{id}")
     public ConstructionDTO getConstructionShare(@PathVariable Long id) {
 
-        ConstructionShare constructionShare = constructionShareService.getConstructionShareById(id);
+        ConstructionShare constructionShare = constructionShareOldService.getConstructionShareById(id);
 
         return ShareMapper.mapConstructionShareToDTO(constructionShare);
     }
@@ -655,7 +655,7 @@ public class ShareController {
             // Recover user
             User user = Utiles.getUsuario();
 
-            constructionShareService.deleteById(id);
+            constructionShareOldService.deleteById(id);
 
             log.info("Parte de construcción " + id + " eliminado con éxito por parte del usuario " + user.getId());
 
@@ -672,14 +672,14 @@ public class ShareController {
 
         log.info("Exportando el pdf del parte de construccion " + id);
 
-        ConstructionShare share = constructionShareService.getConstructionShareById(id);
+        ConstructionShare share = constructionShareOldService.getConstructionShareById(id);
 
         if (share == null) {
             log.error("No existe el parte de construccion con id " + id);
             return null;
         }
 
-        byte[] pdf = constructionShareService.generateConstructionSharePdf(share, locale);
+        byte[] pdf = constructionShareOldService.generateConstructionSharePdf(share, locale);
 
         if (pdf == null) {
             log.error("Error al generar el fichero pdf del parte de construccion " + id);
@@ -1116,14 +1116,14 @@ public class ShareController {
 
             final Long id = Long.parseLong(constructionShare.getId().split("_")[0]);
 
-            final ConstructionShare share = constructionShareService.getConstructionShareById(id);
+            final ConstructionShare share = constructionShareOldService.getConstructionShareById(id);
 
             if (share == null) {
                 log.error("No existe el parte de construccion con id " + id);
                 continue;
             }
 
-            final byte[] pdf = constructionShareService.generateConstructionSharePdf(share, locale);
+            final byte[] pdf = constructionShareOldService.generateConstructionSharePdf(share, locale);
 
             if (pdf == null) {
                 log.error("Error al generar el fichero pdf del parte de construccion " + id);

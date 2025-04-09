@@ -796,8 +796,6 @@ components:
       properties:
         id:
           type: integer
-        userSigning:
-          $ref: '#/components/schemas/UserSigning'
         share:
           $ref: '#/components/schemas/NoProgrammedShare'
         action:
@@ -901,8 +899,6 @@ components:
           $ref: '#/components/schemas/User'
         project:
           $ref: '#/components/schemas/Project'
-        userSigning:
-          $ref: '#/components/schemas/UserSigning'
         startDate:
           type: string
           x-stoplight:
@@ -1034,14 +1030,6 @@ components:
         - id
         - username
         - mail
-    UserSigning:
-      title: UserSigning
-      x-stoplight:
-        id: 0j82spjl8a6od
-      type: object
-      properties:
-        id:
-          type: integer
     Material:
       title: Material
       x-stoplight:
@@ -1826,6 +1814,43 @@ components:
                 type: string
                 x-stoplight:
                   id: sssa78w366kr3
+    UpdateTimeControl:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                x-stoplight:
+                  id: biznvw8hlbkwt
+              type:
+                type: string
+                x-stoplight:
+                  id: 2b5jgobitny2u
+                enum:
+                  - CONSTRUCTION_SHARES
+                  - DISPLACEMENT_SHARES
+                  - INSPECTIONS
+                  - MANUAL_SIGNINGS
+                  - PERSONAL_SIGNINGS
+                  - PROGRAMMED_SHARES
+                  - WORK_SHARES
+              startDate:
+                type: string
+                x-stoplight:
+                  id: s31ddoarqqkye
+                format: date-time
+              endDate:
+                type: string
+                x-stoplight:
+                  id: usavruicx3kib
+                format: date-time
+            required:
+              - id
+              - type
+              - startDate
+              - endDate
   parameters:
     Share-Id:
       name: shareId

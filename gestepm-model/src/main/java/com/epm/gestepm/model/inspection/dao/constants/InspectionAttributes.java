@@ -6,8 +6,6 @@ public abstract class InspectionAttributes {
 
   public static final String ATTR_I_IDS = "p";
 
-  public static final String ATTR_I_USER_SIGNING_ID = "attr_i_user_signing_id";
-
   public static final String ATTR_I_SHARE_ID = "attr_i_share_id";
 
   public static final String ATTR_I_ACTION = "attr_i_action";

@@ -7,7 +7,6 @@ sql:
       i.inspection_id,
       pr.id AS project_id,
       pr.name AS project_name,
-      i.user_signing_id,
       i.no_programmed_share_id,
       i.action,
       i.start_date,
@@ -51,7 +50,6 @@ sql:
   qry-create-i: |
     
     INSERT INTO ${sch-gestepm}.inspection (
-      user_signing_id,
       no_programmed_share_id,
       action,
       start_date,
@@ -59,7 +57,6 @@ sql:
       second_technical
     )
     VALUES (
-      :attr_i_user_signing_id,
       :attr_i_share_id,
       :attr_i_action,
       :attr_i_start_date,
@@ -72,7 +69,6 @@ sql:
     UPDATE
       ${sch-gestepm}.inspection
     SET
-      user_signing_id = :attr_i_user_signing_id, 
       no_programmed_share_id = :attr_i_share_id, 
       action = :attr_i_action, 
       start_date = :attr_i_start_date, 

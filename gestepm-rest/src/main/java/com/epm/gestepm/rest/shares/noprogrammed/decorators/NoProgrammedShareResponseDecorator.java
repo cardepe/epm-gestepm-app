@@ -31,8 +31,6 @@ public class NoProgrammedShareResponseDecorator extends BaseResponseDataDecorato
 
     public static final String NPS_P_EXPAND = "project";
 
-    public static final String NPS_US_EXPAND = "userSigning";
-
     public static final String NPS_F_EXPAND = "family";
 
     public static final String NPS_SF_EXPAND = "subFamily";
@@ -93,18 +91,6 @@ public class NoProgrammedShareResponseDecorator extends BaseResponseDataDecorato
             final Project response = new Project().id(id).name(projectDto.getName());
 
             data.setProject(response);
-        }
-
-        if (request.hasExpand(NPS_US_EXPAND)) {
-
-            final UserSigning userSigning = data.getUserSigning();
-            final Integer id = userSigning.getId();
-
-            // TODO.
-
-            final UserSigning response = new UserSigning().id(id);
-
-            data.setUserSigning(response);
         }
 
         if (request.hasExpand(NPS_F_EXPAND) && data.getFamily() != null) {

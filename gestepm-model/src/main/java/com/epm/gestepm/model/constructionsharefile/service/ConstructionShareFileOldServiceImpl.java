@@ -13,11 +13,11 @@ import com.mysql.jdbc.StringUtils;
 
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.constructionsharefile.dto.ConstructionShareFile;
-import com.epm.gestepm.modelapi.constructionsharefile.service.ConstructionShareFileService;
+import com.epm.gestepm.modelapi.constructionsharefile.service.ConstructionShareFileOldService;
 
 @Service
 @Transactional
-public class ConstructionShareFileServiceImpl implements ConstructionShareFileService {
+public class ConstructionShareFileOldServiceImpl implements ConstructionShareFileOldService {
 	
 	@Autowired
 	private ConstructionShareFileRepository constructionShareFileRepository;

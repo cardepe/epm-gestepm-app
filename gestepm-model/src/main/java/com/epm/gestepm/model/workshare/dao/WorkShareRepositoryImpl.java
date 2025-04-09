@@ -104,26 +104,7 @@ public class WorkShareRepositoryImpl implements WorkShareRepositoryCustom {
 			return Collections.emptyList();
 		}
 	}
-	
-	@Override
-	public List<ShareTableDTO> findShareTableByUserSigningId(Long userSigningId) {
 
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<ShareTableDTO> cq = cb.createQuery(ShareTableDTO.class);
-			
-			Root<WorkShare> root = cq.from(WorkShare.class);
-
-			cq.multiselect(root.get("id"), root.get("project").get("name"), cb.concat(cb.concat(root.get("user").get("name"), " "), root.get("user").get("surnames")), root.get("startDate"), root.get("endDate"), cb.literal("ws")).where(cb.equal(root.get("userSigning"), userSigningId));
-			
-			return entityManager.createQuery(cq).getResultList();
-			
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
-	}
-	
 	@Override
 	public List<WorkShareTableDTO> findWorkSharesByUserDataTables(Long userId, PaginationCriteria pagination) {
 		

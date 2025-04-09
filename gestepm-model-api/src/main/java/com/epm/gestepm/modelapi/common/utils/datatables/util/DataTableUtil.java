@@ -19,7 +19,6 @@ import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import org.hibernate.query.criteria.internal.path.ListAttributeJoin;
 import org.hibernate.query.criteria.internal.path.RootImpl;
@@ -258,8 +257,6 @@ public class DataTableUtil {
 				return Project.class;
 			case "pv":
 				return ActivityCenter.class;
-			case "si":
-				return UserSigning.class;
 			case "sr":
 				return SubRole.class;
 			case "uh":

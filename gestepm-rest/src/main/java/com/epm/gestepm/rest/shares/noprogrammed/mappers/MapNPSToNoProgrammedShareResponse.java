@@ -2,6 +2,7 @@ package com.epm.gestepm.rest.shares.noprogrammed.mappers;
 
 import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
+import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import com.epm.gestepm.restapi.openapi.model.Inspection;
 import com.epm.gestepm.restapi.openapi.model.NoProgrammedShare;
 import com.epm.gestepm.restapi.openapi.model.ShareFile;
@@ -16,7 +17,6 @@ public interface MapNPSToNoProgrammedShareResponse {
 
   @Mapping(source = "userId", target = "user.id")
   @Mapping(source = "projectId", target = "project.id")
-  @Mapping(source = "userSigningId", target = "userSigning.id")
   @Mapping(source = "familyId", target = "family.id")
   @Mapping(source = "subFamilyId", target = "subFamily.id")
   @Mapping(source = "inspectionIds", target = "inspections", qualifiedByName = "mapInspections")
@@ -27,15 +27,9 @@ public interface MapNPSToNoProgrammedShareResponse {
 
   @Named("mapInspections")
   static List<Inspection> mapInspections(final List<Integer> inspectionIds) {
-
-    return inspectionIds.stream().map(id -> {
-
-      final Inspection inspection = new Inspection();
-      inspection.setId(id);
-
-      return inspection;
-
-    }).collect(Collectors.toList());
+    return inspectionIds.stream()
+            .map(id -> new Inspection().id(id))
+            .collect(Collectors.toList());
   }
 
   @Named("mapFiles")
@@ -47,7 +41,6 @@ public interface MapNPSToNoProgrammedShareResponse {
 
   @AfterMapping
   default void parse(@MappingTarget NoProgrammedShare response) {
-    response.setUserSigning(response.getUserSigning() != null && response.getUserSigning().getId() != null ? response.getUserSigning() : null);
     response.setFamily(response.getFamily() != null && response.getFamily().getId() != null ? response.getFamily() : null);
     response.setSubFamily(response.getSubFamily() != null && response.getSubFamily().getId() != null ? response.getSubFamily() : null);
   }

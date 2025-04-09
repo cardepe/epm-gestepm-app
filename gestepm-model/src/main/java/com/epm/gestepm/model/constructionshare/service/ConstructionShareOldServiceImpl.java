@@ -6,7 +6,7 @@ import com.epm.gestepm.model.constructionsharefile.dao.ConstructionShareFileRepo
 import com.epm.gestepm.model.interventionshare.service.mapper.ShareMapper;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
-import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareService;
+import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareOldService;
 import com.epm.gestepm.modelapi.constructionsharefile.dto.ConstructionShareFile;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
@@ -37,9 +37,9 @@ import java.util.Locale;
 
 @Service
 @Transactional
-public class ConstructionShareServiceImpl implements ConstructionShareService {
+public class ConstructionShareOldServiceImpl implements ConstructionShareOldService {
 	
-	private static final Log log = LogFactory.getLog(ConstructionShareServiceImpl.class);
+	private static final Log log = LogFactory.getLog(ConstructionShareOldServiceImpl.class);
 
 	private static final String DATE_FORMAT = "dd/MM/yyyy HH:mm";
 	
@@ -90,16 +90,6 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
 	@Override
 	public List<ShareTableDTO> getShareTableByProjectId(Long projectId) {
 		return constructionShareDao.findShareTableByProjectId(projectId);
-	}
-	
-	@Override
-	public List<ShareTableDTO> getShareTableByUserSigningId(Long userSigningId) {
-		return constructionShareDao.findShareTableByUserSigningId(userSigningId);
-	}
-	
-	@Override
-	public List<ConstructionShare> getWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
-		return constructionShareDao.findWeekSigningsByUserId(startDate, endDate, userId);
 	}
 
 	@Override

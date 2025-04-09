@@ -2,7 +2,7 @@ package com.epm.gestepm.model.shares;
 
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareService;
+import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareOldService;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
 import com.epm.gestepm.modelapi.inspection.service.InspectionExportService;
@@ -27,7 +27,7 @@ import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
 @EnableExecutionLog(layerMarker = SERVICE)
 public class ShareDecoratorImpl implements ShareDecorator {
 
-    private final ConstructionShareService constructionShareService;
+    private final ConstructionShareOldService constructionShareOldService;
 
     private final InterventionPrShareService interventionPrShareService;
 
@@ -39,8 +39,8 @@ public class ShareDecoratorImpl implements ShareDecorator {
 
     private final WorkShareService workShareService;
 
-    public ShareDecoratorImpl(ConstructionShareService constructionShareService, InterventionPrShareService interventionPrShareService, InspectionService inspectionService, InspectionExportService inspectionExportService, MessageSource messageSource, WorkShareService workShareService) {
-        this.constructionShareService = constructionShareService;
+    public ShareDecoratorImpl(ConstructionShareOldService constructionShareOldService, InterventionPrShareService interventionPrShareService, InspectionService inspectionService, InspectionExportService inspectionExportService, MessageSource messageSource, WorkShareService workShareService) {
+        this.constructionShareOldService = constructionShareOldService;
         this.interventionPrShareService = interventionPrShareService;
         this.inspectionService = inspectionService;
         this.inspectionExportService = inspectionExportService;
@@ -52,7 +52,7 @@ public class ShareDecoratorImpl implements ShareDecorator {
     public List<PdfFileDTO> exportShares(Integer projectId, LocalDateTime startDate, LocalDateTime endDate) {
         final List<PdfFileDTO> pdfs = new ArrayList<>();
 
-        final List<PdfFileDTO> csPdfs = this.constructionShareService.generateSharesByProjectAndInterval(projectId.longValue(), startDate, endDate);
+        final List<PdfFileDTO> csPdfs = this.constructionShareOldService.generateSharesByProjectAndInterval(projectId.longValue(), startDate, endDate);
         final List<PdfFileDTO> iprPdfs = this.interventionPrShareService.generateSharesByProjectAndInterval(projectId.longValue(), startDate, endDate);
 
         final InspectionFilterDto filter = new InspectionFilterDto();

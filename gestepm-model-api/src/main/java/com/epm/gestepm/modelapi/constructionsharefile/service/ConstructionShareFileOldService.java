@@ -6,7 +6,7 @@ import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.constructionsharefile.dto.ConstructionShareFile;
 import org.springframework.web.multipart.MultipartFile;
 
-public interface ConstructionShareFileService {
+public interface ConstructionShareFileOldService {
 
 	ConstructionShareFile save(ConstructionShareFile constructionShareFile);
 	

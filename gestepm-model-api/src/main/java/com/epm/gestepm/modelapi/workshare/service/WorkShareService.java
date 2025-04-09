@@ -19,10 +19,8 @@ public interface WorkShareService {
 	void deleteById(Long id);
 	List<ShareTableDTO> getShareTableByActivityCenterId(Long id, Long activityCenterId, Long projectId, Integer progress);
 	List<ShareTableDTO> getShareTableByProjectId(Long projectId);
-	List<ShareTableDTO> getShareTableByUserSigningId(Long userSigning);
 	Long getWorkSharesCountByUser(Long userId);
 	List<WorkShareTableDTO> getWorkSharesByUserDataTables(Long userId, PaginationCriteria pagination);
-	List<WorkShare> getWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId);
 	List<WorkShare> getWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId);
 	byte[] generateWorkSharePdf(WorkShare share, Locale locale);
 

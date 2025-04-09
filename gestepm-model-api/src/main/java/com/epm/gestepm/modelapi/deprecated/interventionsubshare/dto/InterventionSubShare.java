@@ -5,7 +5,6 @@ import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionShareMateria
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.deprecated.interventionsubsharefile.dto.InterventionSubShareFile;
 import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -21,10 +20,6 @@ public class InterventionSubShare {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "INSPECTION_ID", unique = true, nullable = false, precision = 10)
 	private Long id;
-	
-	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "USER_SIGNING_ID")
-	private UserSigning userSigning;
 	
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "NO_PROGRAMMED_SHARE_ID", nullable = false)
