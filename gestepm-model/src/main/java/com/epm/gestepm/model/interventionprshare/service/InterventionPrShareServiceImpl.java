@@ -91,16 +91,6 @@ public class InterventionPrShareServiceImpl implements InterventionPrShareServic
 	public List<ShareTableDTO> getShareTableByProjectId(Long projectId) {
 		return interventionPrShareDao.findShareTableByProjectId(projectId);
 	}
-	
-	@Override
-	public List<ShareTableDTO> getShareTableByUserSigningId(Long userSigningId) {
-		return interventionPrShareDao.findShareTableByUserSigningId(userSigningId);
-	}
-	
-	@Override
-	public List<InterventionPrShare> getWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
-		return interventionPrShareDao.findWeekSigningsByUserId(startDate, endDate, userId);
-	}
 
 	@Override
 	public List<InterventionPrShare> getWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId) {

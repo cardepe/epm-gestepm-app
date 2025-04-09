@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 @Mapper
 public interface MapIToInspectionResponse {
 
-  @Mapping(source = "userSigningId", target = "userSigning.id")
   @Mapping(source = "shareId", target = "share.id")
   @Mapping(source = "firstTechnicalId", target = "firstTechnical.id")
   @Mapping(source = "secondTechnicalId", target = "secondTechnical.id")
@@ -26,10 +25,5 @@ public interface MapIToInspectionResponse {
     return fileIds.stream()
             .map(id -> new ShareFile().id(id))
             .collect(Collectors.toList());
-  }
-
-  @AfterMapping
-  default void parse(@MappingTarget Inspection response) {
-    response.setUserSigning(response.getUserSigning() != null && response.getUserSigning().getId() != null ? response.getUserSigning() : null);
   }
 }

@@ -34,6 +34,16 @@ public interface AuditProvider {
         auditCreate.setCreatedAt(null);
     }
 
+    default void auditClose(AuditClose auditClose) {
+        auditClose.setClosedBy(login());
+        auditClose.setClosedAt(time());
+    }
+
+    default void clearClose(AuditClose auditClose) {
+        auditClose.setClosedBy(null);
+        auditClose.setClosedAt(null);
+    }
+
     default void auditUpdate(AuditUpdate auditUpdate) {
         auditUpdate.setUpdatedBy(login());
         auditUpdate.setUpdatedAt(time());

@@ -6,7 +6,6 @@ import com.epm.gestepm.modelapi.deprecated.interventionsubshare.dto.Intervention
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
 import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -30,10 +29,6 @@ public class InterventionShare {
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_ID", nullable = false)
 	private Project project;
-	
-	@ManyToOne(optional = false, fetch = FetchType.LAZY)
-	@JoinColumn(name = "USER_SIGNING_ID")
-	private UserSigning userSigning;
 
 	@Column(name = "START_DATE", nullable = false)
 	private LocalDateTime noticeDate;

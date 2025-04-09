@@ -67,7 +67,6 @@ public class InspectionUpdate implements CollectableAttributes {
         final AttributeMap map = new AttributeMap();
 
         map.put(InspectionAttributes.ATTR_I_ID, this.id);
-        map.put(InspectionAttributes.ATTR_I_USER_SIGNING_ID, this.userSigningId);
         map.put(InspectionAttributes.ATTR_I_SHARE_ID, this.shareId);
         map.putEnum(InspectionAttributes.ATTR_I_ACTION, this.action);
         map.put(InspectionAttributes.ATTR_I_START_DATE, this.startDate);

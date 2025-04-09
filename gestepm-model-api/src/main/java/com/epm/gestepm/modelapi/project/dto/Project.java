@@ -10,7 +10,6 @@ import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
 import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import lombok.Data;
 
@@ -68,9 +67,6 @@ public class Project {
 	
 	@OneToMany(mappedBy = "project")
 	private List<DisplacementShare> displacementShares;
-	
-	@OneToMany(mappedBy = "project")
-	private List<UserSigning> userSignings;
 	
 	@OneToMany(mappedBy = "project")
 	private List<WorkShare> workShares;

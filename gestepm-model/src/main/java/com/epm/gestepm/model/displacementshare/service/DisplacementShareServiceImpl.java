@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -41,11 +40,6 @@ public class DisplacementShareServiceImpl implements DisplacementShareService {
 	}
 	
 	@Override
-	public List<ShareTableDTO> getShareTableByUserSigningId(Long userSigningId) {
-		return displacementShareDao.findShareTableByUserSigningId(userSigningId);
-	}
-	
-	@Override
 	public Long getDisplacementSharesCountByUser(Long userId) {
 		return displacementShareDao.findDisplacementSharesCountByUserId(userId);
 	}
@@ -53,10 +47,5 @@ public class DisplacementShareServiceImpl implements DisplacementShareService {
 	@Override
 	public List<DisplacementShareTableDTO> getDisplacementSharesByUserDataTables(Long userId, PaginationCriteria pagination) {
 		return displacementShareDao.findDisplacementSharesByUserDataTables(userId, pagination);
-	}
-	
-	@Override
-	public List<DisplacementShare> getWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId, Integer manual) {
-		return displacementShareDao.findWeekSigningsByUserId(startDate, endDate, userId, manual);
 	}
 }

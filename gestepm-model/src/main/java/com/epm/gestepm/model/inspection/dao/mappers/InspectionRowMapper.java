@@ -22,8 +22,6 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
 
     public static final String COL_I_PROJECT_NAME = "project_name";
 
-    public static final String COL_I_USER_SIGNING_ID = "user_signing_id";
-
     public static final String COL_I_SHARE_ID = "no_programmed_share_id";
 
     public static final String COL_I_ACTION = "action";
@@ -72,7 +70,6 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
         inspection.setId(rs.getInt(COL_I_ID));
         inspection.setProjectId(rs.getInt(COL_I_PROJECT_ID));
         inspection.setProjectName(rs.getString(COL_I_PROJECT_NAME));
-        inspection.setUserSigningId(nullableInt(rs, COL_I_USER_SIGNING_ID));
         inspection.setShareId(rs.getInt(COL_I_SHARE_ID));
         inspection.setAction(ActionEnum.valueOf(rs.getString(COL_I_ACTION)));
         inspection.setStartDate(rs.getTimestamp(COL_I_START_DATE).toLocalDateTime());

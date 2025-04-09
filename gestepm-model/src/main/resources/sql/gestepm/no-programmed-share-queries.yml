@@ -7,7 +7,6 @@ sql:
       nps.no_programmed_share_id,
       nps.user_id,
       nps.project_id,
-      nps.user_signing_id,
       nps.start_date,
       nps.end_date,
       nps.description,
@@ -40,14 +39,12 @@ sql:
     INSERT INTO ${sch-gestepm}.no_programmed_share (
       user_id,
       project_id,
-      user_signing_id,
       start_date,
       state
     )
     VALUES (
       :attr_nps_u_id,
       :attr_nps_p_id,
-      :attr_nps_us_id,
       :attr_nps_start_date,
       1
     )

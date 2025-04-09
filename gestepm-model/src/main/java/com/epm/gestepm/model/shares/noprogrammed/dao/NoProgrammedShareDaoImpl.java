@@ -18,6 +18,7 @@ import com.epm.gestepm.model.shares.noprogrammed.dao.entity.finder.NoProgrammedS
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.updater.NoProgrammedShareUpdate;
 import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRSManyExtractor;
 import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRSOneExtractor;
+import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,7 @@ import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
 import static com.epm.gestepm.model.shares.noprogrammed.dao.constants.NoProgrammedShareQueries.*;
 
+@AllArgsConstructor
 @Component("noProgrammedShareDao")
 @EnableExecutionLog(layerMarker = DAO)
 public class NoProgrammedShareDaoImpl implements NoProgrammedShareDao {
@@ -36,11 +38,6 @@ public class NoProgrammedShareDaoImpl implements NoProgrammedShareDao {
     private final NoProgrammedShareFileDao noProgrammedShareFileDao;
 
     private final SQLDatasource sqlDatasource;
-
-    public NoProgrammedShareDaoImpl(NoProgrammedShareFileDao noProgrammedShareFileDao, SQLDatasource sqlDatasource) {
-        this.noProgrammedShareFileDao = noProgrammedShareFileDao;
-        this.sqlDatasource = sqlDatasource;
-    }
 
     @Override
     @LogExecution(operation = OP_READ,

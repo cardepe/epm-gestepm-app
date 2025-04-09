@@ -13,6 +13,10 @@ public abstract class CommonRowMapper {
 
     public static final String COL_CREATED_BY = "created_by";
 
+    public static final String COL_CLOSED_AT = "closed_at";
+
+    public static final String COL_CLOSED_BY = "closed_by";
+
     public static final String COL_MODIFY_AT = "FECHA_MODIFICACION";
 
     public static final String COL_MODIFY_BY = "USUARIO_MODIFICACION";
@@ -45,6 +49,18 @@ public abstract class CommonRowMapper {
 
         result.setCreatedAt(nullableLocalDateTime(resultSet, COL_CREATED_AT));
         result.setCreatedBy(nullableInt(resultSet, COL_CREATED_BY));
+    }
+
+    protected void setCommonAudit(AuditClose result, final ResultSet resultSet) throws SQLException {
+
+        result.setClosedAt(nullableLocalDateTime(resultSet, COL_CLOSED_AT));
+        result.setClosedBy(nullableInt(resultSet, COL_CLOSED_BY));
+    }
+
+    protected void setCommonAudit(AuditCreateClose result, final ResultSet resultSet)
+            throws SQLException {
+        setCommonAudit((AuditCreate) result, resultSet);
+        setCommonAudit((AuditClose) result, resultSet);
     }
 
     protected void setCommonAudit(AuditCreateDelete result, final ResultSet resultSet)

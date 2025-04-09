@@ -1,0 +1,55 @@
+sql:
+
+  qry-list-of-csf: |
+    
+    SELECT
+      csf.construction_share_file_id AS id_pagination,
+      csf.construction_share_file_id,
+      csf.construction_share_id,
+      csf.name,
+      csf.content
+    FROM ${sch-gestepm}.construction_share_file csf
+    
+    #whereToken #filter
+
+  qry-create-csf: |
+    
+    INSERT INTO ${sch-gestepm}.construction_share_file (
+      construction_share_id,
+      name,
+      content
+    )
+    VALUES (
+      :attr_csf_share_id,
+      :attr_csf_name,
+      :attr_csf_content
+    )
+
+  qry-delete-csf: |
+    
+    DELETE FROM ${sch-gestepm}.construction_share_file WHERE construction_share_file_id = :attr_csf_id
+
+  filter-csf-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-csf-ids}
+      -- ${sql.predicate-for-csf-share-id}
+    -- AND]
+
+  filter-csf-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-csf-id}
+    -- AND]
+
+  predicate-for-csf-id: |
+
+    csf.construction_share_file_id = :attr_csf_id
+
+  predicate-for-csf-ids: |
+
+    csf.construction_share_file_id IN (:attr_csf_ids)
+
+  predicate-for-csf-share-id: |
+
+    csf.construction_share_id = :attr_csf_share_id

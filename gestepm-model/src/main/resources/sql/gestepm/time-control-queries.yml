@@ -5,13 +5,13 @@ sql:
     SELECT *
     FROM (
       SELECT
-        id,
+        construction_share_id AS id,
         user_id,
-        start_date,
-        end_date,
+        created_at AS start_date,
+        closed_at AS end_date,
         null AS description,
         'CONSTRUCTION_SHARES' AS type
-      FROM ${sch-gestepm}.construction_shares
+      FROM ${sch-gestepm}.construction_share
       UNION
       SELECT
         id,
