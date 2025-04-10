@@ -856,7 +856,7 @@
 			height: 'parent',
 			events: function (fetchInfo, successCallback, failureCallback) {
 				const params = {
-					userId: ${user.id},
+					userId: ${userDetail.id},
 					startDate: fetchInfo.startStr,
 					endDate: fetchInfo.endStr
 				};
