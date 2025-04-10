@@ -17,9 +17,9 @@ public abstract class CommonRowMapper {
 
     public static final String COL_CLOSED_BY = "closed_by";
 
-    public static final String COL_MODIFY_AT = "FECHA_MODIFICACION";
+    public static final String COL_MODIFY_AT = "modified_at";
 
-    public static final String COL_MODIFY_BY = "USUARIO_MODIFICACION";
+    public static final String COL_MODIFY_BY = "modified_by";
 
     public static final String COL_DISCHARGE_AT = "discharged_at";
 

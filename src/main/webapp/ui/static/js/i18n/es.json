@@ -115,7 +115,17 @@
             "name": "Parte de construcción"
         },
         "displacement": {
-            "name": "Parte de desplazamiento"
+            "name": "Parte de desplazamiento",
+            "create": {
+                "success": "Parte de desplazamiento creado con éxito."
+            },
+            "delete" : {
+                "alert": "¿Está seguro que quiere borrar el parte de desplazamiento {0}?",
+                "success": "Parte de desplazamiento nº {0} eliminado con éxito."
+            },
+            "update": {
+                "success": "Se ha actualizado el parte de desplazamiento con éxito."
+            }
         },
         "noprogrammed": {
             "delete": {

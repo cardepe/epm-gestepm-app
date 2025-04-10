@@ -4,7 +4,6 @@ import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.common.utils.datatables.SortOrder;
 import com.epm.gestepm.modelapi.deprecated.country.dto.Country;
-import com.epm.gestepm.modelapi.displacement.dto.Displacement;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
 import com.epm.gestepm.modelapi.expense.dto.Expense;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
@@ -233,8 +232,6 @@ public class DataTableUtil {
 		switch(table) {
 			case "co":
 				return Country.class;
-			case "di":
-				return Displacement.class;
 			case "ds":
 				return DisplacementShare.class;
 			case "ec":

@@ -44,3 +44,10 @@ function createBasicSelect2(input, modal) {
         placeholder: messages.select2.placeholder
     })
 }
+
+function createBootstrapSelect2(input) {
+    input.selectpicker({
+        liveSearch: true,
+        noneSelectedText: messages.select2.placeholder
+    });
+}

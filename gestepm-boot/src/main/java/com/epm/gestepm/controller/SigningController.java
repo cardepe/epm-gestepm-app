@@ -9,10 +9,6 @@ import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
-import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareOldService;
-import com.epm.gestepm.modelapi.displacementshare.service.DisplacementShareService;
-import com.epm.gestepm.modelapi.inspection.service.InspectionService;
-import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
 import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
 import com.epm.gestepm.modelapi.manualsigningtype.service.ManualSigningTypeService;
@@ -23,9 +19,7 @@ import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningDTO;
 import com.epm.gestepm.modelapi.personalsigning.service.PersonalSigningService;
 import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.ShareDecorator;
-import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
 import com.epm.gestepm.modelapi.timecontrolold.dto.TimeControlTableDTO;
 import com.epm.gestepm.modelapi.timecontrolold.service.TimeControlOldService;
 import com.epm.gestepm.modelapi.user.dto.User;
@@ -38,7 +32,6 @@ import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningDTO;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningTableDTO;
 import com.epm.gestepm.modelapi.usermanualsigning.service.UserManualSigningService;
 import com.epm.gestepm.modelapi.usersigning.dto.UserSigningShareDTO;
-import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -77,22 +70,7 @@ public class SigningController {
     private List<String> rrhhMails;
 
     @Autowired
-    private ConstructionShareOldService constructionShareOldService;
-
-    @Autowired
-    private DisplacementShareService displacementShareService;
-
-    @Autowired
     private ShareDecorator shareDecorator;
-
-    @Autowired
-    private InterventionPrShareService interventionPrShareService;
-
-    @Autowired
-    private InspectionService inspectionService;
-
-    @Autowired
-    private NoProgrammedShareService noProgrammedShareService;
 
     @Autowired
     private ManualSigningTypeService manualSigningTypeService;
@@ -107,9 +85,6 @@ public class SigningController {
     private PersonalSigningService personalSigningService;
 
     @Autowired
-    private ProjectService projectService;
-
-    @Autowired
     private SMTPService smtpService;
 
     @Autowired
@@ -120,9 +95,6 @@ public class SigningController {
 
     @Autowired
     private UserManualSigningService userManualSigningService;
-
-    @Autowired
-    private WorkShareService workShareService;
 
     @GetMapping(value = "/project/{projectId}/weekly", produces = {"application/zip"})
     public void exportWeeklyPdf(@PathVariable Integer projectId, HttpServletResponse response, Locale locale) {

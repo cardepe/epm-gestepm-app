@@ -10,8 +10,6 @@ public abstract class NoProgrammedShareAttributes {
 
   public static final String ATTR_NPS_P_ID = "attr_nps_p_id";
 
-  public static final String ATTR_NPS_US_ID = "attr_nps_us_id";
-
   public static final String ATTR_NPS_START_DATE = "attr_nps_start_date";
 
   public static final String ATTR_NPS_END_DATE = "attr_nps_end_date";

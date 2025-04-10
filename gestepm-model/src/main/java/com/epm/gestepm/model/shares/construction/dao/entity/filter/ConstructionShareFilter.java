@@ -38,7 +38,6 @@ public class ConstructionShareFilter implements CollectableAttributes {
         map.putList(ATTR_CS_IDS, this.ids);
         map.put(ATTR_CS_U_ID, this.userId);
         map.put(ATTR_CS_P_ID, this.projectId);
-        map.put(ATTR_CS_US_ID, this.userSigningId);
         map.putTimestamp(ATTR_CS_CREATED_AT, this.startDate);
         map.putTimestamp(ATTR_CS_CLOSED_AT, this.endDate);
         map.put(ATTR_CS_PROGRESS, this.progress);
