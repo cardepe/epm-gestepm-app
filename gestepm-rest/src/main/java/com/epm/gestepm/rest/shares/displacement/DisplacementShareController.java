@@ -15,7 +15,6 @@ import com.epm.gestepm.modelapi.shares.displacement.dto.filter.DisplacementShare
 import com.epm.gestepm.modelapi.shares.displacement.dto.finder.DisplacementShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.displacement.dto.updater.DisplacementShareUpdateDto;
 import com.epm.gestepm.modelapi.shares.displacement.service.DisplacementShareService;
-import com.epm.gestepm.rest.activitycenter.decorators.ActivityCenterResponseDecorator;
 import com.epm.gestepm.rest.common.CommonProviders;
 import com.epm.gestepm.rest.common.MetadataMapper;
 import com.epm.gestepm.rest.common.ResSuccessMapper;
@@ -39,8 +38,8 @@ import java.util.Set;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.REST;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
-import static com.epm.gestepm.modelapi.shares.displacement.security.DisplacementSharePermission.PRMT_EDIT_DI;
-import static com.epm.gestepm.modelapi.shares.displacement.security.DisplacementSharePermission.PRMT_READ_DI;
+import static com.epm.gestepm.modelapi.shares.displacement.security.DisplacementSharePermission.PRMT_EDIT_DS;
+import static com.epm.gestepm.modelapi.shares.displacement.security.DisplacementSharePermission.PRMT_READ_DS;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 @RestController
@@ -62,7 +61,7 @@ public class DisplacementShareController extends BaseController implements Displ
     }
 
     @Override
-    @RequirePermits(value = PRMT_READ_DI, action = "Get displacement share list")
+    @RequirePermits(value = PRMT_READ_DS, action = "Get displacement share list")
     @LogExecution(operation = OP_READ)
     public ResponseEntity<ListDisplacementSharesV1200Response> listDisplacementSharesV1(final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit, final List<Integer> ids,
                                                                                         final List<Integer> userIds, final List<Integer> projectIds, final LocalDateTime startDate, final LocalDateTime endDate) {
@@ -73,11 +72,11 @@ public class DisplacementShareController extends BaseController implements Displ
         this.setDefaults(req);
         this.setPagination(req, limit, offset);
 
-        final DisplacementShareFilterDto filterDto = getMapper(MapDIToDisplacementShareFilterDto.class).from(req);
+        final DisplacementShareFilterDto filterDto = getMapper(MapDSToDisplacementShareFilterDto.class).from(req);
         final Page<DisplacementShareDto> page = this.displacementShareService.list(filterDto, offset, limit);
 
         final APIMetadata metadata = this.getMetadata(req, page, new ListDisplacementShareV1Operation());
-        final List<DisplacementShare> data = getMapper(MapDIToDisplacementShareResponse.class).from(page);
+        final List<DisplacementShare> data = getMapper(MapDSToDisplacementShareResponse.class).from(page);
 
         this.decorate(req, data, DisplacementShareResponseDecorator.class);
 
@@ -85,7 +84,7 @@ public class DisplacementShareController extends BaseController implements Displ
     }
 
     @Override
-    @RequirePermits(value = PRMT_READ_DI, action = "Find displacement share")
+    @RequirePermits(value = PRMT_READ_DS, action = "Find displacement share")
     @LogExecution(operation = OP_READ)
     public ResponseEntity<CreateDisplacementShareV1200Response> findDisplacementShareByIdV1(final Integer id, final List<String> meta, final Boolean links, final Set<String> expand, final String locale) {
 
@@ -94,11 +93,11 @@ public class DisplacementShareController extends BaseController implements Displ
 
         this.setCommon(req, meta, links, expand);
 
-        final DisplacementShareByIdFinderDto finderDto = getMapper(MapDIToDisplacementShareByIdFinderDto.class).from(req);
+        final DisplacementShareByIdFinderDto finderDto = getMapper(MapDSToDisplacementShareByIdFinderDto.class).from(req);
         final DisplacementShareDto dto = this.displacementShareService.findOrNotFound(finderDto);
 
         final APIMetadata metadata = this.getMetadata(req, new FindDisplacementShareV1Operation());
-        final DisplacementShare data = getMapper(MapDIToDisplacementShareResponse.class).from(dto);
+        final DisplacementShare data = getMapper(MapDSToDisplacementShareResponse.class).from(dto);
 
         this.decorate(req, data, DisplacementShareResponseDecorator.class);
 
@@ -106,16 +105,16 @@ public class DisplacementShareController extends BaseController implements Displ
     }
 
     @Override
-    @RequirePermits(value = PRMT_EDIT_DI, action = "Create displacement share")
+    @RequirePermits(value = PRMT_EDIT_DS, action = "Create displacement share")
     @LogExecution(operation = OP_CREATE)
     public ResponseEntity<CreateDisplacementShareV1200Response> createDisplacementShareV1(final CreateDisplacementShareV1Request reqCreateDisplacementShare) {
 
-        final DisplacementShareCreateDto createDto = getMapper(MapDIToDisplacementShareCreateDto.class).from(reqCreateDisplacementShare);
+        final DisplacementShareCreateDto createDto = getMapper(MapDSToDisplacementShareCreateDto.class).from(reqCreateDisplacementShare);
 
         final DisplacementShareDto displacementShareDto = this.displacementShareService.create(createDto);
 
         final APIMetadata metadata = this.getDefaultMetadata();
-        final DisplacementShare data = getMapper(MapDIToDisplacementShareResponse.class).from(displacementShareDto);
+        final DisplacementShare data = getMapper(MapDSToDisplacementShareResponse.class).from(displacementShareDto);
 
         final CreateDisplacementShareV1200Response response = new CreateDisplacementShareV1200Response();
         response.setMetadata(getMapper(MetadataMapper.class).from(metadata));
@@ -125,17 +124,17 @@ public class DisplacementShareController extends BaseController implements Displ
     }
 
     @Override
-    @RequirePermits(value = PRMT_EDIT_DI, action = "Update displacement share")
+    @RequirePermits(value = PRMT_EDIT_DS, action = "Update displacement share")
     @LogExecution(operation = OP_UPDATE)
     public ResponseEntity<CreateDisplacementShareV1200Response> updateDisplacementShareV1(final Integer id, final UpdateDisplacementShareV1Request reqUpdateDisplacementShare) {
 
-        final DisplacementShareUpdateDto updateDto = getMapper(MapDIToDisplacementShareUpdateDto.class).from(reqUpdateDisplacementShare);
+        final DisplacementShareUpdateDto updateDto = getMapper(MapDSToDisplacementShareUpdateDto.class).from(reqUpdateDisplacementShare);
         updateDto.setId(id);
 
         final DisplacementShareDto countryDto = this.displacementShareService.update(updateDto);
 
         final APIMetadata metadata = this.getDefaultMetadata();
-        final DisplacementShare data = getMapper(MapDIToDisplacementShareResponse.class).from(countryDto);
+        final DisplacementShare data = getMapper(MapDSToDisplacementShareResponse.class).from(countryDto);
 
         final CreateDisplacementShareV1200Response response = new CreateDisplacementShareV1200Response();
         response.setMetadata(getMapper(MetadataMapper.class).from(metadata));
@@ -145,7 +144,7 @@ public class DisplacementShareController extends BaseController implements Displ
     }
 
     @Override
-    @RequirePermits(value = PRMT_EDIT_DI, action = "Delete displacement share")
+    @RequirePermits(value = PRMT_EDIT_DS, action = "Delete displacement share")
     @LogExecution(operation = OP_DELETE)
     public ResponseEntity<ResSuccess> deleteDisplacementShareV1(final Integer id) {
 

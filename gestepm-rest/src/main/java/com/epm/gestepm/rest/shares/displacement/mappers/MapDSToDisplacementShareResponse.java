@@ -8,7 +8,7 @@ import org.mapstruct.*;
 import java.util.List;
 
 @Mapper
-public interface MapDIToDisplacementShareResponse {
+public interface MapDSToDisplacementShareResponse {
 
   @Mapping(source = "userId", target = "user.id")
   @Mapping(source = "projectId", target = "project.id")

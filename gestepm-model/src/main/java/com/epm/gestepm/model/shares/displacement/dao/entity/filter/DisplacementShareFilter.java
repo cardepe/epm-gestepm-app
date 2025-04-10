@@ -32,11 +32,11 @@ public class DisplacementShareFilter extends Orderable implements CollectableAtt
 
         final AttributeMap map = new AttributeMap();
 
-        map.putList(ATTR_DI_IDS, this.ids);
-        map.put(ATTR_DI_U_IDS, this.userIds);
-        map.put(ATTR_DI_P_IDS, this.projectIds);
-        map.putTimestamp(ATTR_DI_START_DATE, this.startDate);
-        map.putTimestamp(ATTR_DI_END_DATE, this.endDate);
+        map.putList(ATTR_DS_IDS, this.ids);
+        map.put(ATTR_DS_U_IDS, this.userIds);
+        map.put(ATTR_DS_P_IDS, this.projectIds);
+        map.putTimestamp(ATTR_DS_START_DATE, this.startDate);
+        map.putTimestamp(ATTR_DS_END_DATE, this.endDate);
 
         return map;
     }

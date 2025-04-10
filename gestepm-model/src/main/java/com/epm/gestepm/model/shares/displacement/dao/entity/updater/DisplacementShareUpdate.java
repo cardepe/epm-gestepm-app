@@ -40,14 +40,14 @@ public class DisplacementShareUpdate implements AuditUpdate, CollectableAttribut
 
         final AttributeMap map = new AttributeMap();
 
-        map.put(ATTR_DI_ID, this.id);
-        map.put(ATTR_DI_P_ID, this.projectId);
-        map.put(ATTR_DI_DESCRIPTION, this.description);
-        map.put(ATTR_DI_START_DATE, this.startDate);
-        map.put(ATTR_DI_END_DATE, this.endDate);
-        map.put(ATTR_DI_OBSERVATIONS, this.observations);
-        map.put(ATTR_DI_MODIFIED_AT, this.updatedAt);
-        map.put(ATTR_DI_MODIFIED_BY, this.updatedBy);
+        map.put(ATTR_DS_ID, this.id);
+        map.put(ATTR_DS_P_ID, this.projectId);
+        map.put(ATTR_DS_DESCRIPTION, this.description);
+        map.put(ATTR_DS_START_DATE, this.startDate);
+        map.put(ATTR_DS_END_DATE, this.endDate);
+        map.put(ATTR_DS_OBSERVATIONS, this.observations);
+        map.put(ATTR_DS_MODIFIED_AT, this.updatedAt);
+        map.put(ATTR_DS_MODIFIED_BY, this.updatedBy);
 
         return map;
     }

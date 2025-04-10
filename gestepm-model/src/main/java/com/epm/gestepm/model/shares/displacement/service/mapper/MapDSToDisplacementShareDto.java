@@ -8,7 +8,7 @@ import org.mapstruct.Mapper;
 import java.util.List;
 
 @Mapper
-public interface MapDIToDisplacementShareDto {
+public interface MapDSToDisplacementShareDto {
 
     DisplacementShareDto from(DisplacementShare entity);
 

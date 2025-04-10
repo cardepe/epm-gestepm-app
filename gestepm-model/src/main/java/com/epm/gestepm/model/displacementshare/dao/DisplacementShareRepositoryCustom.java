@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface DisplacementShareRepositoryCustom {
 
-	List<DisplacementShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId, Integer manual);
+	List<DisplacementShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userI);
 	List<ExpensesMonthDTO> findTimeMonthDTOByProjectId(Long projectId, Integer year);
 
 }

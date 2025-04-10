@@ -32,8 +32,8 @@ import java.util.function.Supplier;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
-import static com.epm.gestepm.modelapi.shares.displacement.security.DisplacementSharePermission.PRMT_EDIT_DI;
-import static com.epm.gestepm.modelapi.shares.displacement.security.DisplacementSharePermission.PRMT_READ_DI;
+import static com.epm.gestepm.modelapi.shares.displacement.security.DisplacementSharePermission.PRMT_EDIT_DS;
+import static com.epm.gestepm.modelapi.shares.displacement.security.DisplacementSharePermission.PRMT_READ_DS;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 @Validated
@@ -47,18 +47,18 @@ public class DisplacementShareServiceImpl implements DisplacementShareService {
     private final DisplacementShareDao displacementShareDao;
 
     @Override
-    @RequirePermits(value = PRMT_READ_DI, action = "List displacement shares")
+    @RequirePermits(value = PRMT_READ_DS, action = "List displacement shares")
     @LogExecution(operation = OP_READ,
             debugOut = true,
             msgIn = "Listing displacement shares",
             msgOut = "Listing displacement shares OK",
             errorMsg = "Failed to list displacement shares")
     public List<DisplacementShareDto> list(DisplacementShareFilterDto filterDto) {
-        final DisplacementShareFilter filter = getMapper(MapDIToDisplacementShareFilter.class).from(filterDto);
+        final DisplacementShareFilter filter = getMapper(MapDSToDisplacementShareFilter.class).from(filterDto);
 
         final List<DisplacementShare> list = this.displacementShareDao.list(filter);
 
-        return getMapper(MapDIToDisplacementShareDto.class).from(list);
+        return getMapper(MapDSToDisplacementShareDto.class).from(list);
     }
 
     @Override
@@ -69,30 +69,30 @@ public class DisplacementShareServiceImpl implements DisplacementShareService {
             errorMsg = "Failed to list displacement shares")
     public Page<DisplacementShareDto> list(DisplacementShareFilterDto filterDto, Long offset, Long limit) {
 
-        final DisplacementShareFilter filter = getMapper(MapDIToDisplacementShareFilter.class).from(filterDto);
+        final DisplacementShareFilter filter = getMapper(MapDSToDisplacementShareFilter.class).from(filterDto);
 
         final Page<DisplacementShare> page = this.displacementShareDao.list(filter, offset, limit);
 
-        return getMapper(MapDIToDisplacementShareDto.class).from(page);
+        return getMapper(MapDSToDisplacementShareDto.class).from(page);
     }
 
     @Override
-    @RequirePermits(value = PRMT_READ_DI, action = "Find displacement share by ID")
+    @RequirePermits(value = PRMT_READ_DS, action = "Find displacement share by ID")
     @LogExecution(operation = OP_READ,
             debugOut = true,
             msgIn = "Finding displacement share by ID, result can be empty",
             msgOut = "Found displacement share by ID",
             errorMsg = "Failed to find displacement share by ID")
     public Optional<DisplacementShareDto> find(final DisplacementShareByIdFinderDto finderDto) {
-        final DisplacementShareByIdFinder finder = getMapper(MapDIToDisplacementShareByIdFinder.class).from(finderDto);
+        final DisplacementShareByIdFinder finder = getMapper(MapDSToDisplacementShareByIdFinder.class).from(finderDto);
 
         final Optional<DisplacementShare> found = this.displacementShareDao.find(finder);
 
-        return found.map(getMapper(MapDIToDisplacementShareDto.class)::from);
+        return found.map(getMapper(MapDSToDisplacementShareDto.class)::from);
     }
 
     @Override
-    @RequirePermits(value = PRMT_READ_DI, action = "Find displacement share by ID")
+    @RequirePermits(value = PRMT_READ_DS, action = "Find displacement share by ID")
     @LogExecution(operation = OP_READ,
             debugOut = true,
             msgIn = "Finding displacement share by ID, result is expected or will fail",
@@ -106,42 +106,42 @@ public class DisplacementShareServiceImpl implements DisplacementShareService {
 
     @Override
     @Transactional
-    @RequirePermits(value = PRMT_EDIT_DI, action = "Create new displacement share")
+    @RequirePermits(value = PRMT_EDIT_DS, action = "Create new displacement share")
     @LogExecution(operation = OP_CREATE,
             debugOut = true,
             msgIn = "Creating new displacement share",
             msgOut = "New displacement share created OK",
             errorMsg = "Failed to create new displacement share")
     public DisplacementShareDto create(DisplacementShareCreateDto createDto) {
-        final DisplacementShareCreate create = getMapper(MapDIToDisplacementShareCreate.class).from(createDto);
+        final DisplacementShareCreate create = getMapper(MapDSToDisplacementShareCreate.class).from(createDto);
 
         this.auditProvider.auditCreate(create);
 
         final DisplacementShare result = this.displacementShareDao.create(create);
 
-        return getMapper(MapDIToDisplacementShareDto.class).from(result);
+        return getMapper(MapDSToDisplacementShareDto.class).from(result);
     }
 
     @Override
     @Transactional
-    @RequirePermits(value = PRMT_EDIT_DI, action = "Update displacement share")
+    @RequirePermits(value = PRMT_EDIT_DS, action = "Update displacement share")
     @LogExecution(operation = OP_UPDATE,
             debugOut = true,
             msgIn = "Updating displacement share",
             msgOut = "Displacement share updated OK",
             errorMsg = "Failed to update displacement share")
     public DisplacementShareDto update(final DisplacementShareUpdateDto updateDto) {
-        final DisplacementShareUpdate update = getMapper(MapDIToDisplacementShareUpdate.class).from(updateDto);
+        final DisplacementShareUpdate update = getMapper(MapDSToDisplacementShareUpdate.class).from(updateDto);
 
         this.auditProvider.auditUpdate(update);
 
         final DisplacementShare updated = this.displacementShareDao.update(update);
 
-        return getMapper(MapDIToDisplacementShareDto.class).from(updated);
+        return getMapper(MapDSToDisplacementShareDto.class).from(updated);
     }
 
     @Override
-    @RequirePermits(value = PRMT_EDIT_DI, action = "Delete displacement share")
+    @RequirePermits(value = PRMT_EDIT_DS, action = "Delete displacement share")
     @LogExecution(operation = OP_DELETE,
             debugOut = true,
             msgIn = "Deleting displacement share",
@@ -153,7 +153,7 @@ public class DisplacementShareServiceImpl implements DisplacementShareService {
 
         findOrNotFound(finderDto);
 
-        final DisplacementShareDelete delete = getMapper(MapDIToDisplacementShareDelete.class).from(deleteDto);
+        final DisplacementShareDelete delete = getMapper(MapDSToDisplacementShareDelete.class).from(deleteDto);
 
         this.displacementShareDao.delete(delete);
     }

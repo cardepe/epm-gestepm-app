@@ -40,14 +40,14 @@ public class DisplacementShareCreate implements AuditCreate, CollectableAttribut
     public AttributeMap collectAttributes() {
         final AttributeMap map = new AttributeMap();
 
-        map.put(ATTR_DI_U_ID, this.userId);
-        map.put(ATTR_DI_P_ID, this.projectId);
-        map.put(ATTR_DI_DESCRIPTION, this.description);
-        map.put(ATTR_DI_START_DATE, this.startDate);
-        map.put(ATTR_DI_END_DATE, this.endDate);
-        map.put(ATTR_DI_OBSERVATIONS, this.observations);
-        map.putTimestamp(ATTR_DI_CREATED_AT, this.createdAt);
-        map.put(ATTR_DI_CREATED_BY, this.createdBy);
+        map.put(ATTR_DS_U_ID, this.userId);
+        map.put(ATTR_DS_P_ID, this.projectId);
+        map.put(ATTR_DS_DESCRIPTION, this.description);
+        map.put(ATTR_DS_START_DATE, this.startDate);
+        map.put(ATTR_DS_END_DATE, this.endDate);
+        map.put(ATTR_DS_OBSERVATIONS, this.observations);
+        map.putTimestamp(ATTR_DS_CREATED_AT, this.createdAt);
+        map.put(ATTR_DS_CREATED_BY, this.createdBy);
 
         return map;
     }

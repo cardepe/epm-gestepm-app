@@ -5,7 +5,7 @@ import com.epm.gestepm.rest.shares.displacement.request.DisplacementShareListRes
 import org.mapstruct.Mapper;
 
 @Mapper
-public interface MapDIToDisplacementShareFilterDto {
+public interface MapDSToDisplacementShareFilterDto {
 
   DisplacementShareFilterDto from(DisplacementShareListRestRequest req);
 

@@ -1,40 +1,40 @@
 sql:
 
-  qry-list-of-di: |
+  qry-list-of-ds: |
 
     SELECT
-      di.displacement_share_id AS id_pagination,
-      di.displacement_share_id,
-      di.user_id,
+      ds.displacement_share_id AS id_pagination,
+      ds.displacement_share_id,
+      ds.user_id,
       CONCAT(us.name, us.surnames) AS username,
-      di.project_id,
+      ds.project_id,
       pr.name AS project_name,
-      di.description,
-      di.start_date,
-      di.end_date,
-      di.observations,
-      di.created_at,
-      di.created_by,
-      di.modified_at,
-      di.modified_by
-    FROM ${sch-gestepm}.displacement_share di
-    LEFT JOIN ${sch-gestepm}.projects pr ON di.project_id = pr.ID
-    LEFT JOIN ${sch-gestepm}.users us ON di.user_id = us.ID
+      ds.description,
+      ds.start_date,
+      ds.end_date,
+      ds.observations,
+      ds.created_at,
+      ds.created_by,
+      ds.modified_at,
+      ds.modified_by
+    FROM ${sch-gestepm}.displacement_share ds
+    LEFT JOIN ${sch-gestepm}.projects pr ON ds.project_id = pr.ID
+    LEFT JOIN ${sch-gestepm}.users us ON ds.user_id = us.ID
 
     #whereToken #filter
 
-  qry-page-of-di: |
+  qry-page-of-ds: |
 
     ${sql.paginated-query-group-prefix}
-    ${sql.qry-list-of-di}
+    ${sql.qry-list-of-ds}
     ${sql.paginated-query-suffix}
 
-  qry-count-of-di: |
+  qry-count-of-ds: |
 
     SELECT COUNT(DISTINCT id_pagination) AS "count"
-    FROM (${sql.qry-list-of-di}) final
+    FROM (${sql.qry-list-of-ds}) final
 
-  qry-create-di: |
+  qry-create-ds: |
 
     INSERT INTO ${sch-gestepm}.displacement_share (
       user_id,
@@ -47,71 +47,71 @@ sql:
       created_by
     )
     VALUES (
-      :attr_di_u_id,
-      :attr_di_p_id,
-      :attr_di_description,
-      :attr_di_start_date,
-      :attr_di_end_date,
-      :attr_di_observations,
-      :attr_di_created_at,
-      :attr_di_created_by
+      :attr_ds_u_id,
+      :attr_ds_p_id,
+      :attr_ds_description,
+      :attr_ds_start_date,
+      :attr_ds_end_date,
+      :attr_ds_observations,
+      :attr_ds_created_at,
+      :attr_ds_created_by
     )
 
-  qry-update-di: |
+  qry-update-ds: |
 
     UPDATE
       ${sch-gestepm}.displacement_share
     SET
-      project_id = :attr_di_p_id,
-      description = :attr_di_description,
-      start_date = :attr_di_start_date,
-      end_date = :attr_di_end_date,
-      observations = :attr_di_observations,
-      modified_at = :attr_di_modified_at,
-      modified_by = :attr_di_modified_by      
+      project_id = :attr_ds_p_id,
+      description = :attr_ds_description,
+      start_date = :attr_ds_start_date,
+      end_date = :attr_ds_end_date,
+      observations = :attr_ds_observations,
+      modified_at = :attr_ds_modified_at,
+      modified_by = :attr_ds_modified_by      
     WHERE
-      displacement_share_id = :attr_di_id
+      displacement_share_id = :attr_ds_id
 
-  qry-delete-di: |
+  qry-delete-ds: |
 
-    DELETE FROM ${sch-gestepm}.displacement_share WHERE displacement_share_id = :attr_di_id
+    DELETE FROM ${sch-gestepm}.displacement_share WHERE displacement_share_id = :attr_ds_id
     
-  filter-di-by-params: |
+  filter-ds-by-params: |
 
     -- [AND
-      -- ${sql.predicate-for-di-ids}
-      -- ${sql.predicate-for-di-u-ids}
-      -- ${sql.predicate-for-di-p-ids}
-      -- ${sql.predicate-for-di-start-date}
-      -- ${sql.predicate-for-di-end-date}
+      -- ${sql.predicate-for-ds-ids}
+      -- ${sql.predicate-for-ds-u-ids}
+      -- ${sql.predicate-for-ds-p-ids}
+      -- ${sql.predicate-for-ds-start-date}
+      -- ${sql.predicate-for-ds-end-date}
     -- AND]
 
-  filter-di-by-id: |
+  filter-ds-by-id: |
 
     -- [AND
-      -- ${sql.predicate-for-di-id}
+      -- ${sql.predicate-for-ds-id}
     -- AND]
 
-  predicate-for-di-id: |
+  predicate-for-ds-id: |
 
-    di.displacement_share_id = :attr_di_id
+    ds.displacement_share_id = :attr_ds_id
 
-  predicate-for-di-ids: |
+  predicate-for-ds-ids: |
 
-    di.displacement_share_id IN (:attr_di_ids)
+    ds.displacement_share_id IN (:attr_ds_ids)
 
-  predicate-for-di-u-ids: |
+  predicate-for-ds-u-ids: |
 
-    di.user_id IN (:attr_di_u_ids)
+    ds.user_id IN (:attr_ds_u_ids)
 
-  predicate-for-di-p-ids: |
+  predicate-for-ds-p-ids: |
 
-    di.project_id IN (:attr_di_p_ids)
+    ds.project_id IN (:attr_ds_p_ids)
 
-  predicate-for-di-start-date: |
+  predicate-for-ds-start-date: |
 
-    di.start_date > :attr_di_start_date
+    ds.start_date > :attr_ds_start_date
 
-  predicate-for-di-end-date: |
+  predicate-for-ds-end-date: |
 
-    di.end_date < :attr_di_end_date
+    ds.end_date < :attr_ds_end_date

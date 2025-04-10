@@ -5,7 +5,7 @@ import com.epm.gestepm.forum.model.api.service.UserForumService;
 import com.epm.gestepm.model.family.service.mapper.FamilyMapper;
 import com.epm.gestepm.model.materialrequired.service.mapper.MaterialRequiredMapper;
 import com.epm.gestepm.model.project.service.mapper.ProjectMapper;
-import com.epm.gestepm.model.shares.displacement.mapper.MapDIToShareTableDto;
+import com.epm.gestepm.model.shares.displacement.mapper.MapDSToShareTableDto;
 import com.epm.gestepm.model.shares.noprogrammed.mapper.MapIToShareTableDto;
 import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.deprecated.activitycenter.service.ActivityCenterService;
@@ -1218,7 +1218,7 @@ public class ProjectController {
 
 		final List<DisplacementShareDto> displacementShares = this.displacementShareService.list(filter);
 
-		return getMapper(MapDIToShareTableDto.class).from(displacementShares);
+		return getMapper(MapDSToShareTableDto.class).from(displacementShares);
 	}
 
 	private List<ShareTableDTO> getInspections(final Integer projectId) {

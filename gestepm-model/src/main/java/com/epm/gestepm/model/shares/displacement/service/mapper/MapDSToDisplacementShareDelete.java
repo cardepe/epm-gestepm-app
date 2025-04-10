@@ -5,7 +5,7 @@ import com.epm.gestepm.modelapi.shares.displacement.dto.deleter.DisplacementShar
 import org.mapstruct.Mapper;
 
 @Mapper
-public interface MapDIToDisplacementShareDelete {
+public interface MapDSToDisplacementShareDelete {
 
   DisplacementShareDelete from(DisplacementShareDeleteDto deleteDto);
 

@@ -5,7 +5,7 @@ import com.epm.gestepm.modelapi.shares.displacement.dto.creator.DisplacementShar
 import org.mapstruct.Mapper;
 
 @Mapper
-public interface MapDIToDisplacementShareCreate {
+public interface MapDSToDisplacementShareCreate {
 
   DisplacementShareCreate from(DisplacementShareCreateDto createDto);
 

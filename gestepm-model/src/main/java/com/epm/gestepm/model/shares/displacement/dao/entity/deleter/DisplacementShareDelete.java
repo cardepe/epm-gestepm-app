@@ -6,7 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 
-import static com.epm.gestepm.model.shares.displacement.dao.constants.DisplacementShareAttributes.ATTR_DI_ID;
+import static com.epm.gestepm.model.shares.displacement.dao.constants.DisplacementShareAttributes.ATTR_DS_ID;
 
 @Data
 public class DisplacementShareDelete implements CollectableAttributes {
@@ -19,7 +19,7 @@ public class DisplacementShareDelete implements CollectableAttributes {
 
         final AttributeMap map = new AttributeMap();
 
-        map.put(ATTR_DI_ID, this.id);
+        map.put(ATTR_DS_ID, this.id);
 
         return map;
     }

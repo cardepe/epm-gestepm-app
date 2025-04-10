@@ -5,7 +5,7 @@ import com.epm.gestepm.modelapi.shares.displacement.dto.finder.DisplacementShare
 import org.mapstruct.Mapper;
 
 @Mapper
-public interface MapDIToDisplacementShareByIdFinder {
+public interface MapDSToDisplacementShareByIdFinder {
 
   DisplacementShareByIdFinder from(DisplacementShareByIdFinderDto finderDto);
 

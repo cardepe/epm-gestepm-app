@@ -27,7 +27,7 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 	private EntityManager entityManager;
 	
 	@Override
-	public List<DisplacementShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId, Integer manual) {
+	public List<DisplacementShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
 		
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<DisplacementShare> cq = cb.createQuery(DisplacementShare.class);
@@ -38,14 +38,10 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 		
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(cb.and(cb.between(
-				root.get("displacementDate").as(LocalDateTime.class),
+				root.get("startDate").as(LocalDateTime.class),
 				startDate,
 				endDate
 		), cb.equal(root.get("user"), userId)));
-		
-		if (manual != null) {
-			predicates.add(cb.equal(root.get("manualDisplacement"), manual));
-		}
 		
 		cq.where(cb.and(predicates.toArray(new Predicate[0])));
 		

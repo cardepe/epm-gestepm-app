@@ -5,7 +5,7 @@ import com.epm.gestepm.restapi.openapi.model.UpdateDisplacementShareV1Request;
 import org.mapstruct.Mapper;
 
 @Mapper
-public interface MapDIToDisplacementShareUpdateDto {
+public interface MapDSToDisplacementShareUpdateDto {
 
   DisplacementShareUpdateDto from(UpdateDisplacementShareV1Request req);
 

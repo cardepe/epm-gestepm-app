@@ -30,7 +30,7 @@ import static com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType.DESC;
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
 import static com.epm.gestepm.model.shares.displacement.dao.constants.DisplacementShareQueries.*;
-import static com.epm.gestepm.model.shares.displacement.dao.mappers.DisplacementShareRowMapper.COL_DI_ID;
+import static com.epm.gestepm.model.shares.displacement.dao.mappers.DisplacementShareRowMapper.COL_DS_ID;
 
 @AllArgsConstructor
 @Component("displacementShareDao")
@@ -49,8 +49,8 @@ public class DisplacementShareDaoImpl implements DisplacementShareDao {
 
         final SQLQueryFetchMany<DisplacementShare> sqlQuery = new SQLQueryFetchMany<DisplacementShare>()
                 .useRowMapper(new DisplacementShareRowMapper())
-                .useQuery(QRY_LIST_OF_DI)
-                .useFilter(FILTER_DI_BY_PARAMS)
+                .useQuery(QRY_LIST_OF_DS)
+                .useFilter(FILTER_DS_BY_PARAMS)
                 .withParams(filter.collectAttributes());
 
         setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
@@ -68,9 +68,9 @@ public class DisplacementShareDaoImpl implements DisplacementShareDao {
 
         final SQLQueryFetchPage<DisplacementShare> sqlQuery = new SQLQueryFetchPage<DisplacementShare>()
                 .useRowMapper(new DisplacementShareRowMapper())
-                .useQuery(QRY_PAGE_OF_DI)
-                .useCountQuery(QRY_COUNT_OF_DI)
-                .useFilter(FILTER_DI_BY_PARAMS)
+                .useQuery(QRY_PAGE_OF_DS)
+                .useCountQuery(QRY_COUNT_OF_DS)
+                .useFilter(FILTER_DS_BY_PARAMS)
                 .offset(offset)
                 .limit(limit)
                 .withParams(filter.collectAttributes());
@@ -90,8 +90,8 @@ public class DisplacementShareDaoImpl implements DisplacementShareDao {
 
         final SQLQueryFetchOne<DisplacementShare> sqlQuery = new SQLQueryFetchOne<DisplacementShare>()
                 .useRowMapper(new DisplacementShareRowMapper())
-                .useQuery(QRY_LIST_OF_DI)
-                .useFilter(FILTER_DI_BY_ID)
+                .useQuery(QRY_LIST_OF_DS)
+                .useFilter(FILTER_DS_BY_ID)
                 .withParams(finder.collectAttributes());
 
         return this.sqlDatasource.fetch(sqlQuery);
@@ -110,7 +110,7 @@ public class DisplacementShareDaoImpl implements DisplacementShareDao {
         final DisplacementShareByIdFinder finder = new DisplacementShareByIdFinder();
 
         final SQLInsert<BigInteger> sqlInsert = new SQLInsert<BigInteger>()
-                .useQuery(QRY_CREATE_DI)
+                .useQuery(QRY_CREATE_DS)
                 .withParams(params)
                 .onGeneratedKey(f -> finder.setId(f.intValue()));
 
@@ -134,7 +134,7 @@ public class DisplacementShareDaoImpl implements DisplacementShareDao {
         finder.setId(id);
 
         final SQLQuery sqlQuery = new SQLQuery()
-                .useQuery(QRY_UPDATE_DI)
+                .useQuery(QRY_UPDATE_DS)
                 .withParams(params);
 
         this.sqlDatasource.execute(sqlQuery);
@@ -153,7 +153,7 @@ public class DisplacementShareDaoImpl implements DisplacementShareDao {
         final AttributeMap params = delete.collectAttributes();
 
         final SQLQuery sqlQuery = new SQLQuery()
-                .useQuery(QRY_DELETE_DI)
+                .useQuery(QRY_DELETE_DS)
                 .withParams(params);
 
         this.sqlDatasource.execute(sqlQuery);
@@ -161,7 +161,7 @@ public class DisplacementShareDaoImpl implements DisplacementShareDao {
 
     private void setOrder(SQLOrderByType order, String orderBy, SQLQueryFetchMany<DisplacementShare> sqlQuery) {
 
-        final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id") ? orderBy : COL_DI_ID;
+        final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id") ? orderBy : COL_DS_ID;
         final SQLOrderByType orderStatement = order != null ? order : DESC;
 
         sqlQuery.addOrderBy(orderByStatement, orderStatement);

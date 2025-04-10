@@ -9,7 +9,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 
 @Mapper
-public interface MapDIToDisplacementShareUpdate {
+public interface MapDSToDisplacementShareUpdate {
 
   @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
   DisplacementShareUpdate from(DisplacementShareUpdateDto dto1, @MappingTarget DisplacementShareUpdate dto2);

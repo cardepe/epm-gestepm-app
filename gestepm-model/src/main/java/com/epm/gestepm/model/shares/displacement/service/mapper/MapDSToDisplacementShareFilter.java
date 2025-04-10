@@ -5,7 +5,7 @@ import com.epm.gestepm.modelapi.shares.displacement.dto.filter.DisplacementShare
 import org.mapstruct.Mapper;
 
 @Mapper
-public interface MapDIToDisplacementShareFilter {
+public interface MapDSToDisplacementShareFilter {
 
     DisplacementShareFilter from(DisplacementShareFilterDto filterDto);
 
