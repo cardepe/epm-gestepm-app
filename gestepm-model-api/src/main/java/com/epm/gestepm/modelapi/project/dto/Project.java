@@ -2,7 +2,6 @@ package com.epm.gestepm.modelapi.project.dto;
 
 import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.customer.dto.Customer;
-import com.epm.gestepm.modelapi.displacement.dto.Displacement;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
 import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.family.dto.Family;
@@ -73,9 +72,6 @@ public class Project {
 	
 	@ManyToMany(mappedBy = "projects")
 	private List<User> users;
-
-	@ManyToMany(mappedBy = "projects")
-	private List<Displacement> displacements;
 	
 	@OneToMany(mappedBy = "project")
 	private List<Family> families;

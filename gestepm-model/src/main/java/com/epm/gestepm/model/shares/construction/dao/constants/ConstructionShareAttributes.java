@@ -10,9 +10,7 @@ public class ConstructionShareAttributes {
 
     public static final String ATTR_CS_P_ID = "attr_cs_p_id";
 
-    public static final String ATTR_CS_US_ID = "attr_cs_us_id";
-
-    public static final String ATTR_CS_CREATED_AT = "attr_cs_closed_at";
+    public static final String ATTR_CS_CREATED_AT = "attr_cs_created_at";
 
     public static final String ATTR_CS_CREATED_BY = "attr_cs_created_by";
 

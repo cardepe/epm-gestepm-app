@@ -286,7 +286,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 		final Integer numberOfWeeks = selectedCal.getActualMaximum(Calendar.WEEK_OF_MONTH);
 
 		final List<ConstructionShare> monthlyConstructionSigningList = constructionShareRepository.findWeekSigningsByUserId(startDate, endDate, user.getId());
-		final List<DisplacementShare> monthlyDisplacementSigningList = displacementShareRepository.findWeekSigningsByUserId(startDate, endDate, user.getId(), null);
+		final List<DisplacementShare> monthlyDisplacementSigningList = displacementShareRepository.findWeekSigningsByUserId(startDate, endDate, user.getId());
 		final List<InterventionShare> monthlyInterventionSigningList = interventionShareRepository.findWeekSigningsByUserId(startDate, endDate, user.getId());
 		final List<InterventionPrShare> monthlyInterventionPrSigningList = interventionPrShareRepository.findWeekSigningsByUserId(startDate, endDate, user.getId());
 		final List<PersonalSigning> monthlyPersonalSigningList = personalSigingRepository.findWeekSigningsByUserId(startDate, endDate, user.getId());
@@ -394,7 +394,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 				final List<DisplacementShare> dailyDisplacementList = monthlyDisplacementSigningList.stream().filter(s -> {
 
 					final Calendar filterCalendar = Calendar.getInstance();
-					filterCalendar.setTime(Date.from(s.getDisplacementDate().toInstant(ZoneOffset.UTC)));
+					filterCalendar.setTime(Date.from(s.getStartDate().toInstant(ZoneOffset.UTC)));
 					Utiles.setStartDay(filterCalendar);
 
 					return Utiles.getStartDayDate(selectedCal).equals(filterCalendar.getTime());

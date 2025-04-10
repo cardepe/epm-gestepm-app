@@ -27,111 +27,7 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 	private EntityManager entityManager;
 	
 	@Override
-	public Long findDisplacementSharesCountByUserId(Long userId) {
-		
-		try {
-			
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-			
-			Root<DisplacementShare> root = cq.from(DisplacementShare.class);
-			
-			cq.select(cb.count(root)).where(cb.equal(root.get("user"), userId));
-			
-			return entityManager.createQuery(cq).getSingleResult();
-			
-		} catch (Exception e) {
-			return 0L;
-		}
-	}
-	
-	@Override
-	public List<ShareTableDTO> findShareTableByProjectId(Long projectId) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<ShareTableDTO> cq = cb.createQuery(ShareTableDTO.class);
-			
-			Root<DisplacementShare> root = cq.from(DisplacementShare.class);
-
-			cq.multiselect(
-					root.get("id"),
-					root.get("project").get("name"),
-					cb.concat(cb.concat(root.get("user").get("name"), " "), root.get("user").get("surnames")),
-					root.get("displacementDate"),
-					cb.function("date_add_minute", LocalDateTime.class, root.get("displacementDate"), root.get("manualHours")),
-					cb.literal("ds")
-			).where(cb.equal(root.get("project"), projectId));
-			
-			return entityManager.createQuery(cq).getResultList();
-			
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
-	}
-	
-	@Override
-	public List<DisplacementShareTableDTO> findDisplacementSharesByUserDataTables(Long userId, PaginationCriteria pagination) {
-		
-		try {
-			
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<DisplacementShareTableDTO> cq = cb.createQuery(DisplacementShareTableDTO.class);
-
-			/* #BASE_QUERY */
-			
-			Root<DisplacementShare> isRoot = cq.from(DisplacementShare.class);
-			Join<DisplacementShare, Project> prRoot = isRoot.join("project", JoinType.INNER);
-			
-			List<Predicate> predicates = new ArrayList<>();
-			
-			cq.multiselect(isRoot.get("id").alias("id"), prRoot.get("name").alias("name"), isRoot.get("displacement").get("title"),
-					isRoot.get("displacementDate"), isRoot.get("roundTrip"));
-			
-			/* END #BASE_QUERY */
-			
-			/* #WHERE_CLAUSE */
-			Predicate whereFilter = DataTableUtil.generateWhereCondition(pagination, cb, isRoot, prRoot);
-				
-			if (whereFilter != null) {
-				predicates.add(whereFilter);
-			}
-			/* END #WHERE_CLAUSE */
-			
-			/* #ORDER_CLAUSE */
-			List<Order> orderList = DataTableUtil.generateOrderByCondition(pagination, cb, isRoot, prRoot);
-			
-			if(!orderList.isEmpty()) {
-				cq.orderBy(orderList);
-			}
-			/* END #ORDER_CLAUSE */
-			
-			Predicate predicateUser = cb.equal(isRoot.get("user"), userId);
-			predicates.add(predicateUser);
-			
-			// Appending all Predicates
-			cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-		
-			TypedQuery<DisplacementShareTableDTO> criteriaQuery = entityManager.createQuery(cq);
-
-			/* #PAGE_NUMBER */
-			criteriaQuery.setFirstResult(pagination.getPageNumber());
-			/* END #PAGE_NUMBER */
-			
-			/* #PAGE_SIZE */
-			criteriaQuery.setMaxResults(pagination.getPageSize());
-			/* END #PAGE_SIZE */
-			
-			return criteriaQuery.getResultList();
-			
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
-	}
-	
-	@Override
-	public List<DisplacementShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId, Integer manual) {
+	public List<DisplacementShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
 		
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 		CriteriaQuery<DisplacementShare> cq = cb.createQuery(DisplacementShare.class);
@@ -142,14 +38,10 @@ public class DisplacementShareRepositoryImpl implements DisplacementShareReposit
 		
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(cb.and(cb.between(
-				root.get("displacementDate").as(LocalDateTime.class),
+				root.get("startDate").as(LocalDateTime.class),
 				startDate,
 				endDate
 		), cb.equal(root.get("user"), userId)));
-		
-		if (manual != null) {
-			predicates.add(cb.equal(root.get("manualDisplacement"), manual));
-		}
 		
 		cq.where(cb.and(predicates.toArray(new Predicate[0])));
 		

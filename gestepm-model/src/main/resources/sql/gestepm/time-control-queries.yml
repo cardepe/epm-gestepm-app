@@ -14,13 +14,13 @@ sql:
       FROM ${sch-gestepm}.construction_share
       UNION
       SELECT
-        id,
+        displacement_share_id,
         user_id,
-        displacement_date AS start_date,
-        DATE_ADD(displacement_date, INTERVAL manual_hours MINUTE) AS end_date,
+        start_date,
+        end_date,
         null AS description,
         'DISPLACEMENT_SHARES' AS type
-      FROM ${sch-gestepm}.displacement_shares
+      FROM ${sch-gestepm}.displacement_share
       UNION
       SELECT
         inspection_id AS id,

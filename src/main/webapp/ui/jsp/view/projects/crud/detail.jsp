@@ -62,9 +62,6 @@
                             <a class="nav-link" id="v-pills-customer-tab" data-toggle="pill" href="#v-pills-customer"
                                role="tab" aria-controls="v-pills-customer" aria-selected="false"><spring:message
                                     code="project.detail.customer"/></a>
-                            <a class="nav-link" id="v-pills-displacements-tab" data-toggle="pill"
-                               href="#v-pills-displacements" role="tab" aria-controls="v-pills-displacements"
-                               aria-selected="false"><spring:message code="project.detail.displacements"/></a>
                             <a class="nav-link" id="v-pills-equipments-tab" data-toggle="pill"
                                href="#v-pills-equipments" role="tab" aria-controls="v-pills-equipments"
                                aria-selected="false"><spring:message code="project.detail.equipments"/></a>
@@ -144,47 +141,6 @@
                                         </div>
                                     </div>
                                 </form>
-                            </div>
-
-                            <div class="tab-pane fade" id="v-pills-displacements" role="tabpanel"
-                                 aria-labelledby="v-pills-displacements-tab">
-
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="title mb-4 pb-2">
-                                            <spring:message code="project.detail.displacements"/>
-                                        </div>
-                                    </div>
-
-                                    <div class="col text-right">
-                                        <button type="button" class="btn btn-standard btn-sm" data-toggle="modal"
-                                                data-target="#addDispModal"><spring:message
-                                                code="project.detail.displacements.create"/></button>
-                                    </div>
-                                </div>
-
-                                <div class="table-responsive">
-                                    <table id="dTableDisplacements"
-                                           class="table table-striped table-borderer dataTable w-100">
-                                        <caption class="d-none">
-                                            NO SONAR
-                                        </caption>
-                                        <thead>
-                                        <tr>
-                                            <th id="thDispId"><spring:message code="displacements.table.id"/></th>
-                                            <th id="thDispTitle"><spring:message code="displacements.table.title"/></th>
-                                            <th id="thDispActivityCenter"><spring:message
-                                                    code="displacements.table.activity.center"/></th>
-                                            <th id="thDispType"><spring:message
-                                                    code="displacements.table.displacement.type"/></th>
-                                            <th id="thDispTotalTime"><spring:message
-                                                    code="displacements.table.total.time"/></th>
-                                            <th id="thDispActions"><spring:message
-                                                    code="displacements.table.actions"/></th>
-                                        </tr>
-                                        </thead>
-                                    </table>
-                                </div>
                             </div>
 
                             <div class="tab-pane fade" id="v-pills-equipments" role="tabpanel"
@@ -1552,51 +1508,6 @@
 </div>
 <!-- /VIEW WORK MODAL -->
 
-<!-- ADD DISP MODAL -->
-<div id="addDispModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="addDispForm" class="needs-validation">
-                <div class="modal-header">
-                    <div class="modal-title">
-                        <h5 id="modalTitle">
-                            <spring:message code="project.detail.displacements.modal.title"/>
-                        </h5>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col">
-                            <select id="displacementDropdown" class="form-control input selectpicker"
-                                    data-style="userSelectPicker" data-live-search="true" multiple style="width: 100%"
-                                    name="displacementIds">
-                                <c:forEach items="${notDisplacements}" var="displacement">
-                                    <option value="${displacement.id}">
-                                            ${displacement.title}
-                                    </option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer clearfix">
-                    <div class="w-100">
-                        <div class="float-left">
-                            <button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message
-                                    code="close"/></button>
-                        </div>
-                        <div class="float-right">
-                            <button id="addDispBtn" type="button" class="btn btn-sm btn-success" data-dismiss="modal">
-                                <spring:message code="save"/></button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- /ADD DISP MODAL -->
-
 <!-- DECLINE EXPENSE MODAL -->
 <div id="declineExpenseModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
@@ -1802,38 +1713,6 @@
             "dom": "<'top'i>rt<'bottom'p><'clear'>",
             "drawCallback": function (settings, json) {
                 parseEquipmentsActionButtons();
-            }
-        });
-
-        var dTableDisplacements = $('#dTableDisplacements').DataTable({
-            "lengthChange": false,
-            "searching": false,
-            "responsive": true,
-            "processing": true,
-            "serverSide": true,
-            "pageLength": 7,
-            "ajax": "/projects/${project.id}/displacements/dt",
-            "rowId": "di_id",
-            "language": {
-                "url": "/ui/static/lang/datatables/${locale}.json"
-            },
-            "order": [[1, "asc"]],
-            "columns": [
-                {"data": "di_id"},
-                {"data": "di_title"},
-                {"data": "di_activityCenter"},
-                {"data": "di_displacementType"},
-                {"data": "di_totalTime"},
-                {"data": null}
-            ],
-            "columnDefs": [
-                {"targets": [0], "visible": false},
-                {"className": "text-center", "targets": "_all"},
-                {"defaultContent": "${tableActionButtons}", "orderable": false, "targets": -1}
-            ],
-            "dom": "<'top'i>rt<'bottom'p><'clear'>",
-            "drawCallback": function (settings, json) {
-                parseDisplacementsActionButtons();
             }
         });
 
@@ -2077,24 +1956,6 @@
             }
         });
 
-        $('#addDispBtn').click(function () {
-
-            $.ajax({
-                type: "POST",
-                url: "/projects/${project.id}/displacements/create",
-                data: $('#addDispForm').serialize(),
-                success: function (msg) {
-                    dTableDisplacements.ajax.reload();
-                    showNotify(msg, 'success');
-                },
-                error: function (e) {
-                    showNotify(e.responseText, 'danger');
-                }
-            });
-
-            $('#addDispModal').modal('hide');
-        });
-
         /* Clear Modal */
         $('#createMaterialRequiredModal').on('hidden.bs.modal', function (e) {
             $(this)
@@ -2191,25 +2052,6 @@
                     $(this).attr('onclick', 'editEquipment(' + equipmentId + ')');
                 } else if (index == 1) {
                     $(this).attr('onclick', 'deleteEquipment(' + equipmentId + ')');
-                }
-            });
-        });
-    }
-
-    function parseDisplacementsActionButtons() {
-
-        var tableRows = $('#dTableDisplacements tbody tr');
-
-        tableRows.each(function () {
-
-            var displacementId = $(this).attr('id');
-            var lastColumn = $(this).children().last();
-            var emList = lastColumn.children();
-
-            emList.each(function (index) {
-
-                if (index == 0) {
-                    $(this).attr('onclick', 'deleteDisplacement(' + displacementId + ')');
                 }
             });
         });
@@ -2658,25 +2500,6 @@
             url: "/projects/${project.id}/families/delete/" + equipmentId,
             success: function (msg) {
                 $('#dTableEquipments').DataTable().ajax.reload();
-                hideLoading();
-                showNotify(msg, 'success');
-            },
-            error: function (e) {
-                hideLoading();
-                showNotify(e.responseText, 'danger');
-            }
-        });
-    }
-
-    function deleteDisplacement(displacementId) {
-
-        showLoading();
-
-        $.ajax({
-            type: "DELETE",
-            url: "/projects/${project.id}/displacements/delete/" + displacementId,
-            success: function (msg) {
-                $('#dTableDisplacements').DataTable().ajax.reload();
                 hideLoading();
                 showNotify(msg, 'success');
             },

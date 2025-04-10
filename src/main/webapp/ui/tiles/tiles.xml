@@ -7,7 +7,7 @@
 	<!-- Plantillas -->
 	
 	<!-- Plantilla Layout -->
-    <definition name="fullFrameLayaout" template="/ui/jsp/layout/main.jsp">
+    <definition name="fullFrameLayout" template="/ui/jsp/layout/main.jsp">
         <put-attribute name="header" value="/ui/jsp/layout/header.jsp" />
         <put-attribute name="sidebar" value="/ui/jsp/layout/sidebar.jsp" />
         <put-attribute name="body" value="" />
@@ -27,143 +27,142 @@
     <!-- /End Plantillas -->
    
     <!-- Frontal Publico -->
-    <definition name="index" extends="fullFrameLayaout">
+    <definition name="index" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/index.jsp" />
     </definition>
     
     <!-- Signing -->
-    <definition name="teleworking-signings" extends="fullFrameLayaout">
+    <definition name="teleworking-signings" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/signings/teleworking/view.jsp" />
     </definition>
 
-    <definition name="teleworking-signing-detail" extends="fullFrameLayaout">
+    <definition name="teleworking-signing-detail" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/signings/teleworking/detail.jsp" />
     </definition>
 
-    <definition name="manual-signing" extends="fullFrameLayaout">
+    <definition name="manual-signing" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/signing/manual.jsp" />
     </definition>
 
-    <definition name="personal-signing" extends="fullFrameLayaout">
+    <definition name="personal-signing" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/signing/personal.jsp" />
     </definition>
     
-    <definition name="time-control-view" extends="fullFrameLayaout">
+    <definition name="time-control-view" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/signing/time_control/view.jsp" />
     </definition>
     
-    <definition name="time-control-detail" extends="fullFrameLayaout">
+    <definition name="time-control-detail" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/signing/time_control/detail.jsp" />
     </definition>
 
-    <definition name="modified-list" extends="fullFrameLayaout">
+    <definition name="modified-list" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/signing/modified_list.jsp" />
     </definition>
     
     <!-- Expenses -->
-    <definition name="personal-expense-sheets" extends="fullFrameLayaout">
+    <definition name="personal-expense-sheets" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/expenses/personal/sheets/view.jsp" />
     </definition>
 
-    <definition name="personal-expense-sheet-detail" extends="fullFrameLayaout">
+    <definition name="personal-expense-sheet-detail" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/expenses/personal/sheets/detail.jsp" />
     </definition>
     
-    <definition name="corrective-expenses" extends="fullFrameLayaout">
+    <definition name="corrective-expenses" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/expenses/correctives.jsp" />
     </definition>
     
     <!-- Holidays -->
-    <definition name="holidays" extends="fullFrameLayaout">
+    <definition name="holidays" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/holidays/holidays.jsp" />
     </definition>
 
-    <definition name="holidays-admin" extends="fullFrameLayaout">
+    <definition name="holidays-admin" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/holidays/holidays-admin.jsp" />
     </definition>
     
     <!-- Shares -->
-    <definition name="intervention-share" extends="fullFrameLayaout">
+    <definition name="intervention-share" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/shares/intervention.jsp" />
     </definition>
     
-    <definition name="intervention-share-create" extends="fullFrameLayaout">
+    <definition name="intervention-share-create" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/shares/crud/create.jsp" />
     </definition>
     
-    <definition name="no-programmed-share-detail" extends="fullFrameLayaout">
+    <definition name="no-programmed-share-detail" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/shares/no-programmed/view.jsp" />
     </definition>
 
-    <definition name="inspection-detail" extends="fullFrameLayaout">
+    <definition name="inspection-detail" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/shares/no-programmed/inspection/view.jsp" />
     </definition>
     
-    <definition name="displacement-share" extends="fullFrameLayaout">
-        <put-attribute name="body" value="/ui/jsp/view/shares/displacement.jsp" />
+    <definition name="displacement-share" extends="fullFrameLayout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/displacement/view.jsp" />
+    </definition>
+
+    <definition name="displacement-share-detail" extends="fullFrameLayout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/displacement/detail.jsp" />
     </definition>
     
-    <definition name="work-share" extends="fullFrameLayaout">
+    <definition name="work-share" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/shares/work.jsp" />
     </definition>
     
     <!-- Projects -->
-    <definition name="projects" extends="fullFrameLayaout">
+    <definition name="projects" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/projects/projects.jsp" />
     </definition>
     
-    <definition name="project-detail" extends="fullFrameLayaout">
+    <definition name="project-detail" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/projects/crud/detail.jsp" />
     </definition>
     
-    <definition name="project-view" extends="fullFrameLayaout">
+    <definition name="project-view" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/projects/view.jsp" />
     </definition>
     
     <!-- Users -->
-    <definition name="users" extends="fullFrameLayaout">
+    <definition name="users" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/users/users.jsp" />
     </definition>
     
-    <definition name="user-detail" extends="fullFrameLayaout">
+    <definition name="user-detail" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/users/crud/detail.jsp" />
     </definition>
     
     <!-- Roles -->
-    <definition name="roles" extends="fullFrameLayaout">
+    <definition name="roles" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/roles/roles.jsp" />
     </definition>
     
-    <!-- Displacements -->
-    <definition name="admin-displacements" extends="fullFrameLayaout">
-        <put-attribute name="body" value="/ui/jsp/view/admin/displacements/view.jsp" />
-    </definition>
-    
     <!-- Countries -->
-    <definition name="admin-countries" extends="fullFrameLayaout">
+    <definition name="admin-countries" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/admin/countries/view.jsp" />
     </definition>
     
     <!-- Activity Centers -->
-    <definition name="admin-activity-centers" extends="fullFrameLayaout">
+    <definition name="admin-activity-centers" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/admin/activitycenters/view.jsp" />
     </definition>
     
     <!-- Holidays -->
-    <definition name="admin-holidays" extends="fullFrameLayaout">
+    <definition name="admin-holidays" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/admin/holidays/holidays.jsp" />
     </definition>
     
     <!-- Admin Families -->
-    <definition name="admin-families" extends="fullFrameLayaout">
+    <definition name="admin-families" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/admin/families/families.jsp" />
     </definition>
     
-    <definition name="admin-families-create" extends="fullFrameLayaout">
+    <definition name="admin-families-create" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/admin/families/crud/create.jsp" />
     </definition>
     
-    <definition name="admin-families-edit" extends="fullFrameLayaout">
+    <definition name="admin-families-edit" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/admin/families/crud/edit.jsp" />
     </definition>
     
@@ -181,7 +180,7 @@
     </definition>
 
 	<!-- Vista Error -->   
-    <definition name="simple-error" extends="fullFrameLayaout">
+    <definition name="simple-error" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/errors/simpleError.jsp" />
     </definition>
 

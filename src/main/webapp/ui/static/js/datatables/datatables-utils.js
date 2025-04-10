@@ -322,4 +322,6 @@ function checkConditionGroups(data, conditionGroups) {
             });
         });
     }
+
+    return true;
 }

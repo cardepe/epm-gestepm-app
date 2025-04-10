@@ -1,10 +1,6 @@
 package com.epm.gestepm.modelapi.common.utils.classes;
 
 public final class Constants {
-	
-	private Constants() {
-		
-	}
 
 	public static final String STATUS_PENDING = "status.pending";
 	public static final String STATUS_APPROVED = "status.approved";
@@ -34,13 +30,5 @@ public final class Constants {
 	public static final String ROLE_ADMIN = "ROLE_ADMIN";
 	
 	public static final String ENCRYPTION_KEY = "dF4efx0B2rdx4JYD";
-	
-	public static final String SIGNIN_CONSTRUCTION_COLOR = "#6A00CC";
-	public static final String SIGNIN_DISPLACEMENT_COLOR = "#CC00C8";
-	public static final String SIGNIN_INTERVENTION_PR_COLOR = "#CC0062";
-	public static final String SIGNIN_INTERVENTION_COLOR = "#CC0400";
-	public static final String SIGNIN_PERSONAL_COLOR = "#0062cc";
-	public static final String SIGNIN_WORK_COLOR = "#0400CC";
-	public static final String SIGNIN_USER_COLOR = "#12E1DE";
-	public static final String SIGNIN_MANUAL_USER_COLOR = "#D8E112";
+
 }

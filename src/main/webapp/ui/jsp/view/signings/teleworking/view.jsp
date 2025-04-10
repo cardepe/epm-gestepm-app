@@ -41,7 +41,7 @@
                     <div id="form-page-header" class="page-header">
                         <div class="row start-date-info-row">
                             <div class="col" style="margin-top: -3px">
-                                <span class="start-date-info">Fecha de inicio: 28/03/2025 01:07</span>
+                                <span class="start-date-info"></span>
                             </div>
                         </div>
                         <div class="row w-100">

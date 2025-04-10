@@ -10,9 +10,9 @@ import java.util.List;
 @Mapper
 public interface MapHToHolidayDto {
 
-  HolidayDto from(Holiday displacement);
+  HolidayDto from(Holiday holiday);
 
-  List<HolidayDto> from(List<Holiday> displacement);
+  List<HolidayDto> from(List<Holiday> holiday);
 
   default Page<HolidayDto> from(Page<Holiday> page) {
     return new Page<>(page.cursor(), from(page.getContent()));

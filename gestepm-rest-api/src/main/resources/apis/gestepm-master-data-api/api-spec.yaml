@@ -285,150 +285,6 @@ paths:
       description: delete-country-v1
       tags:
         - countries-v1
-  /v1/displacements:
-    get:
-      summary: V1 - List displacements
-      tags:
-        - displacement-v1
-      responses:
-        '200':
-          description: '**OK**'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResDisplacementList'
-      operationId: list-displacements-v1
-      description: list-displacements-v1
-      parameters:
-        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
-        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
-        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
-        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
-        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
-        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
-        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
-        - schema:
-            type: array
-            items:
-              type: integer
-          in: query
-          name: ids
-          description: List of displacement ids to filter.
-        - schema:
-            type: array
-            items:
-              type: integer
-          in: query
-          name: activityCenterIds
-          description: List of activity center ids to filter.
-        - schema:
-            type: string
-          in: query
-          name: name
-          description: Search by displacement name.
-        - schema:
-            $ref: '#/components/schemas/DisplacementType'
-          in: query
-          name: type
-          description: Search by displacement type.
-    post:
-      summary: ''
-      operationId: create-displacement-v1
-      responses:
-        '200':
-          description: '**OK**'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResDisplacement'
-        '404':
-          description: activity-center-not-found
-          content:
-            application/json:
-              schema:
-                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
-      tags:
-        - displacement-v1
-      description: create-displacement-v1
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ReqCreateDisplacement'
-  '/v1/displacements/{id}':
-    parameters:
-      - schema:
-          type: integer
-        name: id
-        in: path
-        required: true
-        description: Displacement id.
-    get:
-      summary: V1 - Find displacement
-      tags:
-        - displacement-v1
-      responses:
-        '200':
-          description: '**OK**'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResDisplacement'
-        '404':
-          description: displacement-not-found
-          content:
-            application/json:
-              schema:
-                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
-      operationId: find-displacement-by-id-v1
-      description: find-displacement-by-id-v1
-      parameters:
-        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
-        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
-        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
-    put:
-      summary: V1 - Update displacement
-      operationId: update-displacement-v1
-      responses:
-        '200':
-          description: '**OK**'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResDisplacement'
-        '404':
-          description: displacement-not-found
-          content:
-            application/json:
-              schema:
-                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
-      tags:
-        - displacement-v1
-      description: update-displacement-v1
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ReqUpdateDisplacement'
-    delete:
-      summary: V1 - Delete displacement
-      operationId: delete-displacement-v1
-      responses:
-        '200':
-          description: '**OK**'
-          content:
-            application/json:
-              schema:
-                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
-        '404':
-          description: displacement-not-found
-          content:
-            application/json:
-              schema:
-                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
-      tags:
-        - displacement-v1
-      description: delete-displacement-v1
   /v1/levels:
     get:
       summary: V1 - List levels
@@ -742,36 +598,6 @@ components:
         - id
         - name
         - country
-    Displacement:
-      title: Displacement
-      type: object
-      properties:
-        id:
-          type: integer
-        activityCenter:
-          $ref: '#/components/schemas/ActivityCenter'
-        name:
-          type: string
-        type:
-          $ref: '#/components/schemas/DisplacementType'
-        totalTime:
-          type: integer
-      required:
-        - id
-        - activityCenter
-        - name
-        - type
-        - totalTime
-    DisplacementType:
-      title: DisplacementType
-      x-stoplight:
-        id: vqwhgqimmfnf8
-      type: string
-      enum:
-        - VEHICLE
-        - PUBLIC_TRANSPORT
-      example: VEHICLE
-      description: 'VEHICLE, PUBLIC_TRANSPORT'
     ResActivityCenter:
       title: ResActivityCenter
       type: object
@@ -790,24 +616,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ActivityCenter'
-    ResDisplacement:
-      title: ResDisplacement
-      type: object
-      properties:
-        metadata:
-          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
-        data:
-          $ref: '#/components/schemas/Displacement'
-    ResDisplacementList:
-      title: ResDisplacementList
-      type: object
-      properties:
-        metadata:
-          $ref: ../../base-api-spec.yaml#/components/schemas/Meta
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Displacement'
     ReqCreateActivityCenter:
       title: ReqCreateActivityCenter
       type: object
@@ -819,23 +627,6 @@ components:
       required:
         - name
         - countryId
-    ReqCreateDisplacement:
-      title: ReqCreateDisplacement
-      type: object
-      properties:
-        activityCenterId:
-          type: integer
-        name:
-          type: string
-        type:
-          $ref: '#/components/schemas/DisplacementType'
-        totalTime:
-          type: integer
-      required:
-        - activityCenterId
-        - name
-        - type
-        - totalTime
     ReqUpdateActivityCenter:
       title: ReqUpdateActivityCenter
       type: object
@@ -861,23 +652,6 @@ components:
         - id
         - name
         - tag
-    ReqUpdateDisplacement:
-      title: ReqUpdateDisplacement
-      type: object
-      properties:
-        activityCenterId:
-          type: integer
-        name:
-          type: string
-        type:
-          $ref: '#/components/schemas/DisplacementType'
-        totalTime:
-          type: integer
-      required:
-        - activityCenterId
-        - name
-        - type
-        - totalTime
     ResCountry:
       title: ResCountry
       type: object
@@ -1075,8 +849,6 @@ tags:
     description: V1 - Activity centers
   - name: countries-v1
     description: V1 - Countries
-  - name: displacement-v1
-    description: V1 - Displacement
   - name: levels-v1
     description: V1 - Levels
   - name: holidays-v1

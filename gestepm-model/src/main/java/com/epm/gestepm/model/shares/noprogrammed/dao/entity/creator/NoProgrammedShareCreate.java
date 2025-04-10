@@ -29,7 +29,6 @@ public class NoProgrammedShareCreate implements CollectableAttributes {
 
         map.put(ATTR_NPS_U_ID, this.userId);
         map.put(ATTR_NPS_P_ID, this.projectId);
-        map.put(ATTR_NPS_US_ID, this.userSigningId);
         map.put(ATTR_NPS_START_DATE, this.startDate);
 
         return map;

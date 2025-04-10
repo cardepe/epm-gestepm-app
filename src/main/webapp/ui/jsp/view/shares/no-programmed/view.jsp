@@ -293,7 +293,7 @@
         const editForm = document.querySelector('#editForm');
 
         editBtn.click(async () => {
-            if (!validateForm('#editForm')) {
+            if (!isValidForm('#editForm')) {
                 return;
             }
 
@@ -326,25 +326,6 @@
             }).catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());
         })
-    }
-
-    function validateForm(formId) {
-        let isValid = true;
-        const $form = $(formId);
-
-        $form.find('[required]').each(function () {
-            const $field = $(this);
-            const value = $field.val().trim();
-
-            if (!value) {
-                isValid = false;
-                $field.addClass('is-invalid');
-            } else {
-                $field.removeClass('is-invalid');
-            }
-        });
-
-        return isValid;
     }
 
     function close(id) {

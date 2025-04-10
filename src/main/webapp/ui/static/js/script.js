@@ -88,6 +88,25 @@ $(document).ready(function () {
 
 /* NEW */
 
+function isValidForm(formId) {
+	let isValid = true;
+	const $form = $(formId);
+
+	$form.find('[required]').each(function () {
+		const $field = $(this);
+		const value = $field.val().trim();
+
+		if (!value) {
+			isValid = false;
+			$field.addClass('is-invalid');
+		} else {
+			$field.removeClass('is-invalid');
+		}
+	});
+
+	return isValid;
+}
+
 function disableForm(formId) {
 	const form = document.querySelector(formId);
 	const elements = form.querySelectorAll('input, textarea, select');

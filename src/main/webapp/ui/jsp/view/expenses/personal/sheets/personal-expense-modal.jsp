@@ -180,7 +180,7 @@
 
     function createOrUpdate() {
         const id = modal.hasAttribute('data-id') ? modal.getAttribute('data-id') : null;
-        if (!validateForm('#personalExpenseForm')) {
+        if (!isValidForm('#personalExpenseForm')) {
             return;
         }
 
@@ -226,25 +226,6 @@
             modal.setAttribute('data-id', id);
             $('#personalExpenseModal').modal('show');
         });
-    }
-
-    function validateForm(formId) {
-        let isValid = true;
-        const $form = $(formId);
-
-        $form.find('[required]').each(function () {
-            const $field = $(this);
-            const value = $field.val().trim();
-
-            if (!value) {
-                isValid = false;
-                $field.addClass('is-invalid');
-            } else {
-                $field.removeClass('is-invalid');
-            }
-        });
-
-        return isValid;
     }
 
     function getFiles() {

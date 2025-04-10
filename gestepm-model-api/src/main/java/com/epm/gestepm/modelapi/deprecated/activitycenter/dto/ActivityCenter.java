@@ -1,7 +1,6 @@
 package com.epm.gestepm.modelapi.deprecated.activitycenter.dto;
 
 import com.epm.gestepm.modelapi.deprecated.country.dto.Country;
-import com.epm.gestepm.modelapi.displacement.dto.Displacement;
 import com.epm.gestepm.modelapi.holiday.dto.Holiday;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.user.dto.User;
@@ -24,9 +23,6 @@ public class ActivityCenter {
 	
 	@Column(name = "NAME", nullable = false, length = 32)
 	private String name;
-
-	@OneToMany(mappedBy = "activityCenter")
-	private List<Displacement> displacements;
 	
 	@OneToMany(mappedBy = "activityCenter")
 	private List<Holiday> holidays;
@@ -59,14 +55,6 @@ public class ActivityCenter {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public List<Displacement> getDisplacements() {
-		return displacements;
-	}
-
-	public void setDisplacements(List<Displacement> displacements) {
-		this.displacements = displacements;
 	}
 
 	public List<Holiday> getHolidays() {

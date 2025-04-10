@@ -113,7 +113,6 @@
 	                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users-cog"></i><spring:message code="sidebar.admin" /></a>
 	                    <ul class="sub-menu children dropdown-menu">                            
 	                    	<li><i class="fas fa-map-marked-alt"></i><a href="/activity-centers"><spring:message code="sidebar.admin.activity.centers" /></a></li>
-	                    	<li><i class="fa fa-car"></i><a href="/displacements"><spring:message code="sidebar.admin.displacements" /></a></li>
 	                    	<li><i class="fa fa-people-carry"></i><a href="/admin/families"><spring:message code="sidebar.admin.families" /></a></li>
 	                    	<li><i class="fas fa-flag"></i><a href="/countries"><spring:message code="sidebar.admin.countries" /></a></li>
 	                    	<li><i class="fas fa-plane-departure"></i><a href="/admin/holidays"><spring:message code="sidebar.admin.holidays" /></a></li>
