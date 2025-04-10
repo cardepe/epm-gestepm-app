@@ -1,6 +1,5 @@
 package com.epm.gestepm.modelapi.displacementshare.dto;
 
-import com.epm.gestepm.modelapi.displacement.dto.DisplacementDTO;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -23,7 +22,5 @@ public class DisplacementShareDTO {
 	private String projectId;
 	
 	private Integer manualDisplacement;
-
-	private DisplacementDTO displacement;
 
 }

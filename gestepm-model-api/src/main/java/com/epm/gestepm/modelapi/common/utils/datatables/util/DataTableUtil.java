@@ -4,7 +4,6 @@ import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.common.utils.datatables.SortOrder;
 import com.epm.gestepm.modelapi.deprecated.country.dto.Country;
-import com.epm.gestepm.modelapi.displacement.dto.Displacement;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
 import com.epm.gestepm.modelapi.expense.dto.Expense;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
@@ -19,7 +18,6 @@ import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import org.hibernate.query.criteria.internal.path.ListAttributeJoin;
 import org.hibernate.query.criteria.internal.path.RootImpl;
@@ -234,8 +232,6 @@ public class DataTableUtil {
 		switch(table) {
 			case "co":
 				return Country.class;
-			case "di":
-				return Displacement.class;
 			case "ds":
 				return DisplacementShare.class;
 			case "ec":
@@ -258,8 +254,6 @@ public class DataTableUtil {
 				return Project.class;
 			case "pv":
 				return ActivityCenter.class;
-			case "si":
-				return UserSigning.class;
 			case "sr":
 				return SubRole.class;
 			case "uh":

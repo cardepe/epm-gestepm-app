@@ -109,17 +109,15 @@ function startTeleworking(projectId, location) {
         userId: userId,
         projectId: projectId,
         startedLocation: location
-    }).then((response) => {
-        const id = response.data.data.id;
-        window.location.href = '/signings/teleworking/' + id;
+    }).then(() => {
+        window.location.reload();
     }).catch(error => showNotify(error.response.data.detail, 'danger'));
 }
 
 function endTeleworking(location) {
     axios.patch(endpoint + '/' + currentTeleworking.id, {
         closedLocation: location
-    }).then((response) => {
-        const id = response.data.data.id;
-        window.location.href = '/signings/teleworking/' + id;
+    }).then(() => {
+        window.location.reload();
     }).catch(error => showNotify(error.response.data.detail, 'danger'));
 }

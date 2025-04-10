@@ -13,8 +13,6 @@ public class ConstructionDTO {
 	private Long id;
 	
 	private Long projectId;
-	
-	private Long dispShareId;
 
 	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
 	private LocalDateTime startDate;
@@ -25,13 +23,9 @@ public class ConstructionDTO {
 	private String observations;
 	
 	private List<MultipartFile> files;
-	
+
 	private Boolean clientNotif;
 	
 	private String signatureOp;
-	
-	private String materials;
-	
-	private String mrSignature;
 
 }

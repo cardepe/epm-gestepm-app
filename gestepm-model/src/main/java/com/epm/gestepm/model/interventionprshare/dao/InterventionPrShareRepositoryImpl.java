@@ -88,26 +88,6 @@ public class InterventionPrShareRepositoryImpl implements InterventionPrShareRep
 	}
 	
 	@Override
-	public List<ShareTableDTO> findShareTableByUserSigningId(Long userSigningId) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<ShareTableDTO> cq = cb.createQuery(ShareTableDTO.class);
-			
-			Root<InterventionPrShare> root = cq.from(InterventionPrShare.class);
-
-			cq.multiselect(root.get("id"), root.get("project").get("name"), cb.concat(cb.concat(root.get("user").get("name"), " "), root.get("user").get("surnames")), root.get("startDate"), root.get("endDate"), cb.literal("ips")).where(cb.equal(root.get("userSigning"), userSigningId));
-			
-			return entityManager.createQuery(cq).getResultList();
-			
-		} catch (Exception e) {
-			log.error(e);
-			return Collections.emptyList();
-		}
-	}
-	
-	@Override
 	public List<InterventionPrShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
 		
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();

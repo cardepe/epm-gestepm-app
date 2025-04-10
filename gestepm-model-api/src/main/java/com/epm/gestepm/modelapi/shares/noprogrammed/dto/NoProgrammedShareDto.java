@@ -21,8 +21,6 @@ public class NoProgrammedShareDto implements Serializable {
     @NotNull
     private Integer projectId;
 
-    private Integer userSigningId;
-
     @NotNull
     private LocalDateTime startDate;
 

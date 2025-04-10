@@ -5,9 +5,7 @@ import com.epm.gestepm.model.displacementshare.dao.DisplacementShareRepository;
 import com.epm.gestepm.model.interventionprshare.dao.InterventionPrShareRepository;
 import com.epm.gestepm.model.interventionshare.dao.InterventionShareRepository;
 import com.epm.gestepm.model.personalsigning.dao.PersonalSigningRepository;
-import com.epm.gestepm.model.timecontrol.service.TimeControlServiceImpl;
 import com.epm.gestepm.model.user.service.mapper.SigningMapper;
-import com.epm.gestepm.model.usersigning.dao.UserSigningRepository;
 import com.epm.gestepm.model.workshare.dao.WorkShareRepository;
 import com.epm.gestepm.modelapi.common.helpers.DatesModel;
 import com.epm.gestepm.modelapi.common.utils.ExcelUtils;
@@ -27,7 +25,6 @@ import com.epm.gestepm.modelapi.timecontrol.service.TimeControlService;
 import com.epm.gestepm.modelapi.timecontrolold.dto.TimeControlTableDTO;
 import com.epm.gestepm.modelapi.timecontrolold.service.TimeControlOldService;
 import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -289,7 +286,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 		final Integer numberOfWeeks = selectedCal.getActualMaximum(Calendar.WEEK_OF_MONTH);
 
 		final List<ConstructionShare> monthlyConstructionSigningList = constructionShareRepository.findWeekSigningsByUserId(startDate, endDate, user.getId());
-		final List<DisplacementShare> monthlyDisplacementSigningList = displacementShareRepository.findWeekSigningsByUserId(startDate, endDate, user.getId(), null);
+		final List<DisplacementShare> monthlyDisplacementSigningList = displacementShareRepository.findWeekSigningsByUserId(startDate, endDate, user.getId());
 		final List<InterventionShare> monthlyInterventionSigningList = interventionShareRepository.findWeekSigningsByUserId(startDate, endDate, user.getId());
 		final List<InterventionPrShare> monthlyInterventionPrSigningList = interventionPrShareRepository.findWeekSigningsByUserId(startDate, endDate, user.getId());
 		final List<PersonalSigning> monthlyPersonalSigningList = personalSigingRepository.findWeekSigningsByUserId(startDate, endDate, user.getId());
@@ -397,7 +394,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 				final List<DisplacementShare> dailyDisplacementList = monthlyDisplacementSigningList.stream().filter(s -> {
 
 					final Calendar filterCalendar = Calendar.getInstance();
-					filterCalendar.setTime(Date.from(s.getDisplacementDate().toInstant(ZoneOffset.UTC)));
+					filterCalendar.setTime(Date.from(s.getStartDate().toInstant(ZoneOffset.UTC)));
 					Utiles.setStartDay(filterCalendar);
 
 					return Utiles.getStartDayDate(selectedCal).equals(filterCalendar.getTime());

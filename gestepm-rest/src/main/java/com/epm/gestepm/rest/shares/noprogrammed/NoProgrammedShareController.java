@@ -64,7 +64,7 @@ public class NoProgrammedShareController extends BaseController implements NoPro
     @LogExecution(operation = OP_READ)
     public ResponseEntity<ListNoProgrammedSharesV1200Response> listNoProgrammedSharesV1(final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit) {
 
-        final NoProgrammedShareListRestRequest req = new NoProgrammedShareListRestRequest(null);
+        final NoProgrammedShareListRestRequest req = new NoProgrammedShareListRestRequest();
 
         this.setCommon(req, meta, links, expand);
         this.setDefaults(req);
@@ -75,6 +75,8 @@ public class NoProgrammedShareController extends BaseController implements NoPro
 
         final APIMetadata metadata = this.getMetadata(req, page, new ListNoProgrammedShareV1Operation());
         final List<NoProgrammedShare> data = getMapper(MapNPSToNoProgrammedShareResponse.class).from(page);
+
+        this.decorate(req, data, NoProgrammedShareResponseDecorator.class);
 
         return toListNoProgrammedSharesV1200Response(metadata, data, page.hashCode());
     }

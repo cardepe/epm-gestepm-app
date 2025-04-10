@@ -2,7 +2,6 @@ package com.epm.gestepm.modelapi.project.dto;
 
 import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.customer.dto.Customer;
-import com.epm.gestepm.modelapi.displacement.dto.Displacement;
 import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
 import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.family.dto.Family;
@@ -10,7 +9,6 @@ import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
 import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import lombok.Data;
 
@@ -70,16 +68,10 @@ public class Project {
 	private List<DisplacementShare> displacementShares;
 	
 	@OneToMany(mappedBy = "project")
-	private List<UserSigning> userSignings;
-	
-	@OneToMany(mappedBy = "project")
 	private List<WorkShare> workShares;
 	
 	@ManyToMany(mappedBy = "projects")
 	private List<User> users;
-
-	@ManyToMany(mappedBy = "projects")
-	private List<Displacement> displacements;
 	
 	@OneToMany(mappedBy = "project")
 	private List<Family> families;

@@ -212,10 +212,13 @@ public class InterventionShareRepositoryImpl implements InterventionShareReposit
 		
 		if (StringUtils.isBlank(type) || "cs".equals(type)) {
 			
-			strBuilder.append("SELECT sh.ID, pr.NAME, sh.START_DATE, sh.END_DATE, '' as FORUM_TITLE, 'cs' as TYPE FROM construction_shares sh INNER JOIN projects pr ON sh.PROJECT_ID = pr.ID ");
+			strBuilder.append("SELECT sh.construction_share_id, pr.NAME, sh.created_at AS START_DATE, sh.closed_at AS END_DATE, '' as FORUM_TITLE, 'cs' as TYPE FROM construction_share sh INNER JOIN projects pr ON sh.PROJECT_ID = pr.ID ");
 			
 			if (StringUtils.isNoneBlank(filter)) {
-				strBuilder.append(filter);
+				strBuilder.append(filter
+						.replace("sh.ID", "sh.construction_share_id")
+						.replace("END_DATE", "closed_at")
+				);
 			}
 			
 			if (StringUtils.isBlank(type)) {
@@ -224,7 +227,7 @@ public class InterventionShareRepositoryImpl implements InterventionShareReposit
 		}
 		
 		if (StringUtils.isBlank(type) || "ips".equals(type)) {
-			
+
 			strBuilder.append("SELECT sh.ID, pr.NAME, sh.START_DATE, sh.END_DATE, '' as FORUM_TITLE, 'ips' as TYPE FROM intervention_pr_shares sh INNER JOIN projects pr ON sh.PROJECT_ID = pr.ID ");
 			
 			if (StringUtils.isNoneBlank(filter)) {

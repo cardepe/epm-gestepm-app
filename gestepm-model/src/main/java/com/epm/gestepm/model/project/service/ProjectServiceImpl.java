@@ -6,7 +6,6 @@ import com.epm.gestepm.model.interventionprshare.dao.InterventionPrShareReposito
 import com.epm.gestepm.model.project.dao.ProjectRepository;
 import com.epm.gestepm.model.subrole.dao.SubRoleRepository;
 import com.epm.gestepm.model.user.dao.UserRepository;
-import com.epm.gestepm.model.usersigning.dao.UserSigningRepository;
 import com.epm.gestepm.model.workshare.dao.WorkShareRepository;
 import com.epm.gestepm.modelapi.common.utils.ExcelUtils;
 import com.epm.gestepm.modelapi.common.utils.PixelUtils;
@@ -64,9 +63,6 @@ public class ProjectServiceImpl implements ProjectService {
 	
 	@Autowired
 	private UserRepository userRepository;
-	
-	@Autowired
-	private UserSigningRepository userSigningRepository;
 	
 	@Autowired
 	private WorkShareRepository workShareRepository;
@@ -342,10 +338,10 @@ public class ProjectServiceImpl implements ProjectService {
 		// Row Space
 		generateRowSpace(sheet, variableIndex++);
 
-		final List<ExpensesMonthDTO> userSigningMonthsByProjectList = userSigningRepository.findExpensesMonthDTOByProjectId(projectId, year);
+		// TODO: TO shares services - final List<ExpensesMonthDTO> userSigningMonthsByProjectList = userSigningRepository.findExpensesMonthDTOByProjectId(projectId, year);
 		final List<ExpensesMonthDTO> displacementTimesByProjectList = displacementShareRepository.findTimeMonthDTOByProjectId(projectId, year);
 
-		final List<ExpensesMonthDTO> totalHoursList = joinExpensesDTOList(userSigningMonthsByProjectList, displacementTimesByProjectList);
+		final List<ExpensesMonthDTO> totalHoursList = displacementTimesByProjectList; // joinExpensesDTOList(userSigningMonthsByProjectList, displacementTimesByProjectList);
 
 		if (!totalHoursList.isEmpty()) {
 

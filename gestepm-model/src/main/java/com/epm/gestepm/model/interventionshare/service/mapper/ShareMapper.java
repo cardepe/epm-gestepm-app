@@ -1,15 +1,9 @@
 package com.epm.gestepm.model.interventionshare.service.mapper;
 
 import com.epm.gestepm.lib.file.FileUtils;
-import com.epm.gestepm.model.displacement.service.mapper.DisplacementMapper;
-import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionDTO;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.constructionsharefile.dto.ConstructionShareFile;
-import com.epm.gestepm.modelapi.displacement.dto.Displacement;
-import com.epm.gestepm.modelapi.displacement.dto.DisplacementDTO;
-import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
-import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShareDTO;
 import com.epm.gestepm.modelapi.expense.dto.FileDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
@@ -19,14 +13,10 @@ import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningDTO;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
-import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningDTO;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShareDTO;
 import com.epm.gestepm.modelapi.worksharefile.dto.WorkShareFile;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,50 +26,7 @@ import java.util.List;
 
 public class ShareMapper {
 
-	private ShareMapper() {
-		
-	}
-	
-	public static DisplacementShare mapDTOToDisplacementShare(DisplacementShareDTO displacementShareDTO, User user, Project project, Displacement displacement) {
-		
-		DisplacementShare displacementShare = new DisplacementShare();
-		Boolean roundTrip = BooleanUtils.isTrue(displacementShareDTO.getRoundTrip());
-	
-		displacementShare.setDisplacementDate(displacementShareDTO.getDisplacementDate());
-		displacementShare.setManualHours(Utiles.hourTimeToMinutes(displacementShareDTO.getManualHours()));
-		
-		if (displacementShareDTO.getManualDisplacement() != null) {
-			displacementShare.setManualDisplacement(displacementShareDTO.getManualDisplacement());
-		}
-		
-		displacementShare.setRoundTrip(roundTrip);
-		displacementShare.setObservations(displacementShareDTO.getObservations());
-		displacementShare.setProject(project);
-		displacementShare.setUser(user);
-		displacementShare.setDisplacement(displacement);
-		
-		return displacementShare;
-	}
-	
-	public static DisplacementShareDTO mapDisplacementShareToDTO(DisplacementShare displacementShare) {
-		
-		DisplacementShareDTO displacementShareDTO = new DisplacementShareDTO();
-		
-		displacementShareDTO.setDisplacementDate(displacementShare.getDisplacementDate());
-		displacementShareDTO.setActivityCenter(displacementShare.getDisplacement().getId());
-		displacementShareDTO.setManualHours(Utiles.minutesToHoursAndMinutesString(displacementShare.getManualHours()));
-		displacementShareDTO.setObservations(displacementShare.getObservations());
-		displacementShareDTO.setRoundTrip(displacementShare.getRoundTrip());
-		displacementShareDTO.setProjectId(String.valueOf(displacementShare.getProject().getId()));
-		displacementShareDTO.setManualDisplacement(displacementShare.getManualDisplacement());
-		
-		DisplacementDTO displacement = DisplacementMapper.mapDisplacementToDTO(displacementShare.getDisplacement());
-		displacementShareDTO.setDisplacement(displacement);
-		
-		return displacementShareDTO;
-	}
-	
-	public static ConstructionShare mapDTOToConstructionShare(ConstructionDTO constructionDTO, User user, Project project, Long dispShareId) {
+	public static ConstructionShare mapDTOToConstructionShare(ConstructionDTO constructionDTO, User user, Project project) {
 		
 		ConstructionShare constructionShare = new ConstructionShare();
 		
@@ -88,9 +35,6 @@ public class ShareMapper {
 		constructionShare.setObservations(constructionDTO.getObservations());
 		constructionShare.setProject(project);
 		constructionShare.setUser(user);
-		constructionShare.setMaterials(constructionDTO.getMaterials());
-		constructionShare.setMrSignature(constructionDTO.getMrSignature());
-		constructionShare.setDisplacementShareId(dispShareId);
 		
 		return constructionShare;
 	}

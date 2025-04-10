@@ -10,13 +10,7 @@ import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionDTO;
 import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
-import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareService;
-import com.epm.gestepm.modelapi.displacement.dto.Displacement;
-import com.epm.gestepm.modelapi.displacement.service.DisplacementService;
-import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
-import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShareDTO;
-import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShareTableDTO;
-import com.epm.gestepm.modelapi.displacementshare.service.DisplacementShareService;
+import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareOldService;
 import com.epm.gestepm.modelapi.expense.dto.FileDTO;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
@@ -80,9 +74,6 @@ public class ShareController {
     private static final Log log = LogFactory.getLog(ShareController.class);
 
     @Autowired
-    private DisplacementShareService displacementShareService;
-
-    @Autowired
     private InspectionService inspectionService;
 
     @Autowired
@@ -92,7 +83,7 @@ public class ShareController {
     private InterventionShareService interventionShareService;
 
     @Autowired
-    private ConstructionShareService constructionShareService;
+    private ConstructionShareOldService constructionShareOldService;
 
     @Autowired
     private InterventionPrShareService interventionPrShareService;
@@ -102,9 +93,6 @@ public class ShareController {
 
     @Autowired
     private WorkShareFileService workShareFileService;
-
-    @Autowired
-    private DisplacementService displacementService;
 
     @Autowired
     private ProjectService projectService;
@@ -188,7 +176,7 @@ public class ShareController {
 
         if (!isTypeFiltered || "cs".equals(type)) {
 
-            final List<ShareTableDTO> constructionShares = constructionShareService.getShareTableByActivityCenterId(id, activityCenterId, projectId, progress);
+            final List<ShareTableDTO> constructionShares = constructionShareOldService.getShareTableByActivityCenterId(id, activityCenterId, projectId, progress);
             shareTableDTOs.addAll(constructionShares);
         }
 
@@ -537,11 +525,11 @@ public class ShareController {
             }
 
             // Map Intervention share stepper
-            ConstructionShare constructionShare = ShareMapper.mapDTOToConstructionShare(constructionDTO, user, project, constructionDTO.getDispShareId());
+            ConstructionShare constructionShare = ShareMapper.mapDTOToConstructionShare(constructionDTO, user, project);
             constructionShare.setStartDate(LocalDateTime.now());
 
             // Save intervention
-            constructionShare = constructionShareService.save(constructionShare);
+            constructionShare = constructionShareOldService.save(constructionShare);
 
             // Log info
             log.info("Creado nuevo parte de intervención " + constructionShare.getId() + " por parte del usuario " + user.getId());
@@ -568,18 +556,18 @@ public class ShareController {
             User user = Utiles.getUsuario();
 
             // Map Intervention share stepper
-            ConstructionShare constructionShare = constructionShareService.getConstructionShareById(constructionDTO.getId());
+            ConstructionShare constructionShare = constructionShareOldService.getConstructionShareById(constructionDTO.getId());
             constructionShare.setEndDate(LocalDateTime.now());
             constructionShare.setObservations(constructionDTO.getObservations());
             constructionShare.setSignatureOp(constructionDTO.getSignatureOp());
 
             // Save intervention
-            constructionShare = constructionShareService.create(constructionShare, constructionDTO.getFiles());
+            constructionShare = constructionShareOldService.create(constructionShare, constructionDTO.getFiles());
 
             // Log info
             log.info("Parte de intervención " + constructionShare.getId() + " finalizado por parte del usuario " + user.getId());
 
-            byte[] pdfGenerated = constructionShareService.generateConstructionSharePdf(constructionShare, locale);
+            byte[] pdfGenerated = constructionShareOldService.generateConstructionSharePdf(constructionShare, locale);
 
             // Send Emails
             smtpService.sendCloseConstructionShareMail(user.getEmail(), constructionShare, pdfGenerated, locale);
@@ -615,14 +603,14 @@ public class ShareController {
             User user = Utiles.getUsuario();
 
             // Get
-            ConstructionShare constructionShare = constructionShareService.getConstructionShareById(constructionDTO.getId());
+            ConstructionShare constructionShare = constructionShareOldService.getConstructionShareById(constructionDTO.getId());
 
             constructionShare.setStartDate(constructionDTO.getStartDate());
             constructionShare.setEndDate(constructionDTO.getEndDate());
             constructionShare.setObservations(constructionDTO.getObservations());
 
             // Save intervention
-            constructionShare = constructionShareService.save(constructionShare);
+            constructionShare = constructionShareOldService.save(constructionShare);
 
             // Log info
             log.info("Actualizado parte de construccion " + constructionShare.getId() + " por parte del usuario " + user.getId());
@@ -640,7 +628,7 @@ public class ShareController {
     @GetMapping("/intervention/construction/{id}")
     public ConstructionDTO getConstructionShare(@PathVariable Long id) {
 
-        ConstructionShare constructionShare = constructionShareService.getConstructionShareById(id);
+        ConstructionShare constructionShare = constructionShareOldService.getConstructionShareById(id);
 
         return ShareMapper.mapConstructionShareToDTO(constructionShare);
     }
@@ -655,7 +643,7 @@ public class ShareController {
             // Recover user
             User user = Utiles.getUsuario();
 
-            constructionShareService.deleteById(id);
+            constructionShareOldService.deleteById(id);
 
             log.info("Parte de construcción " + id + " eliminado con éxito por parte del usuario " + user.getId());
 
@@ -672,14 +660,14 @@ public class ShareController {
 
         log.info("Exportando el pdf del parte de construccion " + id);
 
-        ConstructionShare share = constructionShareService.getConstructionShareById(id);
+        ConstructionShare share = constructionShareOldService.getConstructionShareById(id);
 
         if (share == null) {
             log.error("No existe el parte de construccion con id " + id);
             return null;
         }
 
-        byte[] pdf = constructionShareService.generateConstructionSharePdf(share, locale);
+        byte[] pdf = constructionShareOldService.generateConstructionSharePdf(share, locale);
 
         if (pdf == null) {
             log.error("Error al generar el fichero pdf del parte de construccion " + id);
@@ -692,175 +680,6 @@ public class ShareController {
         headers.setContentDispositionFormData("attachment", fileName + ".pdf");
 
         return new HttpEntity<>(pdf, headers);
-    }
-
-    @GetMapping("/displacement")
-    public String displacementsView(Locale locale, Model model, HttpServletRequest request) {
-
-        try {
-
-            // Loading constants
-            ModelUtil.loadConstants(locale, model, request);
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Log info
-            log.info("El usuario " + user.getId() + " ha accedido a la vista de Partes de Desplazamiento");
-
-            // Recover user projects
-            final List<Project> projects = this.projectService.findDisplacementProjects();
-            model.addAttribute("projects", projects);
-
-            // Load Action Buttons for DataTable
-            model.addAttribute("tableActionButtons", ModelUtil.getViewActionButton());
-
-            // Loading view
-            return "displacement-share";
-
-        } catch (InvalidUserSessionException e) {
-            log.error(e);
-            return "redirect:/login";
-        }
-    }
-
-    @ResponseBody
-    @PostMapping("/displacement")
-    public ResponseEntity<IdMsgDTO> createDisplacement(@ModelAttribute DisplacementShareDTO displacementShareDTO,
-                                                       @RequestParam("project") String projectId, Locale locale, Model model, HttpServletRequest request) {
-
-        IdMsgDTO response = new IdMsgDTO();
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Get displacement
-            Displacement displacement = displacementService.getDisplacementById(displacementShareDTO.getActivityCenter());
-
-            Project project = projectService.getProjectById(Long.valueOf(projectId));
-
-            // Map Intervention share stepper
-            DisplacementShare displacementShare = ShareMapper.mapDTOToDisplacementShare(displacementShareDTO, user, project, displacement);
-            displacementShare.setOriginalDate(LocalDateTime.now());
-
-            // Save intervention
-            displacementShare = displacementShareService.save(displacementShare);
-
-            // Log info
-            log.info("Creado nuevo parte de desplazamiento " + displacementShare.getId() + " por parte del usuario " + user.getId());
-
-            // Return data
-            response.setId(displacementShare.getId());
-            response.setMsg(messageSource.getMessage("shares.displacement.create.success", new Object[]{}, locale));
-            return new ResponseEntity<>(response, HttpStatus.OK);
-
-        } catch (Exception e) {
-            log.error("Error al crear un parte de desplazamiento: %s", e);
-            response.setMsg(messageSource.getMessage("shares.displacement.create.error", new Object[]{}, locale));
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @ResponseBody
-    @GetMapping("/displacement/{id}")
-    public DisplacementShareDTO getDisplacementShare(@PathVariable Long id) {
-
-        DisplacementShare displacementShare = displacementShareService.getDisplacementShareById(id);
-
-        return ShareMapper.mapDisplacementShareToDTO(displacementShare);
-    }
-
-    @ResponseBody
-    @PutMapping("/displacement/{id}")
-    public ResponseEntity<String> updateDisplacement(@PathVariable Long id, @ModelAttribute DisplacementShareDTO displacementShareDTO,
-                                                     Locale locale, Model model, HttpServletRequest request) {
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Get share project
-            Project project = projectService.getProjectById(Long.valueOf(displacementShareDTO.getProjectId()));
-
-            // Get displacement
-            Displacement displacement = displacementService.getDisplacementById(displacementShareDTO.getActivityCenter());
-
-            // Map Intervention share stepper
-            DisplacementShare displacementShare = ShareMapper.mapDTOToDisplacementShare(displacementShareDTO, user, project, displacement);
-            displacementShare.setId(id);
-
-            // Save intervention
-            displacementShare = displacementShareService.save(displacementShare);
-
-            // Log info
-            log.info("Actualizado parte de desplazamiento " + displacementShare.getId() + " por parte del usuario " + user.getId());
-
-            // Return data
-            return new ResponseEntity<>(messageSource.getMessage("shares.displacement.update.success", new Object[]{}, locale), HttpStatus.OK);
-
-        } catch (Exception e) {
-            log.error(e);
-            return new ResponseEntity<>(messageSource.getMessage("shares.displacement.update.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @ResponseBody
-    @DeleteMapping("/displacement/{id}")
-    public ResponseEntity<String> deleteDisplacementShare(@PathVariable Long id, Locale locale) {
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            displacementShareService.deleteById(id);
-
-            log.info("Parte de desplazamiento " + id + " eliminado con éxito por parte del usuario " + user.getId());
-
-            // Return data
-            return new ResponseEntity<>(messageSource.getMessage("shares.displacement.delete.success", new Object[]{}, locale), HttpStatus.OK);
-
-        } catch (Exception e) {
-            return new ResponseEntity<>(messageSource.getMessage("shares.displacement.delete.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @ResponseBody
-    @GetMapping("/displacement/dt")
-    public DataTableResults<DisplacementShareTableDTO> userDisplacementSharesDatatable(HttpServletRequest request, Locale locale) {
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            DataTableRequest<DisplacementShare> dataTableInRQ = new DataTableRequest<>(request);
-            PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
-
-            List<DisplacementShareTableDTO> displacementShares = displacementShareService
-                    .getDisplacementSharesByUserDataTables(user.getId(), pagination);
-
-            Long totalRecords = displacementShareService.getDisplacementSharesCountByUser(user.getId());
-
-            DataTableResults<DisplacementShareTableDTO> dataTableResult = new DataTableResults<>();
-            dataTableResult.setDraw(dataTableInRQ.getDraw());
-            dataTableResult.setData(displacementShares);
-            dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
-            dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
-
-            if (displacementShares != null && !displacementShares.isEmpty()
-                    && !dataTableInRQ.getPaginationRequest().isFilterByEmpty()) {
-                dataTableResult.setRecordsFiltered(Integer.toString(displacementShares.size()));
-            }
-
-            return dataTableResult;
-
-        } catch (InvalidUserSessionException e) {
-            log.error(e);
-            return null;
-        }
     }
 
     @GetMapping("/work")
@@ -1116,14 +935,14 @@ public class ShareController {
 
             final Long id = Long.parseLong(constructionShare.getId().split("_")[0]);
 
-            final ConstructionShare share = constructionShareService.getConstructionShareById(id);
+            final ConstructionShare share = constructionShareOldService.getConstructionShareById(id);
 
             if (share == null) {
                 log.error("No existe el parte de construccion con id " + id);
                 continue;
             }
 
-            final byte[] pdf = constructionShareService.generateConstructionSharePdf(share, locale);
+            final byte[] pdf = constructionShareOldService.generateConstructionSharePdf(share, locale);
 
             if (pdf == null) {
                 log.error("Error al generar el fichero pdf del parte de construccion " + id);

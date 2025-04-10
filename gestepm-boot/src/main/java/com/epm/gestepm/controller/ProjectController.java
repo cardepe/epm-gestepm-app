@@ -5,6 +5,7 @@ import com.epm.gestepm.forum.model.api.service.UserForumService;
 import com.epm.gestepm.model.family.service.mapper.FamilyMapper;
 import com.epm.gestepm.model.materialrequired.service.mapper.MaterialRequiredMapper;
 import com.epm.gestepm.model.project.service.mapper.ProjectMapper;
+import com.epm.gestepm.model.shares.displacement.mapper.MapDSToShareTableDto;
 import com.epm.gestepm.model.shares.noprogrammed.mapper.MapIToShareTableDto;
 import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.deprecated.activitycenter.service.ActivityCenterService;
@@ -14,15 +15,10 @@ import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareService;
+import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareOldService;
 import com.epm.gestepm.modelapi.customer.dto.Customer;
 import com.epm.gestepm.modelapi.customer.dto.CustomerDTO;
 import com.epm.gestepm.modelapi.customer.service.CustomerService;
-import com.epm.gestepm.modelapi.displacement.dto.Displacement;
-import com.epm.gestepm.modelapi.displacement.dto.DisplacementDTO;
-import com.epm.gestepm.modelapi.displacement.dto.DisplacementTableDTO;
-import com.epm.gestepm.modelapi.displacement.service.DisplacementService;
-import com.epm.gestepm.modelapi.displacementshare.service.DisplacementShareService;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
 import com.epm.gestepm.modelapi.family.dto.FamilyTableDTO;
@@ -39,6 +35,9 @@ import com.epm.gestepm.modelapi.materialrequired.service.MaterialRequiredService
 import com.epm.gestepm.modelapi.project.dto.*;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.role.dto.Role;
+import com.epm.gestepm.modelapi.shares.displacement.dto.DisplacementShareDto;
+import com.epm.gestepm.modelapi.shares.displacement.dto.filter.DisplacementShareFilterDto;
+import com.epm.gestepm.modelapi.shares.displacement.service.DisplacementShareService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.dto.UserDTO;
 import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
@@ -80,10 +79,7 @@ public class ProjectController {
 	private ActivityCenterService activityCenterServiceOld;
 	
 	@Autowired
-	private ConstructionShareService constructionShareService;
-	
-	@Autowired
-	private DisplacementShareService displacementShareService;
+	private ConstructionShareOldService constructionShareOldService;
 
 	@Autowired
 	private InspectionService inspectionService;
@@ -98,7 +94,7 @@ public class ProjectController {
 	private CustomerService customerService;
 	
 	@Autowired
-	private DisplacementService displacementService;
+	private DisplacementShareService displacementShareService;
 
 	@Autowired
 	private MessageSource messageSource;
@@ -415,14 +411,6 @@ public class ProjectController {
 				}
 			}
 			
-			// Copy displacements
-			if (!projectCopy.getDisplacements().isEmpty()) {
-				
-				for (Displacement displacement : projectCopy.getDisplacements()) {
-					displacementService.createProjectDisplacement(project.getId(), displacement.getId());
-				}
-			}
-			
 			// Copy families
 			if (!projectCopy.getFamilies().isEmpty()) {
 				
@@ -536,9 +524,6 @@ public class ProjectController {
 			// Recover Project Stations
 			List<ProjectListDTO> stations = projectService.getStationDTOs();
 			
-			// Load no displacements selected
-			List<DisplacementDTO> notDisplacements = displacementService.getNotDisplacementDTOsByProjectId(id);
-			
 			// Load no families selected
 			List<FamilyDTO> notFamilies = familyService.getClonableFamilyDTOs(locale);
 			
@@ -555,7 +540,6 @@ public class ProjectController {
 			model.addAttribute("customer", customer);
 			model.addAttribute("stations", stations);
 			model.addAttribute("activityCenters", activityCenters);
-			model.addAttribute("notDisplacements", notDisplacements);
 			model.addAttribute("notFamilies", notFamilies);
 			model.addAttribute("responsablesIds", responsablesIds);
 			
@@ -687,31 +671,7 @@ public class ProjectController {
 
 		return dataTableResult;
 	}
-	
-	@ResponseBody
-	@GetMapping("/{id}/displacements/dt")
-	public DataTableResults<DisplacementTableDTO> projectDisplacementsDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
 
-		DataTableRequest<Displacement> dataTableInRQ = new DataTableRequest<>(request);
-		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
-
-		List<DisplacementTableDTO> displacements = displacementService.getDisplacementsDataTablesByProjectId(id, pagination);
-
-		Long totalRecords = displacementService.getDisplacementsCountByProjectId(id);
-
-		DataTableResults<DisplacementTableDTO> dataTableResult = new DataTableResults<>();
-		dataTableResult.setDraw(dataTableInRQ.getDraw());
-		dataTableResult.setData(displacements);
-		dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
-		dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
-
-		if (displacements != null && !displacements.isEmpty() && !dataTableInRQ.getPaginationRequest().isFilterByEmpty()) {
-			dataTableResult.setRecordsFiltered(Integer.toString(displacements.size()));
-		}
-
-		return dataTableResult;
-	}
-	
 	@ResponseBody
 	@GetMapping("/{id}/families/dt")
 	public DataTableResults<FamilyTableDTO> projectFamiliesDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
@@ -951,59 +911,7 @@ public class ProjectController {
 
 		return null;
 	}
-	
-	@ResponseBody
-	@PostMapping("/{id}/displacements/create")
-	public ResponseEntity<String> createProjectDisplacements(@RequestParam Long[] displacementIds, @PathVariable Long id, Locale locale) {
 
-		try {
-
-			// Recover user
-			User user = Utiles.getUsuario();
-			
-			for (Long displacementId : displacementIds) {
-				
-				try {
-					displacementService.createProjectDisplacement(id, displacementId);
-				} catch (DataIntegrityViolationException e) {
-					log.info("El desplazamiento " + displacementId + " ya forma parte del proyecto " + id);
-				}
-	
-				log.info("Desplazamiento " + displacementId + " añadido al proyecto " + id + " por parte del usuario " + user.getId());
-			}
-			
-			// Return data
-			return new ResponseEntity<>(messageSource.getMessage("project.detail.displacements.success", new Object[] {}, locale), HttpStatus.OK);
-
-		} catch (Exception e) {
-			return new ResponseEntity<>(messageSource.getMessage("project.detail.displacements.error", new Object[] {}, locale), HttpStatus.NOT_FOUND);
-		}
-	}
-	
-	@ResponseBody
-	@DeleteMapping("/{id}/displacements/delete/{displacementId}")
-	public ResponseEntity<String> deleteProjectDisplacement(@PathVariable Long displacementId, @PathVariable Long id, Locale locale) {
-
-		try {
-
-			// Recover user
-			User user = Utiles.getUsuario();
-
-			displacementService.deleteProjectDisplacement(id, displacementId);
-
-			log.info("Desplazamiento " + displacementId + " eliminado del proyecto " + id + " por parte del usuario " + user.getId());
-
-			// Return data
-			return new ResponseEntity<>(
-					messageSource.getMessage("project.detail.displacements.delete", new Object[] {}, locale), HttpStatus.OK);
-
-		} catch (Exception e) {
-			return new ResponseEntity<>(
-					messageSource.getMessage("project.detail.displacements.derror", new Object[] {}, locale),
-					HttpStatus.NOT_FOUND);
-		}
-	}
-	
 	@ResponseBody
 	@PostMapping("/{id}/families/create")
 	public ResponseEntity<String> createProjectFamilies(@ModelAttribute ProjectFamilyDTO projectFamilyDTO, @PathVariable Long id, Locale locale) {
@@ -1279,8 +1187,8 @@ public class ProjectController {
 
 		List<ShareTableDTO> shareTableDTOs = new ArrayList<>();
 
-		List<ShareTableDTO> csShareTableDTOs = constructionShareService.getShareTableByProjectId(projectId);
-		List<ShareTableDTO> dsShareTableDTOs = displacementShareService.getShareTableByProjectId(projectId);
+		List<ShareTableDTO> csShareTableDTOs = constructionShareOldService.getShareTableByProjectId(projectId);
+		List<ShareTableDTO> dsShareTableDTOs = this.getDisplacementShares(projectId.intValue());
 		List<ShareTableDTO> ipsShareTableDTOs = interventionPrShareService.getShareTableByProjectId(projectId);
 		List<ShareTableDTO> isShareTableDTOs = this.getInspections(projectId.intValue());
 		List<ShareTableDTO> wsShareTableDTOs = workShareService.getShareTableByProjectId(projectId);
@@ -1302,6 +1210,15 @@ public class ProjectController {
 		obj[1] = shareTableDTOs.subList(fromIndex, Math.min(fromIndex + pageSize, shareTableDTOs.size()));
 		
 		return obj;
+	}
+
+	private List<ShareTableDTO> getDisplacementShares(final Integer projectId) {
+		final DisplacementShareFilterDto filter = new DisplacementShareFilterDto();
+		filter.setProjectIds(List.of(projectId));
+
+		final List<DisplacementShareDto> displacementShares = this.displacementShareService.list(filter);
+
+		return getMapper(MapDSToShareTableDto.class).from(displacementShares);
 	}
 
 	private List<ShareTableDTO> getInspections(final Integer projectId) {

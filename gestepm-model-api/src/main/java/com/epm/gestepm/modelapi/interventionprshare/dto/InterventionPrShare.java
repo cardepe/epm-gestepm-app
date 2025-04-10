@@ -2,7 +2,6 @@ package com.epm.gestepm.modelapi.interventionprshare.dto;
 
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigning;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -26,10 +25,6 @@ public class InterventionPrShare {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PROJECT_ID", referencedColumnName = "ID", nullable = false)
 	private Project project;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "USER_SIGNING_ID")
-	private UserSigning userSigning;
 	
 	@Column(name = "START_DATE", nullable = false)
 	private LocalDateTime startDate;

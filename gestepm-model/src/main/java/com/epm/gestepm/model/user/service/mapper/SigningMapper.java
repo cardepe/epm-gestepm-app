@@ -9,13 +9,10 @@ import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningResumeDTO;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.*;
 
 public class SigningMapper {
-
-	private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm'Z'";
 
 	public static List<PersonalSigningResumeDTO> mapConstructionShareToPSRDTO(final List<ConstructionShare> list) {
 
@@ -41,15 +38,11 @@ public class SigningMapper {
 
 		list.stream().forEach(l -> {
 
-			final Calendar displacementCalendar = Calendar.getInstance();
-			displacementCalendar.setTime(Date.from(l.getDisplacementDate().toInstant(ZoneOffset.UTC)));
-			displacementCalendar.add(Calendar.MINUTE, l.getManualHours());
-
 			final PersonalSigningResumeDTO dto = new PersonalSigningResumeDTO();
 			dto.setProjectName(l.getProject().getName());
 			dto.setType("ds");
-			dto.setStartDate(l.getDisplacementDate());
-			dto.setEndDate(LocalDateTime.from(displacementCalendar.getTime().toInstant().atOffset(ZoneOffset.UTC)));
+			dto.setStartDate(l.getStartDate());
+			dto.setEndDate(l.getEndDate());
 
 			listDto.add(dto);
 		});

@@ -13,7 +13,6 @@ import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSToNoProgra
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.filter.NoProgrammedShareFilterDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
-import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

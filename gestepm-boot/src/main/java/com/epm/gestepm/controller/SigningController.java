@@ -1,7 +1,6 @@
 package com.epm.gestepm.controller;
 
 import com.epm.gestepm.lib.file.FileUtils;
-import com.epm.gestepm.model.inspection.service.mapper.MapIToInspectionUpdateDto;
 import com.epm.gestepm.model.interventionshare.service.mapper.ShareMapper;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
@@ -10,16 +9,6 @@ import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
-import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareService;
-import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
-import com.epm.gestepm.modelapi.displacementshare.service.DisplacementShareService;
-import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
-import com.epm.gestepm.modelapi.inspection.dto.finder.InspectionByIdFinderDto;
-import com.epm.gestepm.modelapi.inspection.dto.updater.InspectionUpdateDto;
-import com.epm.gestepm.modelapi.inspection.service.InspectionService;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
 import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
 import com.epm.gestepm.modelapi.manualsigningtype.service.ManualSigningTypeService;
@@ -30,12 +19,7 @@ import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningDTO;
 import com.epm.gestepm.modelapi.personalsigning.service.PersonalSigningService;
 import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.ShareDecorator;
-import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
-import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
-import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
-import com.epm.gestepm.modelapi.timecontrolold.dto.TimeControlDetailTableDTO;
 import com.epm.gestepm.modelapi.timecontrolold.dto.TimeControlTableDTO;
 import com.epm.gestepm.modelapi.timecontrolold.service.TimeControlOldService;
 import com.epm.gestepm.modelapi.user.dto.User;
@@ -48,8 +32,6 @@ import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningDTO;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningTableDTO;
 import com.epm.gestepm.modelapi.usermanualsigning.service.UserManualSigningService;
 import com.epm.gestepm.modelapi.usersigning.dto.UserSigningShareDTO;
-import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
-import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -58,7 +40,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -76,8 +57,6 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static org.mapstruct.factory.Mappers.getMapper;
-
 @Controller
 @RequestMapping("/signing")
 public class SigningController {
@@ -91,22 +70,7 @@ public class SigningController {
     private List<String> rrhhMails;
 
     @Autowired
-    private ConstructionShareService constructionShareService;
-
-    @Autowired
-    private DisplacementShareService displacementShareService;
-
-    @Autowired
     private ShareDecorator shareDecorator;
-
-    @Autowired
-    private InterventionPrShareService interventionPrShareService;
-
-    @Autowired
-    private InspectionService inspectionService;
-
-    @Autowired
-    private NoProgrammedShareService noProgrammedShareService;
 
     @Autowired
     private ManualSigningTypeService manualSigningTypeService;
@@ -121,9 +85,6 @@ public class SigningController {
     private PersonalSigningService personalSigningService;
 
     @Autowired
-    private ProjectService projectService;
-
-    @Autowired
     private SMTPService smtpService;
 
     @Autowired
@@ -134,9 +95,6 @@ public class SigningController {
 
     @Autowired
     private UserManualSigningService userManualSigningService;
-
-    @Autowired
-    private WorkShareService workShareService;
 
     @GetMapping(value = "/project/{projectId}/weekly", produces = {"application/zip"})
     public void exportWeeklyPdf(@PathVariable Integer projectId, HttpServletResponse response, Locale locale) {

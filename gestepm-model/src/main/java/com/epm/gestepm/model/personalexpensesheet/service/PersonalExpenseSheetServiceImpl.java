@@ -33,6 +33,7 @@ import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -51,6 +52,7 @@ import static com.epm.gestepm.modelapi.personalexpensesheet.security.PersonalExp
 import static org.mapstruct.factory.Mappers.getMapper;
 
 @Validated
+@AllArgsConstructor
 @Service("personalExpenseSheetService")
 @EnableExecutionLog(layerMarker = SERVICE)
 public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetService {
@@ -64,17 +66,6 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
     private final ProjectService projectService;
 
     private final SMTPService smtpService;
-
-    private final UserService userService;
-
-    public PersonalExpenseSheetServiceImpl(AuditProvider auditProvider, HttpServletRequest request, PersonalExpenseSheetDao personalExpenseSheetDao, ProjectService projectService, SMTPService smtpService, UserService userService) {
-        this.auditProvider = auditProvider;
-        this.request = request;
-        this.personalExpenseSheetDao = personalExpenseSheetDao;
-        this.projectService = projectService;
-        this.smtpService = smtpService;
-        this.userService = userService;
-    }
 
     @Override
     @RequirePermits(value = PRMT_READ_PES, action = "List personal expense sheets")
