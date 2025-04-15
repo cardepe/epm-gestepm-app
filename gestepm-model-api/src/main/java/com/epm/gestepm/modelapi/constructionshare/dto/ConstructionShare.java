@@ -20,10 +20,16 @@ public class ConstructionShare {
 	private Long id;
 	
 	@Column(name = "created_at", nullable = false)
-	private LocalDateTime startDate;
+	private LocalDateTime createdAt;
+
+	@Column(name = "created_by", nullable = false)
+	private Long createdBy;
 
 	@Column(name = "closed_at")
-	private LocalDateTime endDate;
+	private LocalDateTime closedAt;
+
+	@Column(name = "closed_by")
+	private Long closedBy;
 	
 	@Column(name="observations")
     private String observations;

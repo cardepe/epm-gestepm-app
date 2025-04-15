@@ -23,8 +23,8 @@ public class SigningMapper {
 			final PersonalSigningResumeDTO dto = new PersonalSigningResumeDTO();
 			dto.setProjectName(l.getProject().getName());
 			dto.setType("cs");
-			dto.setStartDate(l.getStartDate());
-			dto.setEndDate(l.getEndDate());
+			dto.setStartDate(l.getCreatedAt());
+			dto.setEndDate(l.getClosedAt());
 
 			listDto.add(dto);
 		});

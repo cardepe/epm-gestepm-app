@@ -103,8 +103,8 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("id", share.getId().toString());
 		params.put("username", share.getUser().getName() + " " + share.getUser().getSurnames());
 		params.put("projectName", share.getProject().getName());
-		params.put("startDate", Utiles.transform(share.getStartDate(), DATE_TIME_FORMAT));
-		params.put("endDate", Utiles.transform(share.getEndDate(), DATE_TIME_FORMAT));
+		params.put("startDate", Utiles.transform(share.getCreatedAt(), DATE_TIME_FORMAT));
+		params.put("endDate", Utiles.transform(share.getClosedAt(), DATE_TIME_FORMAT));
 
 		loadPDFTemplateAndSendMail(share, "cs", pdfGenerated, smtpMailFrom, to, subject, "construction_share_close_mail_template_" + locale.getLanguage() + ".html", params, locale);
 	}
@@ -339,7 +339,7 @@ public class SMTPServiceImpl implements SMTPService {
 				
 	        	log.info("Adjuntando parte de construccion " + transformedShare.getId() + " en " + locale.getLanguage());
 
-				fileName = messageSource.getMessage("shares.construction.pdf.name", new Object[] { transformedShare.getId().toString(), Utiles.getDateFormatted(transformedShare.getStartDate()) }, locale) + ".pdf";
+				fileName = messageSource.getMessage("shares.construction.pdf.name", new Object[] { transformedShare.getId().toString(), Utiles.getDateFormatted(transformedShare.getCreatedAt()) }, locale) + ".pdf";
 
 			} else if ("is".equals(type)) {
 	        	
