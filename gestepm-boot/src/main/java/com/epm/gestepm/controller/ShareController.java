@@ -526,7 +526,8 @@ public class ShareController {
 
             // Map Intervention share stepper
             ConstructionShare constructionShare = ShareMapper.mapDTOToConstructionShare(constructionDTO, user, project);
-            constructionShare.setStartDate(LocalDateTime.now());
+            constructionShare.setCreatedAt(LocalDateTime.now());
+            constructionShare.setCreatedBy(user.getId());
 
             // Save intervention
             constructionShare = constructionShareOldService.save(constructionShare);
@@ -557,7 +558,8 @@ public class ShareController {
 
             // Map Intervention share stepper
             ConstructionShare constructionShare = constructionShareOldService.getConstructionShareById(constructionDTO.getId());
-            constructionShare.setEndDate(LocalDateTime.now());
+            constructionShare.setClosedAt(LocalDateTime.now());
+            constructionShare.setClosedBy(user.getId());
             constructionShare.setObservations(constructionDTO.getObservations());
             constructionShare.setSignatureOp(constructionDTO.getSignatureOp());
 
@@ -605,8 +607,9 @@ public class ShareController {
             // Get
             ConstructionShare constructionShare = constructionShareOldService.getConstructionShareById(constructionDTO.getId());
 
-            constructionShare.setStartDate(constructionDTO.getStartDate());
-            constructionShare.setEndDate(constructionDTO.getEndDate());
+            constructionShare.setCreatedAt(constructionDTO.getStartDate());
+            constructionShare.setClosedAt(constructionDTO.getEndDate());
+            constructionShare.setClosedBy(user.getId());
             constructionShare.setObservations(constructionDTO.getObservations());
 
             // Save intervention
@@ -674,7 +677,7 @@ public class ShareController {
             return null;
         }
 
-        String fileName = messageSource.getMessage("shares.construction.pdf.name", new Object[]{share.getId().toString(), Utiles.getDateFormatted(share.getStartDate())}, locale);
+        String fileName = messageSource.getMessage("shares.construction.pdf.name", new Object[]{share.getId().toString(), Utiles.getDateFormatted(share.getCreatedAt())}, locale);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentDispositionFormData("attachment", fileName + ".pdf");
@@ -949,7 +952,7 @@ public class ShareController {
                 continue;
             }
 
-            final String fileName = messageSource.getMessage("shares.construction.pdf.name", new Object[]{share.getId().toString(), Utiles.getDateFormatted(share.getStartDate())}, locale) + ".pdf";
+            final String fileName = messageSource.getMessage("shares.construction.pdf.name", new Object[]{share.getId().toString(), Utiles.getDateFormatted(share.getCreatedAt())}, locale) + ".pdf";
 
             final PdfFileDTO pdfFileDTO = new PdfFileDTO();
             pdfFileDTO.setDocumentBytes(pdf);

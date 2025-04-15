@@ -107,8 +107,8 @@ public class ConstructionShareOldServiceImpl implements ConstructionShareOldServ
 	        PdfStamper stamper = new PdfStamper(pdfTemplate, (OutputStream) baos);
 	        
 	        stamper.getAcroFields().setField("idShare", share.getId().toString());
-	        stamper.getAcroFields().setField("startDate", Utiles.transform(share.getStartDate(), DATE_FORMAT));
-	        stamper.getAcroFields().setField("endDate", Utiles.transform(share.getEndDate(), DATE_FORMAT));
+	        stamper.getAcroFields().setField("startDate", Utiles.transform(share.getCreatedAt(), DATE_FORMAT));
+	        stamper.getAcroFields().setField("endDate", Utiles.transform(share.getClosedAt(), DATE_FORMAT));
 	        stamper.getAcroFields().setField("observations", share.getObservations());
 	        stamper.getAcroFields().setField("opName", share.getUser().getName() + " " + share.getUser().getSurnames());
 
@@ -186,7 +186,7 @@ public class ConstructionShareOldServiceImpl implements ConstructionShareOldServ
 				continue;
 			}
 
-			final String fileName = messageSource.getMessage("shares.construction.pdf.name", new Object[]{share.getId().toString(), Utiles.getDateFormatted(share.getStartDate())}, Locale.getDefault()) + ".pdf";
+			final String fileName = messageSource.getMessage("shares.construction.pdf.name", new Object[]{share.getId().toString(), Utiles.getDateFormatted(share.getCreatedAt())}, Locale.getDefault()) + ".pdf";
 
 			final PdfFileDTO pdfFileDTO = new PdfFileDTO();
 			pdfFileDTO.setDocumentBytes(pdf);

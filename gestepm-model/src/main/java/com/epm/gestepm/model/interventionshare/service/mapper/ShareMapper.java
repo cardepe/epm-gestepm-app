@@ -30,8 +30,8 @@ public class ShareMapper {
 		
 		ConstructionShare constructionShare = new ConstructionShare();
 		
-		constructionShare.setStartDate(constructionDTO.getStartDate());
-		constructionShare.setEndDate(constructionDTO.getEndDate());
+		constructionShare.setCreatedAt(constructionDTO.getStartDate());
+		constructionShare.setClosedAt(constructionDTO.getEndDate());
 		constructionShare.setObservations(constructionDTO.getObservations());
 		constructionShare.setProject(project);
 		constructionShare.setUser(user);
@@ -44,8 +44,8 @@ public class ShareMapper {
 		ConstructionDTO constructionDTO = new ConstructionDTO();
 		
 		constructionDTO.setId(constructionShare.getId());
-		constructionDTO.setStartDate(constructionShare.getStartDate());
-		constructionDTO.setEndDate(constructionShare.getEndDate());
+		constructionDTO.setStartDate(constructionShare.getCreatedAt());
+		constructionDTO.setEndDate(constructionShare.getClosedAt());
 		constructionDTO.setObservations(constructionShare.getObservations());
 		
 		return constructionDTO;

@@ -384,7 +384,7 @@ public class PersonalSigningServiceImpl implements PersonalSigningService {
 				final List<ConstructionShare> dailyConstructionList = monthlyConstructionSigningList.stream().filter(s -> {
 
 					final Calendar filterCalendar = Calendar.getInstance();
-					filterCalendar.setTime(Date.from(s.getStartDate().toInstant(ZoneOffset.UTC)));
+					filterCalendar.setTime(Date.from(s.getCreatedAt().toInstant(ZoneOffset.UTC)));
 					Utiles.setStartDay(filterCalendar);
 
 					return Utiles.getStartDayDate(selectedCal).equals(filterCalendar.getTime());
