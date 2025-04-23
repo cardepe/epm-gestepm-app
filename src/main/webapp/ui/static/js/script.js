@@ -140,6 +140,8 @@ function getSigningText(type) {
 		return messages.signings.personal.name;
 	} else if (type === 'PROGRAMMED_SHARES') {
 		return messages.shares.programmed.name;
+	} else if (type === 'TELEWORKING_SIGNING') {
+		return messages.signings.teleworking.name;
 	} else if (type === 'WORK_SHARES') {
 		return messages.shares.work.name;
 	}

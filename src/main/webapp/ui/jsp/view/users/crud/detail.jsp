@@ -878,7 +878,15 @@
 				}).catch(error => failureCallback(error));
 			},
 			eventClick: function(info) {
-				loadModalForm(info.event);
+				const calendarSigning = info.event;
+				const id = calendarSigning.id;
+				const type = calendarSigning.extendedProps.type;
+
+				if (type === 'TELEWORKING_SIGNING') {
+					window.location.href = '/signings/teleworking/' + id;
+				} else {
+					loadModalForm(calendarSigning);
+				}
 			}
 		});
 
@@ -1312,7 +1320,8 @@
 	}
 
 	function loadModalForm(calendarSigning) {
-		const allowedTypes = ['MANUAL_SIGNINGS', 'PERSONAL_SIGNINGS'];
+		const allowedTypes = ['CONSTRUCTION_SHARES', 'DISPLACEMENT_SHARES', 'INSPECTIONS', 'MANUAL_SIGNINGS',
+			'PERSONAL_SIGNINGS', 'PROGRAMMED_SHARES', 'WORK_SHARES'];
 
 		const id = calendarSigning.id;
 		const type = calendarSigning.extendedProps.type;

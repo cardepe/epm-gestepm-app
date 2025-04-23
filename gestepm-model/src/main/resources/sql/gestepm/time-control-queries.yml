@@ -60,6 +60,15 @@ sql:
       FROM ${sch-gestepm}.intervention_pr_shares
       UNION
         SELECT
+        teleworking_signing_id AS id,
+        user_id,
+        started_at AS start_date,
+        closed_at AS end_date,
+        null AS description,
+        'TELEWORKING_SIGNING' AS type
+      FROM ${sch-gestepm}.teleworking_signing
+      UNION
+        SELECT
         id,
         user_id,
         start_date,

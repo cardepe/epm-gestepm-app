@@ -1,7 +1,13 @@
 package com.epm.gestepm.controller;
 
 import com.epm.gestepm.lib.file.FileUtils;
+import com.epm.gestepm.model.inspection.service.mapper.MapIToInspectionUpdateDto;
 import com.epm.gestepm.model.interventionshare.service.mapper.ShareMapper;
+import com.epm.gestepm.model.shares.construction.dao.entity.updater.ConstructionShareUpdate;
+import com.epm.gestepm.model.shares.construction.service.ConstructionShareServiceImpl;
+import com.epm.gestepm.model.shares.construction.service.mapper.MapCSToConstructionShareUpdate;
+import com.epm.gestepm.model.shares.construction.service.mapper.MapCSToConstructionShareUpdateDto;
+import com.epm.gestepm.model.shares.displacement.service.mapper.MapDSToDisplacementShareUpdateDto;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
@@ -9,7 +15,15 @@ import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
+import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
+import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
+import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
+import com.epm.gestepm.modelapi.inspection.dto.finder.InspectionByIdFinderDto;
+import com.epm.gestepm.modelapi.inspection.dto.updater.InspectionUpdateDto;
+import com.epm.gestepm.modelapi.inspection.service.InspectionService;
+import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
+import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
 import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
 import com.epm.gestepm.modelapi.manualsigningtype.service.ManualSigningTypeService;
 import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigning;
@@ -20,6 +34,14 @@ import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningDTO;
 import com.epm.gestepm.modelapi.personalsigning.service.PersonalSigningService;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.shares.ShareDecorator;
+import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareDto;
+import com.epm.gestepm.modelapi.shares.construction.dto.finder.ConstructionShareByIdFinderDto;
+import com.epm.gestepm.modelapi.shares.construction.dto.updater.ConstructionShareUpdateDto;
+import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareService;
+import com.epm.gestepm.modelapi.shares.displacement.dto.DisplacementShareDto;
+import com.epm.gestepm.modelapi.shares.displacement.dto.finder.DisplacementShareByIdFinderDto;
+import com.epm.gestepm.modelapi.shares.displacement.dto.updater.DisplacementShareUpdateDto;
+import com.epm.gestepm.modelapi.shares.displacement.service.DisplacementShareService;
 import com.epm.gestepm.modelapi.timecontrolold.dto.TimeControlTableDTO;
 import com.epm.gestepm.modelapi.timecontrolold.service.TimeControlOldService;
 import com.epm.gestepm.modelapi.user.dto.User;
@@ -32,6 +54,8 @@ import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningDTO;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningTableDTO;
 import com.epm.gestepm.modelapi.usermanualsigning.service.UserManualSigningService;
 import com.epm.gestepm.modelapi.usersigning.dto.UserSigningShareDTO;
+import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
+import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,6 +80,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import static org.mapstruct.factory.Mappers.getMapper;
 
 @Controller
 @RequestMapping("/signing")
@@ -95,6 +121,21 @@ public class SigningController {
 
     @Autowired
     private UserManualSigningService userManualSigningService;
+
+    @Autowired
+    private ConstructionShareService constructionShareService;
+
+    @Autowired
+    private DisplacementShareService displacementShareService;
+
+    @Autowired
+    private InspectionService inspectionService;
+
+    @Autowired
+    private InterventionPrShareService interventionPrShareService;
+
+    @Autowired
+    private WorkShareService workShareService;
 
     @GetMapping(value = "/project/{projectId}/weekly", produces = {"application/zip"})
     public void exportWeeklyPdf(@PathVariable Integer projectId, HttpServletResponse response, Locale locale) {
@@ -816,26 +857,84 @@ public class SigningController {
 
             switch (userSigningShareDTO.getShareType()) {
 
-                case "PERSONAL_SIGNINGS":
+                case "CONSTRUCTION_SHARES": {
+                    final ConstructionShareByIdFinderDto finderDto = new ConstructionShareByIdFinderDto(userSigningShareDTO.getShareId().intValue());
+                    final ConstructionShareDto dto = this.constructionShareService.findOrNotFound(finderDto);
 
-                    PersonalSigning personalSigning = personalSigningService.getById(userSigningShareDTO.getShareId());
-                    personalSigning.setStartDate(startDate);
-                    personalSigning.setEndDate(endDate);
+                    final ConstructionShareUpdateDto update = getMapper(MapCSToConstructionShareUpdateDto.class).from(dto);
+                    update.setCreatedAt(startDate);
+                    update.setClosedAt(endDate);
 
-                    personalSigningService.save(personalSigning);
+                    this.constructionShareService.update(update);
 
                     break;
+                }
+                case "DISPLACEMENT_SHARES": {
 
-                case "MANUAL_SIGNINGS":
+                    final DisplacementShareByIdFinderDto finderDto = new DisplacementShareByIdFinderDto(userSigningShareDTO.getShareId().intValue());
+                    final DisplacementShareDto dto = this.displacementShareService.findOrNotFound(finderDto);
 
-                    UserManualSigning userManualSigning = userManualSigningService.getById(userSigningShareDTO.getShareId());
+                    final DisplacementShareUpdateDto update = getMapper(MapDSToDisplacementShareUpdateDto.class).from(dto);
+                    update.setStartDate(startDate);
+                    update.setEndDate(endDate);
+
+                    this.displacementShareService.update(update);
+
+                    break;
+                }
+                case "INSPECTIONS": {
+
+                    final Integer inspectionId = userSigningShareDTO.getShareId().intValue();
+                    final InspectionDto inspection = this.inspectionService.findOrNotFound(new InspectionByIdFinderDto(inspectionId));
+
+                    final InspectionUpdateDto update = getMapper(MapIToInspectionUpdateDto.class).from(inspection);
+                    update.setStartDate(startDate);
+                    update.setEndDate(endDate);
+
+                    this.inspectionService.update(update);
+
+                    break;
+                }
+                case "MANUAL_SIGNINGS": {
+
+                    final UserManualSigning userManualSigning = this.userManualSigningService.getById(userSigningShareDTO.getShareId());
                     userManualSigning.setStartDate(startDate);
                     userManualSigning.setEndDate(endDate);
 
-                    userManualSigningService.save(userManualSigning);
+                    this.userManualSigningService.save(userManualSigning);
 
                     break;
+                }
+                case "PERSONAL_SIGNINGS": {
 
+                    final PersonalSigning personalSigning = this.personalSigningService.getById(userSigningShareDTO.getShareId());
+                    personalSigning.setStartDate(startDate);
+                    personalSigning.setEndDate(endDate);
+
+                    this.personalSigningService.save(personalSigning);
+
+                    break;
+                }
+                case "PROGRAMMED_SHARES": {
+
+                    final InterventionPrShare interventionPrShare = this.interventionPrShareService.getInterventionPrShareById(userSigningShareDTO.getShareId());
+                    interventionPrShare.setStartDate(startDate);
+                    interventionPrShare.setEndDate(endDate);
+
+                    this.interventionPrShareService.save(interventionPrShare);
+
+                    break;
+                }
+                case "WORK_SHARES": {
+
+                    final WorkShare workShare = this.workShareService.getWorkShareById(userSigningShareDTO.getShareId());
+                    workShare.setStartDate(startDate);
+                    workShare.setEndDate(endDate);
+
+                    this.workShareService.save(workShare);
+
+                    break;
+                }
                 default:
                     break;
             }

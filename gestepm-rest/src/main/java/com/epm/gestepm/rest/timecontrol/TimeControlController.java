@@ -35,15 +35,15 @@ import static org.mapstruct.factory.Mappers.getMapper;
 @EnableExecutionLog(layerMarker = REST)
 public class TimeControlController extends BaseController implements TimeControlV1Api, ResponsesForTimeControlList {
 
-    private final TimeControlService personalExpenseSheetService;
+    private final TimeControlService timeControlService;
 
     public TimeControlController(final CommonProviders commonProviders, final ApplicationContext appCtx,
                                  final AppLocaleService appLocaleService, final ResponseSuccessfulHelper successHelper,
-                                 final TimeControlService personalExpenseSheetService) {
+                                 final TimeControlService timeControlService) {
         super(commonProviders.localeProvider(), commonProviders.executionRequestProvider(),
                 commonProviders.executionTimeProvider(), commonProviders.restContextProvider(), appCtx, appLocaleService,
                 successHelper);
-        this.personalExpenseSheetService = personalExpenseSheetService;
+        this.timeControlService = timeControlService;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class TimeControlController extends BaseController implements TimeControl
         this.setDefaults(req);
 
         final TimeControlFilterDto filterDto = getMapper(MapTCToTimeControlFilterDto.class).from(req);
-        final List<TimeControlDto> list = this.personalExpenseSheetService.list(filterDto);
+        final List<TimeControlDto> list = this.timeControlService.list(filterDto);
 
         final APIMetadata metadata = this.getMetadata(req, new ListTimeControlV1Operation());
         final List<TimeControl> data = getMapper(MapTCToTimeControlResponse.class).from(list);

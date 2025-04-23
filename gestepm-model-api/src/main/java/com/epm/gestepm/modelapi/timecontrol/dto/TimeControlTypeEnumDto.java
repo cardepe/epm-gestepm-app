@@ -7,5 +7,6 @@ public enum TimeControlTypeEnumDto {
     MANUAL_SIGNINGS,
     PERSONAL_SIGNINGS,
     PROGRAMMED_SHARES,
+    TELEWORKING_SIGNING,
     WORK_SHARES
 }
