@@ -74,11 +74,21 @@ public class TeleworkingSigningViewController {
         final Project project = this.projectService.getProjectById(teleworkingSigning.getProjectId().longValue());
         model.addAttribute("projectName", project.getName());
 
+        this.loadPermissions(user, project.getId().intValue(), model);
+
         return "teleworking-signing-detail";
     }
 
     private void loadProjects(final Model model) {
         final List<ProjectListDTO> projects = this.projectService.getTeleworkingProjects(true);
         model.addAttribute("projects", projects);
+    }
+
+    private void loadPermissions(final User user, final Integer projectId, final Model model) {
+        final Boolean isAdmin = Constants.ROLE_ADMIN.equals(user.getRole().getRoleName());
+        final Boolean isProjectTL = Constants.ROLE_PL.equals(user.getRole().getRoleName())
+                && user.getBossProjects().stream().map(Project::getId).collect(Collectors.toList()).contains(projectId.longValue());
+
+        model.addAttribute("canUpdate", isAdmin || isProjectTL);
     }
 }

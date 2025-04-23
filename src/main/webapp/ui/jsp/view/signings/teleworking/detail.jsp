@@ -27,9 +27,7 @@
             </div>
             <div class="col-12 col-lg-2">
                 <div class="page-header float-right">
-                    <a class="btn btn-default btn-sm"
-                       href="${pageContext.request.contextPath}/signings/teleworking"><spring:message
-                            code="back"/></a>
+                    <a class="btn btn-default btn-sm" href="javascript:history.back()"><spring:message code="back"/></a>
                 </div>
             </div>
         </div>
@@ -58,7 +56,7 @@
                     <div class="col-sm-12 col-md-4">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100"><spring:message code="start.date"/>
-                                <input type="datetime-local" class="form-control mt-1" value="${teleworkingSigning.startedAt}" disabled />
+                                <input type="datetime-local" name="startDate" class="form-control mt-1" value="${teleworkingSigning.startedAt}" disabled />
                             </label>
                         </div>
                     </div>
@@ -66,7 +64,7 @@
                     <div class="col-sm-12 col-md-4">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100"><spring:message code="end.date"/>
-                                <input type="datetime-local" class="form-control mt-1" value="${teleworkingSigning.closedAt}" disabled />
+                                <input type="datetime-local" name="endDate" class="form-control mt-1" value="${teleworkingSigning.closedAt}" disabled />
                             </label>
                         </div>
                     </div>
@@ -96,7 +94,66 @@
                         </label>
                     </div>
                 </div>
+
+                <div class="row actionable d-none">
+                    <div class="col text-right">
+                        <button id="editBtn" type="button" class="btn btn-standard btn-sm movile-full"><spring:message code="save"/></button>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+
+    let locale = '${locale}';
+    let canUpdate = ${canUpdate};
+
+    $(document).ready(function() {
+        initialize();
+        save();
+    });
+
+    function initialize() {
+        if (canUpdate) {
+            const editForm = document.querySelector('#editForm');
+
+            editForm.querySelector('.actionable').classList.remove('d-none');
+
+            editForm.querySelector('[name="startDate"]').disabled = false;
+            editForm.querySelector('[name="endDate"]').disabled = false;
+        }
+    }
+
+    function save() {
+        const editBtn = $('#editBtn');
+        const editFormJQ = $('#editForm');
+        const editForm = document.querySelector('#editForm');
+
+        editBtn.click(async () => {
+
+            if (!isValidForm('#editForm')) {
+                editFormJQ.addClass('was-validated');
+            } else {
+
+                showLoading();
+                editFormJQ.removeClass('was-validated');
+
+                const startDate = editForm.querySelector('[name="startDate"]').value;
+                const endDate = editForm.querySelector('[name="endDate"]').value;
+
+                let params = {
+                    startDate: startDate,
+                    endDate: endDate
+                };
+
+                axios.patch('/v1' + window.location.pathname, params).then(() => {
+                    showNotify(messages.signings.teleworking.update.success);
+                }).catch(error => showNotify(error.response.data.detail, 'danger'))
+                    .finally(() => hideLoading());
+            }
+        })
+    }
+
+</script>
