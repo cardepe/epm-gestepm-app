@@ -2016,6 +2016,11 @@ components:
                 x-stoplight:
                   id: y319m8k3jhtoo
                 format: date-time
+              closedAt:
+                type: string
+                x-stoplight:
+                  id: xaim4jw0c0vzb
+                format: date-time
               closedLocation:
                 type: string
                 x-stoplight:

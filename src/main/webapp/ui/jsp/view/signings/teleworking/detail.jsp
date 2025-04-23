@@ -56,7 +56,7 @@
                     <div class="col-sm-12 col-md-4">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100"><spring:message code="start.date"/>
-                                <input type="datetime-local" name="startDate" class="form-control mt-1" value="${teleworkingSigning.startedAt}" disabled />
+                                <input type="datetime-local" name="startedAt" class="form-control mt-1" value="${teleworkingSigning.startedAt}" disabled />
                             </label>
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                     <div class="col-sm-12 col-md-4">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100"><spring:message code="end.date"/>
-                                <input type="datetime-local" name="endDate" class="form-control mt-1" value="${teleworkingSigning.closedAt}" disabled />
+                                <input type="datetime-local" name="closedAt" class="form-control mt-1" value="${teleworkingSigning.closedAt}" disabled />
                             </label>
                         </div>
                     </div>
@@ -121,8 +121,8 @@
 
             editForm.querySelector('.actionable').classList.remove('d-none');
 
-            editForm.querySelector('[name="startDate"]').disabled = false;
-            editForm.querySelector('[name="endDate"]').disabled = false;
+            editForm.querySelector('[name="startedAt"]').disabled = false;
+            editForm.querySelector('[name="closedAt"]').disabled = false;
         }
     }
 
@@ -140,12 +140,12 @@
                 showLoading();
                 editFormJQ.removeClass('was-validated');
 
-                const startDate = editForm.querySelector('[name="startDate"]').value;
-                const endDate = editForm.querySelector('[name="endDate"]').value;
+                const startedAt = editForm.querySelector('[name="startedAt"]').value;
+                const closedAt = editForm.querySelector('[name="closedAt"]').value;
 
                 let params = {
-                    startDate: startDate,
-                    endDate: endDate
+                    startedAt: startedAt,
+                    closedAt: closedAt
                 };
 
                 axios.patch('/v1' + window.location.pathname, params).then(() => {
