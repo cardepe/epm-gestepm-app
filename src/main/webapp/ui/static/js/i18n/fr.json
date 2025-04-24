@@ -103,7 +103,11 @@
             "name": "Absence"
         },
         "teleworking": {
-            "startDate": "Date de début : {0}"
+            "name": "Télétravail",
+            "startDate": "Date de début : {0}",
+            "update": {
+                "success": "La fiche de télétravail a été mise à jour avec succès."
+            }
         },
         "personal": {
             "name": "Pointage horaire personnel"

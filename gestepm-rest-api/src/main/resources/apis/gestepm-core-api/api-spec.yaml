@@ -835,6 +835,7 @@ paths:
                 - MANUAL_SIGNINGS
                 - PERSONAL_SIGNINGS
                 - PROGRAMMED_SHARES
+                - TELEWORKING_SIGNING
                 - WORK_SHARES
           in: query
           name: types
@@ -1413,6 +1414,7 @@ components:
             - MANUAL_SIGNINGS
             - PERSONAL_SIGNINGS
             - PROGRAMMED_SHARES
+            - TELEWORKING_SIGNING
             - WORK_SHARES
         description:
           type: string
@@ -2014,6 +2016,11 @@ components:
                 x-stoplight:
                   id: y319m8k3jhtoo
                 format: date-time
+              closedAt:
+                type: string
+                x-stoplight:
+                  id: xaim4jw0c0vzb
+                format: date-time
               closedLocation:
                 type: string
                 x-stoplight:
@@ -2039,6 +2046,7 @@ components:
                   - MANUAL_SIGNINGS
                   - PERSONAL_SIGNINGS
                   - PROGRAMMED_SHARES
+                  - TELEWORKING_SIGNING
                   - WORK_SHARES
               startDate:
                 type: string

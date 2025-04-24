@@ -16,9 +16,9 @@ public class ConstructionShareUpdateDto {
 
     private Integer projectId;
 
-    private LocalDateTime startDate;
+    private LocalDateTime createdAt;
 
-    private LocalDateTime endDate;
+    private LocalDateTime closedAt;
 
     private String observations;
 
