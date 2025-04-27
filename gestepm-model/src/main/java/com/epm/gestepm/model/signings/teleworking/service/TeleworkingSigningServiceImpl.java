@@ -139,7 +139,9 @@ public class TeleworkingSigningServiceImpl implements TeleworkingSigningService 
 
         final TeleworkingSigningDto teleworkingSigning = findOrNotFound(finderDto);
 
-        this.signingUpdateChecker.checker(null, teleworkingSigning.getProjectId());
+        if (updateDto.getClosedLocation() == null) {
+            this.signingUpdateChecker.checker(null, teleworkingSigning.getProjectId());
+        }
 
         final TeleworkingSigningUpdate update = getMapper(MapTSToTeleworkingSigningUpdate.class).from(updateDto,
                 getMapper(MapTSToTeleworkingSigningUpdate.class).from(teleworkingSigning));

@@ -5,6 +5,7 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.model.shares.checker.ShareDateChecker;
 import com.epm.gestepm.model.shares.displacement.dao.DisplacementShareDao;
 import com.epm.gestepm.model.shares.displacement.dao.entity.DisplacementShare;
 import com.epm.gestepm.model.shares.displacement.dao.entity.creator.DisplacementShareCreate;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -45,6 +47,8 @@ public class DisplacementShareServiceImpl implements DisplacementShareService {
     private final AuditProvider auditProvider;
 
     private final DisplacementShareDao displacementShareDao;
+
+    private final ShareDateChecker shareDateChecker;
 
     @Override
     @RequirePermits(value = PRMT_READ_DS, action = "List displacement shares")
@@ -113,6 +117,9 @@ public class DisplacementShareServiceImpl implements DisplacementShareService {
             msgOut = "New displacement share created OK",
             errorMsg = "Failed to create new displacement share")
     public DisplacementShareDto create(DisplacementShareCreateDto createDto) {
+        final LocalDateTime endDate = this.shareDateChecker.checker(createDto.getStartDate(), createDto.getEndDate());
+        createDto.setEndDate(endDate);
+
         final DisplacementShareCreate create = getMapper(MapDSToDisplacementShareCreate.class).from(createDto);
 
         this.auditProvider.auditCreate(create);
