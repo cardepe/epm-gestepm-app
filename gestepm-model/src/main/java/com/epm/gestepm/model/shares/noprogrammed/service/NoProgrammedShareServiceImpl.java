@@ -4,6 +4,7 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.model.shares.checker.ShareDateChecker;
 import com.epm.gestepm.model.shares.noprogrammed.checker.NoProgrammedShareChecker;
 import com.epm.gestepm.model.shares.noprogrammed.dao.NoProgrammedShareDao;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.NoProgrammedShare;
@@ -23,6 +24,7 @@ import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShare
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.NoProgrammedShareUpdateDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareNotFoundException;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -40,6 +42,7 @@ import static org.mapstruct.factory.Mappers.getMapper;
 
 @Service
 @Validated
+@AllArgsConstructor
 @EnableExecutionLog(layerMarker = SERVICE)
 public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
 
@@ -49,11 +52,7 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
 
     private final NoProgrammedSharePostCreationDecorator noProgrammedSharePostCreationDecorator;
 
-    public NoProgrammedShareServiceImpl(NoProgrammedShareChecker noProgrammedShareChecker, NoProgrammedShareDao noProgrammedShareDao, NoProgrammedSharePostCreationDecorator noProgrammedSharePostCreationDecorator) {
-        this.noProgrammedShareChecker = noProgrammedShareChecker;
-        this.noProgrammedShareDao = noProgrammedShareDao;
-        this.noProgrammedSharePostCreationDecorator = noProgrammedSharePostCreationDecorator;
-    }
+    private final ShareDateChecker shareDateChecker;
 
     @Override
     @RequirePermits(value = PRMT_READ_NPS, action = "List no programmed shares")
@@ -148,7 +147,8 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
         this.noProgrammedShareChecker.checker(updateDto, noProgrammedShareDto);
 
         if (NoProgrammedShareStateEnumDto.CLOSED.equals(updateDto.getState())) {
-            updateDto.setEndDate(LocalDateTime.now());
+            final LocalDateTime endDate = this.shareDateChecker.checker(noProgrammedShareDto.getStartDate(), LocalDateTime.now());
+            updateDto.setEndDate(endDate);
         }
 
         final NoProgrammedShareUpdate update = getMapper(MapNPSToNoProgrammedShareUpdate.class).from(updateDto,
