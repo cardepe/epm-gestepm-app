@@ -16,7 +16,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RestControllerAdvice
 public class SigningExceptionHandler extends BaseRestExceptionHandler {
 
-    public static final int SI_ERROR_CODE = 1400;
+    public static final int SI_ERROR_CODE = 1500;
 
     public static final String SI_FORBIDDEN = "signing-forbidden";
 

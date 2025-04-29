@@ -18,9 +18,9 @@ import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_PROCESS;
 @EnableExecutionLog(layerMarker = DELEGATOR)
 public class DisplacementShareResponseDecorator extends BaseResponseDataDecorator<DisplacementShare> {
 
-    public static final String DI_U_EXPAND = "user";
+    public static final String DS_U_EXPAND = "user";
 
-    public static final String DI_P_EXPAND = "project";
+    public static final String DS_P_EXPAND = "project";
 
     private final ProjectService projectService;
 
@@ -45,7 +45,7 @@ public class DisplacementShareResponseDecorator extends BaseResponseDataDecorato
             selfReq.commonValuesFrom(request);
         }
 
-        if (request.hasExpand(DI_U_EXPAND) && data.getUser() != null) {
+        if (request.hasExpand(DS_U_EXPAND) && data.getUser() != null) {
 
             final User user = data.getUser();
             final Integer id = user.getId();
@@ -56,7 +56,7 @@ public class DisplacementShareResponseDecorator extends BaseResponseDataDecorato
             data.setUser(response);
         }
 
-        if (request.hasExpand(DI_P_EXPAND)) {
+        if (request.hasExpand(DS_P_EXPAND)) {
 
             final Project project = data.getProject();
             final Integer id = project.getId();

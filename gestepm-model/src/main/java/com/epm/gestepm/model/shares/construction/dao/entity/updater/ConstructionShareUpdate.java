@@ -21,15 +21,17 @@ public class ConstructionShareUpdate implements AuditClose, CollectableAttribute
 
     private Integer projectId;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime startDate;
 
-    private LocalDateTime closedAt;
-
-    private Integer closedBy;
+    private LocalDateTime endDate;
 
     private String observations;
 
     private Integer operatorSignature;
+
+    private LocalDateTime closedAt;
+
+    private Integer closedBy;
     
     @Singular
     private Set<ConstructionShareFileCreate> files;
@@ -41,11 +43,12 @@ public class ConstructionShareUpdate implements AuditClose, CollectableAttribute
 
         map.put(ATTR_CS_ID, this.id);
         map.put(ATTR_CS_P_ID, this.projectId);
-        map.putTimestamp(ATTR_CS_CREATED_AT, this.createdAt);
-        map.putTimestamp(ATTR_CS_CLOSED_AT, this.closedAt);
-        map.put(ATTR_CS_CLOSED_BY, this.closedBy);
+        map.putTimestamp(ATTR_CS_START_DATE, this.startDate);
+        map.putTimestamp(ATTR_CS_END_DATE, this.endDate);
         map.put(ATTR_CS_OBSERVATIONS, this.observations);
         map.put(ATTR_CS_OPERATOR_SIGNATURE, this.operatorSignature);
+        map.putTimestamp(ATTR_CS_CLOSED_AT, this.closedAt);
+        map.put(ATTR_CS_CLOSED_BY, this.closedBy);
 
         return map;
     }

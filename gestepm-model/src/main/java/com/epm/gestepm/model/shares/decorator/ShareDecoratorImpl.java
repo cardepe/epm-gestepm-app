@@ -1,4 +1,4 @@
-package com.epm.gestepm.model.shares;
+package com.epm.gestepm.model.shares.decorator;
 
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
@@ -9,8 +9,12 @@ import com.epm.gestepm.modelapi.inspection.service.InspectionExportService;
 import com.epm.gestepm.modelapi.inspection.service.InspectionService;
 import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
-import com.epm.gestepm.modelapi.shares.ShareDecorator;
+import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareDto;
+import com.epm.gestepm.modelapi.shares.construction.dto.filter.ConstructionShareFilterDto;
+import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareService;
+import com.epm.gestepm.modelapi.shares.decorator.ShareDecorator;
 import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
+import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -24,10 +28,11 @@ import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
 
 @Service
 @Validated
+@AllArgsConstructor
 @EnableExecutionLog(layerMarker = SERVICE)
 public class ShareDecoratorImpl implements ShareDecorator {
 
-    private final ConstructionShareOldService constructionShareOldService;
+    private final ConstructionShareService constructionShareService;
 
     private final InterventionPrShareService interventionPrShareService;
 
@@ -39,28 +44,24 @@ public class ShareDecoratorImpl implements ShareDecorator {
 
     private final WorkShareService workShareService;
 
-    public ShareDecoratorImpl(ConstructionShareOldService constructionShareOldService, InterventionPrShareService interventionPrShareService, InspectionService inspectionService, InspectionExportService inspectionExportService, MessageSource messageSource, WorkShareService workShareService) {
-        this.constructionShareOldService = constructionShareOldService;
-        this.interventionPrShareService = interventionPrShareService;
-        this.inspectionService = inspectionService;
-        this.inspectionExportService = inspectionExportService;
-        this.messageSource = messageSource;
-        this.workShareService = workShareService;
-    }
-
     @Override
     public List<PdfFileDTO> exportShares(Integer projectId, LocalDateTime startDate, LocalDateTime endDate) {
         final List<PdfFileDTO> pdfs = new ArrayList<>();
 
-        final List<PdfFileDTO> csPdfs = this.constructionShareOldService.generateSharesByProjectAndInterval(projectId.longValue(), startDate, endDate);
+        final ConstructionShareFilterDto constructionShareFilter = new ConstructionShareFilterDto();
+        constructionShareFilter.setProjectId(projectId);
+        constructionShareFilter.setStartDate(startDate);
+        constructionShareFilter.setEndDate(endDate);
+
+        final List<PdfFileDTO> csPdfs = this.getConstructionShares(constructionShareFilter);
         final List<PdfFileDTO> iprPdfs = this.interventionPrShareService.generateSharesByProjectAndInterval(projectId.longValue(), startDate, endDate);
 
-        final InspectionFilterDto filter = new InspectionFilterDto();
-        filter.setProjectId(projectId);
-        filter.setStartDate(startDate);
-        filter.setEndDate(endDate);
+        final InspectionFilterDto inspectionFilter = new InspectionFilterDto();
+        inspectionFilter.setProjectId(projectId);
+        inspectionFilter.setStartDate(startDate);
+        inspectionFilter.setEndDate(endDate);
 
-        final List<PdfFileDTO> isPdfs = this.getInspections(filter);
+        final List<PdfFileDTO> isPdfs = this.getInspections(inspectionFilter);
 
         final List<PdfFileDTO> wsPdfs = this.workShareService.generateSharesByProjectAndInterval(projectId.longValue(), startDate, endDate);
 
@@ -68,6 +69,29 @@ public class ShareDecoratorImpl implements ShareDecorator {
         pdfs.addAll(iprPdfs);
         pdfs.addAll(isPdfs);
         pdfs.addAll(wsPdfs);
+
+        return pdfs;
+    }
+
+    private List<PdfFileDTO> getConstructionShares(final ConstructionShareFilterDto filter) {
+        final List<PdfFileDTO> pdfs = new ArrayList<>();
+        final List<ConstructionShareDto> constructionShares = this.constructionShareService.list(filter);
+
+        constructionShares.forEach(inspection -> {
+            final byte[] pdf = this.inspectionExportService.generate(inspection);
+
+            final String fileName = this.messageSource.getMessage("shares.no.programmed.pdf.name", new Object[]{
+                    inspection.getShareId().toString(),
+                    inspection.getId().toString(),
+                    Utiles.transform(inspection.getStartDate(), "yyyyMMdd")
+            }, Locale.getDefault()) + ".pdf";
+
+            final PdfFileDTO pdfFileDTO = new PdfFileDTO();
+            pdfFileDTO.setDocumentBytes(pdf);
+            pdfFileDTO.setFileName(fileName);
+
+            pdfs.add(pdfFileDTO);
+        });
 
         return pdfs;
     }

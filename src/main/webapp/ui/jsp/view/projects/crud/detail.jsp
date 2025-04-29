@@ -2153,7 +2153,7 @@
 
     function getCsShare(id) {
         return $.ajax({
-            url: '/shares/intervention/construction/' + id,
+            url: '/shares/construction/' + id,
             type: 'GET'
         });
     }
@@ -2521,7 +2521,7 @@
             var deleteUri = '';
 
             if (shareType === 'cs') {
-                deleteUri = '/shares/intervention/construction/delete/' + signingId;
+                deleteUri = '/shares/construction/' + signingId;
             } else if (shareType === 'ds') {
                 deleteUri = '/shares/displacement/' + signingId;
             } else if (shareType === 'ips') {

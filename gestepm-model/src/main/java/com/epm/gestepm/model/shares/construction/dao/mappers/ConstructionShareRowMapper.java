@@ -17,7 +17,11 @@ public class ConstructionShareRowMapper extends CommonRowMapper implements RowMa
 
     public static final String COL_CS_U_ID = "user_id";
 
+    public static final String COL_CS_U_USERNAME = "username";
+
     public static final String COL_CS_P_ID = "project_id";
+
+    public static final String COL_CS_P_NAME = "project_name";
 
     public static final String COL_CS_OBSERVATIONS = "observations";
 
@@ -31,7 +35,9 @@ public class ConstructionShareRowMapper extends CommonRowMapper implements RowMa
         final ConstructionShare constructionShare = new ConstructionShare();
         constructionShare.setId(rs.getInt(COL_CS_ID));
         constructionShare.setUserId(rs.getInt(COL_CS_U_ID));
+        constructionShare.setUsername(rs.getString(COL_CS_U_USERNAME));
         constructionShare.setProjectId(rs.getInt(COL_CS_P_ID));
+        constructionShare.setProjectName(rs.getString(COL_CS_P_NAME));
         constructionShare.setObservations(nullableString(rs, COL_CS_OBSERVATIONS));
         constructionShare.setOperatorSignature(nullableString(rs, COL_CS_SIGNATURE_OP));
 

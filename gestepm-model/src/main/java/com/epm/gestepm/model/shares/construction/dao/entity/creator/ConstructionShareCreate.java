@@ -22,6 +22,9 @@ public class ConstructionShareCreate implements AuditCreate, CollectableAttribut
     private Integer projectId;
 
     @NotNull
+    private LocalDateTime startDate;
+
+    @NotNull
     private LocalDateTime createdAt;
 
     @NotNull
@@ -33,6 +36,7 @@ public class ConstructionShareCreate implements AuditCreate, CollectableAttribut
 
         map.put(ATTR_CS_U_ID, this.userId);
         map.put(ATTR_CS_P_ID, this.projectId);
+        map.putTimestamp(ATTR_CS_START_DATE, this.startDate);
         map.putTimestamp(ATTR_CS_CREATED_AT, this.createdAt);
         map.put(ATTR_CS_CREATED_BY, this.createdBy);
 

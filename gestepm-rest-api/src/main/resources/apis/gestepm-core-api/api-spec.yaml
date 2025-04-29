@@ -270,6 +270,131 @@ paths:
       tags:
         - personal-expense-v1
       description: delete-personal-expense-v1
+  /v1/shares/construction:
+    get:
+      summary: V1 - List construction shares
+      responses:
+        '200':
+          $ref: '#/components/responses/ConstructionShareList'
+      operationId: list-construction-shares-v1
+      description: list-construction-shares-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by construction share identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: userIds
+          description: Filter by user identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: projectIds
+          description: Filter by project identificator.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: startDate
+          description: Filter by start date after.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: endDate
+          description: Filter by end date before.
+      tags:
+        - construction-share-v1
+    post:
+      summary: V1 - Create construction share
+      operationId: create-construction-share-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ConstructionShare'
+        '404':
+          description: user-not-found | project-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: create-construction-share-v1
+      tags:
+        - construction-share-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateConstructionShare'
+  '/v1/shares/construction/{shareId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+    get:
+      summary: V1 - Find construction share
+      tags:
+        - construction-share-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ConstructionShare'
+        '404':
+          description: construction-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-construction-share-by-id-v1
+      description: find-construction-share-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-locale
+    put:
+      summary: V1 - Update construction share
+      operationId: update-construction-share-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ConstructionShare'
+        '404':
+          description: construction-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: update-construction-share-v1
+      tags:
+        - construction-share-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateConstructionShare'
+    delete:
+      summary: V1 - Delete construction share
+      operationId: delete-construction-share-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: construction-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: delete-construction-share-v1
+      tags:
+        - construction-share-v1
   /v1/shares/displacement:
     get:
       summary: V1 - List displacement shares
@@ -902,6 +1027,58 @@ paths:
         - user-v1
 components:
   schemas:
+    ConstructionShare:
+      title: ConstructionShare
+      x-stoplight:
+        id: 0d7ialsinsdm1
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        project:
+          $ref: '#/components/schemas/Project'
+        startDate:
+          type: string
+          x-stoplight:
+            id: hsz4zkkfsxep0
+          format: date-time
+        endDate:
+          type: string
+          x-stoplight:
+            id: 1fgww01i4ptpg
+          format: date-time
+        observations:
+          type: string
+          x-stoplight:
+            id: 2gawbt01bo0fo
+        operatorSignature:
+          type: string
+          x-stoplight:
+            id: n2mhp965w4xqj
+        createdAt:
+          type: string
+          x-stoplight:
+            id: dpztvzlr6lmkf
+          format: date-time
+        createdBy:
+          $ref: '#/components/schemas/User'
+        updatedAt:
+          type: string
+          x-stoplight:
+            id: u7ozr13zwh2du
+          format: date-time
+        updatedBy:
+          $ref: '#/components/schemas/User'
+      required:
+        - id
+        - user
+        - project
+        - startDate
+        - endDate
+        - createdAt
+        - createdBy
     DisplacementShare:
       title: DisplacementShare
       x-stoplight:
@@ -1595,6 +1772,32 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/TimeControl'
+    ConstructionShare:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                $ref: '#/components/schemas/ConstructionShare'
+    ConstructionShareList:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                type: array
+                x-stoplight:
+                  id: dyvkfgdppk87v
+                items:
+                  $ref: '#/components/schemas/ConstructionShare'
     DisplacementShare:
       description: Example response
       content:
@@ -2063,6 +2266,29 @@ components:
               - type
               - startDate
               - endDate
+    CreateConstructionShare:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userId:
+                type: integer
+                x-stoplight:
+                  id: 53jm58zwsoki3
+              projectId:
+                type: integer
+                x-stoplight:
+                  id: 9lippqadj9w1n
+              startDate:
+                type: string
+                x-stoplight:
+                  id: 0f9zbwdc0s09u
+                format: date-time
+            required:
+              - userId
+              - projectId
+              - startDate
     CreateDisplacementShare:
       content:
         application/json:
@@ -2101,6 +2327,39 @@ components:
               - description
               - startDate
               - endDate
+    UpdateConstructionShare:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              projectId:
+                type: integer
+                x-stoplight:
+                  id: pxse3yn75h7cw
+              description:
+                type: string
+                x-stoplight:
+                  id: ejtwcqycqsx7n
+              observations:
+                type: string
+                x-stoplight:
+                  id: 6nihi8qpf5z2s
+              startDate:
+                type: string
+                x-stoplight:
+                  id: o130b23mstyam
+                format: date-time
+              endDate:
+                type: string
+                x-stoplight:
+                  id: 9kif43i1jwn4s
+                format: date-time
+            required:
+              - projectId
+              - description
+              - startDate
+              - endDate
     UpdateDisplacementShare:
       content:
         application/json:
@@ -2115,10 +2374,6 @@ components:
                 type: string
                 x-stoplight:
                   id: u98ottf67wmcq
-              observations:
-                type: string
-                x-stoplight:
-                  id: m3wb8a1zma8ti
               startDate:
                 type: string
                 x-stoplight:
@@ -2129,6 +2384,14 @@ components:
                 x-stoplight:
                   id: 63qdtg25jd5a0
                 format: date-time
+              observations:
+                type: string
+                x-stoplight:
+                  id: m3wb8a1zma8ti
+              operatorSignature:
+                type: string
+                x-stoplight:
+                  id: zmqrb1t22nlyz
             required:
               - projectId
               - description
@@ -2182,6 +2445,8 @@ tags:
     description: V1 - Personal Expense Sheets
   - name: personal-expense-v1
     description: V1 - Personal Expenses
+  - name: construction-share-v1
+    description: V1 - Construction Share
   - name: inspection-v1
     description: V1 - Inspection
   - name: inspection-file-v1

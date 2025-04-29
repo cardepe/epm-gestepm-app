@@ -174,12 +174,6 @@ public class ShareController {
         final List<ShareTableDTO> shareTableDTOs = new ArrayList<>();
         final boolean isTypeFiltered = !StringUtils.isNullOrEmpty(type);
 
-        if (!isTypeFiltered || "cs".equals(type)) {
-
-            final List<ShareTableDTO> constructionShares = constructionShareOldService.getShareTableByActivityCenterId(id, activityCenterId, projectId, progress);
-            shareTableDTOs.addAll(constructionShares);
-        }
-
         if (!isTypeFiltered || "is".equals(type)) {
 
             final List<ShareTableDTO> noProgrammedInterventionShares = interventionShareService.getShareTableByActivityCenterId(id, activityCenterId, projectId, progress);
@@ -507,48 +501,6 @@ public class ShareController {
     }
 
     @ResponseBody
-    @PostMapping("/intervention/construction/create")
-    public ResponseEntity<IdMsgDTO> createConstructionIntervention(@ModelAttribute ConstructionDTO constructionDTO, Locale locale, Model model, HttpServletRequest request) {
-
-        IdMsgDTO response = new IdMsgDTO();
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Get share project
-            Project project = projectService.getProjectById(constructionDTO.getProjectId());
-
-            if (project == null) {
-                throw new Exception("El proyecto " + constructionDTO.getProjectId() + " no existe");
-            }
-
-            // Map Intervention share stepper
-            ConstructionShare constructionShare = ShareMapper.mapDTOToConstructionShare(constructionDTO, user, project);
-            constructionShare.setCreatedAt(LocalDateTime.now());
-            constructionShare.setCreatedBy(user.getId());
-
-            // Save intervention
-            constructionShare = constructionShareOldService.save(constructionShare);
-
-            // Log info
-            log.info("Creado nuevo parte de intervención " + constructionShare.getId() + " por parte del usuario " + user.getId());
-
-            response.setId(constructionShare.getId());
-            response.setMsg(messageSource.getMessage("shares.construction.create.success", new Object[]{}, locale));
-
-            // Return data
-            return new ResponseEntity<>(response, HttpStatus.OK);
-
-        } catch (Exception e) {
-            log.error(e);
-            response.setMsg(messageSource.getMessage("shares.construction.create.error", new Object[]{}, locale));
-            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @ResponseBody
     @PostMapping("/intervention/construction/finish")
     public ResponseEntity<String> finishConstructionIntervention(@ModelAttribute ConstructionDTO constructionDTO, Locale locale, Model model, HttpServletRequest request) {
         try {
@@ -591,70 +543,6 @@ public class ShareController {
         } catch (Exception e) {
             log.error(e);
             return new ResponseEntity<>(messageSource.getMessage("shares.construction.finish.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @ResponseBody
-    @PutMapping("/construction/{id}")
-    public ResponseEntity<String> updateConstructionShare(@PathVariable Long id, @ModelAttribute ConstructionDTO constructionDTO,
-                                                          Locale locale, Model model, HttpServletRequest request) {
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Get
-            ConstructionShare constructionShare = constructionShareOldService.getConstructionShareById(constructionDTO.getId());
-
-            constructionShare.setCreatedAt(constructionDTO.getStartDate());
-            constructionShare.setClosedAt(constructionDTO.getEndDate());
-            constructionShare.setClosedBy(user.getId());
-            constructionShare.setObservations(constructionDTO.getObservations());
-
-            // Save intervention
-            constructionShare = constructionShareOldService.save(constructionShare);
-
-            // Log info
-            log.info("Actualizado parte de construccion " + constructionShare.getId() + " por parte del usuario " + user.getId());
-
-            // Return data
-            return new ResponseEntity<>(messageSource.getMessage("shares.construction.update.success", new Object[]{}, locale), HttpStatus.OK);
-
-        } catch (Exception e) {
-            log.error(e);
-            return new ResponseEntity<>(messageSource.getMessage("shares.construction.update.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @ResponseBody
-    @GetMapping("/intervention/construction/{id}")
-    public ConstructionDTO getConstructionShare(@PathVariable Long id) {
-
-        ConstructionShare constructionShare = constructionShareOldService.getConstructionShareById(id);
-
-        return ShareMapper.mapConstructionShareToDTO(constructionShare);
-    }
-
-
-    @ResponseBody
-    @DeleteMapping("/intervention/construction/delete/{id}")
-    public ResponseEntity<String> deleteConstructionShare(@PathVariable Long id, Locale locale) {
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            constructionShareOldService.deleteById(id);
-
-            log.info("Parte de construcción " + id + " eliminado con éxito por parte del usuario " + user.getId());
-
-            // Return data
-            return new ResponseEntity<>(messageSource.getMessage("shares.construction.delete.success", new Object[]{}, locale), HttpStatus.OK);
-
-        } catch (Exception e) {
-            return new ResponseEntity<>(messageSource.getMessage("shares.construction.delete.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
         }
     }
 

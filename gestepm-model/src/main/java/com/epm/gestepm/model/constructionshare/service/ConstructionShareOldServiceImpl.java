@@ -58,11 +58,6 @@ public class ConstructionShareOldServiceImpl implements ConstructionShareOldServ
 	}
 	
 	@Override
-	public ConstructionShare save(ConstructionShare constructionShare) {	
-		return constructionShareDao.save(constructionShare);
-	}
-	
-	@Override
 	public ConstructionShare create(ConstructionShare constructionShare, List<MultipartFile> files) {	
 		
 		ConstructionShare saved = constructionShareDao.save(constructionShare);
@@ -75,21 +70,6 @@ public class ConstructionShareOldServiceImpl implements ConstructionShareOldServ
 		}
 		
 		return saved;
-	}
-	
-	@Override
-	public void deleteById(Long shareId) {
-		constructionShareDao.deleteById(shareId);
-	}
-
-	@Override
-	public List<ShareTableDTO> getShareTableByActivityCenterId(Long id, Long activityCenterId, Long projectId, Integer progress) {
-		return constructionShareDao.findShareTableByActivityCenterId(id, activityCenterId, projectId, progress);
-	}
-	
-	@Override
-	public List<ShareTableDTO> getShareTableByProjectId(Long projectId) {
-		return constructionShareDao.findShareTableByProjectId(projectId);
 	}
 
 	@Override
