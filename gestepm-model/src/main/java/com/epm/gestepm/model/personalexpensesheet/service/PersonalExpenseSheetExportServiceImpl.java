@@ -201,6 +201,6 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
     }
 
     private boolean isPDF(final PersonalExpenseFileDto file) {
-        return file.getName().endsWith(".pdf");
+        return file.getName().toLowerCase().endsWith(".pdf");
     }
 }
