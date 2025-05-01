@@ -13,7 +13,6 @@ import java.util.List;
 import static com.epm.gestepm.model.shares.displacement.dao.constants.DisplacementShareAttributes.*;
 
 @Data
-@Builder
 @EqualsAndHashCode(callSuper = true)
 public class DisplacementShareFilter extends Orderable implements CollectableAttributes {
 

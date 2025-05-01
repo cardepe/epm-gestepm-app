@@ -53,7 +53,7 @@ public class ConstructionShareResponseDecorator extends BaseResponseDataDecorato
             final Integer id = user.getId();
 
             final com.epm.gestepm.modelapi.user.dto.User userDto = this.userService.getUserById(Long.valueOf(id));
-            final User response = new User().id(id).name(userDto.getName()).surnames(userDto.getSurnames());
+            final User response = new User().id(id).name(userDto.getFullName());
 
             data.setUser(response);
         }

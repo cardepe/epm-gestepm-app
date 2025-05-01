@@ -5,6 +5,47 @@
 <link rel="stylesheet"
       href="${pageContext.request.contextPath}/webjars/bootstrap-select/1.13.17/css/bootstrap-select.min.css">
 
+<style>
+    .right-panel .page-header button {
+        margin-top: 0;
+    }
+
+     #filterForm {
+         top: auto !important;
+         left: auto !important;
+         right: 15px;
+         min-width: 20rem;
+     }
+
+     #filterForm .select2-container .select2-selection--single {
+         height: 38px;
+         padding: 6px 12px;
+         border: 1px solid #ced4da;
+         border-radius: 4px;
+         font-size: 14px;
+         line-height: 1.42857143;
+         box-sizing: border-box;
+     }
+
+    #filterForm .select2-container .select2-selection--single .select2-selection__rendered {
+        line-height: 24px;
+        padding-left: 0;
+        color: #495057;
+    }
+
+    #filterForm .select2-container--default .select2-selection--single {
+        border-color: #ced4da;
+    }
+
+    #filterForm .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 38px;
+        right: 10px;
+        top: 0;
+        width: 30px;
+    }
+
+</style>
+
 <div class="row m-0">
     <div class="col-sm-12 col-md-9 p-0">
         <div class="breadcrumbs">
@@ -26,7 +67,7 @@
         <div class="breadcrumbs">
             <div class="breadcrumbs-inner">
                 <form id="createForm">
-                    <div id="form-page-header" class="page-header">
+                    <div id="form-page-header" class="page-header d-md-flex align-items-center pl-3">
                         <div class="row w-100">
                             <div class="col-sm-12 col-md-9 pr-0">
                                 <select id="projectDropdown" class="form-control input" name="projectId" required>
@@ -39,7 +80,7 @@
                             </div>
 
                             <div class="col-sm-12 col-md-3 p-0 pl-1">
-                                <button type="button" class="btn btn-default btn-sm" onclick="create()">
+                                <button type="button" class="btn btn-default btn-sm w-100" onclick="create()">
                                     <spring:message code="init"/>
                                 </button>
                             </div>
@@ -58,8 +99,60 @@
         <div class="col h-100">
             <div class="card">
                 <div class="card-body">
-                    <div class="title mb-0">
-                        <spring:message code="shares.construction.title" />
+                    <div class="title mb-0 d-flex justify-content-between align-items-center">
+                        <div>
+                            <spring:message code="shares.construction.title" />
+                        </div>
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <spring:message code="filters" />
+                            </button>
+
+                            <form id="filterForm" class="dropdown-menu dropdown-menu-right filter-dropdown p-4">
+                                <div class="form-group">
+                                    <label class="w-100">
+                                        <spring:message code="id" />
+                                        <input type="text" name="id" class="form-control" placeholder="Id">
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="w-100">
+                                        <spring:message code="technical" />
+                                        <select name="userId" class="form-control select2">
+                                            <option value=""><spring:message code="select.placeholder" /></option>
+                                            <c:forEach items="${users}" var="user">
+                                                <option value="${user.id}"><spring:message code="${user.fullName}" /></option>
+                                            </c:forEach>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="w-100">
+                                        <spring:message code="project" />
+                                        <select name="projectId" class="form-control select2">
+                                            <option value=""><spring:message code="select.placeholder" /></option>
+                                            <c:forEach items="${projects}" var="project">
+                                                <option value="${project.id}"><spring:message code="${project.name}" /></option>
+                                            </c:forEach>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <label class="w-100">
+                                        <spring:message code="status" />
+                                        <select name="status" class="form-control select2">
+                                            <option value=""><spring:message code="select.placeholder" /></option>
+                                            <option value="NOT_FINISHED"><spring:message code="not.finished" /></option>
+                                            <option value="FINISHED"><spring:message code="finished" /></option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <button type="button" onclick="filter(true)" class="btn btn-outline-secondary btn-sm"><spring:message code="reset" /></button>
+                                    <button type="button" onclick="filter()" class="btn btn-default"><spring:message code="filter" /></button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
 
                     <div class="table-responsive">
@@ -67,6 +160,7 @@
                             <thead>
                             <tr>
                                 <th><spring:message code="id" /></th>
+                                <th><spring:message code="technical" /></th>
                                 <th><spring:message code="project" /></th>
                                 <th><spring:message code="start.date" /></th>
                                 <th><spring:message code="end.date" /></th>
@@ -81,9 +175,6 @@
     </div>
 </div>
 
-<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap-select/1.13.17/js/bootstrap-select.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/ui/static/js/select2/select2-utils.js?v=<%= System.currentTimeMillis() %>"></script>
-
 <script>
 
     let locale = '${locale}';
@@ -95,3 +186,6 @@
     });
 
 </script>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap-select/1.13.17/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/ui/static/js/select2/select2-utils.js?v=<%= System.currentTimeMillis() %>"></script>

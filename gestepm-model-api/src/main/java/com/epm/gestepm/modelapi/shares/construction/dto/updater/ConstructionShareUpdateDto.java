@@ -27,4 +27,6 @@ public class ConstructionShareUpdateDto {
     @Singular
     private Set<ConstructionShareFileCreateDto> files;
 
+    private Boolean notify;
+
 }

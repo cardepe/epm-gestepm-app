@@ -1,3 +1,8 @@
+<th:block th:fragment="close-construction-share">
+    <p th:text="#{email.constructionshare.close.line.1(${fullName}, ${constructionShareId}, ${projectName}, ${createdAt}, ${closedAt})}"></p>
+    <p th:text="#{email.constructionshare.close.line.2}"></p>
+</th:block>
+
 <th:block th:fragment="close-inspection">
     <p th:text="#{email.inspection.close.line.1(${fullName}, ${action}, ${inspectionId}, ${forumTitle}, ${projectName}, ${createdAt}, ${closedAt})}"></p>
     <p th:text="#{email.inspection.close.line.2}"></p>

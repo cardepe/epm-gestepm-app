@@ -25,4 +25,6 @@ public class ConstructionShareListRestRequest extends RestRequest {
 
     private LocalDateTime endDate;
 
+    private String status;
+
 }

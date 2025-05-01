@@ -28,10 +28,14 @@ import com.epm.gestepm.rest.shares.construction.response.ResponsesForConstructio
 import com.epm.gestepm.rest.shares.construction.response.ResponsesForConstructionShareList;
 import com.epm.gestepm.restapi.openapi.api.ConstructionShareV1Api;
 import com.epm.gestepm.restapi.openapi.model.*;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -63,14 +67,15 @@ public class ConstructionShareController extends BaseController implements Const
     @Override
     @RequirePermits(value = PRMT_READ_CS, action = "Get construction share list")
     @LogExecution(operation = OP_READ)
-    public ResponseEntity<ListConstructionSharesV1200Response> listConstructionSharesV1(final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit, final List<Integer> ids,
-                                                                                        final List<Integer> userIds, final List<Integer> projectIds, final LocalDateTime startDate, final LocalDateTime endDate) {
+    public ResponseEntity<ListConstructionSharesV1200Response> listConstructionSharesV1(final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit, final String order, final String orderBy,
+                                                                                        final List<Integer> ids, final List<Integer> userIds, final List<Integer> projectIds, final LocalDateTime startDate, final LocalDateTime endDate, final String status) {
 
-        final ConstructionShareListRestRequest req = new ConstructionShareListRestRequest(ids, userIds, projectIds, startDate, endDate);
+        final ConstructionShareListRestRequest req = new ConstructionShareListRestRequest(ids, userIds, projectIds, startDate, endDate, status);
 
         this.setCommon(req, meta, links, expand);
         this.setDefaults(req);
         this.setPagination(req, limit, offset);
+        this.setOrder(req, order, orderBy);
 
         final ConstructionShareFilterDto filterDto = getMapper(MapCSToConstructionShareFilterDto.class).from(req);
         final Page<ConstructionShareDto> page = this.constructionShareService.list(filterDto, offset, limit);

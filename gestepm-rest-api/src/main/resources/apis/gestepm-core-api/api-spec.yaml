@@ -284,6 +284,8 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
         - schema:
             type: array
             items:
@@ -317,6 +319,14 @@ paths:
           in: query
           name: endDate
           description: Filter by end date before.
+        - schema:
+            type: string
+            enum:
+              - NOT_FINISHED
+              - FINISHED
+          in: query
+          name: status
+          description: Filter by construction share status.
       tags:
         - construction-share-v1
     post:
@@ -359,7 +369,7 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-locale
-    put:
+    patch:
       summary: V1 - Update construction share
       operationId: update-construction-share-v1
       responses:
@@ -395,6 +405,48 @@ paths:
       description: delete-construction-share-v1
       tags:
         - construction-share-v1
+  '/v1/shares/construction/{shareId}/files/{fileId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+      - $ref: '#/components/parameters/File-Id'
+    delete:
+      summary: V1 - Delete construction share file
+      operationId: delete-construction-share-file-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: construction-share-file-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - construction-share-file-v1
+      description: delete-construction-share-file-v1
+  '/v1/shares/construction/{shareId}/export':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+    get:
+      summary: V1 - Export construction share
+      tags:
+        - inspection-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ConstructionShareExport'
+        '404':
+          description: construction-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: export-construction-share-v1
+      description: export-construction-share-v1
+      parameters: []
   /v1/shares/displacement:
     get:
       summary: V1 - List displacement shares
@@ -1824,6 +1876,13 @@ components:
                   id: dyvkfgdppk87v
                 items:
                   $ref: '#/components/schemas/DisplacementShare'
+    ConstructionShareExport:
+      description: Example response
+      content:
+        application/octet-stream:
+          schema:
+            type: string
+            format: binary
   requestBodies:
     CreateNoProgrammedShare:
       content:
@@ -2355,11 +2414,10 @@ components:
                 x-stoplight:
                   id: 9kif43i1jwn4s
                 format: date-time
-            required:
-              - projectId
-              - description
-              - startDate
-              - endDate
+              notify:
+                type: boolean
+                x-stoplight:
+                  id: 056faw4s2fxpf
     UpdateDisplacementShare:
       content:
         application/json:

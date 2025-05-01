@@ -91,23 +91,6 @@ public class SMTPServiceImpl implements SMTPService {
 
 		loadTemplateAndSendMail(smtpMailFrom, to, subject, "holidays_delete_mail_template_" + locale.getLanguage() + ".html", params);
 	}
-	
-	@Async
-	public void sendCloseConstructionShareMail(String to, ConstructionShare share, byte[] pdfGenerated, Locale locale) {
-		
-		log.info("Preparando la plantilla de correo: construction_share_close_mail_template_" + locale.getLanguage() + ".html");
-		
-		String subject = messageSource.getMessage("smtp.mail.construction.share.close.subject", new Object[] { share.getId().toString() }, locale);
-		
-		Map<String, String> params = new HashMap<>();
-		params.put("id", share.getId().toString());
-		params.put("username", share.getUser().getName() + " " + share.getUser().getSurnames());
-		params.put("projectName", share.getProject().getName());
-		params.put("startDate", Utiles.transform(share.getCreatedAt(), DATE_TIME_FORMAT));
-		params.put("endDate", Utiles.transform(share.getClosedAt(), DATE_TIME_FORMAT));
-
-		loadPDFTemplateAndSendMail(share, "cs", pdfGenerated, smtpMailFrom, to, subject, "construction_share_close_mail_template_" + locale.getLanguage() + ".html", params, locale);
-	}
 
 	@Async
 	public void sendCloseProgrammedShareMail(String to, InterventionPrShare share, byte[] pdfGenerated, Locale locale) {
@@ -328,20 +311,7 @@ public class SMTPServiceImpl implements SMTPService {
 
 	        String fileName = null;
 	        
-	        if ("cs".equals(type)) {
-	        	
-	        	ConstructionShare transformedShare = (ConstructionShare) share;
-	        	
-	        	if (transformedShare == null) {
-	        		log.error("No se ha encontrado el parte de construccion.");
-	        		return;
-	        	}
-				
-	        	log.info("Adjuntando parte de construccion " + transformedShare.getId() + " en " + locale.getLanguage());
-
-				fileName = messageSource.getMessage("shares.construction.pdf.name", new Object[] { transformedShare.getId().toString(), Utiles.getDateFormatted(transformedShare.getCreatedAt()) }, locale) + ".pdf";
-
-			} else if ("is".equals(type)) {
+	        if ("is".equals(type)) {
 	        	
 	        	InspectionDto inspection = (InspectionDto) share;
 	        	

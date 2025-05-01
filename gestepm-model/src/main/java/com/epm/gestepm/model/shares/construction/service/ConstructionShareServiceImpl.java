@@ -1,6 +1,10 @@
 package com.epm.gestepm.model.shares.construction.service;
 
+import com.epm.gestepm.emailapi.dto.Attachment;
+import com.epm.gestepm.emailapi.dto.emailgroup.CloseConstructionShareGroup;
+import com.epm.gestepm.emailapi.service.EmailService;
 import com.epm.gestepm.lib.audit.AuditProvider;
+import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
@@ -15,22 +19,35 @@ import com.epm.gestepm.model.shares.construction.dao.entity.deleter.Construction
 import com.epm.gestepm.model.shares.construction.dao.entity.finder.ConstructionShareByIdFinder;
 import com.epm.gestepm.model.shares.construction.dao.entity.updater.ConstructionShareUpdate;
 import com.epm.gestepm.model.shares.construction.service.mapper.*;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
+import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
+import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.filter.ConstructionShareFilterDto;
+import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareExportService;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareService;
 import com.epm.gestepm.modelapi.shares.construction.dto.creator.ConstructionShareCreateDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.deleter.ConstructionShareDeleteDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.finder.ConstructionShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.updater.ConstructionShareUpdateDto;
 import com.epm.gestepm.modelapi.shares.construction.exception.ConstructionShareNotFoundException;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
+import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
+import com.epm.gestepm.modelapi.user.dto.User;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
@@ -48,6 +65,16 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
     private final AuditProvider auditProvider;
 
     private final ConstructionShareDao constructionShareDao;
+
+    private final ConstructionShareExportService constructionShareExportService;
+
+    private final EmailService emailService;
+
+    private final LocaleProvider localeProvider;
+
+    private final MessageSource messageSource;
+
+    private final ProjectService projectService;
 
     @Override
     @RequirePermits(value = PRMT_READ_CS, action = "List construction shares")
@@ -146,8 +173,11 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
         }
 
         final ConstructionShare updated = this.constructionShareDao.update(update);
+        final ConstructionShareDto result = getMapper(MapCSToConstructionShareDto.class).from(updated);
 
-        return getMapper(MapCSToConstructionShareDto.class).from(updated);
+        this.sendMail(result, updateDto.getNotify());
+
+        return result;
     }
 
     @Override
@@ -166,5 +196,61 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
         final ConstructionShareDelete delete = getMapper(MapCSToConstructionShareDelete.class).from(deleteDto);
 
         this.constructionShareDao.delete(delete);
+    }
+
+    private void sendMail(final ConstructionShareDto constructionShare, final Boolean notify) {
+        final byte[] pdf = this.constructionShareExportService.generate(constructionShare);
+        final String base64PDF = Base64.getEncoder().encodeToString(pdf);
+
+        final User user = Utiles.getCurrentUser();
+
+        final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(constructionShare.getProjectId());
+        final Project project = Optional.ofNullable(this.projectService.getProjectById(constructionShare.getProjectId().longValue()))
+                .orElseThrow(projectNotFound);
+
+        final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));
+        final String fileName = this.messageSource.getMessage("shares.construction.pdf.name", new Object[] {
+                constructionShare.getId().toString(),
+                Utiles.transform(constructionShare.getStartDate(), "dd-MM-yyyy")
+        }, locale) + ".pdf";
+
+        final Attachment attachment = new Attachment();
+        attachment.setFileName(fileName);
+        attachment.setFileData(base64PDF);
+        attachment.setContentType("application/pdf");
+
+        final String subject = messageSource.getMessage("email.constructionshare.close.subject", new Object[] {
+                constructionShare.getId()
+        }, locale);
+
+        final Set<String> emails = new HashSet<>();
+        emails.add(user.getEmail());
+        emails.addAll(project.getResponsables().stream().map(User::getEmail).collect(Collectors.toSet()));
+
+        if (BooleanUtils.isTrue(notify) && project.getCustomer() != null) {
+            final String mainEmail = project.getCustomer().getMainEmail();
+            final String secondaryEmail = project.getCustomer().getSecondaryEmail();
+
+            if (StringUtils.isNoneBlank(mainEmail)) {
+                emails.add(mainEmail);
+            }
+
+            if (StringUtils.isNoneBlank(secondaryEmail)) {
+                emails.add(secondaryEmail);
+            }
+        }
+
+        final CloseConstructionShareGroup emailGroup = new CloseConstructionShareGroup();
+        emailGroup.setEmails(new ArrayList<>(emails));
+        emailGroup.setSubject(subject);
+        emailGroup.setLocale(locale);
+        emailGroup.setConstructionShareId(constructionShare.getId());
+        emailGroup.setFullName(user.getFullName());
+        emailGroup.setProjectName(project.getName());
+        emailGroup.setCreatedAt(constructionShare.getStartDate());
+        emailGroup.setClosedAt(constructionShare.getEndDate());
+        emailGroup.setAttachments(List.of(attachment));
+
+        this.emailService.sendEmail(emailGroup);
     }
 }

@@ -1,17 +1,17 @@
 const endpoint = '/v1/shares/construction';
 
 function initializeDataTables() {
-    let columns = ['id', 'project.name', 'startDate', 'endDate', 'id']
+    let columns = ['id', 'user.name', 'project.name', 'startDate', 'endDate', 'id']
     let endpoint = '/v1/shares/construction';
     let actions = [ { action: 'view', url: '/shares/construction/{id}', permission: 'read_construction_shares' }, { action: 'delete', permission: 'edit_construction_shares' }]
-    let expand = [ 'project' ]
-    let filters = [{'userIds': userId}]
+    let expand = [ 'user,project' ]
+    let filters = []; // [{'userIds': userId}]
     let orderable = [[0, 'DESC']]
     let columnsDef = [
         {
-            targets: [2, 3],
+            targets: [3, 4],
             render: function (data) {
-                return moment(data).format('DD-MM-YYYY HH:mm');
+                return data ? moment(data).format('DD-MM-YYYY HH:mm') : null;
             }
         },
     ]
@@ -22,12 +22,44 @@ function initializeDataTables() {
 }
 
 function initializeSelects() {
-    const form = document.querySelector('#createForm');
-    const selects = form.querySelectorAll('select');
+    const createForm = document.querySelector('#createForm');
+    const createSelects = createForm.querySelectorAll('select');
 
-    selects.forEach(select => {
-        createBootstrapSelect2($(select));
+    createSelects.forEach(select => {
+        createBasicSelect2($(select));
     });
+
+    const filterForm = document.querySelector('#filterForm');
+    const filterSelects = filterForm.querySelectorAll('select');
+
+    filterSelects.forEach(select => {
+        createBasicSelect2($(select), 'filterForm');
+    });
+}
+
+function filter(isReset) {
+
+    let filters = [];
+
+    if (!isReset) {
+
+        let form = document.querySelector('#filterForm');
+
+        let id = form.querySelector('[name="id"]');
+        let userId = form.querySelector('[name="userId"]');
+        let projectId = form.querySelector('[name="projectId"]');
+        let status = form.querySelector('[name="status"]');
+
+        id.value && filters.push({ 'ids': id.value });
+        userId.value && filters.push({ 'userIds': userId.value });
+        projectId.value && filters.push({ 'projectIds': projectId.value });
+        status.value && filters.push({ 'status': status.value });
+    } else {
+        $('#filterForm')[0].reset();
+    }
+
+    customDataTable.setFilters(filters)
+    dTable.ajax.reload();
 }
 
 function create() {

@@ -16,7 +16,6 @@ import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareOldService;
 import com.epm.gestepm.modelapi.customer.dto.Customer;
 import com.epm.gestepm.modelapi.customer.dto.CustomerDTO;
 import com.epm.gestepm.modelapi.customer.service.CustomerService;
@@ -1227,7 +1226,7 @@ public class ProjectController {
 
 	private List<ShareTableDTO> getConstructionShares(final Integer projectId) {
 		final ConstructionShareFilterDto filter = new ConstructionShareFilterDto();
-		filter.setProjectId(projectId);
+		filter.setProjectIds(List.of(projectId));
 
 		final List<ConstructionShareDto> constructionShares = this.constructionShareService.list(filter);
 

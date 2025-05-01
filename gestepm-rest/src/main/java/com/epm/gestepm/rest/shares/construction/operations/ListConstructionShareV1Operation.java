@@ -11,7 +11,7 @@ public class ListConstructionShareV1Operation extends APIOperation<ConstructionS
 
         this.generateLinksWith(
                 (apiClass, req) -> apiClass.listConstructionSharesV1(req.getMeta(), req.getLinks(), req.getExpand(), req.getOffset(), req.getLimit(),
-                        req.getIds(), req.getUserIds(), req.getProjectIds(), req.getStartDate(), req.getEndDate()));
+                        req.getOrder(), req.getOrderBy(), req.getIds(), req.getUserIds(), req.getProjectIds(), req.getStartDate(), req.getEndDate(), req.getStatus()));
     }
 
 }

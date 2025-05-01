@@ -11,6 +11,8 @@ import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.finder.ConstructionShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareService;
 import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.user.dto.UserDTO;
+import com.epm.gestepm.modelapi.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,8 +23,10 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
@@ -36,6 +40,8 @@ public class ConstructionShareViewController {
 
     private final ProjectService projectService;
 
+    private final UserService userService;
+
     @ModelAttribute
     public User loadCommonModelView(final Locale locale, final Model model) {
         final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
@@ -48,8 +54,15 @@ public class ConstructionShareViewController {
 
         this.loadCommonModelView(locale, model);
 
-        final List<ProjectListDTO> projects = this.projectService.getTeleworkingProjects(false);
+        final List<ProjectListDTO> projects = this.projectService.getTeleworkingProjects(false).stream()
+                .sorted(Comparator.comparing(ProjectListDTO::getName, String.CASE_INSENSITIVE_ORDER))
+                .collect(Collectors.toList());
         model.addAttribute("projects", projects);
+
+        final List<User> users = this.userService.findByState(0).stream()
+                .sorted(Comparator.comparing(User::getFullName, String.CASE_INSENSITIVE_ORDER))
+                .collect(Collectors.toList());
+        model.addAttribute("users", users);
 
         return "construction-share";
     }

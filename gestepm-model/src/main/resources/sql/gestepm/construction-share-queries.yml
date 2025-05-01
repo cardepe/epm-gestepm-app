@@ -19,7 +19,7 @@ sql:
       cs.closed_by,
       csf.construction_share_file_id
     FROM ${sch-gestepm}.construction_share cs
-    LEFT JOIN ${sch-gestepm}.projects p ON p.id = cs.projct_id
+    LEFT JOIN ${sch-gestepm}.projects p ON p.id = cs.project_id
     LEFT JOIN ${sch-gestepm}.users us ON cs.user_id = us.ID
     LEFT JOIN ${sch-gestepm}.construction_share_file csf ON cs.construction_share_id = csf.construction_share_id
 
@@ -76,10 +76,11 @@ sql:
 
     -- [AND
       -- ${sql.predicate-for-cs-ids}
-      -- ${sql.predicate-for-cs-u-id}
-      -- ${sql.predicate-for-cs-p-id}
+      -- ${sql.predicate-for-cs-u-ids}
+      -- ${sql.predicate-for-cs-p-ids}
       -- ${sql.predicate-for-cs-start-date}
       -- ${sql.predicate-for-cs-end-date}
+      -- ${sql.predicate-for-cs-status}
     -- AND]
 
   filter-cs-by-id: |
@@ -96,13 +97,13 @@ sql:
 
     cs.construction_share_id IN (:attr_cs_ids)
 
-  predicate-for-cs-u-id: |
+  predicate-for-cs-u-ids: |
 
-    cs.user_id = :attr_cs_u_id
+    cs.user_id IN (:attr_cs_u_ids)
 
-  predicate-for-cs-p-id: |
+  predicate-for-cs-p-ids: |
 
-    cs.project_id = :attr_cs_p_id
+    cs.project_id IN (:attr_cs_p_ids)
 
   predicate-for-cs-start-date: |
 
@@ -111,3 +112,7 @@ sql:
   predicate-for-cs-end-date: |
 
     cs.end_date < :attr_cs_end_date
+
+  predicate-for-cs-status: |
+    
+    :attr_cs_status IS NOT NULL AND ((:attr_cs_status = 'NOT_FINISHED' AND cs.end_date IS NULL) OR (:attr_cs_status = 'FINISHED' AND cs.end_date IS NOT NULL))

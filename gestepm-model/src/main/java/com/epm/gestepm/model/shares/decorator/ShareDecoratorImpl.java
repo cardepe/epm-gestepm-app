@@ -1,8 +1,8 @@
 package com.epm.gestepm.model.shares.decorator;
 
+import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareOldService;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
 import com.epm.gestepm.modelapi.inspection.service.InspectionExportService;
@@ -11,6 +11,7 @@ import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareS
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
 import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.filter.ConstructionShareFilterDto;
+import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareExportService;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareService;
 import com.epm.gestepm.modelapi.shares.decorator.ShareDecorator;
 import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
@@ -34,11 +35,15 @@ public class ShareDecoratorImpl implements ShareDecorator {
 
     private final ConstructionShareService constructionShareService;
 
+    private final ConstructionShareExportService constructionShareExportService;
+
     private final InterventionPrShareService interventionPrShareService;
 
     private final InspectionService inspectionService;
 
     private final InspectionExportService inspectionExportService;
+
+    private final LocaleProvider localeProvider;
 
     private final MessageSource messageSource;
 
@@ -49,11 +54,12 @@ public class ShareDecoratorImpl implements ShareDecorator {
         final List<PdfFileDTO> pdfs = new ArrayList<>();
 
         final ConstructionShareFilterDto constructionShareFilter = new ConstructionShareFilterDto();
-        constructionShareFilter.setProjectId(projectId);
+        constructionShareFilter.setProjectIds(List.of(projectId));
         constructionShareFilter.setStartDate(startDate);
         constructionShareFilter.setEndDate(endDate);
 
         final List<PdfFileDTO> csPdfs = this.getConstructionShares(constructionShareFilter);
+
         final List<PdfFileDTO> iprPdfs = this.interventionPrShareService.generateSharesByProjectAndInterval(projectId.longValue(), startDate, endDate);
 
         final InspectionFilterDto inspectionFilter = new InspectionFilterDto();
@@ -76,15 +82,15 @@ public class ShareDecoratorImpl implements ShareDecorator {
     private List<PdfFileDTO> getConstructionShares(final ConstructionShareFilterDto filter) {
         final List<PdfFileDTO> pdfs = new ArrayList<>();
         final List<ConstructionShareDto> constructionShares = this.constructionShareService.list(filter);
+        final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));
 
-        constructionShares.forEach(inspection -> {
-            final byte[] pdf = this.inspectionExportService.generate(inspection);
+        constructionShares.forEach(constructionShare -> {
+            final byte[] pdf = this.constructionShareExportService.generate(constructionShare);
 
-            final String fileName = this.messageSource.getMessage("shares.no.programmed.pdf.name", new Object[]{
-                    inspection.getShareId().toString(),
-                    inspection.getId().toString(),
-                    Utiles.transform(inspection.getStartDate(), "yyyyMMdd")
-            }, Locale.getDefault()) + ".pdf";
+            final String fileName = this.messageSource.getMessage("shares.construction.pdf.name", new Object[] {
+                    constructionShare.getId().toString(),
+                    Utiles.transform(constructionShare.getStartDate(), "dd-MM-yyyy")
+            }, locale) + ".pdf";
 
             final PdfFileDTO pdfFileDTO = new PdfFileDTO();
             pdfFileDTO.setDocumentBytes(pdf);
@@ -99,6 +105,7 @@ public class ShareDecoratorImpl implements ShareDecorator {
     private List<PdfFileDTO> getInspections(final InspectionFilterDto filter) {
         final List<PdfFileDTO> pdfs = new ArrayList<>();
         final List<InspectionDto> inspections = this.inspectionService.list(filter);
+        final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));
 
         inspections.forEach(inspection -> {
             final byte[] pdf = this.inspectionExportService.generate(inspection);
@@ -107,7 +114,7 @@ public class ShareDecoratorImpl implements ShareDecorator {
                     inspection.getShareId().toString(),
                     inspection.getId().toString(),
                     Utiles.transform(inspection.getStartDate(), "yyyyMMdd")
-            }, Locale.getDefault()) + ".pdf";
+            }, locale) + ".pdf";
 
             final PdfFileDTO pdfFileDTO = new PdfFileDTO();
             pdfFileDTO.setDocumentBytes(pdf);

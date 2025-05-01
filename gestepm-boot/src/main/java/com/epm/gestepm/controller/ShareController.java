@@ -8,9 +8,6 @@ import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionDTO;
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
-import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareOldService;
 import com.epm.gestepm.modelapi.expense.dto.FileDTO;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
@@ -19,7 +16,6 @@ import com.epm.gestepm.modelapi.inspection.service.InspectionService;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
-import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.IdMsgDTO;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
@@ -81,9 +77,6 @@ public class ShareController {
 
     @Autowired
     private InterventionShareService interventionShareService;
-
-    @Autowired
-    private ConstructionShareOldService constructionShareOldService;
 
     @Autowired
     private InterventionPrShareService interventionPrShareService;
@@ -257,12 +250,10 @@ public class ShareController {
 
             final List<PdfFileDTO> pdfs = new ArrayList<>();
 
-            final List<PdfFileDTO> constructionSharesPdf = this.getConstructionSharesPdf(shareTableDTOs, locale);
             final List<PdfFileDTO> programmedSharesPdf = this.getProgrammedSharesPdf(shareTableDTOs, locale);
             final List<PdfFileDTO> noProgrammedSharesZip = this.getNoProgrammedSharesPdf(shareTableDTOs, locale);
             final List<PdfFileDTO> workSharesPdf = this.getWorkSharesPdf(shareTableDTOs, locale);
 
-            pdfs.addAll(constructionSharesPdf);
             pdfs.addAll(programmedSharesPdf);
             pdfs.addAll(noProgrammedSharesZip);
             pdfs.addAll(workSharesPdf);
@@ -493,79 +484,6 @@ public class ShareController {
         }
 
         String fileName = messageSource.getMessage("shares.programmed.pdf.name", new Object[]{share.getId().toString(), Utiles.getDateFormatted(share.getStartDate())}, locale);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData("attachment", fileName + ".pdf");
-
-        return new HttpEntity<>(pdf, headers);
-    }
-
-    @ResponseBody
-    @PostMapping("/intervention/construction/finish")
-    public ResponseEntity<String> finishConstructionIntervention(@ModelAttribute ConstructionDTO constructionDTO, Locale locale, Model model, HttpServletRequest request) {
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Map Intervention share stepper
-            ConstructionShare constructionShare = constructionShareOldService.getConstructionShareById(constructionDTO.getId());
-            constructionShare.setClosedAt(LocalDateTime.now());
-            constructionShare.setClosedBy(user.getId());
-            constructionShare.setObservations(constructionDTO.getObservations());
-            constructionShare.setSignatureOp(constructionDTO.getSignatureOp());
-
-            // Save intervention
-            constructionShare = constructionShareOldService.create(constructionShare, constructionDTO.getFiles());
-
-            // Log info
-            log.info("Parte de intervención " + constructionShare.getId() + " finalizado por parte del usuario " + user.getId());
-
-            byte[] pdfGenerated = constructionShareOldService.generateConstructionSharePdf(constructionShare, locale);
-
-            // Send Emails
-            smtpService.sendCloseConstructionShareMail(user.getEmail(), constructionShare, pdfGenerated, locale);
-
-            if (constructionShare.getProject().getResponsables() != null && !constructionShare.getProject().getResponsables().isEmpty()) {
-
-                for (User responsable : constructionShare.getProject().getResponsables()) {
-                    smtpService.sendCloseConstructionShareMail(responsable.getEmail(), constructionShare, pdfGenerated, locale);
-                }
-            }
-
-            if (Boolean.TRUE.equals(constructionDTO.getClientNotif()) && constructionShare.getProject().getCustomer() != null) {
-                smtpService.sendCloseConstructionShareMail(constructionShare.getProject().getCustomer().getMainEmail(), constructionShare, pdfGenerated, locale);
-            }
-
-            // Return data
-            return new ResponseEntity<>(messageSource.getMessage("shares.construction.finish.success", new Object[]{}, locale), HttpStatus.OK);
-
-        } catch (Exception e) {
-            log.error(e);
-            return new ResponseEntity<>(messageSource.getMessage("shares.construction.finish.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @GetMapping(value = "/intervention/construction/{id}/pdf", produces = {"application/pdf"})
-    public HttpEntity<byte[]> exportConstructionPdf(@PathVariable Long id, Locale locale) {
-
-        log.info("Exportando el pdf del parte de construccion " + id);
-
-        ConstructionShare share = constructionShareOldService.getConstructionShareById(id);
-
-        if (share == null) {
-            log.error("No existe el parte de construccion con id " + id);
-            return null;
-        }
-
-        byte[] pdf = constructionShareOldService.generateConstructionSharePdf(share, locale);
-
-        if (pdf == null) {
-            log.error("Error al generar el fichero pdf del parte de construccion " + id);
-            return null;
-        }
-
-        String fileName = messageSource.getMessage("shares.construction.pdf.name", new Object[]{share.getId().toString(), Utiles.getDateFormatted(share.getCreatedAt())}, locale);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentDispositionFormData("attachment", fileName + ".pdf");
@@ -814,42 +732,6 @@ public class ShareController {
             log.error(e);
             return null;
         }
-    }
-
-    private List<PdfFileDTO> getConstructionSharesPdf(final List<ShareTableDTO> shareTableDTOs, final Locale locale) {
-
-        final List<PdfFileDTO> pdfs = new ArrayList<>();
-
-        final List<ShareTableDTO> constructionShares = shareTableDTOs.stream().filter(f -> "cs".equals(f.getShareType()) && f.getEndDate() != null).collect(Collectors.toList());
-
-        for (ShareTableDTO constructionShare : constructionShares) {
-
-            final Long id = Long.parseLong(constructionShare.getId().split("_")[0]);
-
-            final ConstructionShare share = constructionShareOldService.getConstructionShareById(id);
-
-            if (share == null) {
-                log.error("No existe el parte de construccion con id " + id);
-                continue;
-            }
-
-            final byte[] pdf = constructionShareOldService.generateConstructionSharePdf(share, locale);
-
-            if (pdf == null) {
-                log.error("Error al generar el fichero pdf del parte de construccion " + id);
-                continue;
-            }
-
-            final String fileName = messageSource.getMessage("shares.construction.pdf.name", new Object[]{share.getId().toString(), Utiles.getDateFormatted(share.getCreatedAt())}, locale) + ".pdf";
-
-            final PdfFileDTO pdfFileDTO = new PdfFileDTO();
-            pdfFileDTO.setDocumentBytes(pdf);
-            pdfFileDTO.setFileName(fileName);
-
-            pdfs.add(pdfFileDTO);
-        }
-
-        return pdfs;
     }
 
     private List<PdfFileDTO> getProgrammedSharesPdf(final List<ShareTableDTO> shareTableDTOs, final Locale locale) {

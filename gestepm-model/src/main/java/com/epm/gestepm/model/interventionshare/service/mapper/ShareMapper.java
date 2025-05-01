@@ -1,9 +1,6 @@
 package com.epm.gestepm.model.interventionshare.service.mapper;
 
 import com.epm.gestepm.lib.file.FileUtils;
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionDTO;
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
-import com.epm.gestepm.modelapi.constructionsharefile.dto.ConstructionShareFile;
 import com.epm.gestepm.modelapi.expense.dto.FileDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrDTO;
 import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
@@ -25,31 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShareMapper {
-
-	public static ConstructionShare mapDTOToConstructionShare(ConstructionDTO constructionDTO, User user, Project project) {
-		
-		ConstructionShare constructionShare = new ConstructionShare();
-		
-		constructionShare.setCreatedAt(constructionDTO.getStartDate());
-		constructionShare.setClosedAt(constructionDTO.getEndDate());
-		constructionShare.setObservations(constructionDTO.getObservations());
-		constructionShare.setProject(project);
-		constructionShare.setUser(user);
-		
-		return constructionShare;
-	}
-	
-	public static ConstructionDTO mapConstructionShareToDTO(ConstructionShare constructionShare) {
-		
-		ConstructionDTO constructionDTO = new ConstructionDTO();
-		
-		constructionDTO.setId(constructionShare.getId());
-		constructionDTO.setStartDate(constructionShare.getCreatedAt());
-		constructionDTO.setEndDate(constructionShare.getClosedAt());
-		constructionDTO.setObservations(constructionShare.getObservations());
-		
-		return constructionDTO;
-	}
 
 	public static InterventionPrShare mapDTOToInterventionPrShare(InterventionPrDTO interventionPrDTO, User user, Project project, Long dispShareId) {
 		
@@ -119,21 +91,6 @@ public class ShareMapper {
 		workShareDTO.setProjectId(workShare.getProject().getId());
 		
 		return workShareDTO;
-	}
-	
-	public static ConstructionShareFile mapMultipartFileToConstructionShareFile(MultipartFile file, ConstructionShare constructionShare) {
-		String fileName = file.getOriginalFilename();
-		String ext = FilenameUtils.getExtension(fileName);
-
-		byte[] data = FileUtils.compressBytes(FileUtils.compressImage(file));
-
-		ConstructionShareFile constructionShareFile = new ConstructionShareFile();
-		constructionShareFile.setName(fileName);
-		constructionShareFile.setExt(ext);
-		constructionShareFile.setContent(data);
-		constructionShareFile.setConstructionShare(constructionShare);
-
-		return constructionShareFile;
 	}
 	
 	public static InterventionPrShareFile mapMultipartFileToInterventionPrShareFile(MultipartFile file, InterventionPrShare interventionPrShare) {

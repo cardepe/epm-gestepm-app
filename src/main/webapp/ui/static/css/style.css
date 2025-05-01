@@ -165,6 +165,10 @@ img.idioma {
 	font-size: 12px;
 }
 
+.bootstrapSelectStyle {
+	height: 34px;
+}
+
 .selectControlStyle {
 	display: block !important;
     width: 100%;
