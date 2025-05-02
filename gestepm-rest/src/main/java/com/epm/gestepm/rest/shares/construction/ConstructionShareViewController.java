@@ -8,7 +8,10 @@ import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareDto;
+import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareFileDto;
+import com.epm.gestepm.modelapi.shares.construction.dto.filter.ConstructionShareFileFilterDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.finder.ConstructionShareByIdFinderDto;
+import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareFileService;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.dto.UserDTO;
@@ -23,6 +26,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -37,6 +41,8 @@ import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
 public class ConstructionShareViewController {
 
     private final ConstructionShareService constructionShareService;
+
+    private final ConstructionShareFileService constructionShareFileService;
 
     private final ProjectService projectService;
 
@@ -76,11 +82,21 @@ public class ConstructionShareViewController {
         final ConstructionShareDto constructionShare = this.constructionShareService.findOrNotFound(new ConstructionShareByIdFinderDto(id));
         model.addAttribute("constructionShare", constructionShare);
 
-        final List<ProjectListDTO> projects = this.projectService.getTeleworkingProjects(false);
+        final List<ProjectListDTO> projects = this.projectService.getTeleworkingProjects(false).stream()
+                .sorted(Comparator.comparing(ProjectListDTO::getName, String.CASE_INSENSITIVE_ORDER))
+                .collect(Collectors.toList());
         model.addAttribute("projects", projects);
 
         boolean canUpdate = Constants.ROLE_ADMIN.equals(user.getRole().getRoleName());
         model.addAttribute("canUpdate", canUpdate);
+
+        final ConstructionShareFileFilterDto filterDto = new ConstructionShareFileFilterDto();
+        filterDto.setShareId(id);
+
+        final List<ConstructionShareFileDto> files = this.constructionShareFileService.list(filterDto).stream()
+                .sorted(Comparator.comparing(ConstructionShareFileDto::getName, String.CASE_INSENSITIVE_ORDER))
+                .collect(Collectors.toList());
+        model.addAttribute("files", files);
 
         return "construction-share-detail";
     }

@@ -17,33 +17,6 @@
          min-width: 20rem;
      }
 
-     #filterForm .select2-container .select2-selection--single {
-         height: 38px;
-         padding: 6px 12px;
-         border: 1px solid #ced4da;
-         border-radius: 4px;
-         font-size: 14px;
-         line-height: 1.42857143;
-         box-sizing: border-box;
-     }
-
-    #filterForm .select2-container .select2-selection--single .select2-selection__rendered {
-        line-height: 24px;
-        padding-left: 0;
-        color: #495057;
-    }
-
-    #filterForm .select2-container--default .select2-selection--single {
-        border-color: #ced4da;
-    }
-
-    #filterForm .select2-container--default .select2-selection--single .select2-selection__arrow {
-        height: 38px;
-        right: 10px;
-        top: 0;
-        width: 30px;
-    }
-
 </style>
 
 <div class="row m-0">
@@ -116,7 +89,7 @@
                                     </label>
                                 </div>
                                 <div class="form-group">
-                                    <label class="w-100">
+                                    <label class="w-100 bootstrap-select">
                                         <spring:message code="technical" />
                                         <select name="userId" class="form-control select2">
                                             <option value=""><spring:message code="select.placeholder" /></option>
@@ -127,7 +100,7 @@
                                     </label>
                                 </div>
                                 <div class="form-group">
-                                    <label class="w-100">
+                                    <label class="w-100 bootstrap-select">
                                         <spring:message code="project" />
                                         <select name="projectId" class="form-control select2">
                                             <option value=""><spring:message code="select.placeholder" /></option>
@@ -138,7 +111,7 @@
                                     </label>
                                 </div>
                                 <div class="form-group">
-                                    <label class="w-100">
+                                    <label class="w-100 bootstrap-select">
                                         <spring:message code="status" />
                                         <select name="status" class="form-control select2">
                                             <option value=""><spring:message code="select.placeholder" /></option>
@@ -183,6 +156,7 @@
     $(document).ready(function() {
         initializeDataTables();
         initializeSelects();
+        filterByParams();
     });
 
 </script>

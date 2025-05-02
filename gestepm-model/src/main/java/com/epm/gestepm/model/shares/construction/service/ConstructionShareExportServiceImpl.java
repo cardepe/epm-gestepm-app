@@ -9,6 +9,8 @@ import com.epm.gestepm.modelapi.inspection.exception.InspectionNotEndedException
 import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareFileDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.finder.ConstructionShareFileByIdFinderDto;
+import com.epm.gestepm.modelapi.shares.construction.exception.ConstructionShareExportException;
+import com.epm.gestepm.modelapi.shares.construction.exception.ConstructionShareNotEndedException;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareExportService;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareFileService;
 import com.epm.gestepm.modelapi.user.dto.User;
@@ -47,7 +49,7 @@ public class ConstructionShareExportServiceImpl implements ConstructionShareExpo
 
     @Override
     public byte[] generate(final ConstructionShareDto constructionShare) {
-        validateConstructionShare(constructionShare);
+        this.validateConstructionShare(constructionShare);
 
         PdfReader pdfTemplate = null;
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -66,7 +68,7 @@ public class ConstructionShareExportServiceImpl implements ConstructionShareExpo
 
             return baos.toByteArray();
         } catch (IOException | DocumentException ex) {
-            throw new InspectionExportException(constructionShare.getId());
+            throw new ConstructionShareExportException(constructionShare.getId());
         } finally {
             if (pdfTemplate != null) {
                 pdfTemplate.close();
@@ -76,7 +78,7 @@ public class ConstructionShareExportServiceImpl implements ConstructionShareExpo
 
     private void validateConstructionShare(ConstructionShareDto dto) {
         if (dto.getEndDate() == null) {
-            throw new InspectionNotEndedException(dto.getId());
+            throw new ConstructionShareNotEndedException(dto.getId());
         }
     }
 
@@ -124,17 +126,17 @@ public class ConstructionShareExportServiceImpl implements ConstructionShareExpo
         final float pageHeight = pageSize.getHeight();
 
         for (Integer fileId : dto.getFileIds()) {
-            ConstructionShareFileDto file = constructionShareFileService.findOrNotFound(new ConstructionShareFileByIdFinderDto(fileId));
+            final ConstructionShareFileDto file = constructionShareFileService.findOrNotFound(new ConstructionShareFileByIdFinderDto(fileId));
             if (StringUtils.isNotBlank(file.getContent())) {
                 stamper.insertPage(++pageNumber, pageSize);
 
-                byte[] imageBytes = Base64.getDecoder().decode(file.getContent());
-                byte[] compressedBytes = ImageUtils.compressImage(imageBytes, IMAGE_COMPRESSION_QUALITY);
-                Image image = Image.getInstance(compressedBytes);
+                final byte[] imageBytes = Base64.getDecoder().decode(file.getContent());
+                final byte[] compressedBytes = ImageUtils.compressImage(imageBytes, IMAGE_COMPRESSION_QUALITY);
+                final Image image = Image.getInstance(compressedBytes);
 
                 image.scaleToFit(pageWidth, pageHeight);
-                float x = (pageWidth - image.getScaledWidth()) / 2;
-                float y = (pageHeight - image.getScaledHeight()) / 2;
+                final float x = (pageWidth - image.getScaledWidth()) / 2;
+                final float y = (pageHeight - image.getScaledHeight()) / 2;
                 image.setAbsolutePosition(x, y);
 
                 stamper.getOverContent(pageNumber).addImage(image);

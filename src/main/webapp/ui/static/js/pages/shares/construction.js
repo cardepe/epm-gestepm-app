@@ -3,8 +3,30 @@ const endpoint = '/v1/shares/construction';
 function initializeDataTables() {
     let columns = ['id', 'user.name', 'project.name', 'startDate', 'endDate', 'id']
     let endpoint = '/v1/shares/construction';
-    let actions = [ { action: 'view', url: '/shares/construction/{id}', permission: 'read_construction_shares' }, { action: 'delete', permission: 'edit_construction_shares' }]
-    let expand = [ 'user,project' ]
+    let actions = [
+        {
+            action: 'view',
+            url: '/shares/construction/{id}',
+            permission: 'read_construction_shares'
+        },
+        {
+            action: 'file-pdf',
+            url: '/v1/shares/construction/{id}/export',
+            permission: 'edit_construction_shares',
+            conditionGroups: [
+                {
+                    conditions: [
+                        { key: 'endDate', value: [ undefined ], operation: '!==' }
+                    ]
+                }
+            ]
+        },
+        {
+            action: 'delete',
+            permission: 'edit_construction_shares'
+        }
+    ]
+    let expand = ['user,project']
     let filters = []; // [{'userIds': userId}]
     let orderable = [[0, 'DESC']]
     let columnsDef = [
@@ -37,6 +59,34 @@ function initializeSelects() {
     });
 }
 
+function filterByParams() {
+
+    const queryParams = new URLSearchParams(window.location.search);
+
+    let filters = [];
+
+    let ids = queryParams.get('ids');
+    let userIds = queryParams.get('userIds');
+    let projectIds = queryParams.get('projectIds');
+    let status = queryParams.get('status');
+    let pageNumber = queryParams.get('pageNumber');
+
+    const filterForm = document.querySelector('#filterForm');
+
+    filterForm.querySelector('[name="id"]').value = ids;
+    filterForm.querySelector('[name="userId"]').value = userIds;
+    filterForm.querySelector('[name="projectId"]').value = projectIds;
+    filterForm.querySelector('[name="status"]').value = status;
+
+    if (ids) { filters.push({ 'ids': ids }); }
+    if (userIds) { filters.push({ 'userIds': userIds }); }
+    if (projectIds) { filters.push({ 'projectIds': projectIds }); }
+    if (status) { filters.push({ 'status': status }); }
+    if (pageNumber) { filters.push({ 'pageNumber': pageNumber }); }
+
+    customDataTable.setFilters(filters);
+}
+
 function filter(isReset) {
 
     let filters = [];
@@ -50,15 +100,15 @@ function filter(isReset) {
         let projectId = form.querySelector('[name="projectId"]');
         let status = form.querySelector('[name="status"]');
 
-        id.value && filters.push({ 'ids': id.value });
-        userId.value && filters.push({ 'userIds': userId.value });
-        projectId.value && filters.push({ 'projectIds': projectId.value });
-        status.value && filters.push({ 'status': status.value });
+        id.value && filters.push({'ids': id.value});
+        userId.value && filters.push({'userIds': userId.value});
+        projectId.value && filters.push({'projectIds': projectId.value});
+        status.value && filters.push({'status': status.value});
     } else {
         $('#filterForm')[0].reset();
     }
 
-    customDataTable.setFilters(filters)
+    customDataTable.setFilters(filters);
     dTable.ajax.reload();
 }
 
@@ -88,7 +138,9 @@ function remove(id) {
         showLoading();
 
         axios.delete('/v1/shares/construction/' + id).then(() => {
-            dTable.ajax.reload(function() { dTable.page(dTable.page()).draw(false); }, false);
+            dTable.ajax.reload(function () {
+                dTable.page(dTable.page()).draw(false);
+            }, false);
             showNotify(messages.shares.displacement.delete.success.replace('{0}', id));
         }).catch(error => showNotify(error.response.data.detail, 'danger'))
             .finally(() => hideLoading());

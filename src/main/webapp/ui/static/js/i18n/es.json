@@ -116,7 +116,23 @@
     "shares": {
         "name": "Parte",
         "construction": {
-            "name": "Parte de construcción"
+            "name": "Parte de construcción",
+            "create": {
+                "success": "Parte de construcción creado con éxito."
+            },
+            "delete" : {
+                "alert": "¿Está seguro que quiere borrar el parte de construcción {0}?",
+                "success": "Parte de construcción nº {0} eliminado con éxito."
+            },
+            "update": {
+                "success": "Se ha actualizado el parte de construcción con éxito."
+            },
+            "files": {
+                "delete": {
+                    "alert": "¿Está seguro que desea eliminar el adjunto {0}?",
+                    "success": "Adjunto {0} eliminado con éxito."
+                }
+            }
         },
         "displacement": {
             "name": "Parte de desplazamiento",

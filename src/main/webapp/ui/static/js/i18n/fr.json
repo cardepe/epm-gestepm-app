@@ -116,9 +116,24 @@
     "shares": {
         "name": "Rapport",
         "construction": {
-            "name": "Rapport de construction"
+            "name": "Rapport de construction",
+            "create": {
+                "success": "Création réussie de la partie construction."
+            },
+            "delete" : {
+                "alert" : "Êtes-vous sûr de vouloir supprimer la pièce de construction {0}?",
+                "success" : "La pièce de construction n° {0} a été supprimée avec succès."
+            },
+            "update": {
+                "success": "Le rapport de construction a été mis à jour avec succès."
+            },
+            "files": {
+                "delete": {
+                    "alert": "Êtes-vous sûr de vouloir supprimer la pièce jointe {0}?",
+                    "success": "Pièce jointe {0} supprimée avec succès."
+                }
+            }
         },
-
         "displacement": {
             "name": "Rapport de déplacement",
             "create": {

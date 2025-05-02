@@ -369,7 +369,7 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-locale
-    patch:
+    put:
       summary: V1 - Update construction share
       operationId: update-construction-share-v1
       responses:
@@ -433,8 +433,6 @@ paths:
       - $ref: '#/components/parameters/Share-Id'
     get:
       summary: V1 - Export construction share
-      tags:
-        - inspection-v1
       responses:
         '200':
           $ref: '#/components/responses/ConstructionShareExport'
@@ -447,6 +445,8 @@ paths:
       operationId: export-construction-share-v1
       description: export-construction-share-v1
       parameters: []
+      tags:
+        - construction-share-v1
   /v1/shares/displacement:
     get:
       summary: V1 - List displacement shares
@@ -2396,14 +2396,6 @@ components:
                 type: integer
                 x-stoplight:
                   id: pxse3yn75h7cw
-              description:
-                type: string
-                x-stoplight:
-                  id: ejtwcqycqsx7n
-              observations:
-                type: string
-                x-stoplight:
-                  id: 6nihi8qpf5z2s
               startDate:
                 type: string
                 x-stoplight:
@@ -2414,10 +2406,34 @@ components:
                 x-stoplight:
                   id: 9kif43i1jwn4s
                 format: date-time
+              observations:
+                type: string
+                x-stoplight:
+                  id: 6nihi8qpf5z2s
+              operatorSignature:
+                type: string
+                x-stoplight:
+                  id: 5xlprmjlumq02
+              files:
+                type: array
+                items:
+                  type: object
+                  format: binary
+                  properties:
+                    name:
+                      type: string
+                    content:
+                      type: string
+                      x-field-extra-annotation: '@com.fasterxml.jackson.annotation.JsonIgnore'
               notify:
                 type: boolean
                 x-stoplight:
                   id: 056faw4s2fxpf
+            required:
+              - projectId
+              - startDate
+              - observations
+              - operatorSignature
     UpdateDisplacementShare:
       content:
         application/json:

@@ -27,7 +27,7 @@ public class ConstructionShareUpdate implements AuditClose, CollectableAttribute
 
     private String observations;
 
-    private Integer operatorSignature;
+    private String operatorSignature;
 
     private LocalDateTime closedAt;
 

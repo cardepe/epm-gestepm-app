@@ -45,6 +45,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -169,6 +170,7 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
                 getMapper(MapCSToConstructionShareUpdate.class).from(constructionShareDto));
 
         if (update.getClosedAt() == null) {
+            update.setEndDate(LocalDateTime.now());
             this.auditProvider.auditClose(update);
         }
 

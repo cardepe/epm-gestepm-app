@@ -29,7 +29,7 @@ public class ConstructionShareRowMapper extends CommonRowMapper implements RowMa
 
     public static final String COL_CS_OBSERVATIONS = "observations";
 
-    public static final String COL_CS_SIGNATURE_OP = "signature_op";
+    public static final String COL_CS_SIGNATURE_OP = "operator_signature";
 
     public static final String COL_CSF_ID = "construction_share_file_id";
 

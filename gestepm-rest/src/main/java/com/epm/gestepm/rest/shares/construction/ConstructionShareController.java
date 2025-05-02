@@ -4,16 +4,22 @@ import com.epm.gestepm.lib.applocale.apimodel.service.AppLocaleService;
 import com.epm.gestepm.lib.controller.BaseController;
 import com.epm.gestepm.lib.controller.metadata.APIMetadata;
 import com.epm.gestepm.lib.controller.response.ResponseSuccessfulHelper;
+import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
+import com.epm.gestepm.modelapi.inspection.dto.finder.InspectionByIdFinderDto;
+import com.epm.gestepm.modelapi.inspection.service.InspectionExportService;
 import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.creator.ConstructionShareCreateDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.deleter.ConstructionShareDeleteDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.filter.ConstructionShareFilterDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.finder.ConstructionShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.updater.ConstructionShareUpdateDto;
+import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareExportService;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareService;
 import com.epm.gestepm.rest.common.CommonProviders;
 import com.epm.gestepm.rest.common.MetadataMapper;
@@ -31,7 +37,14 @@ import com.epm.gestepm.restapi.openapi.model.*;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSource;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -42,6 +55,7 @@ import java.util.Set;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.REST;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
+import static com.epm.gestepm.modelapi.inspection.security.InspectionPermission.PRMT_READ_I;
 import static com.epm.gestepm.modelapi.shares.construction.security.ConstructionSharePermission.PRMT_EDIT_CS;
 import static com.epm.gestepm.modelapi.shares.construction.security.ConstructionSharePermission.PRMT_READ_CS;
 import static org.mapstruct.factory.Mappers.getMapper;
@@ -53,15 +67,25 @@ public class ConstructionShareController extends BaseController implements Const
 
     private final ConstructionShareService constructionShareService;
 
+    private final ConstructionShareExportService constructionShareExportService;
+
+    private final LocaleProvider localeProvider;
+
+    private final MessageSource messageSource;
+
+
     public ConstructionShareController(final CommonProviders commonProviders, final ApplicationContext appCtx,
                                        final AppLocaleService appLocaleService, final ResponseSuccessfulHelper successHelper,
-                                       final ConstructionShareService constructionShareService) {
+                                       final ConstructionShareService constructionShareService, ConstructionShareExportService constructionShareExportService, LocaleProvider localeProvider, MessageSource messageSource) {
 
         super(commonProviders.localeProvider(), commonProviders.executionRequestProvider(),
                 commonProviders.executionTimeProvider(), commonProviders.restContextProvider(), appCtx, appLocaleService,
                 successHelper);
 
         this.constructionShareService = constructionShareService;
+        this.constructionShareExportService = constructionShareExportService;
+        this.localeProvider = localeProvider;
+        this.messageSource = messageSource;
     }
 
     @Override
@@ -159,6 +183,30 @@ public class ConstructionShareController extends BaseController implements Const
         this.constructionShareService.delete(deleteDto);
 
         return this.success(getMapper(ResSuccessMapper.class)::from);
+    }
+
+    @Override
+    @RequirePermits(value = PRMT_READ_I, action = "Export inspection")
+    @LogExecution(operation = OP_READ)
+    public ResponseEntity<org.springframework.core.io.Resource> exportConstructionShareV1(final Integer shareId) {
+        final String language = this.localeProvider.getLocale().orElse("es");
+        final java.util.Locale locale = new java.util.Locale(language);
+
+        final ConstructionShareDto constructionShare = this.constructionShareService.findOrNotFound(new ConstructionShareByIdFinderDto(shareId));
+
+        final byte[] pdf = this.constructionShareExportService.generate(constructionShare);
+        final Resource resource = new ByteArrayResource(pdf);
+        final String fileName = messageSource.getMessage("shares.construction.pdf.name",
+                new Object[] {
+                        shareId.toString(),
+                        Utiles.transform(constructionShare.getStartDate(), "dd-MM-yyyy")
+                }, locale) + ".pdf";
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName);
+        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 }
 

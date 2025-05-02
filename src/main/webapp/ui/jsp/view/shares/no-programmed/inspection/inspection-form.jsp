@@ -367,22 +367,6 @@
         }
     }
 
-    function resizeCanvas() {
-        let ratio = Math.max(window.devicePixelRatio || 1, 1);
-
-        if (canvas) {
-            canvas.width = canvas.offsetWidth * ratio;
-            canvas.height = canvas.offsetHeight * ratio;
-            canvas.getContext("2d").scale(ratio, ratio);
-        }
-
-        if (canvasOp) {
-            canvasOp.width = canvasOp.offsetWidth * ratio;
-            canvasOp.height = canvasOp.offsetHeight * ratio;
-            canvasOp.getContext("2d").scale(ratio, ratio);
-        }
-    }
-
     function loadMaterialsDataTable() {
         let columns = ['id', 'description', 'units', 'reference', 'id']
         let actions = [
@@ -456,22 +440,6 @@
 
             filesFormGroup.appendChild(linksContainer);
         }
-    }
-
-    async function parseFiles(editForm) {
-        const selector = editForm.querySelector('[name="files"]');
-        let filesData = [];
-        if (selector && selector.files) {
-            for (let i = 0; i < selector.files.length; i++) {
-                const file = selector.files[i];
-
-                filesData.push({
-                    name: file.name,
-                    content: await toBase64(file)
-                });
-            }
-        }
-        return filesData ? filesData : null;
     }
 
     async function parseMaterialsFile(editForm) {
