@@ -118,6 +118,9 @@ function createDataTable(tableId, customDataTable, locale) {
         },
         fixedColumns: customDataTable.stickyColumns,
         dom: '<\'top\'i>rt<\'bottom\'p><\'clear\'>',
+        drawCallback: function (settings) {
+            generateQueryParams(settings);
+        },
     })
 }
 
@@ -290,9 +293,11 @@ function printActions(data, actions, id) {
         }
 
         if (a.action === 'file-pdf') {
-            buttonHtml += '<a href="' + a.url.replace('{id}', id) + '" target="_blank" class="menu-link">' +
-                '<em class="fas fa-file-pdf" onclick="edit(' + id + ')"></em>' +
-                '</a>';
+            if (checkConditionGroups(data, a.conditionGroups)) {
+                buttonHtml += '<a href="' + a.url.replace('{id}', id) + '" target="_blank" class="menu-link">' +
+                    '<em class="fas fa-file-pdf" onclick="edit(' + id + ')"></em>' +
+                    '</a>';
+            }
         }
     });
 
@@ -316,6 +321,10 @@ function checkConditionGroups(data, conditionGroups) {
                         } else if (condition.value.includes('ROLE_ADMINISTRATION_ID')) {
                             return condition.current >= 7;
                         }
+                    }
+                } else if (condition.key === 'endDate') {
+                    if (condition.operation === '!==') {
+                        return condition.value[0] !== data.endDate;
                     }
                 }
                 return false;

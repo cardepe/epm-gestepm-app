@@ -48,6 +48,7 @@ function createBasicSelect2(input, modal) {
 function createBootstrapSelect2(input) {
     input.selectpicker({
         liveSearch: true,
-        noneSelectedText: messages.select2.placeholder
+        noneSelectedText: messages.select2.placeholder,
+        dropdownParent: input.closest('.dropdown-menu')
     });
 }

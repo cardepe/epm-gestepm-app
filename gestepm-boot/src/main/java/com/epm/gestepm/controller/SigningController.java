@@ -3,10 +3,6 @@ package com.epm.gestepm.controller;
 import com.epm.gestepm.lib.file.FileUtils;
 import com.epm.gestepm.model.inspection.service.mapper.MapIToInspectionUpdateDto;
 import com.epm.gestepm.model.interventionshare.service.mapper.ShareMapper;
-import com.epm.gestepm.model.shares.construction.dao.entity.updater.ConstructionShareUpdate;
-import com.epm.gestepm.model.shares.construction.service.ConstructionShareServiceImpl;
-import com.epm.gestepm.model.shares.construction.service.mapper.MapCSToConstructionShareUpdate;
-import com.epm.gestepm.model.shares.construction.service.mapper.MapCSToConstructionShareUpdateDto;
 import com.epm.gestepm.model.shares.displacement.service.mapper.MapDSToDisplacementShareUpdateDto;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
@@ -15,9 +11,7 @@ import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
-import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.finder.InspectionByIdFinderDto;
 import com.epm.gestepm.modelapi.inspection.dto.updater.InspectionUpdateDto;
@@ -33,11 +27,7 @@ import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningDTO;
 import com.epm.gestepm.modelapi.personalsigning.service.PersonalSigningService;
 import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.shares.ShareDecorator;
-import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareDto;
-import com.epm.gestepm.modelapi.shares.construction.dto.finder.ConstructionShareByIdFinderDto;
-import com.epm.gestepm.modelapi.shares.construction.dto.updater.ConstructionShareUpdateDto;
-import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareService;
+import com.epm.gestepm.modelapi.shares.decorator.ShareDecorator;
 import com.epm.gestepm.modelapi.shares.displacement.dto.DisplacementShareDto;
 import com.epm.gestepm.modelapi.shares.displacement.dto.finder.DisplacementShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.displacement.dto.updater.DisplacementShareUpdateDto;
@@ -121,9 +111,6 @@ public class SigningController {
 
     @Autowired
     private UserManualSigningService userManualSigningService;
-
-    @Autowired
-    private ConstructionShareService constructionShareService;
 
     @Autowired
     private DisplacementShareService displacementShareService;
@@ -857,18 +844,6 @@ public class SigningController {
 
             switch (userSigningShareDTO.getShareType()) {
 
-                case "CONSTRUCTION_SHARES": {
-                    final ConstructionShareByIdFinderDto finderDto = new ConstructionShareByIdFinderDto(userSigningShareDTO.getShareId().intValue());
-                    final ConstructionShareDto dto = this.constructionShareService.findOrNotFound(finderDto);
-
-                    final ConstructionShareUpdateDto update = getMapper(MapCSToConstructionShareUpdateDto.class).from(dto);
-                    update.setCreatedAt(startDate);
-                    update.setClosedAt(endDate);
-
-                    this.constructionShareService.update(update);
-
-                    break;
-                }
                 case "DISPLACEMENT_SHARES": {
 
                     final DisplacementShareByIdFinderDto finderDto = new DisplacementShareByIdFinderDto(userSigningShareDTO.getShareId().intValue());

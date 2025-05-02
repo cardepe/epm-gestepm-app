@@ -21,8 +21,6 @@ public interface SMTPService {
 	void sendCreateHolidaysRRHHMail(String to, User user, String holidays, Locale locale);
 	void sendDeleteHolidaysRRHHMail(String to, User user, String holidays, Locale locale);
 	
-	void sendCloseConstructionShareMail(String to, ConstructionShare share, byte[] pdfGenerated, Locale locale);
-	
 	void sendCloseProgrammedShareMail(String to, InterventionPrShare share, byte[] pdfGenerated, Locale locale);
 
 	void sendCloseWorkShareMail(String to, WorkShare share, byte[] pdfGenerated, Locale locale);

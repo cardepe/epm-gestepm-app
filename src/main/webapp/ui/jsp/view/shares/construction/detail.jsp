@@ -1,0 +1,329 @@
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ page import="com.fasterxml.jackson.databind.ObjectMapper" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+<%
+    final ObjectMapper mapper = new ObjectMapper();
+    final String filesJson = mapper.writeValueAsString(request.getAttribute("files"));
+%>
+
+<link rel="stylesheet"
+      href="${pageContext.request.contextPath}/webjars/bootstrap-select/1.13.17/css/bootstrap-select.min.css">
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-12 col-lg-10">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1 class="text-uppercase"><spring:message code="shares.construction.title"/></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-2">
+                <div class="page-header float-right">
+                    <a class="btn btn-default btn-sm" href="javascript:history.back()"><spring:message code="back"/></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="clearfix"></div>
+
+<div class="content">
+    <div class="card">
+        <div class="card-body">
+            <div class="title mb-0">
+                <spring:message code="info"/>
+            </div>
+
+            <form id="editForm" class="needs-validation">
+                <div class="row">
+                    <div class="col-sm-12 col-md-4">
+                        <div class="form-group mb-1">
+                            <label class="col-form-label w-100 bootstrap-select"><spring:message code="project"/>
+                                <select class="form-control input mt-1" name="projectId" required>
+                                    <option></option>
+                                    <c:forEach items="${projects}" var="project">
+                                        <option value="${project.id}" ${project.id == constructionShare.projectId ? 'selected' : ''}><spring:message code="${project.name}"/></option>
+                                    </c:forEach>
+                                </select>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-4">
+                        <div class="form-group mb-1">
+                            <label class="col-form-label w-100"><spring:message code="start.date" />
+                                <input name="startDate" type="datetime-local" class="form-control mt-1" value="${constructionShare.startDate}" required />
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-4">
+                        <div class="form-group mb-1">
+                            <label class="col-form-label w-100"><spring:message code="end.date"/>
+                                <input name="endDate" type="datetime-local" class="form-control mt-1" value="${constructionShare.endDate}" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-8">
+                        <div class="form-group">
+                            <label class="col-form-label w-100"><spring:message code="observations" />
+                                <textarea name="observations" type="text" class="form-control" rows="6">${constructionShare.observations}</textarea>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-4">
+                        <div class="form-group">
+                            <input name="signature" type="hidden"/>
+
+                            <label class="col-form-label pb-0"><spring:message code="operator.signature" /></label>
+                            <div class="signature-pad">
+                                <div class="signature-pad--body">
+                                    <canvas class="signature-canvas"></canvas>
+                                </div>
+                                <div class="signature-pad--footer">
+                                    <div class="description"><spring:message code="operator.signature" /></div>
+                                    <div class="signature-pad--actions">
+                                        <div>
+                                            <button id="clearSignature" class="clearSignatureButton" type="button"><i class="fa fa-redo"></i></button>
+                                        </div>
+                                        <div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div id="filesFormGroup" class="form-group">
+                            <label class="col-form-label">
+                                <spring:message code="files" />
+                                <input type="file" class="form-control mt-1" name="files" accept=".jpg, .jpeg, .png" multiple>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col text-right">
+                        <div class="form-check form-check-inline mr-0">
+                            <label class="form-check-label">
+                                <spring:message code="shares.intervention.create.share.client.notif.mail" />
+                                <input class="form-check-input" type="checkbox" name="clientNotif">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row actionable">
+                    <div class="col text-right">
+                        <button id="editBtn" type="button" class="btn btn-standard btn-sm movile-full"><spring:message code="save"/></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap-select/1.13.17/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/ui/static/js/plugins/signature_pad/signature_pad.umd.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/ui/static/js/select2/select2-utils.js?v=<%= System.currentTimeMillis() %>"></script>
+
+<script>
+
+    const locale = '${locale}';
+    const canUpdate = ${canUpdate};
+    const isShareFinished = ${ constructionShare.endDate != null };
+    const files = <%= filesJson %>;
+
+    let signaturePad;
+    let canvas;
+
+    $(document).ready(function() {
+        initializeSelects();
+        loadSignatures('${constructionShare.operatorSignature}');
+        loadFiles(files);
+        initialize();
+        save();
+    });
+
+    function initializeSelects() {
+        const form = document.querySelector('#editForm');
+        const selects = form.querySelectorAll('select');
+
+        selects.forEach(select => {
+            createBasicSelect2($(select));
+        });
+    }
+
+    function initialize() {
+        const editForm = document.querySelector('#editForm');
+
+        if (!isShareFinished) {
+            const fieldsToDisable = ['projectId', 'startDate', 'endDate'];
+
+            fieldsToDisable.forEach(name => {
+                const field = editForm.querySelector('[name="' + name + '"]');
+                if (field) field.disabled = true;
+            });
+        } else if (!canUpdate) {
+            editForm.querySelector('.actionable').style.display = 'none';
+
+            editForm.querySelectorAll('input, select, textarea, button').forEach(el => {
+                el.disabled = true;
+            });
+
+            signaturePad.off();
+        }
+    }
+
+    function save() {
+        const editBtn = $('#editBtn');
+        const editFormJQ = $('#editForm');
+        const editForm = document.querySelector('#editForm');
+
+        editBtn.click(async () => {
+
+            if (!isValidForm('#editForm')) {
+                editFormJQ.addClass('was-validated');
+            } else {
+
+                showLoading();
+                editFormJQ.removeClass('was-validated');
+
+                const projectId = editForm.querySelector('[name="projectId"]').value;
+                const startDate = editForm.querySelector('[name="startDate"]').value;
+                const endDate = editForm.querySelector('[name="endDate"]').value;
+                const observations = editForm.querySelector('[name="observations"]').value;
+                const operatorSignature = !signaturePad.isEmpty() ? signaturePad.toDataURL() : null;
+                const files = await parseFiles(editForm);
+                const notify = editForm.querySelector('[name="clientNotif"]');
+
+                let params = {
+                    projectId: projectId,
+                    startDate: startDate,
+                    endDate: endDate,
+                    observations: observations,
+                    operatorSignature: operatorSignature,
+                    files: files,
+                    notify: notify.checked
+                };
+
+                axios.put('/v1' + window.location.pathname, params).then(() => {
+                    location.reload();
+                }).catch(error => showNotify(error.response.data.detail, 'danger'))
+                    .finally(() => hideLoading());
+            }
+        })
+    }
+
+    function loadSignatures(signature) {
+        preloadSignatures(signature);
+
+        window.onresize = resizeCanvas;
+        $('#clearSignature').click(function () { signaturePad.clear(); });
+    }
+
+    function preloadSignatures(signature) {
+        if (signaturePad) {
+            signaturePad.clear();
+        }
+
+        canvas = document.querySelector('.signature-canvas');
+
+        resizeCanvas();
+
+        signaturePad = new SignaturePad(canvas);
+        if (typeof signature !== 'undefined' && signature !== '') {
+            signaturePad.fromDataURL(signature);
+        }
+    }
+
+    function loadFiles(files) {
+        if (files && files.length) {
+            showFiles(files, 'files', '#filesFormGroup');
+        }
+    }
+
+    function showFiles(files, inputName, filesId) {
+        const form = document.querySelector('#editForm');
+        const filesFormGroup = form.querySelector(filesId);
+        const filesAttachmentContainer = filesFormGroup.querySelector('.attachment-contianer');
+
+        if (filesAttachmentContainer) {
+            filesAttachmentContainer.remove();
+        }
+
+        const linksContainer = document.createElement('div');
+        linksContainer.classList.add('attachment-contianer');
+
+        const selector = form.querySelector('[name="' + inputName + '"]');
+        if (selector && (isShareFinished && !canUpdate)) {
+            selector.remove();
+        }
+
+        if (files.length > 0) {
+            const downloadBase64File = (file) => {
+                const binaryData = atob(file.content);
+                const byteNumbers = new Uint8Array(binaryData.length);
+
+                for (let i = 0; i < binaryData.length; i++) {
+                    byteNumbers[i] = binaryData.charCodeAt(i);
+                }
+
+                const link = document.createElement('a');
+                const blob = new Blob([byteNumbers], { type: 'application/octet-stream' });
+
+                link.href = URL.createObjectURL(blob);
+                link.download = file.name;
+                link.textContent = file.name;
+                link.classList.add('btn', 'btn-outline-primary', 'btn-xs', 'mr-1');
+                link.target = '_blank';
+
+                linksContainer.appendChild(link);
+
+                if (inputName === 'files' && canUpdate) {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.textContent = 'x';
+                    btn.classList.add('btn', 'btn-outline-danger', 'btn-xs', 'mr-1');
+                    btn.addEventListener('click', () => {
+                        deleteFile(file);
+                        link.remove();
+                        btn.remove();
+                    });
+
+                    linksContainer.appendChild(btn);
+                }
+            };
+
+            files.forEach(file => downloadBase64File(file));
+
+            filesFormGroup.appendChild(linksContainer);
+        }
+    }
+
+    function deleteFile(file) {
+        const alertMessage = messages.shares.construction.files.delete.alert.replace('{0}', file.name);
+        if (confirm(alertMessage)) {
+
+            showLoading();
+
+            axios.delete('/v1/shares/construction/${constructionShare.id}/files/' + file.id).then(() => {
+                const successMessage = messages.shares.construction.files.delete.success.replace('{0}', file.name);
+                showNotify(successMessage);
+            }).catch(error => showNotify(error.response.data.detail, 'danger'))
+                .finally(() => hideLoading());
+        }
+    }
+
+</script>

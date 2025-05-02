@@ -1,4 +1,4 @@
-package com.epm.gestepm.modelapi.shares;
+package com.epm.gestepm.modelapi.shares.decorator;
 
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
 

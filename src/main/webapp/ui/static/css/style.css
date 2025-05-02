@@ -165,6 +165,10 @@ img.idioma {
 	font-size: 12px;
 }
 
+.bootstrapSelectStyle {
+	height: 34px;
+}
+
 .selectControlStyle {
 	display: block !important;
     width: 100%;
@@ -383,3 +387,118 @@ img.idioma {
 }
 
 /* End Media Types */
+
+.clearSignatureButton {
+	color: #333;
+	font-weight: bold;
+	line-height: 2.25em;
+	text-decoration: underline;
+	border: 0;
+	background: transparent;
+	font-size: 0.75em;
+}
+
+.signature-pad {
+	position: relative;
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-orient: vertical;
+	-webkit-box-direction: normal;
+	-ms-flex-direction: column;
+	flex-direction: column;
+	font-size: 10px;
+	width: 100%;
+	height: 100%;
+	max-height: 200px;
+	min-height: 160px;
+	border: 1px solid #ced4da;
+	background-color: #fff;
+	border-radius: 4px;
+	padding: 16px;
+}
+
+.signature-pad::before, .signature-pad::after {
+	position: absolute;
+	z-index: -1;
+	content: "";
+	width: 40%;
+	height: 10px;
+	bottom: 10px;
+	background: transparent;
+}
+
+.signature-pad::before {
+	left: 20px;
+	-webkit-transform: skew(-3deg) rotate(-3deg);
+	transform: skew(-3deg) rotate(-3deg);
+}
+
+.signature-pad::after {
+	right: 20px;
+	-webkit-transform: skew(3deg) rotate(3deg);
+	transform: skew(3deg) rotate(3deg);
+}
+
+.signature-pad--body {
+	position: relative;
+	-webkit-box-flex: 1;
+	-ms-flex: 1;
+	flex: 1;
+	border: 1px solid lightgray;
+}
+
+.signature-pad--body canvas {
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
+	border-radius: 4px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.02) inset;
+}
+
+.signature-pad--footer {
+	color: gray;
+	text-align: center;
+	font-size: 1.2em;
+	margin-top: 8px;
+}
+
+.signature-pad--actions {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	-webkit-box-pack: justify;
+	-ms-flex-pack: justify;
+	justify-content: space-between;
+	margin-top: -20px;
+}
+
+.bootstrap-select .select2-container .select2-selection--single {
+	height: 38px;
+	padding: 6px 12px;
+	border: 1px solid #ced4da;
+	border-radius: 4px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	box-sizing: border-box;
+	margin-top: .25rem;
+}
+
+.bootstrap-select .select2-container .select2-selection--single .select2-selection__rendered {
+	line-height: 24px;
+	padding-left: 0;
+	color: #495057;
+}
+
+.bootstrap-select .select2-container--default .select2-selection--single {
+	border-color: #ced4da;
+}
+
+.bootstrap-select .select2-container--default .select2-selection--single .select2-selection__arrow {
+	height: 38px;
+	right: 10px;
+	top: 0;
+	width: 30px;
+}

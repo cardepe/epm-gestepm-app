@@ -223,9 +223,6 @@ em[disabled] {
 				</div>
 				<div class="modal-body">		
 					<div class="row">
-						<div class="col-md-12 col-lg-3">
-							<button id="btnConstructorShare" type="button" class="btn btn-sm btn-info w-100"><spring:message code="shares.displacement.create.construction.btn" /></button>
-						</div>
 						
 						<div class="col-md-12 col-lg-3">
 							<button id="btnProgrammedShare" type="button" class="btn btn-sm btn-info w-100"><spring:message code="shares.displacement.create.programmed.btn" /></button>
@@ -283,95 +280,6 @@ em[disabled] {
 					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-</div>
-<!-- /MODAL -->
-
-<!-- MODAL -->
-<div id="createConstModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<form id="createConstForm" class="needs-validation">
-				<div class="modal-header">
-					<div class="modal-title">
-						<h5 id="modalTitle">
-							<spring:message code="shares.construction.close.modal.title" />
-						</h5>
-					</div>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-sm-12 col-md-6">
-							<label for="startDateConstInput" class="col-form-label"><spring:message code="shares.construction.start.date" /></label>
-							<input type="datetime-local" class="form-control" id="startDateConstInput" name="startDate" disabled>
-						</div>
-						
-						<div class="col-sm-12 col-md-6">
-							<label for="endDateConstInput" class="col-form-label"><spring:message code="shares.construction.end.date" /></label>
-							<input type="datetime-local" class="form-control" id="endDateConstInput" name="endDate">
-						</div>
-					</div>
-					
-					<div class="row">
-						<div class="col">
-							<div class="form-group">
-								<label for="observationsConstInput" class="col-form-label"><spring:message code="shares.construction.description" /></label>
-								<textarea id="observationsConstInput" name="observations" class="form-control" rows="6"></textarea>
-							</div>
-						</div>
-					</div>
-					
-					<div class="row">
-						<div class="col-lg-6">
-							<div class="form-group">
-								<input type="file" class="form-control-file" id="filesConstInput"
-									name="files" accept="image/x-png,image/gif,image/jpeg" onchange="setConstFiles(event)"
-									lang="${locale}" multiple>
-							</div>
-						</div>
-						
-						<div class="col text-right">
-							<div class="form-group">
-								<label><input type="checkbox" id="clientNotifConstInput" name="clientNotif"> <spring:message code="shares.intervention.create.share.client.notif.mail" /></label>
-							</div>
-						</div>
-					</div>
-					
-					<div class="row mb-2">
-						<div class="col-sm-12 col-md-6 mt-2">
-							<input name="signatureOp" id="constSignaturePadOp" type="hidden"/>
-
-					  		<div id="constSignature-pad-op" class="signature-pad">
-						    	<div class="signature-pad--body">
-						      		<canvas></canvas>
-						    	</div>
-						    	<div class="signature-pad--footer">
-						      		<div class="description"><spring:message code="shares.intervention.create.signature.two" /></div>
-					      			<div class="signature-pad--actions">
-					        			<div>
-								          	<button id="constClearSignatureOp" class="clearSignatureButton" type="button"><i class="fa fa-redo"></i></button>
-					        			</div>
-					        			<div></div>
-					      			</div>
-					    		</div>
-					  		</div>
-						</div>
-					</div>
-					
-					<input type="hidden" id="idConstInput" name="id" required />
-				</div>
-				<div class="modal-footer clearfix">
-					<div class="w-100">
-						<div class="float-left">
-							<button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
-						</div>
-						<div class="float-right">
-							<button id="createConstBtn" type="button" class="btn btn-sm btn-success"><spring:message code="finish" /></button>
-						</div>
-					</div>
-				</div>
-			</form>
 		</div>
 	</div>
 </div>
@@ -784,13 +692,6 @@ em[disabled] {
 		});
 
 		/* INITIALIZING SHARE */
-		$('#btnConstructorShare').click(function() {
-			
-			shareSelectedType = 'cs';
-			createConstructionShare();
-			$('#createSelectorModal').modal('hide');
-		});
-
 		$('#btnProgrammedShare').click(function() {
 
 			shareSelectedType = 'ips';
@@ -839,34 +740,6 @@ em[disabled] {
 
 			$('#clientNotifModal').modal('hide');
 		});
-
-		function createConstructionShare() {
-
-			showLoading();
-			
-			var projectId = $('#projectDropdown').val();
-
-			$('#shareProjectId').val(projectId);
-
-			$.ajax({
-				type: "POST",
-				url: "/shares/intervention/construction/create",
-				data: $('#createShareForm').serialize(),
-				success: function(data) {
-
-					dispShareId = null; // reset
-					
-					$('#dTable').DataTable().ajax.reload();
-					hideLoading();
-					showNotify(data.msg, 'success');
-					
-				},
-				error: function(e) {
-					hideLoading();
-					showNotify(e.responseText, 'danger');
-				}
-			});
-		}
 
 		function createProgrammedShare(checkedClientNotif) {
 
@@ -979,52 +852,6 @@ em[disabled] {
 
 			// redirect
 			$('#createProgModal').modal('hide');
-		});
-		
-		$('#createConstBtn').click(function () {
-
-			showLoading();
-			
-			if (constSignaturePadOp) {
-				var constSignatureOp = document.getElementById('constSignaturePadOp');
-				constSignatureOp.value = constSignaturePadOp.toDataURL();
-			}
-
-			var data = new FormData();
-			data.append('id', $('#idConstInput').val());
-			data.append('startDate', $('#startDateConstInput').val());
-			data.append('endDate', $('#endDateConstInput').val());
-			data.append('observations', $('#observationsConstInput').val());
-			data.append('clientNotif', $('#clientNotifConstInput').prop('checked') ? true : false);
-			data.append('signatureOp', $('#constSignaturePadOp').val());
-			
-			if (filesConstInput) {
-				for (var file of filesConstInput) { 
-					data.append('files', file);
-				}
-			}
-			
-			$.ajax({
-				type: "POST",
-				url: "/shares/intervention/construction/finish",
-				// data: $('#createConstForm').serialize(),
-				enctype: 'multipart/form-data',
-				processData: false,
-		        contentType: false,
-		        cache: false,
-				data: data,
-				success: function(msg) {
-					$('#dTable').DataTable().ajax.reload();
-					hideLoading();
-					showNotify(msg, 'success');
-				},
-				error: function(e) {
-					hideLoading();
-					showNotify(e.responseText, 'danger');
-				}
-			});
-
-			$('#createConstModal').modal('hide');
 		});
 
 		$('#createProgBtn').click(function () {
@@ -1181,15 +1008,7 @@ em[disabled] {
 
 		var startDateValue = moment(startDate).format().slice(0,19);
 		
-		if (shareType === 'cs') {
-
-			$('#idConstInput').val(id);
-			$('#startDateConstInput').val(startDateValue);
-			$('#endDateConstInput').val(moment().format().slice(0,19));
-			
-			$('#createConstModal').modal('show');
-			
-		} else if (shareType === 'ips') {
+		if (shareType === 'ips') {
 
 			var share = await getIpsShare(id);
 			var members = await getProjectMembers(share.projectId);
@@ -1259,9 +1078,7 @@ em[disabled] {
 
 			var restUrl = '';
 
-			if (shareType === 'cs') {
-				restUrl = '/shares/intervention/construction/delete/' + shareId;
-			} else if (shareType === 'is') {
+			if (shareType === 'is') {
 				axios.delete('/v1/shares/no-programmed/' + shareId).then(() => {
 					$('#dTable').DataTable().ajax.reload();
 					showNotify(messages.shares.noprogrammed.delete.success.replace('{0}', shareId));
@@ -1397,8 +1214,6 @@ em[disabled] {
 			return '<div class="badge badge-secondary"> ${jspUtil.parseTagToText('ips')} </div>';
 		} else if (data === 'is') {
 			return '<span class="badge badge-primary"> ${jspUtil.parseTagToText('is')} </span>';
-		} else if (data === 'cs') {
-			return '<span class="badge badge-success"> ${jspUtil.parseTagToText('cs')} </span>';
 		} else if (data === 'ws') {
 			return '<span class="badge badge-info"> ${jspUtil.parseTagToText('ws')} </span>';
 		}

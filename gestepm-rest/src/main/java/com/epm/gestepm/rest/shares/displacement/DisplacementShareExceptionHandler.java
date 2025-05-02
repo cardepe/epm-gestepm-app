@@ -16,11 +16,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RestControllerAdvice
 public class DisplacementShareExceptionHandler extends BaseRestExceptionHandler {
 
-    public static final int DI_ERROR_CODE = 1400;
+    public static final int DS_ERROR_CODE = 1400;
 
-    public static final String DI_NOT_FOUND = "displacement-share-not-found";
+    public static final String DS_NOT_FOUND = "displacement-share-not-found";
 
-    public static final String DI_FORBIDDEN = "displacement-share-forbidden";
+    public static final String DS_FORBIDDEN = "displacement-share-forbidden";
 
     public DisplacementShareExceptionHandler(ExecutionRequestProvider executionRequestProvider, I18nErrorMessageSource i18nErrorMessageSource) {
         super(executionRequestProvider, i18nErrorMessageSource);
@@ -32,7 +32,7 @@ public class DisplacementShareExceptionHandler extends BaseRestExceptionHandler 
 
         final Integer id = ex.getId();
 
-        return toAPIError(DI_ERROR_CODE, DI_NOT_FOUND, DI_NOT_FOUND, id);
+        return toAPIError(DS_ERROR_CODE, DS_NOT_FOUND, DS_NOT_FOUND, id);
     }
 
     @ExceptionHandler(DisplacementShareForbiddenException.class)
@@ -40,8 +40,8 @@ public class DisplacementShareExceptionHandler extends BaseRestExceptionHandler 
     public APIError handle(DisplacementShareForbiddenException ex) {
 
         final Integer id = ex.getId();
-        final String message = DI_FORBIDDEN;
+        final String message = DS_FORBIDDEN;
 
-        return toAPIError(DI_ERROR_CODE, message, message, id);
+        return toAPIError(DS_ERROR_CODE, message, message, id);
     }
 }

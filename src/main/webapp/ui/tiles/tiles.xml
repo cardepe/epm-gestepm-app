@@ -83,6 +83,22 @@
     </definition>
     
     <!-- Shares -->
+    <definition name="construction-share" extends="fullFrameLayout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/construction/view.jsp" />
+    </definition>
+
+    <definition name="construction-share-detail" extends="fullFrameLayout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/construction/detail.jsp" />
+    </definition>
+
+    <definition name="displacement-share" extends="fullFrameLayout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/displacement/view.jsp" />
+    </definition>
+
+    <definition name="displacement-share-detail" extends="fullFrameLayout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/displacement/detail.jsp" />
+    </definition>
+
     <definition name="intervention-share" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/shares/intervention.jsp" />
     </definition>
@@ -97,14 +113,6 @@
 
     <definition name="inspection-detail" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/shares/no-programmed/inspection/view.jsp" />
-    </definition>
-    
-    <definition name="displacement-share" extends="fullFrameLayout">
-        <put-attribute name="body" value="/ui/jsp/view/shares/displacement/view.jsp" />
-    </definition>
-
-    <definition name="displacement-share-detail" extends="fullFrameLayout">
-        <put-attribute name="body" value="/ui/jsp/view/shares/displacement/detail.jsp" />
     </definition>
     
     <definition name="work-share" extends="fullFrameLayout">

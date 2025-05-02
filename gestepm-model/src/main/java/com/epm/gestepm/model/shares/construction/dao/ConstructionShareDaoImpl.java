@@ -2,6 +2,7 @@ package com.epm.gestepm.model.shares.construction.dao;
 
 import com.epm.gestepm.lib.entity.AttributeMap;
 import com.epm.gestepm.lib.jdbc.api.datasource.SQLDatasource;
+import com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType;
 import com.epm.gestepm.lib.jdbc.api.query.SQLInsert;
 import com.epm.gestepm.lib.jdbc.api.query.SQLQuery;
 import com.epm.gestepm.lib.jdbc.api.query.fetch.SQLQueryFetchMany;
@@ -10,6 +11,7 @@ import com.epm.gestepm.lib.jdbc.api.query.fetch.SQLQueryFetchPage;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.model.inspection.dao.entity.Inspection;
 import com.epm.gestepm.model.shares.construction.dao.entity.ConstructionShare;
 import com.epm.gestepm.model.shares.construction.dao.entity.filter.ConstructionShareFilter;
 import com.epm.gestepm.model.shares.construction.dao.mappers.ConstructionShareRSManyExtractor;
@@ -20,17 +22,23 @@ import com.epm.gestepm.model.shares.construction.dao.entity.updater.Construction
 import com.epm.gestepm.model.shares.construction.dao.mappers.ConstructionShareRSOneExtractor;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
+import static com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType.ASC;
+import static com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType.DESC;
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_DELETE;
+import static com.epm.gestepm.model.inspection.dao.mappers.InspectionRowMapper.*;
+import static com.epm.gestepm.model.personalexpensesheet.dao.mappers.PersonalExpenseSheetRowMapper.COL_PES_PROJECT_ID;
 import static com.epm.gestepm.model.shares.construction.dao.constants.ConstructionShareQueries.*;
 import static com.epm.gestepm.model.shares.construction.dao.constants.ConstructionShareQueries.QRY_DELETE_CS;
+import static com.epm.gestepm.model.shares.construction.dao.mappers.ConstructionShareRowMapper.*;
 
 @AllArgsConstructor
 @Component("constructionDao")
@@ -55,6 +63,8 @@ public class ConstructionShareDaoImpl implements ConstructionShareDao {
                 .useFilter(FILTER_CS_BY_PARAMS)
                 .withParams(filter.collectAttributes());
 
+        this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
+
         return this.sqlDatasource.fetch(sqlQuery);
     }
 
@@ -74,6 +84,8 @@ public class ConstructionShareDaoImpl implements ConstructionShareDao {
                 .offset(offset)
                 .limit(limit)
                 .withParams(filter.collectAttributes());
+
+        this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
 
         return this.sqlDatasource.fetch(sqlQuery);
     }
@@ -161,5 +173,28 @@ public class ConstructionShareDaoImpl implements ConstructionShareDao {
                 .withParams(params);
 
         this.sqlDatasource.execute(sqlQuery);
+    }
+
+    private void setOrder(final SQLOrderByType order, final String orderBy, final SQLQueryFetchMany<ConstructionShare> sqlQuery) {
+        final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id")
+                ? this.getOrderColumn(orderBy)
+                : COL_CS_ID;
+        final SQLOrderByType orderStatement = order != null
+                ? order
+                : SQLOrderByType.DESC;
+        sqlQuery.addOrderBy(orderByStatement, orderStatement);
+    }
+
+    private String getOrderColumn(final String orderBy) {
+        if ("user.name".equals(orderBy)) {
+            return COL_CS_U_USERNAME;
+        } else if ("project.name".equals(orderBy)) {
+            return COL_CS_P_NAME;
+        } else if ("startDate".equals(orderBy)) {
+            return COL_CS_START_DATE;
+        } else if ("endDate".equals(orderBy)) {
+            return COL_CS_END_DATE;
+        }
+        return orderBy;
     }
 }

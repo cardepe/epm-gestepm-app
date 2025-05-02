@@ -148,3 +148,35 @@ function getSigningText(type) {
 
 	return '';
 }
+
+function resizeCanvas() {
+	let ratio = Math.max(window.devicePixelRatio || 1, 1);
+
+	if (typeof canvas !== 'undefined' && canvas) {
+		canvas.width = canvas.offsetWidth * ratio;
+		canvas.height = canvas.offsetHeight * ratio;
+		canvas.getContext("2d").scale(ratio, ratio);
+	}
+
+	if (typeof canvasOp !== 'undefined' && canvasOp) {
+		canvasOp.width = canvasOp.offsetWidth * ratio;
+		canvasOp.height = canvasOp.offsetHeight * ratio;
+		canvasOp.getContext("2d").scale(ratio, ratio);
+	}
+}
+
+async function parseFiles(editForm) {
+	const selector = editForm.querySelector('[name="files"]');
+	let filesData = [];
+	if (selector && selector.files) {
+		for (let i = 0; i < selector.files.length; i++) {
+			const file = selector.files[i];
+
+			filesData.push({
+				name: file.name,
+				content: await toBase64(file)
+			});
+		}
+	}
+	return filesData ? filesData : null;
+}

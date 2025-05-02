@@ -19,17 +19,11 @@ public class ConstructionShare {
 	@Column(name = "construction_share_id", unique = true, nullable = false, precision = 10)
 	private Long id;
 	
-	@Column(name = "created_at", nullable = false)
-	private LocalDateTime createdAt;
+	@Column(name = "start_date", nullable = false)
+	private LocalDateTime startDate;
 
-	@Column(name = "created_by", nullable = false)
-	private Long createdBy;
-
-	@Column(name = "closed_at")
-	private LocalDateTime closedAt;
-
-	@Column(name = "closed_by")
-	private Long closedBy;
+	@Column(name = "end_date")
+	private LocalDateTime endDate;
 	
 	@Column(name="observations")
     private String observations;
@@ -44,6 +38,18 @@ public class ConstructionShare {
 	
 	@Column(name = "operator_signature")
 	private String signatureOp;
+
+	@Column(name = "created_at", nullable = false)
+	private LocalDateTime createdAt;
+
+	@Column(name = "created_by", nullable = false)
+	private Long createdBy;
+
+	@Column(name = "closed_at")
+	private LocalDateTime closedAt;
+
+	@Column(name = "closed_by")
+	private Long closedBy;
 	
 	@OneToMany(mappedBy = "constructionShare")
 	private List<ConstructionShareFile> constructionShareFiles;

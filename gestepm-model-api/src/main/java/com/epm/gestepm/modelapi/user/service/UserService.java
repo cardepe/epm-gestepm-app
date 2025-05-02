@@ -17,6 +17,7 @@ public interface UserService {
 	void deleteUser(User user);
 	User getUserById(Long id);
 	List<User> findBySigningIds(List<Long> ids);
+	List<User> findByState(Integer state);
 	User getUserBySigningId(Long signingId);
 	User getUsuarioByEmailAndPassword(String email, String password);
 	List<UserDTO> getAllUserDTOs();

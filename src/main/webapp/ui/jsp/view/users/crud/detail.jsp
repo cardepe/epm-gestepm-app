@@ -884,6 +884,8 @@
 
 				if (type === 'TELEWORKING_SIGNING') {
 					window.location.href = '/signings/teleworking/' + id;
+				} else if (type === 'CONSTRUCTION_SHARES') {
+					window.location.href = '/shares/construction/' + id;
 				} else {
 					loadModalForm(calendarSigning);
 				}
