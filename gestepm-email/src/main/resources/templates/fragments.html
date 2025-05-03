@@ -3,6 +3,11 @@
     <p th:text="#{email.constructionshare.close.line.2}"></p>
 </th:block>
 
+<th:block th:fragment="close-programmed-share">
+    <p th:text="#{email.programmedshare.close.line.1(${fullName}, ${programmedShareId}, ${projectName}, ${createdAt}, ${closedAt})}"></p>
+    <p th:text="#{email.programmedshare.close.line.2}"></p>
+</th:block>
+
 <th:block th:fragment="close-inspection">
     <p th:text="#{email.inspection.close.line.1(${fullName}, ${action}, ${inspectionId}, ${forumTitle}, ${projectName}, ${createdAt}, ${closedAt})}"></p>
     <p th:text="#{email.inspection.close.line.2}"></p>

@@ -1008,27 +1008,7 @@ em[disabled] {
 
 		var startDateValue = moment(startDate).format().slice(0,19);
 		
-		if (shareType === 'ips') {
-
-			var share = await getIpsShare(id);
-			var members = await getProjectMembers(share.projectId);
-
-			var selectInputMembers = convertMembersToHtml(members);
-
-			$('#idProgInput').val(id);
-			$('#projectIdProgInput').val(share.projectId);
-			$('#startDateProgInput').val(startDateValue);
-			$('#endDateProgInput').val(moment().format().slice(0,19));
-			$('#secondTechnicalInput').html(selectInputMembers);
-
-			$('#observationsProgInput').val(share.observations);
-
-			$('#updateSharePrSignature').val(share.signature);
-			$('#updateSharePrSignatureOp').val(share.signatureOp);
-
-			$('#createProgModal').modal('show');
-			
-		} else if (shareType === 'ws') {
+		if (shareType === 'ws') {
 
 			$('#idWorkInput').val(id);
 			$('#startDateWorkInput').val(startDateValue);
@@ -1084,8 +1064,6 @@ em[disabled] {
 					showNotify(messages.shares.noprogrammed.delete.success.replace('{0}', shareId));
 				}).catch(error => showNotify(error.response.data.detail, 'danger'))
 						.finally(() => hideLoading());
-			} else if (shareType === 'ips') {
-				restUrl = '/shares/intervention/programmed/delete/' + shareId;
 			} else if (shareType === 'ws') {
 				restUrl = '/shares/work/' + shareId;
 			}			
@@ -1210,9 +1188,7 @@ em[disabled] {
 	}
 
 	function parseShareType(data) {
-		if (data === 'ips') {
-			return '<div class="badge badge-secondary"> ${jspUtil.parseTagToText('ips')} </div>';
-		} else if (data === 'is') {
+		if (data === 'is') {
 			return '<span class="badge badge-primary"> ${jspUtil.parseTagToText('is')} </span>';
 		} else if (data === 'ws') {
 			return '<span class="badge badge-info"> ${jspUtil.parseTagToText('ws')} </span>';

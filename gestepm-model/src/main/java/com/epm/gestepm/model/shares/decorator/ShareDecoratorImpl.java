@@ -14,6 +14,10 @@ import com.epm.gestepm.modelapi.shares.construction.dto.filter.ConstructionShare
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareExportService;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareService;
 import com.epm.gestepm.modelapi.shares.decorator.ShareDecorator;
+import com.epm.gestepm.modelapi.shares.programmed.dto.ProgrammedShareDto;
+import com.epm.gestepm.modelapi.shares.programmed.dto.filter.ProgrammedShareFilterDto;
+import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareExportService;
+import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareService;
 import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -36,6 +40,10 @@ public class ShareDecoratorImpl implements ShareDecorator {
     private final ConstructionShareService constructionShareService;
 
     private final ConstructionShareExportService constructionShareExportService;
+
+    private final ProgrammedShareService programmedShareService;
+
+    private final ProgrammedShareExportService programmedShareExportService;
 
     private final InterventionPrShareService interventionPrShareService;
 
@@ -60,7 +68,12 @@ public class ShareDecoratorImpl implements ShareDecorator {
 
         final List<PdfFileDTO> csPdfs = this.getConstructionShares(constructionShareFilter);
 
-        final List<PdfFileDTO> iprPdfs = this.interventionPrShareService.generateSharesByProjectAndInterval(projectId.longValue(), startDate, endDate);
+        final ProgrammedShareFilterDto programmedShareFilter = new ProgrammedShareFilterDto();
+        programmedShareFilter.setProjectIds(List.of(projectId));
+        programmedShareFilter.setStartDate(startDate);
+        programmedShareFilter.setEndDate(endDate);
+
+        final List<PdfFileDTO> psPdfs = this.getProgrammedShares(programmedShareFilter);
 
         final InspectionFilterDto inspectionFilter = new InspectionFilterDto();
         inspectionFilter.setProjectId(projectId);
@@ -72,7 +85,7 @@ public class ShareDecoratorImpl implements ShareDecorator {
         final List<PdfFileDTO> wsPdfs = this.workShareService.generateSharesByProjectAndInterval(projectId.longValue(), startDate, endDate);
 
         pdfs.addAll(csPdfs);
-        pdfs.addAll(iprPdfs);
+        pdfs.addAll(psPdfs);
         pdfs.addAll(isPdfs);
         pdfs.addAll(wsPdfs);
 
@@ -90,6 +103,29 @@ public class ShareDecoratorImpl implements ShareDecorator {
             final String fileName = this.messageSource.getMessage("shares.construction.pdf.name", new Object[] {
                     constructionShare.getId().toString(),
                     Utiles.transform(constructionShare.getStartDate(), "dd-MM-yyyy")
+            }, locale) + ".pdf";
+
+            final PdfFileDTO pdfFileDTO = new PdfFileDTO();
+            pdfFileDTO.setDocumentBytes(pdf);
+            pdfFileDTO.setFileName(fileName);
+
+            pdfs.add(pdfFileDTO);
+        });
+
+        return pdfs;
+    }
+
+    private List<PdfFileDTO> getProgrammedShares(final ProgrammedShareFilterDto filter) {
+        final List<PdfFileDTO> pdfs = new ArrayList<>();
+        final List<ProgrammedShareDto> programmedShares = this.programmedShareService.list(filter);
+        final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));
+
+        programmedShares.forEach(programmedShare -> {
+            final byte[] pdf = this.programmedShareExportService.generate(programmedShare);
+
+            final String fileName = this.messageSource.getMessage("shares.programmed.pdf.name", new Object[] {
+                    programmedShare.getId().toString(),
+                    Utiles.transform(programmedShare.getStartDate(), "dd-MM-yyyy")
             }, locale) + ".pdf";
 
             final PdfFileDTO pdfFileDTO = new PdfFileDTO();

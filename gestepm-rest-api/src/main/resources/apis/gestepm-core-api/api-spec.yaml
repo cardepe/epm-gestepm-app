@@ -853,6 +853,164 @@ paths:
       operationId: export-inspection-materials-v1
       description: export-inspection-materials-v1
       parameters: []
+  /v1/shares/programmed:
+    get:
+      summary: V1 - List programmed shares
+      responses:
+        '200':
+          $ref: '#/components/responses/ProgrammedShareList'
+      operationId: list-programmed-shares-v1
+      description: list-programmed-shares-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by programmed share identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: userIds
+          description: Filter by user identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: projectIds
+          description: Filter by project identificator.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: startDate
+          description: Filter by start date after.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: endDate
+          description: Filter by end date before.
+        - schema:
+            type: string
+            enum:
+              - NOT_FINISHED
+              - FINISHED
+          in: query
+          name: status
+          description: Filter by programmed share status.
+      tags:
+        - programmed-share-v1
+    post:
+      summary: V1 - Create programmed share
+      operationId: create-programmed-share-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ProgrammedShare'
+        '404':
+          description: user-not-found | project-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: create-programmed-share-v1
+      tags:
+        - programmed-share-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateProgrammedShare'
+  '/v1/shares/programmed/{shareId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+    get:
+      summary: V1 - Find programmed share
+      tags:
+        - programmed-share-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ProgrammedShare'
+        '404':
+          description: programmed-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-programmed-share-by-id-v1
+      description: find-programmed-share-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-locale
+    put:
+      summary: V1 - Update programmed share
+      operationId: update-programmed-share-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ProgrammedShare'
+        '404':
+          description: programmed-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: update-programmed-share-v1
+      tags:
+        - programmed-share-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateProgrammedShare'
+    delete:
+      summary: V1 - Delete programmed share
+      operationId: delete-programmed-share-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: programmed-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: delete-programmed-share-v1
+      tags:
+        - programmed-share-v1
+  '/v1/shares/programmed/{shareId}/files/{fileId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+      - $ref: '#/components/parameters/File-Id'
+    delete:
+      summary: V1 - Delete programmed share file
+      operationId: delete-programmed-share-file-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: programmed-share-file-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - programmed-share-file-v1
+      description: delete-programmed-share-file-v1
   /v1/signings/teleworking:
     get:
       summary: V1 - List teleworking signings
@@ -1109,6 +1267,11 @@ components:
           type: string
           x-stoplight:
             id: n2mhp965w4xqj
+        files:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ShareFile'
         createdAt:
           type: string
           x-stoplight:
@@ -1128,7 +1291,6 @@ components:
         - user
         - project
         - startDate
-        - endDate
         - createdAt
         - createdBy
     DisplacementShare:
@@ -1368,6 +1530,68 @@ components:
         - family
         - subFamily
         - state
+    ProgrammedShare:
+      title: ProgrammedShare
+      x-stoplight:
+        id: 12zy34vxxw9uk
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        secondTechnical:
+          $ref: '#/components/schemas/User'
+        project:
+          $ref: '#/components/schemas/Project'
+        startDate:
+          type: string
+          x-stoplight:
+            id: 3d5zo1j0db2cw
+          format: date-time
+        endDate:
+          type: string
+          x-stoplight:
+            id: xhrrl230wxm91
+          format: date-time
+        observations:
+          type: string
+          x-stoplight:
+            id: 9urv7szzth156
+        customerSignature:
+          type: string
+          x-stoplight:
+            id: ln1za06lt4s7r
+        operatorSignature:
+          type: string
+          x-stoplight:
+            id: jbc0t6h5q322k
+        files:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ShareFile'
+        createdAt:
+          type: string
+          x-stoplight:
+            id: i2h901a5f5v32
+          format: date-time
+        createdBy:
+          $ref: '#/components/schemas/User'
+        updatedAt:
+          type: string
+          x-stoplight:
+            id: 1va73to8m1vzt
+          format: date-time
+        updatedBy:
+          $ref: '#/components/schemas/User'
+      required:
+        - id
+        - user
+        - project
+        - startDate
+        - createdAt
+        - createdBy
     Project:
       title: Project
       x-stoplight:
@@ -1883,6 +2107,39 @@ components:
           schema:
             type: string
             format: binary
+    ProgrammedShare:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                $ref: '#/components/schemas/ProgrammedShare'
+    ProgrammedShareList:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                type: array
+                x-stoplight:
+                  id: dyvkfgdppk87v
+                items:
+                  $ref: '#/components/schemas/ProgrammedShare'
+    ProgrammedShareExport:
+      description: Example response
+      content:
+        application/octet-stream:
+          schema:
+            type: string
+            format: binary
   requestBodies:
     CreateNoProgrammedShare:
       content:
@@ -1949,6 +2206,29 @@ components:
                         id: 6ce64ca1txbth
             required:
               - userId
+    CreateProgrammedShare:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userId:
+                type: integer
+                x-stoplight:
+                  id: yfv1w10988omh
+              projectId:
+                type: integer
+                x-stoplight:
+                  id: cqzartm0o29wp
+              startDate:
+                type: string
+                x-stoplight:
+                  id: mugxnbf5tzgci
+                format: date-time
+            required:
+              - userId
+              - projectId
+              - startDate
     CreateInspection:
       content:
         application/json:
@@ -2429,11 +2709,57 @@ components:
                 type: boolean
                 x-stoplight:
                   id: 056faw4s2fxpf
-            required:
-              - projectId
-              - startDate
-              - observations
-              - operatorSignature
+    UpdateProgrammedShare:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              projectId:
+                type: integer
+                x-stoplight:
+                  id: b6hkrbe3fr5qd
+              secondTechnicalId:
+                type: integer
+                x-stoplight:
+                  id: 1r9527ena6bni
+              startDate:
+                type: string
+                x-stoplight:
+                  id: eawwjjrxioh3x
+                format: date-time
+              endDate:
+                type: string
+                x-stoplight:
+                  id: 52qbswhsljf4p
+                format: date-time
+              observations:
+                type: string
+                x-stoplight:
+                  id: a5ricn3p3wsar
+              customerSignature:
+                type: string
+                x-stoplight:
+                  id: ymudq1zb14mwg
+              operatorSignature:
+                type: string
+                x-stoplight:
+                  id: il4qgichpo4yz
+              files:
+                type: array
+                items:
+                  type: object
+                  format: binary
+                  properties:
+                    name:
+                      type: string
+                    content:
+                      type: string
+                      x-field-extra-annotation: '@com.fasterxml.jackson.annotation.JsonIgnore'
+              notify:
+                type: boolean
+                x-stoplight:
+                  id: 3byt4qf86eswz
     UpdateDisplacementShare:
       content:
         application/json:
@@ -2531,6 +2857,10 @@ tags:
     description: V1 - No Programmed Share
   - name: no-programmed-share-file-v1
     description: V1 - No Programmed Share File
+  - name: programmed-share-v1
+    description: V1 - Programmed Share
+  - name: programmed-share-file-v1
+    description: V1 - Programmed Share File
   - name: teleworking-signing-v1
     description: V1 - Teleworking Signing
   - name: time-control-v1

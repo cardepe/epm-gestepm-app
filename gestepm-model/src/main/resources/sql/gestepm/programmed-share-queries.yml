@@ -1,0 +1,124 @@
+sql:
+
+  qry-list-of-ps: |
+
+    SELECT
+      ps.programmed_share_id AS id_pagination,
+      ps.programmed_share_id,
+      ps.user_id,
+      CONCAT(us.name, us.surnames) AS username,
+      ps.project_id,
+      p.name AS project_name,
+      ps.second_technical_id,
+      CONCAT(st.name, st.surnames) AS second_technical_name,
+      ps.observations,
+      ps.start_date,
+      ps.end_date,
+      ps.customer_signature,
+      ps.operator_signature,
+      ps.created_at,
+      ps.created_by,
+      ps.closed_at,
+      ps.closed_by,
+      psf.programmed_share_file_id
+    FROM ${sch-gestepm}.programmed_share ps
+    LEFT JOIN ${sch-gestepm}.projects p ON p.id = ps.project_id
+    LEFT JOIN ${sch-gestepm}.users us ON ps.user_id = us.ID
+    LEFT JOIN ${sch-gestepm}.users st ON ps.second_technical_id = us.ID
+    LEFT JOIN ${sch-gestepm}.programmed_share_file psf ON ps.programmed_share_id = psf.programmed_share_id
+
+    #whereToken #filter
+
+  qry-page-of-ps: |
+
+    ${sql.paginated-query-group-prefix}
+    ${sql.qry-list-of-ps}
+    ${sql.paginated-query-suffix}
+
+  qry-count-of-ps: |
+
+    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    FROM (${sql.qry-list-of-ps}) final
+
+  qry-create-ps: |
+
+    INSERT INTO ${sch-gestepm}.programmed_share (
+      user_id,
+      project_id,
+      start_date,
+      created_at,
+      created_by
+    )
+    VALUES (
+      :attr_ps_u_id,
+      :attr_ps_p_id,
+      :attr_ps_start_date,
+      :attr_ps_created_at,
+      :attr_ps_created_by
+    )
+
+  qry-update-ps: |
+
+    UPDATE
+      ${sch-gestepm}.programmed_share
+    SET
+      project_id = :attr_ps_p_id,
+      second_technical_id = :attr_ps_second_technical_id,
+      start_date = :attr_ps_start_date,
+      end_date = :attr_ps_end_date,
+      observations = :attr_ps_observations,
+      customer_signature = :attr_ps_customer_signature,
+      operator_signature = :attr_ps_operator_signature,
+      closed_at = :attr_ps_closed_at,
+      closed_by = :attr_ps_closed_by
+    WHERE
+      programmed_share_id = :attr_ps_id
+
+  qry-delete-ps: |
+
+    DELETE FROM ${sch-gestepm}.programmed_share WHERE programmed_share_id = :attr_ps_id
+    
+  filter-ps-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-ps-ids}
+      -- ${sql.predicate-for-ps-u-ids}
+      -- ${sql.predicate-for-ps-p-ids}
+      -- ${sql.predicate-for-ps-start-date}
+      -- ${sql.predicate-for-ps-end-date}
+      -- ${sql.predicate-for-ps-status}
+    -- AND]
+
+  filter-ps-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-ps-id}
+    -- AND]
+
+  predicate-for-ps-id: |
+
+    ps.programmed_share_id = :attr_ps_id
+
+  predicate-for-ps-ids: |
+
+    ps.programmed_share_id IN (:attr_ps_ids)
+
+  predicate-for-ps-u-ids: |
+
+    ps.user_id IN (:attr_ps_u_ids)
+
+  predicate-for-ps-p-ids: |
+
+    ps.project_id IN (:attr_ps_p_ids)
+
+  predicate-for-ps-start-date: |
+
+    ps.start_date > :attr_ps_start_date
+
+  predicate-for-ps-end-date: |
+
+    ps.end_date < :attr_ps_end_date
+
+  predicate-for-ps-status: |
+    
+    :attr_ps_status IS NOT NULL AND ((:attr_ps_status = 'NOT_FINISHED' AND ps.end_date IS NULL) OR (:attr_ps_status = 'FINISHED' AND ps.end_date IS NOT NULL))
