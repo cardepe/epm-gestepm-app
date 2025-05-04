@@ -11,39 +11,33 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "work_shares")
+@Table(name = "work_share")
 public class WorkShare {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID", unique = true, nullable = false, precision = 10)
+	@Column(name = "work_share_id", unique = true, nullable = false, precision = 10)
 	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "USER_ID", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "user_id", referencedColumnName = "ID", nullable = false)
 	private User user;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PROJECT_ID", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "project_id", referencedColumnName = "ID", nullable = false)
 	private Project project;
 	
-	@Column(name = "START_DATE", nullable = false)
+	@Column(name = "start_date", nullable = false)
 	private LocalDateTime startDate;
 	
-	@Column(name = "END_DATE")
+	@Column(name = "end_date")
 	private LocalDateTime endDate;
 	
-	@Column(name="OBSERVATIONS")
+	@Column(name="observations")
     private String observations;
 	
-	@Column(name = "SIGNATURE_OP")
+	@Column(name = "operator_signature")
 	private String signatureOp;
-	
-	@Column(name = "MATERIALS", length = 100)
-	private String materials;
-	
-	@Column(name = "MR_SIGNATURE")
-	private String mrSignature;
 	
 	@OneToMany(mappedBy = "workShare")
 	private List<WorkShareFile> workShareFiles;

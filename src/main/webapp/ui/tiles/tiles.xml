@@ -122,9 +122,13 @@
     <definition name="inspection-detail" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/shares/no-programmed/inspection/view.jsp" />
     </definition>
-    
+
     <definition name="work-share" extends="fullFrameLayout">
-        <put-attribute name="body" value="/ui/jsp/view/shares/work.jsp" />
+        <put-attribute name="body" value="/ui/jsp/view/shares/work/view.jsp" />
+    </definition>
+
+    <definition name="work-share-detail" extends="fullFrameLayout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/work/detail.jsp" />
     </definition>
     
     <!-- Projects -->

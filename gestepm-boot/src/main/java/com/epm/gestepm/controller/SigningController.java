@@ -2,7 +2,6 @@ package com.epm.gestepm.controller;
 
 import com.epm.gestepm.lib.file.FileUtils;
 import com.epm.gestepm.model.inspection.service.mapper.MapIToInspectionUpdateDto;
-import com.epm.gestepm.model.interventionshare.service.mapper.ShareMapper;
 import com.epm.gestepm.model.shares.displacement.service.mapper.MapDSToDisplacementShareUpdateDto;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
@@ -42,8 +41,6 @@ import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningDTO;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningTableDTO;
 import com.epm.gestepm.modelapi.usermanualsigning.service.UserManualSigningService;
 import com.epm.gestepm.modelapi.deprecated.usersigning.dto.UserSigningShareDTO;
-import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
-import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -115,9 +112,6 @@ public class SigningController {
 
     @Autowired
     private InspectionService inspectionService;
-
-    @Autowired
-    private WorkShareService workShareService;
 
     @GetMapping(value = "/project/{projectId}/weekly", produces = {"application/zip"})
     public void exportWeeklyPdf(@PathVariable Integer projectId, HttpServletResponse response, Locale locale) {
@@ -659,7 +653,13 @@ public class SigningController {
 
         PersonalSigning personalSigning = personalSigningService.getById(id);
 
-        return ShareMapper.mapPersonalSigningToDTO(personalSigning);
+        PersonalSigningDTO personalSigningDTO = new PersonalSigningDTO();
+
+        personalSigningDTO.setId(personalSigning.getId());
+        personalSigningDTO.setStartDate(personalSigning.getStartDate());
+        personalSigningDTO.setEndDate(personalSigning.getEndDate());
+
+        return personalSigningDTO;
     }
 
     @GetMapping("/modified-list")
@@ -882,16 +882,6 @@ public class SigningController {
                     personalSigning.setEndDate(endDate);
 
                     this.personalSigningService.save(personalSigning);
-
-                    break;
-                }
-                case "WORK_SHARES": {
-
-                    final WorkShare workShare = this.workShareService.getWorkShareById(userSigningShareDTO.getShareId());
-                    workShare.setStartDate(startDate);
-                    workShare.setEndDate(endDate);
-
-                    this.workShareService.save(workShare);
 
                     break;
                 }

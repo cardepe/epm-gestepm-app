@@ -188,7 +188,23 @@
             }
         },
         "work": {
-            "name": "Parte de trabajo"
+            "name": "Parte de trabajo",
+            "create": {
+                "success": "Parte de trabajo creado con éxito."
+            },
+            "delete" : {
+                "alert": "¿Está seguro que quiere borrar el parte de trabajo {0}?",
+                "success": "Parte de trabajo nº {0} eliminado con éxito."
+            },
+            "update": {
+                "success": "Se ha actualizado el parte de trabajo con éxito."
+            },
+            "files": {
+                "delete": {
+                    "alert": "¿Está seguro que desea eliminar el adjunto {0}?",
+                    "success": "Adjunto {0} eliminado con éxito."
+                }
+            }
         }
     },
     "priceType": {

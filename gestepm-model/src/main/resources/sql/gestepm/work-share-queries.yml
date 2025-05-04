@@ -1,0 +1,122 @@
+sql:
+
+  qry-list-of-ws: |
+
+    SELECT
+      ws.work_share_id,
+      ws.user_id,
+      CONCAT(us.name, us.surnames) AS username,
+      ws.project_id,
+      p.name AS project_name,
+      ws.observations,
+      ws.start_date,
+      ws.end_date,
+      ws.operator_signature,
+      ws.created_at,
+      ws.created_by,
+      ws.closed_at,
+      ws.closed_by,
+      GROUP_CONCAT(wsf.work_share_file_id) AS work_share_file_ids
+    FROM ${sch-gestepm}.work_share ws
+    LEFT JOIN ${sch-gestepm}.projects p ON p.id = ws.project_id
+    LEFT JOIN ${sch-gestepm}.users us ON ws.user_id = us.ID
+    LEFT JOIN ${sch-gestepm}.work_share_file wsf ON ws.work_share_id = wsf.work_share_id
+
+    #whereToken #filter
+    GROUP BY ws.work_share_id
+    #orderByToken
+
+  qry-page-of-ws: |
+
+    ${sql.qry-list-of-ws}
+    ${sql.paginated-query}
+
+  qry-count-of-ws: |
+
+    SELECT COUNT(DISTINCT work_share_id) AS "count"
+    FROM (
+      SELECT ws.work_share_id
+      FROM ${sch-gestepm}.work_share ws
+      #whereToken #filter
+    ) final
+
+  qry-create-ws: |
+
+    INSERT INTO ${sch-gestepm}.work_share (
+      user_id,
+      project_id,
+      start_date,
+      created_at,
+      created_by
+    )
+    VALUES (
+      :attr_ws_u_id,
+      :attr_ws_p_id,
+      :attr_ws_start_date,
+      :attr_ws_created_at,
+      :attr_ws_created_by
+    )
+
+  qry-update-ws: |
+
+    UPDATE
+      ${sch-gestepm}.work_share
+    SET
+      project_id = :attr_ws_p_id,
+      start_date = :attr_ws_start_date,
+      end_date = :attr_ws_end_date,
+      observations = :attr_ws_observations,
+      operator_signature = :attr_ws_operator_signature,
+      closed_at = :attr_ws_closed_at,
+      closed_by = :attr_ws_closed_by
+    WHERE
+      work_share_id = :attr_ws_id
+
+  qry-delete-ws: |
+
+    DELETE FROM ${sch-gestepm}.work_share WHERE work_share_id = :attr_ws_id
+    
+  filter-ws-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-ws-ids}
+      -- ${sql.predicate-for-ws-u-ids}
+      -- ${sql.predicate-for-ws-p-ids}
+      -- ${sql.predicate-for-ws-start-date}
+      -- ${sql.predicate-for-ws-end-date}
+      -- ${sql.predicate-for-ws-status}
+    -- AND]
+
+  filter-ws-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-ws-id}
+    -- AND]
+
+  predicate-for-ws-id: |
+
+    ws.work_share_id = :attr_ws_id
+
+  predicate-for-ws-ids: |
+
+    ws.work_share_id IN (:attr_ws_ids)
+
+  predicate-for-ws-u-ids: |
+
+    ws.user_id IN (:attr_ws_u_ids)
+
+  predicate-for-ws-p-ids: |
+
+    ws.project_id IN (:attr_ws_p_ids)
+
+  predicate-for-ws-start-date: |
+
+    ws.start_date > :attr_ws_start_date
+
+  predicate-for-ws-end-date: |
+
+    ws.end_date < :attr_ws_end_date
+
+  predicate-for-ws-status: |
+    
+    :attr_ws_status IS NOT NULL AND ((:attr_ws_status = 'NOT_FINISHED' AND ws.end_date IS NULL) OR (:attr_ws_status = 'FINISHED' AND ws.end_date IS NOT NULL))

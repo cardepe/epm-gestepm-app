@@ -69,13 +69,13 @@ sql:
       FROM ${sch-gestepm}.teleworking_signing
       UNION
         SELECT
-        id,
+        work_share_id AS id,
         user_id,
         start_date,
         end_date,
         null AS description,
         'WORK_SHARES' AS type
-      FROM ${sch-gestepm}.work_shares
+      FROM ${sch-gestepm}.work_share
     ) AS sublist
     
     #whereToken #filter
