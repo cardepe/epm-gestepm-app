@@ -2,8 +2,8 @@ package com.epm.gestepm.modelapi.common.utils;
 
 import com.epm.gestepm.modelapi.common.config.ApplicationContextProvider;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
-import com.epm.gestepm.modelapi.expense.dto.ExpenseUserValidateDTO;
-import com.epm.gestepm.modelapi.expense.dto.ExpenseValidateDTO;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseUserValidateDTO;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseValidateDTO;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.service.UserService;
 import org.springframework.context.MessageSource;

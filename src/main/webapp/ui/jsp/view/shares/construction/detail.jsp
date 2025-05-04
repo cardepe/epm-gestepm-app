@@ -48,7 +48,7 @@
                                 <select class="form-control input mt-1" name="projectId" required>
                                     <option></option>
                                     <c:forEach items="${projects}" var="project">
-                                        <option value="${project.id}" ${project.id == constructionShare.projectId ? 'selected' : ''}><spring:message code="${project.name}"/></option>
+                                        <option value="${project.id}" ${project.id == programmedShare.projectId ? 'selected' : ''}><spring:message code="${project.name}"/></option>
                                     </c:forEach>
                                 </select>
                             </label>
@@ -58,7 +58,7 @@
                     <div class="col-sm-12 col-md-4">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100"><spring:message code="start.date" />
-                                <input name="startDate" type="datetime-local" class="form-control mt-1" value="${constructionShare.startDate}" required />
+                                <input name="startDate" type="datetime-local" class="form-control mt-1" value="${programmedShare.startDate}" required />
                             </label>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                     <div class="col-sm-12 col-md-4">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100"><spring:message code="end.date"/>
-                                <input name="endDate" type="datetime-local" class="form-control mt-1" value="${constructionShare.endDate}" />
+                                <input name="endDate" type="datetime-local" class="form-control mt-1" value="${programmedShare.endDate}" />
                             </label>
                         </div>
                     </div>
@@ -76,17 +76,15 @@
                     <div class="col-sm-12 col-md-8">
                         <div class="form-group">
                             <label class="col-form-label w-100"><spring:message code="observations" />
-                                <textarea name="observations" type="text" class="form-control" rows="6">${constructionShare.observations}</textarea>
+                                <textarea name="observations" type="text" class="form-control" rows="6">${programmedShare.observations}</textarea>
                             </label>
                         </div>
                     </div>
 
                     <div class="col-sm-12 col-md-4">
                         <div class="form-group">
-                            <input name="signature" type="hidden"/>
-
                             <label class="col-form-label pb-0"><spring:message code="operator.signature" /></label>
-                            <div class="signature-pad">
+                            <div class="signature-pad operator-signature">
                                 <div class="signature-pad--body">
                                     <canvas class="signature-canvas"></canvas>
                                 </div>
@@ -94,7 +92,7 @@
                                     <div class="description"><spring:message code="operator.signature" /></div>
                                     <div class="signature-pad--actions">
                                         <div>
-                                            <button id="clearSignature" class="clearSignatureButton" type="button"><i class="fa fa-redo"></i></button>
+                                            <button class="clearSignatureButton" type="button"><i class="fa fa-redo"></i></button>
                                         </div>
                                         <div></div>
                                     </div>
@@ -142,15 +140,15 @@
 
     const locale = '${locale}';
     const canUpdate = ${canUpdate};
-    const isShareFinished = ${ constructionShare.endDate != null };
+    const isShareFinished = ${ programmedShare.endDate != null };
     const files = <%= filesJson %>;
 
-    let signaturePad;
-    let canvas;
+    let signatures = { operator: null }
+    let canvas = { operator: null }
 
     $(document).ready(function() {
         initializeSelects();
-        loadSignatures('${constructionShare.operatorSignature}');
+        loadSignatures('${programmedShare.operatorSignature}');
         loadFiles(files);
         initialize();
         save();
@@ -227,25 +225,9 @@
     }
 
     function loadSignatures(signature) {
-        preloadSignatures(signature);
+        preloadSignatures(signatures, canvas, 'operator', signature);
 
-        window.onresize = resizeCanvas;
-        $('#clearSignature').click(function () { signaturePad.clear(); });
-    }
-
-    function preloadSignatures(signature) {
-        if (signaturePad) {
-            signaturePad.clear();
-        }
-
-        canvas = document.querySelector('.signature-canvas');
-
-        resizeCanvas();
-
-        signaturePad = new SignaturePad(canvas);
-        if (typeof signature !== 'undefined' && signature !== '') {
-            signaturePad.fromDataURL(signature);
-        }
+        $('.operator-signature .clearSignatureButton').click(function () { signatures.operator.clear(); });
     }
 
     function loadFiles(files) {
@@ -297,9 +279,7 @@
                     btn.textContent = 'x';
                     btn.classList.add('btn', 'btn-outline-danger', 'btn-xs', 'mr-1');
                     btn.addEventListener('click', () => {
-                        deleteFile(file);
-                        link.remove();
-                        btn.remove();
+                        deleteFile(file, btn, link);
                     });
 
                     linksContainer.appendChild(btn);
@@ -312,14 +292,16 @@
         }
     }
 
-    function deleteFile(file) {
+    function deleteFile(file, btn, link) {
         const alertMessage = messages.shares.construction.files.delete.alert.replace('{0}', file.name);
         if (confirm(alertMessage)) {
 
             showLoading();
 
-            axios.delete('/v1/shares/construction/${constructionShare.id}/files/' + file.id).then(() => {
+            axios.delete('/v1/shares/construction/${programmedShare.id}/files/' + file.id).then(() => {
                 const successMessage = messages.shares.construction.files.delete.success.replace('{0}', file.name);
+                link.remove();
+                btn.remove();
                 showNotify(successMessage);
             }).catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());

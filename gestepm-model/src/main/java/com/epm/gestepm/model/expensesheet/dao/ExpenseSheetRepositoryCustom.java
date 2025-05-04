@@ -2,7 +2,7 @@ package com.epm.gestepm.model.expensesheet.dao;
 
 import java.util.List;
 
-import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpensesMonthDTO;
 
 public interface ExpenseSheetRepositoryCustom {
 	List<ExpensesMonthDTO> findExpensesMonthDTOByProjectId(Long projectId, Integer year);

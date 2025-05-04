@@ -1,9 +1,9 @@
 package com.epm.gestepm.modelapi.user.dto;
 
 import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
-import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
-import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
+import com.epm.gestepm.modelapi.deprecated.displacementshare.dto.DisplacementShare;
+import com.epm.gestepm.modelapi.deprecated.expensesheet.dto.ExpenseSheet;
+import com.epm.gestepm.modelapi.deprecated.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.deprecated.interventionsubshare.dto.InterventionSubShare;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;

@@ -16,7 +16,7 @@ import javax.persistence.criteria.Root;
 
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpensesMonthDTO;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrectiveTableDTO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

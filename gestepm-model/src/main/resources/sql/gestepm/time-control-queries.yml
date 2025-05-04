@@ -51,13 +51,13 @@ sql:
       FROM ${sch-gestepm}.personal_signings
       UNION
       SELECT
-        id,
+        programmed_share_id,
         user_id,
         start_date,
         end_date,
         null AS description,
         'PROGRAMMED_SHARES' AS type
-      FROM ${sch-gestepm}.intervention_pr_shares
+      FROM ${sch-gestepm}.programmed_share
       UNION
         SELECT
         teleworking_signing_id AS id,

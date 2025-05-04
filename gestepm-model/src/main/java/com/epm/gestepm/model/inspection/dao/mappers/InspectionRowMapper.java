@@ -8,9 +8,8 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.jdbc.utils.ResultSetMappingUtils.*;
 
@@ -44,13 +43,7 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
 
     public static final String COL_I_CLIENT_NAME = "client_name";
 
-    public static final String COL_I_MATERIAL_ID = "material_id";
-
-    public static final String COL_I_MATERIAL_DESCRIPTION = "material_description";
-
-    public static final String COL_I_MATERIAL_UNITS = "material_units";
-
-    public static final String COL_I_MATERIAL_REFERENCE = "material_reference";
+    public static final String COL_I_INSPECTION_MATERIALS = "inspection_materials";
 
     public static final String COL_I_MATERIALS_FILE = "materials_file";
 
@@ -88,20 +81,29 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
         inspection.setEquipmentHours(nullableInt(rs, COL_I_EQUIPMENT_HOURS));
         inspection.setTopicId(nullableInt(rs, COL_I_TOPIC_ID));
 
-        if (hasValue(rs, COL_I_MATERIAL_ID)) {
-            final Material material = new Material();
-            material.setId(rs.getInt(COL_I_MATERIAL_ID));
-            material.setDescription(rs.getString(COL_I_MATERIAL_DESCRIPTION));
-            material.setUnits(rs.getInt(COL_I_MATERIAL_UNITS));
-            material.setReference(rs.getString(COL_I_MATERIAL_REFERENCE));
+        final Set<Material> materials = new HashSet<>();
 
-            inspection.getMaterials().add(material);
+        if (hasValue(rs, COL_I_INSPECTION_MATERIALS)) {
+            Arrays.stream(rs.getString(COL_I_INSPECTION_MATERIALS).split(","))
+                    .map(row -> row.split("\\|"))
+                    .filter(parts -> parts.length == 4)
+                    .map(parts -> new Material(
+                            Integer.parseInt(parts[0]),
+                            inspection.getId(),
+                            parts[1],
+                            Integer.parseInt(parts[2]),
+                            parts[3]))
+                    .forEach(materials::add);
         }
+
+        inspection.setMaterials(materials);
 
         final List<Integer> fileIds = new ArrayList<>();
 
         if (hasValue(rs, COL_I_FILE_ID)) {
-            fileIds.add(rs.getInt(COL_I_FILE_ID));
+            Arrays.stream(rs.getString(COL_I_FILE_ID).split(","))
+                    .map(Integer::parseInt)
+                    .forEach(fileIds::add);
         }
 
         inspection.setFileIds(fileIds);

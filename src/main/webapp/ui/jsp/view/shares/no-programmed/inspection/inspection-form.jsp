@@ -178,10 +178,7 @@
 
         <div class="row mb-2">
             <div class="col-sm-12 col-md-6 mt-2">
-                <input name="signature" type="hidden"/>
-                <input name="signatureOp" type="hidden"/>
-
-                <div class="signature-pad">
+                <div class="signature-pad customer-signature">
                     <div class="signature-pad--body">
                         <canvas class="signature-canvas"></canvas>
                     </div>
@@ -189,7 +186,7 @@
                         <div class="description"><spring:message code="shares.intervention.create.signature" /></div>
                         <div class="signature-pad--actions">
                             <div>
-                                <button id="clearSignature" class="clearSignatureButton" type="button"><i class="fa fa-redo"></i></button>
+                                <button class="clearSignatureButton" type="button"><i class="fa fa-redo"></i></button>
                             </div>
                             <div></div>
                         </div>
@@ -198,15 +195,15 @@
             </div>
 
             <div class="col-sm-12 col-md-6 mt-2">
-                <div id="signature-pad-op" class="signature-pad">
+                <div class="signature-pad operator-signature">
                     <div class="signature-pad--body">
-                        <canvas class="signature-op-canvas"></canvas>
+                        <canvas class="signature-canvas"></canvas>
                     </div>
                     <div class="signature-pad--footer">
                         <div class="description"><spring:message code="shares.intervention.create.signature.two" /></div>
                         <div class="signature-pad--actions">
                             <div>
-                                <button id="clearSignatureOp" class="clearSignatureButton" type="button"><i class="fa fa-redo"></i></button>
+                                <button class="clearSignatureButton" type="button"><i class="fa fa-redo"></i></button>
                             </div>
                             <div></div>
                         </div>
@@ -242,6 +239,9 @@
     let materialsModified = false;
     let hasRole = ${hasRole};
 
+    let signatures = { customer: null, operator: null }
+    let canvas = { customer: null, operator: null }
+
     function save() {
         const editBtn = $('#editBtn');
         const editForm = document.querySelector('#editForm');
@@ -261,8 +261,8 @@
             axios.patch('/v1' + window.location.pathname, {
                 userId: ${user.id},
                 description: description ? description.value : null,
-                signature: !signaturePad.isEmpty() ? signaturePad.toDataURL() : null,
-                operatorSignature: !signaturePadOp.isEmpty() ? signaturePadOp.toDataURL() : null,
+                signature: !signatures.customer.isEmpty() ? signatures.customer.toDataURL() : null,
+                operatorSignature: !signatures.operator.isEmpty() ? signatures.operator.toDataURL() : null,
                 clientName: clientName ? clientName?.value?.trim() : null,
                 materials: materialsModified ? materials : null,
                 materialsFile: materialsFile,
@@ -335,36 +335,12 @@
         }
     }
 
-    function loadSignatures(signature, operatorSignature) {
-        preloadSignatures(signature, operatorSignature);
+    function loadSignatures(customerSignature, operatorSignature) {
+        preloadSignatures(signatures, canvas, 'customer', customerSignature);
+        preloadSignatures(signatures, canvas, 'operator', operatorSignature);
 
-        window.onresize = resizeCanvas;
-        $('#clearSignature').click(function () { signaturePad.clear(); });
-        $('#clearSignatureOp').click(function () { signaturePadOp.clear(); });
-    }
-
-    function preloadSignatures(signature, operatorSignature) {
-        if (signaturePad) {
-            signaturePad.clear();
-        }
-        if (signaturePadOp) {
-            signaturePadOp.clear();
-        }
-
-        canvas = document.querySelector('.signature-canvas');
-        canvasOp = document.querySelector('.signature-op-canvas');
-
-        resizeCanvas();
-
-        signaturePad = new SignaturePad(canvas);
-        if (typeof signature !== 'undefined' && signature !== '') {
-            signaturePad.fromDataURL(signature);
-        }
-
-        signaturePadOp = new SignaturePad(canvasOp);
-        if (typeof operatorSignature !== 'undefined' && operatorSignature !== '') {
-            signaturePadOp.fromDataURL(operatorSignature);
-        }
+        $('.customer-signature .clearSignatureButton').click(function () { signatures.customer.clear(); });
+        $('.operator-signature .clearSignatureButton').click(function () { signatures.operator.clear(); });
     }
 
     function loadMaterialsDataTable() {
@@ -427,9 +403,7 @@
                     btn.textContent = 'x';
                     btn.classList.add('btn', 'btn-outline-danger', 'btn-xs', 'mr-1');
                     btn.addEventListener('click', () => {
-                        deleteFile(file);
-                        link.remove();
-                        btn.remove();
+                        deleteFile(file, btn, link);
                     });
 
                     linksContainer.appendChild(btn);
@@ -453,7 +427,7 @@
         return null;
     }
 
-    function deleteFile(file) {
+    function deleteFile(file, btn, link) {
         const alertMessage = messages.inspections.files.delete.alert.replace('{0}', file.name);
         if (confirm(alertMessage)) {
 
@@ -462,6 +436,8 @@
             axios.delete('/v1/shares/no-programmed/0/inspections/' + inspection.id + '/files/' + file.id).then(() => {
                 inspection.files = inspection.files.filter(i => i.id !== file.id)
                 const successMessage = messages.inspections.files.delete.success.replace('{0}', file.name);
+                link.remove();
+                btn.remove();
                 showNotify(successMessage);
             }).catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());

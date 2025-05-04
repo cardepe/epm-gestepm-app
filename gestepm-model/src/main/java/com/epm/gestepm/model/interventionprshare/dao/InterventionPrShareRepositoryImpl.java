@@ -1,18 +1,14 @@
 package com.epm.gestepm.model.interventionprshare.dao;
 
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpensesMonthDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionprshare.dto.InterventionPrShare;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -20,73 +16,9 @@ import java.util.List;
 @Repository
 public class InterventionPrShareRepositoryImpl implements InterventionPrShareRepositoryCustom {
 
-	private static final Log log = LogFactory.getLog(InterventionPrShareRepositoryImpl.class);
-	
 	@PersistenceContext	
 	private EntityManager entityManager;
 
-	@Override
-	public List<ShareTableDTO> findShareTableByActivityCenterId(Long id, Long activityCenterId, Long projectId, Integer progress) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<ShareTableDTO> cq = cb.createQuery(ShareTableDTO.class);
-
-			Root<InterventionPrShare> root = cq.from(InterventionPrShare.class);
-
-			cq.multiselect(root.get("id"), root.get("project").get("name"), root.get("startDate"), root.get("endDate"), cb.literal("ips"));
-
-			List<Predicate> predicates = new ArrayList<>();
-			predicates.add(cb.equal(root.get("project").get("activityCenter"), activityCenterId));
-
-			if (id != null) {
-				predicates.add(cb.equal(root.get("id"), id));
-			}
-
-			if (progress != null) {
-
-				if (progress == 1) {
-					predicates.add(cb.isNull(root.get("endDate")));
-				} else {
-					predicates.add(cb.isNotNull(root.get("endDate")));
-				}
-			}
-
-			if (projectId != null) {
-				predicates.add(cb.equal(root.get("project"), projectId));
-			}
-
-			cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-
-			return entityManager.createQuery(cq).getResultList();
-
-		} catch (Exception e) {
-			log.error(e);
-			return Collections.emptyList();
-		}
-	}
-
-	@Override
-	public List<ShareTableDTO> findShareTableByProjectId(Long projectId) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<ShareTableDTO> cq = cb.createQuery(ShareTableDTO.class);
-			
-			Root<InterventionPrShare> root = cq.from(InterventionPrShare.class);
-
-			cq.multiselect(root.get("id"), root.get("project").get("name"), cb.concat(cb.concat(root.get("user").get("name"), " "), root.get("user").get("surnames")), root.get("startDate"), root.get("endDate"), cb.literal("ips")).where(cb.equal(root.get("project"), projectId));
-			
-			return entityManager.createQuery(cq).getResultList();
-			
-		} catch (Exception e) {
-			log.error(e);
-			return Collections.emptyList();
-		}
-	}
-	
 	@Override
 	public List<InterventionPrShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
 		
@@ -100,19 +32,6 @@ public class InterventionPrShareRepositoryImpl implements InterventionPrShareRep
 		return entityManager.createQuery(cq).getResultList();
 	}
 
-	@Override
-	public List<InterventionPrShare> findWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId) {
-
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		CriteriaQuery<InterventionPrShare> cq = cb.createQuery(InterventionPrShare.class);
-
-		Root<InterventionPrShare> root = cq.from(InterventionPrShare.class);
-
-		cq.select(root).where(cb.and(cb.between(root.get("endDate"), startDate, endDate), cb.equal(root.get("project"), projectId)));
-
-		return entityManager.createQuery(cq).getResultList();
-	}
-	
 	@Override
 	public List<ExpensesMonthDTO> findExpensesMonthDTOByProjectId(Long projectId, Integer year) {
 		

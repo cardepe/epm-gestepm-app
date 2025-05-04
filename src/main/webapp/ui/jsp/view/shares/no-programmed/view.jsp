@@ -652,14 +652,16 @@
         returnBtn.attr('href', lastPageUrl);
     }
 
-    function deleteFile(file) {
+    function deleteFile(file, btn, link) {
         const alertMessage = messages.shares.noprogrammed.files.delete.alert.replace('{0}', file.name);
         if (confirm(alertMessage)) {
 
             showLoading();
 
             axios.delete('/v1/shares/no-programmed/' + share.id + '/files/' + file.id).then(() => {
-                share.files = share.files.filter(f => f.id !== file.id)
+                share.files = share.files.filter(f => f.id !== file.id);
+                link.remove();
+                btn.remove();
                 const successMessage = messages.shares.noprogrammed.files.delete.success.replace('{0}', file.name);
                 showNotify(successMessage);
             }).catch(error => showNotify(error.response.data.detail, 'danger'))

@@ -1,9 +1,9 @@
 package com.epm.gestepm.model.expensesheet.dao;
 
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.expense.dto.Expense;
-import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
-import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.Expense;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpensesMonthDTO;
+import com.epm.gestepm.modelapi.deprecated.expensesheet.dto.ExpenseSheet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;

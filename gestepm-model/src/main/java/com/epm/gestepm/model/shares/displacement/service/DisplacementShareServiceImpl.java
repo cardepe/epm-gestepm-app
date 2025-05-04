@@ -5,7 +5,7 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
-import com.epm.gestepm.model.shares.checker.ShareDateChecker;
+import com.epm.gestepm.model.shares.common.checker.ShareDateChecker;
 import com.epm.gestepm.model.shares.displacement.dao.DisplacementShareDao;
 import com.epm.gestepm.model.shares.displacement.dao.entity.DisplacementShare;
 import com.epm.gestepm.model.shares.displacement.dao.entity.creator.DisplacementShareCreate;

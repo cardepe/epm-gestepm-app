@@ -8,14 +8,11 @@ import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
-import com.epm.gestepm.modelapi.expense.dto.FileDTO;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.FileDTO;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
 import com.epm.gestepm.modelapi.inspection.service.InspectionExportService;
 import com.epm.gestepm.modelapi.inspection.service.InspectionService;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrDTO;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.PdfFileDTO;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
@@ -77,9 +74,6 @@ public class ShareController {
 
     @Autowired
     private InterventionShareService interventionShareService;
-
-    @Autowired
-    private InterventionPrShareService interventionPrShareService;
 
     @Autowired
     private WorkShareService workShareService;
@@ -173,12 +167,6 @@ public class ShareController {
             shareTableDTOs.addAll(noProgrammedInterventionShares);
         }
 
-        if (!isTypeFiltered || "ips".equals(type)) {
-
-            final List<ShareTableDTO> programmedInterventionShares = interventionPrShareService.getShareTableByActivityCenterId(id, activityCenterId, projectId, progress);
-            shareTableDTOs.addAll(programmedInterventionShares);
-        }
-
         if (!isTypeFiltered || "ws".equals(type)) {
             final List<ShareTableDTO> workShares = workShareService.getShareTableByActivityCenterId(id, activityCenterId, projectId, progress);
             shareTableDTOs.addAll(workShares);
@@ -250,11 +238,9 @@ public class ShareController {
 
             final List<PdfFileDTO> pdfs = new ArrayList<>();
 
-            final List<PdfFileDTO> programmedSharesPdf = this.getProgrammedSharesPdf(shareTableDTOs, locale);
             final List<PdfFileDTO> noProgrammedSharesZip = this.getNoProgrammedSharesPdf(shareTableDTOs, locale);
             final List<PdfFileDTO> workSharesPdf = this.getWorkSharesPdf(shareTableDTOs, locale);
 
-            pdfs.addAll(programmedSharesPdf);
             pdfs.addAll(noProgrammedSharesZip);
             pdfs.addAll(workSharesPdf);
 
@@ -282,213 +268,6 @@ public class ShareController {
         } catch (IOException e) {
             log.error(e);
         }
-    }
-
-    @ResponseBody
-    @PostMapping("/intervention/programmed/create")
-    public ResponseEntity<String> createProgrammedIntervention(@ModelAttribute InterventionPrDTO interventionPrDTO, Locale locale, Model model, HttpServletRequest request) {
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Get share project
-            Project project = projectService.getProjectById(interventionPrDTO.getProjectId());
-
-            if (project == null) {
-                throw new Exception("El proyecto " + interventionPrDTO.getProjectId() + " no existe");
-            }
-
-            // Map Intervention share
-            InterventionPrShare interventionPrShare = ShareMapper.mapDTOToInterventionPrShare(interventionPrDTO, user, project, interventionPrDTO.getDispShareId());
-            interventionPrShare.setStartDate(LocalDateTime.now());
-
-            // Save intervention
-            interventionPrShare = interventionPrShareService.save(interventionPrShare);
-
-            // Log info
-            log.info("Creado nuevo parte de intervención " + interventionPrShare.getId() + " por parte del usuario " + user.getId());
-
-            // Return data
-            return new ResponseEntity<>(messageSource.getMessage("shares.programmed.create.success", new Object[]{}, locale), HttpStatus.OK);
-
-        } catch (Exception e) {
-            log.error(e);
-            return new ResponseEntity<>(messageSource.getMessage("shares.programmed.create.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @ResponseBody
-    @PostMapping("/intervention/programmed/update")
-    public ResponseEntity<String> updateProgrammedIntervention(@ModelAttribute InterventionPrDTO interventionPrDTO, Locale locale, Model model, HttpServletRequest request) {
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Load Programmed Intervention
-            InterventionPrShare interventionPrShare = interventionPrShareService.getInterventionPrShareById(interventionPrDTO.getId());
-            interventionPrShare.setObservations(interventionPrDTO.getObservations());
-            interventionPrShare.setSignature(interventionPrDTO.getSignature());
-            interventionPrShare.setSignatureOp(interventionPrDTO.getSignatureOp());
-
-            // Save intervention
-            interventionPrShare = interventionPrShareService.create(interventionPrShare, interventionPrDTO.getFiles());
-
-            // Log info
-            log.info("Actualizada la informacion del parte de intervención " + interventionPrShare.getId() + " por parte del usuario " + user.getId());
-
-            // Return data
-            return new ResponseEntity<>(messageSource.getMessage("shares.programmed.update.success", new Object[]{}, locale), HttpStatus.OK);
-
-        } catch (Exception e) {
-            log.error(e);
-            return new ResponseEntity<>(messageSource.getMessage("shares.programmed.update.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @ResponseBody
-    @PostMapping("/intervention/programmed/finish")
-    public ResponseEntity<String> finishProgrammedIntervention(@ModelAttribute InterventionPrDTO interventionPrDTO, Locale locale, Model model, HttpServletRequest request) {
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Map Intervention share stepper
-            InterventionPrShare interventionPrShare = interventionPrShareService.getInterventionPrShareById(interventionPrDTO.getId());
-            interventionPrShare.setEndDate(interventionPrDTO.getEndDate());
-
-            if (!StringUtils.isNullOrEmpty(interventionPrDTO.getObservations())) {
-                interventionPrShare.setObservations(interventionPrDTO.getObservations());
-            }
-
-            interventionPrShare.setSignature(interventionPrDTO.getSignature());
-            interventionPrShare.setSignatureOp(interventionPrDTO.getSignatureOp());
-
-            if (interventionPrDTO.getSecondTechnical() != null) {
-                User secondTechnical = this.userService.getUserById(interventionPrDTO.getSecondTechnical());
-                interventionPrShare.setSecondTechnical(secondTechnical);
-            }
-
-            // Save intervention
-            interventionPrShare = interventionPrShareService.create(interventionPrShare, interventionPrDTO.getFiles());
-
-            // Log info
-            log.info("Creado nuevo parte de intervención " + interventionPrShare.getId() + " por parte del usuario " + user.getId());
-
-            byte[] pdfGenerated = interventionPrShareService.generateInterventionSharePdf(interventionPrShare, locale);
-
-            // Send Emails
-            smtpService.sendCloseProgrammedShareMail(user.getEmail(), interventionPrShare, pdfGenerated, locale);
-
-            if (interventionPrShare.getProject().getResponsables() != null && !interventionPrShare.getProject().getResponsables().isEmpty()) {
-
-                for (User responsable : interventionPrShare.getProject().getResponsables()) {
-                    smtpService.sendCloseProgrammedShareMail(responsable.getEmail(), interventionPrShare, pdfGenerated, locale);
-                }
-            }
-
-            if (Boolean.TRUE.equals(interventionPrDTO.getClientNotif()) && interventionPrShare.getProject().getCustomer() != null) {
-                smtpService.sendCloseProgrammedShareMail(interventionPrShare.getProject().getCustomer().getMainEmail(), interventionPrShare, pdfGenerated, locale);
-            }
-
-            // Return data
-            return new ResponseEntity<>(messageSource.getMessage("shares.programmed.finish.success", new Object[]{}, locale), HttpStatus.OK);
-
-        } catch (Exception e) {
-            log.error(e);
-            return new ResponseEntity<>(messageSource.getMessage("shares.programmed.finish.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @ResponseBody
-    @PutMapping("/programmed/{id}")
-    public ResponseEntity<String> updateProgrammedShare(@PathVariable Long id, @ModelAttribute InterventionPrDTO interventionPrDTO,
-                                                        Locale locale, Model model, HttpServletRequest request) {
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            // Get
-            InterventionPrShare interventionPrShare = interventionPrShareService.getInterventionPrShareById(interventionPrDTO.getId());
-
-            interventionPrShare.setStartDate(interventionPrDTO.getStartDate());
-            interventionPrShare.setEndDate(interventionPrDTO.getEndDate());
-            interventionPrShare.setObservations(interventionPrDTO.getObservations());
-
-            // Save intervention
-            interventionPrShare = interventionPrShareService.save(interventionPrShare);
-
-            // Log info
-            log.info("Actualizado parte de intervencion programado " + interventionPrShare.getId() + " por parte del usuario " + user.getId());
-
-            // Return data
-            return new ResponseEntity<>(messageSource.getMessage("shares.displacement.update.success", new Object[]{}, locale), HttpStatus.OK);
-
-        } catch (Exception e) {
-            log.error(e);
-            return new ResponseEntity<>(messageSource.getMessage("shares.displacement.update.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @ResponseBody
-    @GetMapping("/intervention/programmed/{id}")
-    public InterventionPrDTO getProgrammedShare(@PathVariable Long id) {
-
-        InterventionPrShare interventionPrShare = interventionPrShareService.getInterventionPrShareById(id);
-
-        return ShareMapper.mapInterventionPrShareToDTO(interventionPrShare);
-    }
-
-    @ResponseBody
-    @DeleteMapping("/intervention/programmed/delete/{id}")
-    public ResponseEntity<String> deleteProgrammedShare(@PathVariable Long id, Locale locale) {
-
-        try {
-
-            // Recover user
-            User user = Utiles.getUsuario();
-
-            interventionPrShareService.deleteById(id);
-
-            log.info("Parte de mantenimiento programdo " + id + " eliminado con éxito por parte del usuario " + user.getId());
-
-            // Return data
-            return new ResponseEntity<>(messageSource.getMessage("shares.programmed.delete.success", new Object[]{}, locale), HttpStatus.OK);
-
-        } catch (Exception e) {
-            return new ResponseEntity<>(messageSource.getMessage("shares.programmed.delete.error", new Object[]{}, locale), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @GetMapping(value = "/intervention/programmed/{id}/pdf", produces = {"application/pdf"})
-    public HttpEntity<byte[]> exportProgrammedPdf(@PathVariable Long id, Locale locale) {
-
-        log.info("Exportando el pdf del parte de intervención programado " + id);
-
-        InterventionPrShare share = interventionPrShareService.getInterventionPrShareById(id);
-
-        if (share == null) {
-            log.error("No existe el parte programado con id " + id);
-            return null;
-        }
-
-        byte[] pdf = interventionPrShareService.generateInterventionSharePdf(share, locale);
-
-        if (pdf == null) {
-            log.error("Error al generar el fichero pdf del parte programado " + id);
-            return null;
-        }
-
-        String fileName = messageSource.getMessage("shares.programmed.pdf.name", new Object[]{share.getId().toString(), Utiles.getDateFormatted(share.getStartDate())}, locale);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData("attachment", fileName + ".pdf");
-
-        return new HttpEntity<>(pdf, headers);
     }
 
     @GetMapping("/work")
@@ -732,42 +511,6 @@ public class ShareController {
             log.error(e);
             return null;
         }
-    }
-
-    private List<PdfFileDTO> getProgrammedSharesPdf(final List<ShareTableDTO> shareTableDTOs, final Locale locale) {
-
-        final List<PdfFileDTO> pdfs = new ArrayList<>();
-
-        final List<ShareTableDTO> programmedShares = shareTableDTOs.stream().filter(f -> "ips".equals(f.getShareType()) && f.getEndDate() != null).collect(Collectors.toList());
-
-        for (ShareTableDTO programmedShare : programmedShares) {
-
-            final Long id = Long.parseLong(programmedShare.getId().split("_")[0]);
-
-            final InterventionPrShare share = interventionPrShareService.getInterventionPrShareById(id);
-
-            if (share == null) {
-                log.error("No existe el parte programado con id " + id);
-                continue;
-            }
-
-            final byte[] pdf = interventionPrShareService.generateInterventionSharePdf(share, locale);
-
-            if (pdf == null) {
-                log.error("Error al generar el fichero pdf del parte programado " + id);
-                continue;
-            }
-
-            final String fileName = messageSource.getMessage("shares.programmed.pdf.name", new Object[]{share.getId().toString(), Utiles.getDateFormatted(share.getStartDate())}, locale) + ".pdf";
-
-            final PdfFileDTO pdfFileDTO = new PdfFileDTO();
-            pdfFileDTO.setDocumentBytes(pdf);
-            pdfFileDTO.setFileName(fileName);
-
-            pdfs.add(pdfFileDTO);
-        }
-
-        return pdfs;
     }
 
     private List<PdfFileDTO> getNoProgrammedSharesPdf(final List<ShareTableDTO> shareTableDTOs, final Locale locale) {

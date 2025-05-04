@@ -3,8 +3,7 @@ package com.epm.gestepm.model.shares.construction.dao.entity.filter;
 import com.epm.gestepm.lib.entity.AttributeMap;
 import com.epm.gestepm.lib.entity.CollectableAttributes;
 import com.epm.gestepm.lib.entity.Orderable;
-import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareStatusDto;
-import lombok.Builder;
+import com.epm.gestepm.modelapi.shares.common.dto.ShareStatusDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -27,7 +26,7 @@ public class ConstructionShareFilter extends Orderable implements CollectableAtt
 
     private LocalDateTime endDate;
 
-    private ConstructionShareStatusDto status;
+    private ShareStatusDto status;
 
     @Override
     public AttributeMap collectAttributes() {
@@ -37,8 +36,8 @@ public class ConstructionShareFilter extends Orderable implements CollectableAtt
         map.putList(ATTR_CS_IDS, this.ids);
         map.putList(ATTR_CS_U_IDS, this.userIds);
         map.putList(ATTR_CS_P_IDS, this.projectIds);
-        map.putTimestamp(ATTR_CS_CREATED_AT, this.startDate);
-        map.putTimestamp(ATTR_CS_CLOSED_AT, this.endDate);
+        map.putTimestamp(ATTR_CS_START_DATE, this.startDate);
+        map.putTimestamp(ATTR_CS_END_DATE, this.endDate);
         map.putEnum(ATTR_CS_STATUS, this.status);
 
         return map;

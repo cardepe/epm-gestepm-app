@@ -29,7 +29,4 @@ public class ConstructionShareUpdateDto {
 
     private Boolean notify;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime closedAt;
 }

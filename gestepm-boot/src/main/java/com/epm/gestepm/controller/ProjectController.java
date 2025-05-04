@@ -8,6 +8,7 @@ import com.epm.gestepm.model.project.service.mapper.ProjectMapper;
 import com.epm.gestepm.model.shares.construction.mapper.MapCSToShareTableDto;
 import com.epm.gestepm.model.shares.displacement.mapper.MapDSToShareTableDto;
 import com.epm.gestepm.model.shares.noprogrammed.mapper.MapIToShareTableDto;
+import com.epm.gestepm.model.shares.programmed.mapper.MapPSToShareTableDto;
 import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.deprecated.activitycenter.service.ActivityCenterService;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
@@ -26,7 +27,6 @@ import com.epm.gestepm.modelapi.family.service.FamilyService;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
 import com.epm.gestepm.modelapi.inspection.service.InspectionService;
-import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequiredDTO;
@@ -41,6 +41,9 @@ import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareSer
 import com.epm.gestepm.modelapi.shares.displacement.dto.DisplacementShareDto;
 import com.epm.gestepm.modelapi.shares.displacement.dto.filter.DisplacementShareFilterDto;
 import com.epm.gestepm.modelapi.shares.displacement.service.DisplacementShareService;
+import com.epm.gestepm.modelapi.shares.programmed.dto.ProgrammedShareDto;
+import com.epm.gestepm.modelapi.shares.programmed.dto.filter.ProgrammedShareFilterDto;
+import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.dto.UserDTO;
 import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
@@ -85,10 +88,10 @@ public class ProjectController {
 	private ConstructionShareService constructionShareService;
 
 	@Autowired
-	private InspectionService inspectionService;
+	private ProgrammedShareService programmedShareService;
 
 	@Autowired
-	private InterventionPrShareService interventionPrShareService;
+	private InspectionService inspectionService;
 	
 	@Autowired
 	private WorkShareService workShareService;
@@ -1192,13 +1195,13 @@ public class ProjectController {
 
 		List<ShareTableDTO> csShareTableDTOs = this.getConstructionShares(projectId.intValue());
 		List<ShareTableDTO> dsShareTableDTOs = this.getDisplacementShares(projectId.intValue());
-		List<ShareTableDTO> ipsShareTableDTOs = interventionPrShareService.getShareTableByProjectId(projectId);
+		List<ShareTableDTO> psShareTableDTOs = this.getProgrammedShares(projectId.intValue());
 		List<ShareTableDTO> isShareTableDTOs = this.getInspections(projectId.intValue());
 		List<ShareTableDTO> wsShareTableDTOs = workShareService.getShareTableByProjectId(projectId);
 
 		shareTableDTOs.addAll(csShareTableDTOs);
 		shareTableDTOs.addAll(dsShareTableDTOs);
-		shareTableDTOs.addAll(ipsShareTableDTOs);
+		shareTableDTOs.addAll(psShareTableDTOs);
 		shareTableDTOs.addAll(isShareTableDTOs);
 		shareTableDTOs.addAll(wsShareTableDTOs);
 
@@ -1231,6 +1234,15 @@ public class ProjectController {
 		final List<ConstructionShareDto> constructionShares = this.constructionShareService.list(filter);
 
 		return getMapper(MapCSToShareTableDto.class).from(constructionShares);
+	}
+
+	private List<ShareTableDTO> getProgrammedShares(final Integer projectId) {
+		final ProgrammedShareFilterDto filter = new ProgrammedShareFilterDto();
+		filter.setProjectIds(List.of(projectId));
+
+		final List<ProgrammedShareDto> programmedShares = this.programmedShareService.list(filter);
+
+		return getMapper(MapPSToShareTableDto.class).from(programmedShares);
 	}
 
 	private List<ShareTableDTO> getInspections(final Integer projectId) {

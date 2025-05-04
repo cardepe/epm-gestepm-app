@@ -2,6 +2,10 @@ sch-gestepm: ${gestepm.datasource.schemas.gestepm}
 
 sql:
 
+  paginated-query: |
+    
+    LIMIT :qry_prm_limit OFFSET :qry_prm_offset
+
   paginated-query-prefix: |
 
     SELECT res_.* FROM ( SELECT ROW_NUMBER() OVER() AS rownumber_, temp_.* FROM (

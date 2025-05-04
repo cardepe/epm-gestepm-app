@@ -3,8 +3,7 @@ package com.epm.gestepm.modelapi.shares.construction.dto.filter;
 import com.epm.gestepm.lib.cache.CacheKeyBuilder;
 import com.epm.gestepm.lib.cache.UsableAsCacheKey;
 import com.epm.gestepm.lib.dto.OrderableDto;
-import com.epm.gestepm.lib.entity.Orderable;
-import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareStatusDto;
+import com.epm.gestepm.modelapi.shares.common.dto.ShareStatusDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -25,7 +24,7 @@ public class ConstructionShareFilterDto extends OrderableDto implements UsableAs
 
   private LocalDateTime endDate;
 
-  private ConstructionShareStatusDto status;
+  private ShareStatusDto status;
 
   @Override
   public String asCacheKey() {

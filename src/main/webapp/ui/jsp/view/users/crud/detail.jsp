@@ -886,6 +886,10 @@
 					window.location.href = '/signings/teleworking/' + id;
 				} else if (type === 'CONSTRUCTION_SHARES') {
 					window.location.href = '/shares/construction/' + id;
+				} else if (type === 'DISPLACEMENT_SHARES') {
+					window.location.href = '/shares/displacement/' + id;
+				} else if (type === 'PROGRAMMED_SHARES') {
+					window.location.href = '/shares/programmed/' + id;
 				} else {
 					loadModalForm(calendarSigning);
 				}

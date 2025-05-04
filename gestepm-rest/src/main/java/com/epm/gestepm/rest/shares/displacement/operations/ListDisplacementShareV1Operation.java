@@ -10,7 +10,7 @@ public class ListDisplacementShareV1Operation extends APIOperation<DisplacementS
         super("listDisplacementShareV1");
 
         this.generateLinksWith(
-                (apiClass, req) -> apiClass.listDisplacementSharesV1(req.getMeta(), req.getLinks(), req.getExpand(), req.getOffset(), req.getLimit(),
+                (apiClass, req) -> apiClass.listDisplacementSharesV1(req.getMeta(), req.getLinks(), req.getExpand(), req.getOffset(), req.getLimit(), req.getOrder(), req.getOrderBy(),
                         req.getIds(), req.getUserIds(), req.getProjectIds(), req.getStartDate(), req.getEndDate()));
     }
 
