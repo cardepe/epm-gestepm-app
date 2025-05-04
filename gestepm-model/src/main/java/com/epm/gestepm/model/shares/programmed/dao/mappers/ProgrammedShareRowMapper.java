@@ -6,8 +6,11 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.jdbc.utils.ResultSetMappingUtils.*;
 
@@ -37,7 +40,7 @@ public class ProgrammedShareRowMapper extends CommonRowMapper implements RowMapp
 
     public static final String COL_PS_SIGNATURE_OP = "operator_signature";
 
-    public static final String COL_PSF_ID = "programmed_share_file_id";
+    public static final String COL_PSF_IDS = "programmed_share_file_ids";
 
     @Override
     public ProgrammedShare mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -58,8 +61,10 @@ public class ProgrammedShareRowMapper extends CommonRowMapper implements RowMapp
 
         final Set<Integer> fileIds = new HashSet<>();
 
-        if (hasValue(rs, COL_PSF_ID)) {
-            fileIds.add(rs.getInt(COL_PSF_ID));
+        if (hasValue(rs, COL_PSF_IDS)) {
+            Arrays.stream(rs.getString(COL_PSF_IDS).split(","))
+                    .map(Integer::parseInt)
+                    .forEach(fileIds::add);
         }
 
         programmedShare.setFileIds(fileIds);

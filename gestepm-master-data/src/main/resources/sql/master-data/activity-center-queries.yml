@@ -3,25 +3,28 @@ sql:
   qry-list-of-ac: |
 
     SELECT
-      ac.activity_center_id AS id_pagination,
       ac.activity_center_id,
       ac.name,
       ac.country_id
     FROM ${sch-gestepm}.activity_center ac
 
     #whereToken #filter
+    GROUP BY ac.activity_center_id
     #orderByToken
 
   qry-page-of-ac: |
 
-    ${sql.paginated-query-group-prefix}
     ${sql.qry-list-of-ac}
-    ${sql.paginated-query-suffix}
+    ${sql.paginated-query}
 
   qry-count-of-ac: |
 
     SELECT COUNT(DISTINCT id_pagination) AS "count"
-    FROM (${sql.qry-list-of-ac}) final
+    FROM (
+      SELECT ac.activity_center_id
+      FROM ${sch-gestepm}.activity_center ac
+      #whereToken #filter
+    ) final
 
   qry-create-ac: |
 

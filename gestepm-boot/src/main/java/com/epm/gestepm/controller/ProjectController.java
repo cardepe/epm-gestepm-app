@@ -27,7 +27,6 @@ import com.epm.gestepm.modelapi.family.service.FamilyService;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
 import com.epm.gestepm.modelapi.inspection.service.InspectionService;
-import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequiredDTO;
@@ -93,9 +92,6 @@ public class ProjectController {
 
 	@Autowired
 	private InspectionService inspectionService;
-
-	@Autowired
-	private InterventionPrShareService interventionPrShareService;
 	
 	@Autowired
 	private WorkShareService workShareService;

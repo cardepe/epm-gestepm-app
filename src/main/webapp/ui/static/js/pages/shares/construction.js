@@ -133,7 +133,7 @@ function create() {
 
 function remove(id) {
 
-    if (confirm(messages.shares.displacement.delete.alert.replace('{0}', id))) {
+    if (confirm(messages.shares.construction.delete.alert.replace('{0}', id))) {
 
         showLoading();
 
@@ -141,7 +141,7 @@ function remove(id) {
             dTable.ajax.reload(function () {
                 dTable.page(dTable.page()).draw(false);
             }, false);
-            showNotify(messages.shares.displacement.delete.success.replace('{0}', id));
+            showNotify(messages.shares.construction.delete.success.replace('{0}', id));
         }).catch(error => showNotify(error.response.data.detail, 'danger'))
             .finally(() => hideLoading());
     }

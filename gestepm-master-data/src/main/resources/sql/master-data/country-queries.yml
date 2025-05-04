@@ -3,25 +3,28 @@ sql:
   qry-list-of-c: |
 
     SELECT
-      c.country_id AS id_pagination,
       c.country_id,
       c.name,
       c.tag
     FROM ${sch-gestepm}.country c
 
     #whereToken #filter
+    GROUP BY c.country_id
     #orderByToken
 
   qry-page-of-c: |
 
-    ${sql.paginated-query-group-prefix}
     ${sql.qry-list-of-c}
-    ${sql.paginated-query-suffix}
+    ${sql.paginated-query}
 
   qry-count-of-c: |
 
     SELECT COUNT(DISTINCT id_pagination) AS "count"
-    FROM (${sql.qry-list-of-c}) final
+    FROM (
+      SELECT c.country_id
+      FROM ${sch-gestepm}.country c
+      #whereToken #filter
+    ) final
 
   qry-create-c: |
 

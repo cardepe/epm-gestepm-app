@@ -3,7 +3,6 @@ sql:
   qry-list-of-nps: |
     
     SELECT
-      nps.no_programmed_share_id AS id_pagination,
       nps.no_programmed_share_id,
       nps.user_id,
       nps.project_id,
@@ -22,17 +21,22 @@ sql:
     LEFT JOIN ${sch-gestepm}.no_programmed_share_file npsf ON npsf.no_programmed_share_id = nps.no_programmed_share_id
 
     #whereToken #filter
+    GROUP BY nps.no_programmed_share_id
+    #orderByToken
 
   qry-page-of-nps: |
-
-    ${sql.paginated-query-group-prefix}
+    
     ${sql.qry-list-of-nps}
-    ${sql.paginated-query-suffix}
+    ${sql.paginated-query}
 
   qry-count-of-nps: |
 
-    SELECT COUNT(DISTINCT id_pagination) AS "count"
-    FROM (${sql.qry-list-of-nps}) final
+    SELECT COUNT(DISTINCT no_programmed_share_id) AS "count"
+    FROM (
+      SELECT nps.no_programmed_share_id
+      FROM ${sch-gestepm}.no_programmed_share nps     
+      #whereToken #filter
+    ) final
 
   qry-create-nps: |
     

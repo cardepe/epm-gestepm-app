@@ -3,7 +3,7 @@ package com.epm.gestepm.modelapi.shares.construction.dto.filter;
 import com.epm.gestepm.lib.cache.CacheKeyBuilder;
 import com.epm.gestepm.lib.cache.UsableAsCacheKey;
 import com.epm.gestepm.lib.dto.OrderableDto;
-import com.epm.gestepm.modelapi.shares.dto.ShareStatusDto;
+import com.epm.gestepm.modelapi.shares.common.dto.ShareStatusDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

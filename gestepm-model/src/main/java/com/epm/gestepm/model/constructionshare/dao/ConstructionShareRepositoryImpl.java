@@ -1,6 +1,6 @@
 package com.epm.gestepm.model.constructionshare.dao;
 
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
+import com.epm.gestepm.modelapi.deprecated.constructionshare.dto.ConstructionShare;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

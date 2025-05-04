@@ -4,9 +4,9 @@ import com.epm.gestepm.model.personalexpensesheet.dao.entity.PersonalExpenseShee
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
-import com.epm.gestepm.modelapi.expense.dto.ExpenseUserValidateDTO;
-import com.epm.gestepm.modelapi.expense.dto.ExpenseValidateDTO;
-import com.epm.gestepm.modelapi.expensesheet.dto.ExpenseSheet;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseUserValidateDTO;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseValidateDTO;
+import com.epm.gestepm.modelapi.deprecated.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetStatusEnumDto;
 import com.epm.gestepm.modelapi.project.dto.Project;

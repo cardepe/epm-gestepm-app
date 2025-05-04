@@ -99,6 +99,14 @@
         <put-attribute name="body" value="/ui/jsp/view/shares/displacement/detail.jsp" />
     </definition>
 
+    <definition name="programmed-share" extends="fullFrameLayout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/programmed/view.jsp" />
+    </definition>
+
+    <definition name="programmed-share-detail" extends="fullFrameLayout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/programmed/detail.jsp" />
+    </definition>
+
     <definition name="intervention-share" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/shares/intervention.jsp" />
     </definition>

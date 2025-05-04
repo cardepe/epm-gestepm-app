@@ -1,7 +1,7 @@
 package com.epm.gestepm.model.displacementshare.dao;
 
-import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
-import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
+import com.epm.gestepm.modelapi.deprecated.displacementshare.dto.DisplacementShare;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpensesMonthDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;

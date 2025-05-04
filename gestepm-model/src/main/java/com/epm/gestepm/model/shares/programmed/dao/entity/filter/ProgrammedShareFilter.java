@@ -3,7 +3,7 @@ package com.epm.gestepm.model.shares.programmed.dao.entity.filter;
 import com.epm.gestepm.lib.entity.AttributeMap;
 import com.epm.gestepm.lib.entity.CollectableAttributes;
 import com.epm.gestepm.lib.entity.Orderable;
-import com.epm.gestepm.modelapi.shares.dto.ShareStatusDto;
+import com.epm.gestepm.modelapi.shares.common.dto.ShareStatusDto;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -36,8 +36,8 @@ public class ProgrammedShareFilter extends Orderable implements CollectableAttri
         map.putList(ATTR_PS_IDS, this.ids);
         map.putList(ATTR_PS_U_IDS, this.userIds);
         map.putList(ATTR_PS_P_IDS, this.projectIds);
-        map.putTimestamp(ATTR_PS_CREATED_AT, this.startDate);
-        map.putTimestamp(ATTR_PS_CLOSED_AT, this.endDate);
+        map.putTimestamp(ATTR_PS_START_DATE, this.startDate);
+        map.putTimestamp(ATTR_PS_END_DATE, this.endDate);
         map.putEnum(ATTR_PS_STATUS, this.status);
 
         return map;

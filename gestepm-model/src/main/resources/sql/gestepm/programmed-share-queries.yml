@@ -3,7 +3,6 @@ sql:
   qry-list-of-ps: |
 
     SELECT
-      ps.programmed_share_id AS id_pagination,
       ps.programmed_share_id,
       ps.user_id,
       CONCAT(us.name, us.surnames) AS username,
@@ -20,25 +19,30 @@ sql:
       ps.created_by,
       ps.closed_at,
       ps.closed_by,
-      psf.programmed_share_file_id
+      GROUP_CONCAT(psf.programmed_share_file_id) AS programmed_share_file_ids
     FROM ${sch-gestepm}.programmed_share ps
     LEFT JOIN ${sch-gestepm}.projects p ON p.id = ps.project_id
     LEFT JOIN ${sch-gestepm}.users us ON ps.user_id = us.ID
-    LEFT JOIN ${sch-gestepm}.users st ON ps.second_technical_id = us.ID
+    LEFT JOIN ${sch-gestepm}.users st ON ps.second_technical_id = st.ID
     LEFT JOIN ${sch-gestepm}.programmed_share_file psf ON ps.programmed_share_id = psf.programmed_share_id
 
     #whereToken #filter
+    GROUP BY ps.programmed_share_id
+    #orderByToken
 
   qry-page-of-ps: |
-
-    ${sql.paginated-query-group-prefix}
+    
     ${sql.qry-list-of-ps}
-    ${sql.paginated-query-suffix}
+    ${sql.paginated-query}
 
   qry-count-of-ps: |
 
-    SELECT COUNT(DISTINCT id_pagination) AS "count"
-    FROM (${sql.qry-list-of-ps}) final
+    SELECT COUNT(DISTINCT programmed_share_id) AS "count"
+    FROM (
+      SELECT ps.programmed_share_id
+      FROM ${sch-gestepm}.programmed_share ps      
+      #whereToken #filter
+    ) final
 
   qry-create-ps: |
 
@@ -77,7 +81,7 @@ sql:
   qry-delete-ps: |
 
     DELETE FROM ${sch-gestepm}.programmed_share WHERE programmed_share_id = :attr_ps_id
-    
+
   filter-ps-by-params: |
 
     -- [AND

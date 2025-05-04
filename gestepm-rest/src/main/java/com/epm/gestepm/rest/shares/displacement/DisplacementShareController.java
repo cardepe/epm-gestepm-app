@@ -63,7 +63,7 @@ public class DisplacementShareController extends BaseController implements Displ
     @Override
     @RequirePermits(value = PRMT_READ_DS, action = "Get displacement share list")
     @LogExecution(operation = OP_READ)
-    public ResponseEntity<ListDisplacementSharesV1200Response> listDisplacementSharesV1(final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit, final List<Integer> ids,
+    public ResponseEntity<ListDisplacementSharesV1200Response> listDisplacementSharesV1(final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit, final String order, final String orderBy, final List<Integer> ids,
                                                                                         final List<Integer> userIds, final List<Integer> projectIds, final LocalDateTime startDate, final LocalDateTime endDate) {
 
         final DisplacementShareListRestRequest req = new DisplacementShareListRestRequest(ids, userIds, projectIds, startDate, endDate);
@@ -71,6 +71,7 @@ public class DisplacementShareController extends BaseController implements Displ
         this.setCommon(req, meta, links, expand);
         this.setDefaults(req);
         this.setPagination(req, limit, offset);
+        this.setOrder(req, order, orderBy);
 
         final DisplacementShareFilterDto filterDto = getMapper(MapDSToDisplacementShareFilterDto.class).from(req);
         final Page<DisplacementShareDto> page = this.displacementShareService.list(filterDto, offset, limit);

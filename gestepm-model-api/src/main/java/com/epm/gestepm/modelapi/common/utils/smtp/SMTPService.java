@@ -1,12 +1,8 @@
 package com.epm.gestepm.modelapi.common.utils.smtp;
 
-import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseInspectionMailTemplateDto;
-import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseNoProgrammedShareMailTemplateDto;
-import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenNoProgrammedShareMailTemplateDto;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenPersonalExpenseSheetMailTemplateDto;
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
+import com.epm.gestepm.modelapi.deprecated.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigning;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.user.dto.User;

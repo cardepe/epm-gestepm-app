@@ -3,7 +3,6 @@ sql:
   qry-list-of-cs: |
 
     SELECT
-      cs.construction_share_id AS id_pagination,
       cs.construction_share_id,
       cs.user_id,
       CONCAT(us.name, us.surnames) AS username,
@@ -17,24 +16,29 @@ sql:
       cs.created_by,
       cs.closed_at,
       cs.closed_by,
-      csf.construction_share_file_id
+      GROUP_CONCAT(csf.construction_share_file_id) AS construction_share_file_ids
     FROM ${sch-gestepm}.construction_share cs
     LEFT JOIN ${sch-gestepm}.projects p ON p.id = cs.project_id
     LEFT JOIN ${sch-gestepm}.users us ON cs.user_id = us.ID
     LEFT JOIN ${sch-gestepm}.construction_share_file csf ON cs.construction_share_id = csf.construction_share_id
 
     #whereToken #filter
+    GROUP BY cs.construction_share_id
+    #orderByToken
 
   qry-page-of-cs: |
 
-    ${sql.paginated-query-group-prefix}
     ${sql.qry-list-of-cs}
-    ${sql.paginated-query-suffix}
+    ${sql.paginated-query}
 
   qry-count-of-cs: |
 
-    SELECT COUNT(DISTINCT id_pagination) AS "count"
-    FROM (${sql.qry-list-of-cs}) final
+    SELECT COUNT(DISTINCT construction_share_id) AS "count"
+    FROM (
+      SELECT cs.construction_share_id
+      FROM ${sch-gestepm}.construction_share cs
+      #whereToken #filter
+    ) final
 
   qry-create-cs: |
 

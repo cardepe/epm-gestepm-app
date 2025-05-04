@@ -169,7 +169,23 @@
             "postForumUrl": "Puede ver la entrada en el foro clicando aquí."
         },
         "programmed": {
-            "name": "Parte programado"
+            "name": "Parte programado",
+            "create": {
+                "success": "Parte programado creado con éxito."
+            },
+            "delete" : {
+                "alert": "¿Está seguro que quiere borrar el parte programado {0}?",
+                "success": "Parte programado nº {0} eliminado con éxito."
+            },
+            "update": {
+                "success": "Se ha actualizado el parte programado con éxito."
+            },
+            "files": {
+                "delete": {
+                    "alert": "¿Está seguro que desea eliminar el adjunto {0}?",
+                    "success": "Adjunto {0} eliminado con éxito."
+                }
+            }
         },
         "work": {
             "name": "Parte de trabajo"

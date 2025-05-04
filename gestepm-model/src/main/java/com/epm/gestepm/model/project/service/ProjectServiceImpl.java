@@ -11,7 +11,7 @@ import com.epm.gestepm.modelapi.common.utils.ExcelUtils;
 import com.epm.gestepm.modelapi.common.utils.PixelUtils;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpensesMonthDTO;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;

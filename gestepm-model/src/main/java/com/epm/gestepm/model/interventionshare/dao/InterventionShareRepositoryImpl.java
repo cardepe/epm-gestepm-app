@@ -210,19 +210,6 @@ public class InterventionShareRepositoryImpl implements InterventionShareReposit
 		
 		StringBuilder strBuilder = new StringBuilder();
 		
-		if (StringUtils.isBlank(type) || "ips".equals(type)) {
-
-			strBuilder.append("SELECT sh.ID, pr.NAME, sh.START_DATE, sh.END_DATE, '' as FORUM_TITLE, 'ips' as TYPE FROM intervention_pr_shares sh INNER JOIN projects pr ON sh.PROJECT_ID = pr.ID ");
-			
-			if (StringUtils.isNoneBlank(filter)) {
-				strBuilder.append(filter);
-			}
-			
-			if (StringUtils.isBlank(type)) {
-				strBuilder.append("UNION ALL ");
-			}
-		}
-		
 		if (StringUtils.isBlank(type) || "is".equals(type)) {
 						
 			strBuilder.append("SELECT sh.no_programmed_share_id, pr.NAME, sh.start_date, sh.end_date, forum_title, 'is' as TYPE FROM no_programmed_share sh INNER JOIN projects pr ON sh.project_id = pr.ID ");

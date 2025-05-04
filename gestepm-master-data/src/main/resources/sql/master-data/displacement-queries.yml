@@ -3,7 +3,6 @@ sql:
   qry-list-of-d: |
 
     SELECT
-      d.displacement_id AS id_pagination,
       d.displacement_id,
       d.activity_center_id,
       ac.name AS activity_center_name,
@@ -14,18 +13,22 @@ sql:
     LEFT JOIN ${sch-gestepm}.activity_center ac ON d.activity_center_id = ac.activity_center_id
 
     #whereToken #filter
+    GROUP BY d.displacement_id
     #orderByToken
 
   qry-page-of-d: |
 
-    ${sql.paginated-query-group-prefix}
     ${sql.qry-list-of-d}
-    ${sql.paginated-query-suffix}
+    ${sql.paginated-query}
 
   qry-count-of-d: |
 
     SELECT COUNT(DISTINCT id_pagination) AS "count"
-    FROM (${sql.qry-list-of-d}) final
+    FROM (
+      SELECT d.displacement_id
+      FROM ${sch-gestepm}.displacement d
+      #whereToken #filter
+    ) final
 
   qry-create-d: |
 

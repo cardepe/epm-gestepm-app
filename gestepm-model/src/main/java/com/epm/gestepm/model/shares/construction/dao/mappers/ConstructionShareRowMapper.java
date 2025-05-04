@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,7 +32,7 @@ public class ConstructionShareRowMapper extends CommonRowMapper implements RowMa
 
     public static final String COL_CS_SIGNATURE_OP = "operator_signature";
 
-    public static final String COL_CSF_ID = "construction_share_file_id";
+    public static final String COL_CSF_IDS = "construction_share_file_ids";
 
     @Override
     public ConstructionShare mapRow(ResultSet rs, int rowNum) throws SQLException {
@@ -49,8 +50,10 @@ public class ConstructionShareRowMapper extends CommonRowMapper implements RowMa
 
         final Set<Integer> fileIds = new HashSet<>();
 
-        if (hasValue(rs, COL_CSF_ID)) {
-            fileIds.add(rs.getInt(COL_CSF_ID));
+        if (hasValue(rs, COL_CSF_IDS)) {
+            Arrays.stream(rs.getString(COL_CSF_IDS).split(","))
+                    .map(Integer::parseInt)
+                    .forEach(fileIds::add);
         }
 
         constructionShare.setFileIds(fileIds);

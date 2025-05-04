@@ -17,8 +17,7 @@ import com.epm.gestepm.model.shares.programmed.dao.entity.deleter.ProgrammedShar
 import com.epm.gestepm.model.shares.programmed.dao.entity.filter.ProgrammedShareFilter;
 import com.epm.gestepm.model.shares.programmed.dao.entity.finder.ProgrammedShareByIdFinder;
 import com.epm.gestepm.model.shares.programmed.dao.entity.updater.ProgrammedShareUpdate;
-import com.epm.gestepm.model.shares.programmed.dao.mappers.ProgrammedShareRSManyExtractor;
-import com.epm.gestepm.model.shares.programmed.dao.mappers.ProgrammedShareRSOneExtractor;
+import com.epm.gestepm.model.shares.programmed.dao.mappers.ProgrammedShareRowMapper;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -51,7 +50,7 @@ public class ProgrammedShareDaoImpl implements ProgrammedShareDao {
     public List<ProgrammedShare> list(ProgrammedShareFilter filter) {
 
         final SQLQueryFetchMany<ProgrammedShare> sqlQuery = new SQLQueryFetchMany<ProgrammedShare>()
-                .useRsExtractor(new ProgrammedShareRSManyExtractor())
+                .useRowMapper(new ProgrammedShareRowMapper())
                 .useQuery(QRY_LIST_OF_PS)
                 .useFilter(FILTER_PS_BY_PARAMS)
                 .withParams(filter.collectAttributes());
@@ -70,7 +69,7 @@ public class ProgrammedShareDaoImpl implements ProgrammedShareDao {
     public Page<ProgrammedShare> list(ProgrammedShareFilter filter, Long offset, Long limit) {
 
         final SQLQueryFetchPage<ProgrammedShare> sqlQuery = new SQLQueryFetchPage<ProgrammedShare>()
-                .useRsExtractor(new ProgrammedShareRSManyExtractor())
+                .useRowMapper(new ProgrammedShareRowMapper())
                 .useQuery(QRY_PAGE_OF_PS)
                 .useCountQuery(QRY_COUNT_OF_PS)
                 .useFilter(FILTER_PS_BY_PARAMS)
@@ -92,7 +91,7 @@ public class ProgrammedShareDaoImpl implements ProgrammedShareDao {
     public Optional<ProgrammedShare> find(ProgrammedShareByIdFinder finder) {
 
         final SQLQueryFetchOne<ProgrammedShare> sqlQuery = new SQLQueryFetchOne<ProgrammedShare>()
-                .useRsExtractor(new ProgrammedShareRSOneExtractor())
+                .useRowMapper(new ProgrammedShareRowMapper())
                 .useQuery(QRY_LIST_OF_PS)
                 .useFilter(FILTER_PS_BY_ID)
                 .withParams(finder.collectAttributes());

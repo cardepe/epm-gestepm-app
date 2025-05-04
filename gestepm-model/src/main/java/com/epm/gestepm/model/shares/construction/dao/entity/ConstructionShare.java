@@ -1,6 +1,6 @@
 package com.epm.gestepm.model.shares.construction.dao.entity;
 
-import com.epm.gestepm.lib.audit.AuditCreateUpdate;
+import com.epm.gestepm.lib.audit.AuditCreateClose;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Data
-public class ConstructionShare implements AuditCreateUpdate, Serializable {
+public class ConstructionShare implements AuditCreateClose, Serializable {
 
     @NotNull
     private Integer id;
@@ -41,9 +41,9 @@ public class ConstructionShare implements AuditCreateUpdate, Serializable {
     @NotNull
     private Integer createdBy;
 
-    private LocalDateTime updatedAt;
+    private LocalDateTime closedAt;
 
-    private Integer updatedBy;
+    private Integer closedBy;
 
     private Set<Integer> fileIds;
 

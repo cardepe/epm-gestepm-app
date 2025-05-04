@@ -14,7 +14,7 @@ public interface MapCSToConstructionShareResponse {
   @Mapping(source = "userId", target = "user.id")
   @Mapping(source = "projectId", target = "project.id")
   @Mapping(source = "createdBy", target = "createdBy.id")
-  @Mapping(source = "updatedBy", target = "updatedBy.id")
+  @Mapping(source = "closedBy", target = "closedBy.id")
   ConstructionShare from(ConstructionShareDto dto);
 
   List<ConstructionShare> from(Page<ConstructionShareDto> list);

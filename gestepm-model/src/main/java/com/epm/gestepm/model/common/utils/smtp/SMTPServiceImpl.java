@@ -2,18 +2,12 @@ package com.epm.gestepm.model.common.utils.smtp;
 
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
-import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseInspectionMailTemplateDto;
-import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseNoProgrammedShareMailTemplateDto;
-import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenNoProgrammedShareMailTemplateDto;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenPersonalExpenseSheetMailTemplateDto;
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
+import com.epm.gestepm.modelapi.deprecated.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigning;
 import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
-import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.NoProgrammedShareUpdateDto;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
@@ -328,18 +322,6 @@ public class SMTPServiceImpl implements SMTPService {
 						Utiles.transform(inspection.getStartDate(), "yyyyMMdd")
 				}, locale) + ".pdf";
 				
-	        } else if ("ips".equals(type)) {
-	        	
-	        	InterventionPrShare transformedShare = (InterventionPrShare) share;
-	        	
-	        	if (transformedShare == null) {
-	        		log.error("No se ha encontrado el parte programado.");
-	        		return;
-	        	}
-	        	
-	        	log.info("Adjuntando parte programado " + transformedShare.getId() + " en " + locale.getLanguage());
-	        	
-	        	fileName = messageSource.getMessage("shares.programmed.pdf.name", new Object[] { transformedShare.getId().toString(), Utiles.getDateFormatted(transformedShare.getStartDate()) }, locale) + ".pdf";
 	        } else if ("ws".equals(type)) {
 	        	
 	        	WorkShare transformedShare = (WorkShare) share;

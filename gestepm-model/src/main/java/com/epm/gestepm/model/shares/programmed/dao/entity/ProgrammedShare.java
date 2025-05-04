@@ -1,7 +1,6 @@
 package com.epm.gestepm.model.shares.programmed.dao.entity;
 
 import com.epm.gestepm.lib.audit.AuditCreateClose;
-import com.epm.gestepm.lib.audit.AuditCreateUpdate;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;

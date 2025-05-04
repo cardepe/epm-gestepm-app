@@ -16,8 +16,6 @@ import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.finder.InspectionByIdFinderDto;
 import com.epm.gestepm.modelapi.inspection.dto.updater.InspectionUpdateDto;
 import com.epm.gestepm.modelapi.inspection.service.InspectionService;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
 import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
 import com.epm.gestepm.modelapi.manualsigningtype.service.ManualSigningTypeService;
 import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigning;
@@ -27,7 +25,7 @@ import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningDTO;
 import com.epm.gestepm.modelapi.personalsigning.service.PersonalSigningService;
 import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.shares.decorator.ShareDecorator;
+import com.epm.gestepm.modelapi.shares.common.decorator.ShareDecorator;
 import com.epm.gestepm.modelapi.shares.displacement.dto.DisplacementShareDto;
 import com.epm.gestepm.modelapi.shares.displacement.dto.finder.DisplacementShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.displacement.dto.updater.DisplacementShareUpdateDto;
@@ -43,7 +41,7 @@ import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningDTO;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningTableDTO;
 import com.epm.gestepm.modelapi.usermanualsigning.service.UserManualSigningService;
-import com.epm.gestepm.modelapi.usersigning.dto.UserSigningShareDTO;
+import com.epm.gestepm.modelapi.deprecated.usersigning.dto.UserSigningShareDTO;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
 import org.apache.commons.io.FilenameUtils;
@@ -117,9 +115,6 @@ public class SigningController {
 
     @Autowired
     private InspectionService inspectionService;
-
-    @Autowired
-    private InterventionPrShareService interventionPrShareService;
 
     @Autowired
     private WorkShareService workShareService;
@@ -887,16 +882,6 @@ public class SigningController {
                     personalSigning.setEndDate(endDate);
 
                     this.personalSigningService.save(personalSigning);
-
-                    break;
-                }
-                case "PROGRAMMED_SHARES": {
-
-                    final InterventionPrShare interventionPrShare = this.interventionPrShareService.getInterventionPrShareById(userSigningShareDTO.getShareId());
-                    interventionPrShare.setStartDate(startDate);
-                    interventionPrShare.setEndDate(endDate);
-
-                    this.interventionPrShareService.save(interventionPrShare);
 
                     break;
                 }

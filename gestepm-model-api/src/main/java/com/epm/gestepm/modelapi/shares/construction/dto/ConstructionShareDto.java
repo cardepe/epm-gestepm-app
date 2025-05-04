@@ -40,9 +40,9 @@ public class ConstructionShareDto implements Serializable {
     @NotNull
     private Integer createdBy;
 
-    private LocalDateTime updatedAt;
+    private LocalDateTime closedAt;
 
-    private Integer updatedBy;
+    private Integer closedBy;
 
     private Set<Integer> fileIds;
 

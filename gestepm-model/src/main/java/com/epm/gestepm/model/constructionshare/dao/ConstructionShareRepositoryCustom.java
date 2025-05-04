@@ -1,7 +1,6 @@
 package com.epm.gestepm.model.constructionshare.dao;
 
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
-import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.constructionshare.dto.ConstructionShare;
 
 import java.time.LocalDateTime;
 import java.util.List;

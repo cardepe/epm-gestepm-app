@@ -149,19 +149,28 @@ function getSigningText(type) {
 	return '';
 }
 
-function resizeCanvas() {
+function preloadSignatures(signaturePad, canvas, signatureClass, signature) {
+	if (signaturePad[signatureClass]) {
+		signaturePad[signatureClass].clear();
+	}
+
+	canvas[signatureClass] = document.querySelector('.' + signatureClass + '-signature .signature-canvas');
+
+	resizeCanvas(canvas[signatureClass]);
+
+	signaturePad[signatureClass] = new SignaturePad(canvas[signatureClass]);
+	if (typeof signature !== 'undefined' && signature !== '') {
+		signaturePad[signatureClass].fromDataURL(signature);
+	}
+}
+
+function resizeCanvas(canvas) {
 	let ratio = Math.max(window.devicePixelRatio || 1, 1);
 
 	if (typeof canvas !== 'undefined' && canvas) {
 		canvas.width = canvas.offsetWidth * ratio;
 		canvas.height = canvas.offsetHeight * ratio;
 		canvas.getContext("2d").scale(ratio, ratio);
-	}
-
-	if (typeof canvasOp !== 'undefined' && canvasOp) {
-		canvasOp.width = canvasOp.offsetWidth * ratio;
-		canvasOp.height = canvasOp.offsetHeight * ratio;
-		canvasOp.getContext("2d").scale(ratio, ratio);
 	}
 }
 

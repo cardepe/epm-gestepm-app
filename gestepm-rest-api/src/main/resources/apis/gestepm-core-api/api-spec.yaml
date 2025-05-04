@@ -461,6 +461,8 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
         - schema:
             type: array
             items:
@@ -1011,6 +1013,25 @@ paths:
       tags:
         - programmed-share-file-v1
       description: delete-programmed-share-file-v1
+  '/v1/shares/programmed/{shareId}/export':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+    get:
+      summary: V1 - Export programmed share
+      responses:
+        '200':
+          $ref: '#/components/responses/ProgrammedShareExport'
+        '404':
+          description: programmed-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: export-programmed-share-v1
+      description: export-programmed-share-v1
+      parameters: []
+      tags:
+        - programmed-share-v1
   /v1/signings/teleworking:
     get:
       summary: V1 - List teleworking signings
@@ -1279,12 +1300,12 @@ components:
           format: date-time
         createdBy:
           $ref: '#/components/schemas/User'
-        updatedAt:
+        closedAt:
           type: string
           x-stoplight:
             id: u7ozr13zwh2du
           format: date-time
-        updatedBy:
+        closedBy:
           $ref: '#/components/schemas/User'
       required:
         - id
@@ -1578,12 +1599,12 @@ components:
           format: date-time
         createdBy:
           $ref: '#/components/schemas/User'
-        updatedAt:
+        closedAt:
           type: string
           x-stoplight:
             id: 1va73to8m1vzt
           format: date-time
-        updatedBy:
+        closedBy:
           $ref: '#/components/schemas/User'
       required:
         - id

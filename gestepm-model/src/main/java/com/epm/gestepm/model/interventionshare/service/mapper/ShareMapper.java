@@ -1,10 +1,7 @@
 package com.epm.gestepm.model.interventionshare.service.mapper;
 
 import com.epm.gestepm.lib.file.FileUtils;
-import com.epm.gestepm.modelapi.expense.dto.FileDTO;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrDTO;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShareFile;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.FileDTO;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningDTO;
@@ -22,37 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShareMapper {
-
-	public static InterventionPrShare mapDTOToInterventionPrShare(InterventionPrDTO interventionPrDTO, User user, Project project, Long dispShareId) {
-		
-		InterventionPrShare interventionPrShare = new InterventionPrShare();
-		
-		interventionPrShare.setStartDate(interventionPrDTO.getStartDate());
-		interventionPrShare.setEndDate(interventionPrDTO.getEndDate());
-		interventionPrShare.setObservations(interventionPrDTO.getObservations());
-		interventionPrShare.setProject(project);
-		interventionPrShare.setUser(user);
-		interventionPrShare.setMaterials(interventionPrDTO.getMaterials());
-		interventionPrShare.setMrSignature(interventionPrDTO.getMrSignature());
-		interventionPrShare.setDisplacementShareId(dispShareId);
-		
-		return interventionPrShare;
-	}
-	
-	public static InterventionPrDTO mapInterventionPrShareToDTO(InterventionPrShare interventionPrShare) {
-		
-		InterventionPrDTO interventionPrDTO = new InterventionPrDTO();
-		
-		interventionPrDTO.setId(interventionPrShare.getId());
-		interventionPrDTO.setProjectId(interventionPrShare.getProject().getId());
-		interventionPrDTO.setStartDate(interventionPrShare.getStartDate());
-		interventionPrDTO.setEndDate(interventionPrShare.getEndDate());
-		interventionPrDTO.setObservations(interventionPrShare.getObservations());
-		interventionPrDTO.setSignature(interventionPrShare.getSignature());
-		interventionPrDTO.setSignatureOp(interventionPrShare.getSignatureOp());
-		
-		return interventionPrDTO;
-	}
 	
 	public static PersonalSigningDTO mapPersonalSigningToDTO(PersonalSigning personalSigning) {
 		
@@ -92,22 +58,7 @@ public class ShareMapper {
 		
 		return workShareDTO;
 	}
-	
-	public static InterventionPrShareFile mapMultipartFileToInterventionPrShareFile(MultipartFile file, InterventionPrShare interventionPrShare) {
-		String fileName = file.getOriginalFilename();
-		String ext = FilenameUtils.getExtension(fileName);
 
-		byte[] data = FileUtils.compressBytes(FileUtils.compressImage(file));
-
-		InterventionPrShareFile interventionPrShareFile = new InterventionPrShareFile();
-		interventionPrShareFile.setName(fileName);
-		interventionPrShareFile.setExt(ext);
-		interventionPrShareFile.setContent(data);
-		interventionPrShareFile.setInterventionPrShare(interventionPrShare);
-
-		return interventionPrShareFile;
-	}
-	
 	public static WorkShareFile mapMultipartFileToWorkShareFile(MultipartFile file, WorkShare workShare) {
 		String fileName = file.getOriginalFilename();
 		String ext = FilenameUtils.getExtension(fileName);
