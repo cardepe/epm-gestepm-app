@@ -6,10 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static com.epm.gestepm.lib.jdbc.utils.ResultSetMappingUtils.*;
 
@@ -37,9 +34,9 @@ public class NoProgrammedShareRowMapper implements RowMapper<NoProgrammedShare> 
 
   public static final String COL_NPS_STATE = "state";
 
-  public static final String COL_NPS_INSPECTION_ID = "inspection_id";
+  public static final String COL_NPS_INSPECTION_IDS = "inspection_ids";
 
-  public static final String COL_NPS_FILE_ID = "no_programmed_share_file_id";
+  public static final String COL_NPS_FILE_IDS = "no_programmed_share_file_ids";
 
   @Override
   public NoProgrammedShare mapRow(ResultSet rs, int i) throws SQLException {
@@ -60,16 +57,20 @@ public class NoProgrammedShareRowMapper implements RowMapper<NoProgrammedShare> 
 
     final List<Integer> inspectionIds = new ArrayList<>();
 
-    if (hasValue(rs, COL_NPS_INSPECTION_ID)) {
-      inspectionIds.add(rs.getInt(COL_NPS_INSPECTION_ID));
+    if (hasValue(rs, COL_NPS_INSPECTION_IDS)) {
+      Arrays.stream(rs.getString(COL_NPS_INSPECTION_IDS).split(","))
+              .map(Integer::parseInt)
+              .forEach(inspectionIds::add);
     }
 
     noProgrammedShare.setInspectionIds(inspectionIds);
 
     final Set<Integer> fileIds = new HashSet<>();
 
-    if (hasValue(rs, COL_NPS_FILE_ID)) {
-      fileIds.add(rs.getInt(COL_NPS_FILE_ID));
+    if (hasValue(rs, COL_NPS_FILE_IDS)) {
+      Arrays.stream(rs.getString(COL_NPS_FILE_IDS).split(","))
+              .map(Integer::parseInt)
+              .forEach(fileIds::add);
     }
 
     noProgrammedShare.setFileIds(fileIds);

@@ -27,9 +27,9 @@ public class PersonalExpenseSheetRowMapper extends CommonRowMapper implements Ro
 
     public static final String COL_PES_OBSERVATIONS = "observations";
 
-    public static final String COL_PES_AMOUNT = "amount";
+    public static final String COL_PES_AMOUNTS = "amounts";
 
-    public static final String COL_PES_PERSONAL_EXPENSE_ID = "personal_expense_id";
+    public static final String COL_PES_PERSONAL_EXPENSE_IDS = "personal_expense_ids";
 
     @Override
     public PersonalExpenseSheet mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -41,14 +41,18 @@ public class PersonalExpenseSheetRowMapper extends CommonRowMapper implements Ro
         personalExpenseSheet.setDescription(resultSet.getString(COL_PES_DESCRIPTION));
         personalExpenseSheet.setStatus(nullableStatusEnum(resultSet.getString(COL_PES_STATUS)));
         personalExpenseSheet.setObservations(nullableString(resultSet, COL_PES_OBSERVATIONS));
-        personalExpenseSheet.setAmount(hasValue(resultSet, COL_PES_PERSONAL_EXPENSE_ID)
-                ? resultSet.getDouble(COL_PES_AMOUNT)
+        personalExpenseSheet.setAmount(hasValue(resultSet, COL_PES_AMOUNTS)
+                ? Arrays.stream(resultSet.getString(COL_PES_PERSONAL_EXPENSE_IDS).split(","))
+                    .mapToDouble(Double::parseDouble)
+                    .sum()
                 : 0.0);
 
         final List<Integer> personalExpenseIds = new ArrayList<>();
 
-        if (hasValue(resultSet, COL_PES_PERSONAL_EXPENSE_ID)) {
-            personalExpenseIds.add(resultSet.getInt(COL_PES_PERSONAL_EXPENSE_ID));
+        if (hasValue(resultSet, COL_PES_PERSONAL_EXPENSE_IDS)) {
+            Arrays.stream(resultSet.getString(COL_PES_PERSONAL_EXPENSE_IDS).split(","))
+                    .map(Integer::parseInt)
+                    .forEach(personalExpenseIds::add);
         }
 
         personalExpenseSheet.setPersonalExpenseIds(personalExpenseIds);

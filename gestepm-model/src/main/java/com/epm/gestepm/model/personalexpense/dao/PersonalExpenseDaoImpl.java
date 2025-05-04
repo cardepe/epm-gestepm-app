@@ -18,8 +18,7 @@ import com.epm.gestepm.model.personalexpense.dao.entity.deleter.PersonalExpenseD
 import com.epm.gestepm.model.personalexpense.dao.entity.filter.PersonalExpenseFilter;
 import com.epm.gestepm.model.personalexpense.dao.entity.finder.PersonalExpenseByIdFinder;
 import com.epm.gestepm.model.personalexpense.dao.entity.updater.PersonalExpenseUpdate;
-import com.epm.gestepm.model.personalexpense.dao.mappers.PersonalExpenseRSManyExtractor;
-import com.epm.gestepm.model.personalexpense.dao.mappers.PersonalExpenseRSOneExtractor;
+import com.epm.gestepm.model.personalexpense.dao.mappers.PersonalExpenseRowMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -55,7 +54,7 @@ public class PersonalExpenseDaoImpl implements PersonalExpenseDao {
     public List<PersonalExpense> list(PersonalExpenseFilter filter) {
 
         final SQLQueryFetchMany<PersonalExpense> sqlQuery = new SQLQueryFetchMany<PersonalExpense>()
-                .useRsExtractor(new PersonalExpenseRSManyExtractor())
+                .useRowMapper(new PersonalExpenseRowMapper())
                 .useQuery(QRY_LIST_OF_PE)
                 .useFilter(FILTER_PE_BY_PARAMS)
                 .withParams(filter.collectAttributes());
@@ -74,7 +73,7 @@ public class PersonalExpenseDaoImpl implements PersonalExpenseDao {
     public Page<PersonalExpense> list(PersonalExpenseFilter filter, Long offset, Long limit) {
 
         final SQLQueryFetchPage<PersonalExpense> sqlQuery = new SQLQueryFetchPage<PersonalExpense>()
-                .useRsExtractor(new PersonalExpenseRSManyExtractor())
+                .useRowMapper(new PersonalExpenseRowMapper())
                 .useQuery(QRY_PAGE_OF_PE)
                 .useCountQuery(QRY_COUNT_OF_PE)
                 .useFilter(FILTER_PE_BY_PARAMS)
@@ -96,7 +95,7 @@ public class PersonalExpenseDaoImpl implements PersonalExpenseDao {
     public Optional<PersonalExpense> find(PersonalExpenseByIdFinder finder) {
 
         final SQLQueryFetchOne<PersonalExpense> sqlQuery = new SQLQueryFetchOne<PersonalExpense>()
-                .useRsExtractor(new PersonalExpenseRSOneExtractor())
+                .useRowMapper(new PersonalExpenseRowMapper())
                 .useQuery(QRY_LIST_OF_PE)
                 .useFilter(FILTER_PE_BY_ID)
                 .withParams(finder.collectAttributes());

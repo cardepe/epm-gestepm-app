@@ -16,8 +16,7 @@ import com.epm.gestepm.model.shares.noprogrammed.dao.entity.deleter.NoProgrammed
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.filter.NoProgrammedShareFilter;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.finder.NoProgrammedShareByIdFinder;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.updater.NoProgrammedShareUpdate;
-import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRSManyExtractor;
-import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRSOneExtractor;
+import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRowMapper;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Component;
@@ -48,7 +47,7 @@ public class NoProgrammedShareDaoImpl implements NoProgrammedShareDao {
     public List<NoProgrammedShare> list(NoProgrammedShareFilter filter) {
 
         final SQLQueryFetchMany<NoProgrammedShare> sqlQuery = new SQLQueryFetchMany<NoProgrammedShare>()
-                .useRsExtractor(new NoProgrammedShareRSManyExtractor())
+                .useRowMapper(new NoProgrammedShareRowMapper())
                 .useQuery(QRY_LIST_OF_NPS)
                 .useFilter(FILTER_NPS_BY_PARAMS)
                 .withParams(filter.collectAttributes());
@@ -65,7 +64,7 @@ public class NoProgrammedShareDaoImpl implements NoProgrammedShareDao {
     public Page<NoProgrammedShare> list(NoProgrammedShareFilter filter, Long offset, Long limit) {
 
         final SQLQueryFetchPage<NoProgrammedShare> sqlQuery = new SQLQueryFetchPage<NoProgrammedShare>()
-                .useRsExtractor(new NoProgrammedShareRSManyExtractor())
+                .useRowMapper(new NoProgrammedShareRowMapper())
                 .useQuery(QRY_PAGE_OF_NPS)
                 .useCountQuery(QRY_COUNT_OF_NPS)
                 .useFilter(FILTER_NPS_BY_PARAMS)
@@ -85,7 +84,7 @@ public class NoProgrammedShareDaoImpl implements NoProgrammedShareDao {
     public Optional<NoProgrammedShare> find(NoProgrammedShareByIdFinder finder) {
 
         final SQLQueryFetchOne<NoProgrammedShare> sqlQuery = new SQLQueryFetchOne<NoProgrammedShare>()
-                .useRsExtractor(new NoProgrammedShareRSOneExtractor())
+                .useRowMapper(new NoProgrammedShareRowMapper())
                 .useQuery(QRY_LIST_OF_NPS)
                 .useFilter(FILTER_NPS_BY_ID)
                 .withParams(finder.collectAttributes());
