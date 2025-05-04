@@ -149,6 +149,7 @@
         },
         "noprogrammed": {
             "delete": {
+                "alert": "¿Está seguro que quiere borrar el parte no programado {0}?",
                 "success": "Parte de intervención no programado nº {0} eliminado con éxito."
             },
             "title": "Parte de intervención no programado nº {0}",

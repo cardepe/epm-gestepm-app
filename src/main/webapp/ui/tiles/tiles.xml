@@ -107,16 +107,12 @@
         <put-attribute name="body" value="/ui/jsp/view/shares/programmed/detail.jsp" />
     </definition>
 
-    <definition name="intervention-share" extends="fullFrameLayout">
-        <put-attribute name="body" value="/ui/jsp/view/shares/intervention.jsp" />
-    </definition>
-    
-    <definition name="intervention-share-create" extends="fullFrameLayout">
-        <put-attribute name="body" value="/ui/jsp/view/shares/crud/create.jsp" />
-    </definition>
-    
-    <definition name="no-programmed-share-detail" extends="fullFrameLayout">
+    <definition name="no-programmed-share" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/shares/no-programmed/view.jsp" />
+    </definition>
+
+    <definition name="no-programmed-share-detail" extends="fullFrameLayout">
+        <put-attribute name="body" value="/ui/jsp/view/shares/no-programmed/detail.jsp" />
     </definition>
 
     <definition name="inspection-detail" extends="fullFrameLayout">

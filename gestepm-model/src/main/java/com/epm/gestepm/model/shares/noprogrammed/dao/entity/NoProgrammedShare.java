@@ -19,7 +19,13 @@ public class NoProgrammedShare implements Serializable {
   private Integer userId;
 
   @NotNull
+  private String username;
+
+  @NotNull
   private Integer projectId;
+
+  @NotNull
+  private String projectName;
 
   @NotNull
   private LocalDateTime startDate;

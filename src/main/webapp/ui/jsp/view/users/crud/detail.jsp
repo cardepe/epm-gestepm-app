@@ -890,6 +890,8 @@
 					window.location.href = '/shares/displacement/' + id;
 				} else if (type === 'PROGRAMMED_SHARES') {
 					window.location.href = '/shares/programmed/' + id;
+				} else if (type === 'WORK_SHARES') {
+					window.location.href = '/shares/work/' + id;
 				} else {
 					loadModalForm(calendarSigning);
 				}

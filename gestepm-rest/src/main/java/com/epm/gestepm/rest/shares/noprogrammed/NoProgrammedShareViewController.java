@@ -10,6 +10,7 @@ import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
 import com.epm.gestepm.modelapi.inspection.service.InspectionService;
 import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
@@ -28,10 +29,12 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
@@ -65,6 +68,25 @@ public class NoProgrammedShareViewController {
     public User loadCommonModelView(final Locale locale, final Model model) {
         final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         return ModelUtil.loadConstants(locale, model, request); // FIXME: this.setCommonView(model);
+    }
+
+    @GetMapping("/shares/no-programmed")
+    @LogExecution(operation = OP_VIEW)
+    public String viewNoProgrammedSharePage(final Locale locale, final Model model) {
+
+        this.loadCommonModelView(locale, model);
+
+        final List<ProjectListDTO> projects = this.projectService.getTeleworkingProjects(false).stream()
+                .sorted(Comparator.comparing(ProjectListDTO::getName, String.CASE_INSENSITIVE_ORDER))
+                .collect(Collectors.toList());
+        model.addAttribute("projects", projects);
+
+        final List<User> users = this.userService.findByState(0).stream()
+                .sorted(Comparator.comparing(User::getFullName, String.CASE_INSENSITIVE_ORDER))
+                .collect(Collectors.toList());
+        model.addAttribute("users", users);
+
+        return "no-programmed-share";
     }
 
     @GetMapping("/shares/no-programmed/{id}")

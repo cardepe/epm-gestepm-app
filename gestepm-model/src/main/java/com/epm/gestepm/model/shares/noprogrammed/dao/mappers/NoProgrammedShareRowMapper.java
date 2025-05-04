@@ -16,7 +16,11 @@ public class NoProgrammedShareRowMapper implements RowMapper<NoProgrammedShare> 
 
   public static final String COL_NPS_USER_ID = "user_id";
 
+  public static final String COL_NPS_USERNAME = "username";
+
   public static final String COL_NPS_PROJECT_ID = "project_id";
+
+  public static final String COL_NPS_PROJECT_NAME = "project_name";
 
   public static final String COL_NPS_START_DATE = "start_date";
 
@@ -45,7 +49,9 @@ public class NoProgrammedShareRowMapper implements RowMapper<NoProgrammedShare> 
 
     noProgrammedShare.setId(rs.getInt(COL_NPS_ID));
     noProgrammedShare.setUserId(rs.getInt(COL_NPS_USER_ID));
+    noProgrammedShare.setUsername(rs.getString(COL_NPS_USERNAME));
     noProgrammedShare.setProjectId(rs.getInt(COL_NPS_PROJECT_ID));
+    noProgrammedShare.setProjectName(rs.getString(COL_NPS_PROJECT_NAME));
     noProgrammedShare.setStartDate(rs.getTimestamp(COL_NPS_START_DATE).toLocalDateTime());
     noProgrammedShare.setEndDate(nullableLocalDateTime(rs, COL_NPS_END_DATE));
     noProgrammedShare.setDescription(nullableString(rs, COL_NPS_DESCRIPTION));

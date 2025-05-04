@@ -10,7 +10,8 @@ public class ListNoProgrammedShareV1Operation extends APIOperation<NoProgrammedS
         super("listNoProgrammedShareV1");
 
         this.generateLinksWith(
-                (apiClass, req) -> apiClass.listNoProgrammedSharesV1(req.getMeta(), req.getLinks(), req.getExpand(), req.getOffset(), req.getLimit()));
+                (apiClass, req) -> apiClass.listNoProgrammedSharesV1(req.getMeta(), req.getLinks(), req.getExpand(), req.getOffset(), req.getLimit(), req.getOrder(), req.getOrderBy(),
+                        req.getIds(), req.getUserIds(), req.getProjectIds(), req.getStartDate(), req.getEndDate(), req.getStatus()));
     }
 
 }
