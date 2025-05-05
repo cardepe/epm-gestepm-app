@@ -2110,7 +2110,7 @@
                     }
 
                     if (shareType === 'cs') {
-                        $(this).wrap('<a href="/shares/intervention/construction/' + id + '/pdf" target="_blank"></a>');
+                        $(this).wrap('<a href="/shares/construction/' + id + '/export" target="_blank"></a>');
                     } else if (shareType === 'is') {
 
                         // es 'Seguimiento'
@@ -2121,9 +2121,9 @@
                         $(this).wrap('<a href="/v1/shares/no-programmed/0/inspections/' + id + '/export" target="_blank"></a>');
 
                     } else if (shareType === 'ips') {
-                        $(this).wrap('<a href="/shares/intervention/programmed/' + id + '/pdf" target="_blank"></a>');
+                        $(this).wrap('<a href="/shares/programmed/' + id + '/export" target="_blank"></a>');
                     } else if (shareType === 'ws') {
-                        $(this).wrap('<a href="/shares/work/' + id + '/pdf" target="_blank"></a>');
+                        $(this).wrap('<a href="/shares/work/' + id + '/export" target="_blank"></a>');
                     } else {
                         return $(this).remove();
                     }
@@ -2167,7 +2167,7 @@
 
     function getIpsShare(id) {
         return $.ajax({
-            url: '/shares/intervention/programmed/' + id,
+            url: '/shares/programmed/' + id,
             type: 'GET'
         });
     }

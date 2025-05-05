@@ -186,7 +186,7 @@ public class ConstructionShareController extends BaseController implements Const
     }
 
     @Override
-    @RequirePermits(value = PRMT_READ_I, action = "Export inspection")
+    @RequirePermits(value = PRMT_READ_I, action = "Export construction share")
     @LogExecution(operation = OP_READ)
     public ResponseEntity<org.springframework.core.io.Resource> exportConstructionShareV1(final Integer shareId) {
         final String language = this.localeProvider.getLocale().orElse("es");

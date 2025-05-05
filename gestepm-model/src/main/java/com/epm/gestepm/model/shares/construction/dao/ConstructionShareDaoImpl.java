@@ -11,15 +11,13 @@ import com.epm.gestepm.lib.jdbc.api.query.fetch.SQLQueryFetchPage;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.types.Page;
-import com.epm.gestepm.model.inspection.dao.entity.Inspection;
 import com.epm.gestepm.model.shares.construction.dao.entity.ConstructionShare;
 import com.epm.gestepm.model.shares.construction.dao.entity.filter.ConstructionShareFilter;
-import com.epm.gestepm.model.shares.construction.dao.mappers.ConstructionShareRSManyExtractor;
 import com.epm.gestepm.model.shares.construction.dao.entity.creator.ConstructionShareCreate;
 import com.epm.gestepm.model.shares.construction.dao.entity.deleter.ConstructionShareDelete;
 import com.epm.gestepm.model.shares.construction.dao.entity.finder.ConstructionShareByIdFinder;
 import com.epm.gestepm.model.shares.construction.dao.entity.updater.ConstructionShareUpdate;
-import com.epm.gestepm.model.shares.construction.dao.mappers.ConstructionShareRSOneExtractor;
+import com.epm.gestepm.model.shares.construction.dao.mappers.ConstructionShareRowMapper;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,13 +27,9 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
-import static com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType.ASC;
-import static com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType.DESC;
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_DELETE;
-import static com.epm.gestepm.model.inspection.dao.mappers.InspectionRowMapper.*;
-import static com.epm.gestepm.model.personalexpensesheet.dao.mappers.PersonalExpenseSheetRowMapper.COL_PES_PROJECT_ID;
 import static com.epm.gestepm.model.shares.construction.dao.constants.ConstructionShareQueries.*;
 import static com.epm.gestepm.model.shares.construction.dao.constants.ConstructionShareQueries.QRY_DELETE_CS;
 import static com.epm.gestepm.model.shares.construction.dao.mappers.ConstructionShareRowMapper.*;
@@ -58,7 +52,7 @@ public class ConstructionShareDaoImpl implements ConstructionShareDao {
     public List<ConstructionShare> list(ConstructionShareFilter filter) {
 
         final SQLQueryFetchMany<ConstructionShare> sqlQuery = new SQLQueryFetchMany<ConstructionShare>()
-                .useRsExtractor(new ConstructionShareRSManyExtractor())
+                .useRowMapper(new ConstructionShareRowMapper())
                 .useQuery(QRY_LIST_OF_CS)
                 .useFilter(FILTER_CS_BY_PARAMS)
                 .withParams(filter.collectAttributes());
@@ -77,7 +71,7 @@ public class ConstructionShareDaoImpl implements ConstructionShareDao {
     public Page<ConstructionShare> list(ConstructionShareFilter filter, Long offset, Long limit) {
 
         final SQLQueryFetchPage<ConstructionShare> sqlQuery = new SQLQueryFetchPage<ConstructionShare>()
-                .useRsExtractor(new ConstructionShareRSManyExtractor())
+                .useRowMapper(new ConstructionShareRowMapper())
                 .useQuery(QRY_PAGE_OF_CS)
                 .useCountQuery(QRY_COUNT_OF_CS)
                 .useFilter(FILTER_CS_BY_PARAMS)
@@ -99,7 +93,7 @@ public class ConstructionShareDaoImpl implements ConstructionShareDao {
     public Optional<ConstructionShare> find(ConstructionShareByIdFinder finder) {
 
         final SQLQueryFetchOne<ConstructionShare> sqlQuery = new SQLQueryFetchOne<ConstructionShare>()
-                .useRsExtractor(new ConstructionShareRSOneExtractor())
+                .useRowMapper(new ConstructionShareRowMapper())
                 .useQuery(QRY_LIST_OF_CS)
                 .useFilter(FILTER_CS_BY_ID)
                 .withParams(finder.collectAttributes());

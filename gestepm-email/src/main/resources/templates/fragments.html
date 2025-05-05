@@ -45,3 +45,8 @@
         <a th:href="@{'http://forum.gestepm.com/' + ${forumUrl}}" th:text="@{'http://forum.gestepm.com/' + ${forumUrl}}"></a>.
     </p>
 </th:block>
+
+<th:block th:fragment="close-work-share">
+    <p th:text="#{email.workshare.close.line.1(${fullName}, ${workShareId}, ${projectName}, ${createdAt}, ${closedAt})}"></p>
+    <p th:text="#{email.workshare.close.line.2}"></p>
+</th:block>

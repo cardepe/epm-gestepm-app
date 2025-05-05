@@ -13,7 +13,7 @@ sql:
       pe.quantity,
       pe.amount,
       pe.payment_type,
-      pef.personal_expense_file_id
+      GROUP_CONCAT(pef.personal_expense_file_id) AS personal_expense_file_ids
     FROM ${sch-gestepm}.personal_expense pe
     LEFT JOIN ${sch-gestepm}.personal_expense_file pef ON pe.personal_expense_id = pef.personal_expense_id
 

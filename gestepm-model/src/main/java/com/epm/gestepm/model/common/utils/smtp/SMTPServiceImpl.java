@@ -4,14 +4,10 @@ import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenPersonalExpenseSheetMailTemplateDto;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
-import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
-import com.epm.gestepm.modelapi.deprecated.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigning;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
-import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -19,23 +15,14 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.Message;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import javax.mail.util.ByteArrayDataSource;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -87,40 +74,6 @@ public class SMTPServiceImpl implements SMTPService {
 	}
 
 	@Async
-	public void sendCloseProgrammedShareMail(String to, InterventionPrShare share, byte[] pdfGenerated, Locale locale) {
-		
-		log.info("Preparando la plantilla de correo: programmed_share_close_mail_template_" + locale.getLanguage() + ".html");
-		
-		String subject = messageSource.getMessage("smtp.mail.programmed.share.close.subject", new Object[] { share.getId().toString() }, locale);
-		
-		Map<String, String> params = new HashMap<>();
-		params.put("id", share.getId().toString());
-		params.put("username", share.getUser().getName() + " " + share.getUser().getSurnames());
-		params.put("projectName", share.getProject().getName());
-		params.put("startDate", Utiles.transform(share.getStartDate(), DATE_TIME_FORMAT));
-		params.put("endDate", Utiles.transform(share.getEndDate(), DATE_TIME_FORMAT));
-
-		loadPDFTemplateAndSendMail(share, "ips", pdfGenerated, smtpMailFrom, to, subject, "programmed_share_close_mail_template_" + locale.getLanguage() + ".html", params, locale);
-	}
-	
-	@Async
-	public void sendCloseWorkShareMail(String to, WorkShare share, byte[] pdfGenerated, Locale locale) {
-		
-		log.info("Preparando la plantilla de correo: work_share_close_mail_template_" + locale.getLanguage() + ".html");
-		
-		String subject = messageSource.getMessage("smtp.mail.work.share.close.subject", new Object[] { share.getId().toString() }, locale);
-		
-		Map<String, String> params = new HashMap<>();
-		params.put("id", share.getId().toString());
-		params.put("username", share.getUser().getName() + " " + share.getUser().getSurnames());
-		params.put("projectName", share.getProject().getName());
-		params.put("startDate", Utiles.transform(share.getStartDate(), DATE_TIME_FORMAT));
-		params.put("endDate", Utiles.transform(share.getEndDate(), DATE_TIME_FORMAT));
-
-		loadPDFTemplateAndSendMail(share, "ws", pdfGenerated, smtpMailFrom, to, subject, "work_share_close_mail_template_" + locale.getLanguage() + ".html", params, locale);
-	}
-
-	@Async
 	public void sendPersonalExpenseSheetSendMail(final OpenPersonalExpenseSheetMailTemplateDto dto) {
 		
 		log.info("Preparando la plantilla de correo: " + dto.getTemplate());
@@ -146,19 +99,6 @@ public class SMTPServiceImpl implements SMTPService {
 	}
 
 	@Async
-	public void sendSigningInvalidMail(String to, User user, Locale locale) {
-		
-		log.info("Preparando la plantilla de correo: signing_invalid_mail_template_" + locale.getLanguage() + ".html");
-		
-		String subject = messageSource.getMessage("smtp.mail.signing.invalid.subject", new Object[] { }, locale);
-
-		Map<String, String> params = new HashMap<>();
-		params.put("todayDate", Utiles.getDateFormattedESP(new Date()));
-		
-		loadTemplateAndSendMail(smtpMailFrom, to, subject, "signing_invalid_mail_template_" + locale.getLanguage() + ".html", params);
-	}
-
-	@Async
 	public void sendSigningManualMail(String to, UserManualSigning userManualSigning, Locale locale) {
 
 		log.info("Preparando la plantilla de correo: signing_manual_mail_template_" + locale.getLanguage() + ".html");
@@ -173,24 +113,6 @@ public class SMTPServiceImpl implements SMTPService {
 		params.put("endDate", Utiles.transform(userManualSigning.getEndDate(), DATE_TIME_FORMAT));
 
 		loadTemplateAndSendMail(smtpMailFrom, to, subject, "signing_manual_mail_template_" + locale.getLanguage() + ".html", params);
-	}
-
-	@Async
-	public void sendSigningModifyMail(String to, ModifiedSigning modifiedSigning, Locale locale) {
-
-		log.info("Preparando la plantilla de correo: signing_modify_mail_template_" + locale.getLanguage() + ".html");
-
-		String subject = messageSource.getMessage("smtp.mail.signing.manual.subject", new Object[] { }, locale);
-
-		Map<String, String> params = new HashMap<>();
-		params.put("username", modifiedSigning.getUser().getName() + " " + modifiedSigning.getUser().getSurnames());
-		params.put("signingId", modifiedSigning.getSigningId().toString());
-		params.put("userId", modifiedSigning.getUser().getId().toString());
-		params.put("manualSigningType", modifiedSigning.getTypeId());
-		params.put("startDate", Utiles.transform(modifiedSigning.getStartDate(), DATE_TIME_FORMAT));
-		params.put("endDate", Utiles.transform(modifiedSigning.getEndDate(), DATE_TIME_FORMAT));
-
-		loadTemplateAndSendMail(smtpMailFrom, to, subject, "signing_modify_mail_template_" + locale.getLanguage() + ".html", params);
 	}
 	
 	@Async
@@ -231,42 +153,6 @@ public class SMTPServiceImpl implements SMTPService {
 		loadTemplateAndSendMail(smtpMailFrom, to, subject, "expense_corrective_mail_template_" + locale.getLanguage() + ".html", params);
 	}
 
-	@Async
-	public void sendProjectWeeklySharesResume(String to, Project project, Locale locale) {
-
-		log.info("Preparando la plantilla de correo: project_weekly_shares_resume_mail_template_" + locale.getLanguage() + ".html");
-
-		String subject = messageSource.getMessage("smtp.mail.project.weekly.shares.resume.subject", new Object[] { project.getName() }, locale);
-
-		Map<String, String> params = new HashMap<>();
-		params.put("projectId", project.getId().toString());
-		params.put("projectName", project.getName());
-
-		loadTemplateAndSendMail(smtpMailFrom, to, subject, "project_weekly_shares_resume_mail_template_" + locale.getLanguage() + ".html", params);
-	}
-	
-	@SuppressWarnings("unused")
-	private void sendMail(String from, String to, String subject, String content) {
-		
-		try {
-			
-			if (StringUtils.isEmpty(to)) {
-				log.error("El email del destinatario es vacío o está mal formulado.");
-				return;
-			}
-			
-			SimpleMailMessage message = new SimpleMailMessage(); 
-	        message.setFrom(from);
-	        message.setTo(to); 
-	        message.setSubject(subject); 
-	        message.setText(content);
-	        emailSender.send(message);
-        
-		} catch (Exception e) {
-			log.error("Error al enviar un correo electronico para " + to, e);
-		}
-	}
-
 	private void sendHtmlMail(String from, String to, String subject, String content) {
 
 		try {
@@ -291,89 +177,7 @@ public class SMTPServiceImpl implements SMTPService {
 			log.error("Error al enviar un correo electronico HTML para " + to, e);
 		}
 	}
-	
-	private void sendPDFShareHtmlMail(Object share, String type, byte[] pdfGenerated, String from, String to, String subject, String content, Locale locale) {
 
-		try {
-			
-			if (StringUtils.isEmpty(to)) {
-				log.error("El email del destinatario es vacío o está mal formulado.");
-				return;
-			}
-
-	        // now write the PDF content to the output stream
-
-	        String fileName = null;
-	        
-	        if ("is".equals(type)) {
-	        	
-	        	InspectionDto inspection = (InspectionDto) share;
-	        	
-	        	if (inspection == null) {
-	        		log.error("No se ha encontrado la revisión.");
-	        		return;
-	        	}
-
-	        	log.info("Adjuntando revisión " + inspection.getId() + " en " + locale.getLanguage());
-
-				fileName = messageSource.getMessage("shares.no.programmed.pdf.name", new Object[] {
-						inspection.getShareId().toString(),
-						inspection.getId().toString(),
-						Utiles.transform(inspection.getStartDate(), "yyyyMMdd")
-				}, locale) + ".pdf";
-				
-	        } else if ("ws".equals(type)) {
-	        	
-	        	WorkShare transformedShare = (WorkShare) share;
-	        	
-	        	if (transformedShare == null) {
-	        		log.error("No se ha encontrado el parte de trabajo.");
-	        		return;
-	        	}
-	        	
-	        	log.info("Adjuntando parte de trabajo " + transformedShare.getId() + " en " + locale.getLanguage());
-	        	
-	        	fileName = messageSource.getMessage("shares.work.pdf.name", new Object[] { transformedShare.getId().toString(), Utiles.getDateFormatted(transformedShare.getStartDate()) }, locale) + ".pdf";
-	        }
-
-	        // log fileName
-	        log.info("Adjuntando fichero (" + locale.getLanguage() + ") " + fileName);
-	        
-	        // construct the text body part
-	        MimeBodyPart textBodyPart = new MimeBodyPart();
-	        textBodyPart.setText(content, "UTF-8", "html");
-	        
-			// construct the pdf body part
-	        DataSource dataSource = new ByteArrayDataSource(pdfGenerated, "application/pdf");
-	        MimeBodyPart pdfBodyPart = new MimeBodyPart();
-	        pdfBodyPart.setDataHandler(new DataHandler(dataSource));
-	        pdfBodyPart.setFileName(fileName);
-	        
-	        // construct the mime multi part
-	        MimeMultipart mimeMultipart = new MimeMultipart();
-	        mimeMultipart.addBodyPart(textBodyPart);
-	        mimeMultipart.addBodyPart(pdfBodyPart);
-	        
-	        // create the sender/recipient addresses
-	        InternetAddress iaSender = new InternetAddress(from);
-	        InternetAddress iaRecipient = new InternetAddress(to);
-	        
-			MimeMessage mimeMessage = emailSender.createMimeMessage();
-			mimeMessage.setFrom(iaSender);
-			mimeMessage.setSender(iaSender);
-	        mimeMessage.setSubject(subject);
-	        mimeMessage.setRecipient(Message.RecipientType.TO, iaRecipient);
-	        mimeMessage.setContent(mimeMultipart);
-		
-	        emailSender.send(mimeMessage);
-	        
-	        log.info("Correo electronico enviado al correo " + to);
-	        
-		} catch (Exception e) {
-			log.error("Error al enviar un correo electronico HTML para " + to, e);
-		}
-	}
-	
 	private void loadTemplateAndSendMail(String from, String to, String subject, String templateName, Map<String, String> params) {
 		
 		try {
@@ -391,29 +195,6 @@ public class SMTPServiceImpl implements SMTPService {
 			}
 			
 			sendHtmlMail(from, to, subject, templateContent);
-			
-		} catch (Exception e) {
-			log.error("Error al cargar el template " + templateName + " y enviar el correo para " + to, e);
-		}
-	}
-	
-	private void loadPDFTemplateAndSendMail(Object share, String type, byte[] pdfGenerated, String from, String to, String subject, String templateName, Map<String, String> params, Locale locale) {
-		
-		try {
-			
-			InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("templates/mail/" + templateName);
-			String templateContent = IOUtils.toString(inputStream, StandardCharsets.UTF_8.name());
-			
-			for (Map.Entry<String, String> entry : params.entrySet()) {
-				
-				if (entry.getValue() == null) {
-					continue;
-				}
-					
-				templateContent = templateContent.replace("{{" + entry.getKey() + "}}", entry.getValue());
-			}
-			
-			sendPDFShareHtmlMail(share, type, pdfGenerated, from, to, subject, templateContent, locale);
 			
 		} catch (Exception e) {
 			log.error("Error al cargar el template " + templateName + " y enviar el correo para " + to, e);

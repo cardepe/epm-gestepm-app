@@ -8,7 +8,11 @@ public abstract class NoProgrammedShareAttributes {
 
   public static final String ATTR_NPS_U_ID = "attr_nps_u_id";
 
+  public static final String ATTR_NPS_U_IDS = "attr_nps_u_ids";
+
   public static final String ATTR_NPS_P_ID = "attr_nps_p_id";
+
+  public static final String ATTR_NPS_P_IDS = "attr_nps_p_ids";
 
   public static final String ATTR_NPS_START_DATE = "attr_nps_start_date";
 
@@ -27,5 +31,7 @@ public abstract class NoProgrammedShareAttributes {
   public static final String ATTR_NPS_STATE = "attr_nps_state";
 
   public static final String ATTR_NPS_LAST_DIAGNOSIS = "attr_nps_last_diagnosis";
+
+  public static final String ATTR_NPS_STATUS = "attr_nps_status";
 
 }

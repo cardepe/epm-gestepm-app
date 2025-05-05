@@ -17,7 +17,10 @@ import com.epm.gestepm.modelapi.shares.programmed.dto.ProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.programmed.dto.filter.ProgrammedShareFilterDto;
 import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareExportService;
 import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareService;
-import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
+import com.epm.gestepm.modelapi.shares.work.dto.WorkShareDto;
+import com.epm.gestepm.modelapi.shares.work.dto.filter.WorkShareFilterDto;
+import com.epm.gestepm.modelapi.shares.work.service.WorkShareExportService;
+import com.epm.gestepm.modelapi.shares.work.service.WorkShareService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -54,6 +57,8 @@ public class ShareDecoratorImpl implements ShareDecorator {
 
     private final WorkShareService workShareService;
 
+    private final WorkShareExportService workShareExportService;
+
     @Override
     public List<PdfFileDTO> exportShares(Integer projectId, LocalDateTime startDate, LocalDateTime endDate) {
         final List<PdfFileDTO> pdfs = new ArrayList<>();
@@ -79,7 +84,12 @@ public class ShareDecoratorImpl implements ShareDecorator {
 
         final List<PdfFileDTO> isPdfs = this.getInspections(inspectionFilter);
 
-        final List<PdfFileDTO> wsPdfs = this.workShareService.generateSharesByProjectAndInterval(projectId.longValue(), startDate, endDate);
+        final WorkShareFilterDto workShareFilter = new WorkShareFilterDto();
+        workShareFilter.setProjectIds(List.of(projectId));
+        workShareFilter.setStartDate(startDate);
+        workShareFilter.setEndDate(endDate);
+
+        final List<PdfFileDTO> wsPdfs = this.getWorkShares(workShareFilter);
 
         pdfs.addAll(csPdfs);
         pdfs.addAll(psPdfs);
@@ -147,6 +157,29 @@ public class ShareDecoratorImpl implements ShareDecorator {
                     inspection.getShareId().toString(),
                     inspection.getId().toString(),
                     Utiles.transform(inspection.getStartDate(), "yyyyMMdd")
+            }, locale) + ".pdf";
+
+            final PdfFileDTO pdfFileDTO = new PdfFileDTO();
+            pdfFileDTO.setDocumentBytes(pdf);
+            pdfFileDTO.setFileName(fileName);
+
+            pdfs.add(pdfFileDTO);
+        });
+
+        return pdfs;
+    }
+
+    private List<PdfFileDTO> getWorkShares(final WorkShareFilterDto filter) {
+        final List<PdfFileDTO> pdfs = new ArrayList<>();
+        final List<WorkShareDto> workShares = this.workShareService.list(filter);
+        final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));
+
+        workShares.forEach(workShare -> {
+            final byte[] pdf = this.workShareExportService.generate(workShare);
+
+            final String fileName = this.messageSource.getMessage("shares.work.pdf.name", new Object[] {
+                    workShare.getId().toString(),
+                    Utiles.transform(workShare.getStartDate(), "dd-MM-yyyy")
             }, locale) + ".pdf";
 
             final PdfFileDTO pdfFileDTO = new PdfFileDTO();

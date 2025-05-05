@@ -32,6 +32,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -62,13 +63,15 @@ public class NoProgrammedShareController extends BaseController implements NoPro
     @Override
     @RequirePermits(value = PRMT_READ_NPS, action = "Get no programmed share list")
     @LogExecution(operation = OP_READ)
-    public ResponseEntity<ListNoProgrammedSharesV1200Response> listNoProgrammedSharesV1(final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit) {
+    public ResponseEntity<ListNoProgrammedSharesV1200Response> listNoProgrammedSharesV1(final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit, final String order, final String orderBy,
+                                                                                        final List<Integer> ids, final List<Integer> userIds, final List<Integer> projectIds, final LocalDateTime startDate, final LocalDateTime endDate, final String status) {
 
-        final NoProgrammedShareListRestRequest req = new NoProgrammedShareListRestRequest();
+        final NoProgrammedShareListRestRequest req = new NoProgrammedShareListRestRequest(ids, userIds, projectIds, startDate, endDate, status);
 
         this.setCommon(req, meta, links, expand);
         this.setDefaults(req);
         this.setPagination(req, limit, offset);
+        this.setOrder(req, order, orderBy);
 
         final NoProgrammedShareFilterDto filterDto = getMapper(MapNPSToNoProgrammedShareFilterDto.class).from(req);
         final Page<NoProgrammedShareDto> page = this.noProgrammedShareService.list(filterDto, offset, limit);

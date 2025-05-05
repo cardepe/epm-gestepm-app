@@ -9,6 +9,7 @@ import com.epm.gestepm.model.shares.construction.mapper.MapCSToShareTableDto;
 import com.epm.gestepm.model.shares.displacement.mapper.MapDSToShareTableDto;
 import com.epm.gestepm.model.shares.noprogrammed.mapper.MapIToShareTableDto;
 import com.epm.gestepm.model.shares.programmed.mapper.MapPSToShareTableDto;
+import com.epm.gestepm.model.shares.work.mapper.MapWSToShareTableDto;
 import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.deprecated.activitycenter.service.ActivityCenterService;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
@@ -44,11 +45,13 @@ import com.epm.gestepm.modelapi.shares.displacement.service.DisplacementShareSer
 import com.epm.gestepm.modelapi.shares.programmed.dto.ProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.programmed.dto.filter.ProgrammedShareFilterDto;
 import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareService;
+import com.epm.gestepm.modelapi.shares.work.dto.WorkShareDto;
+import com.epm.gestepm.modelapi.shares.work.dto.filter.WorkShareFilterDto;
+import com.epm.gestepm.modelapi.shares.work.service.WorkShareService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.dto.UserDTO;
 import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
 import com.epm.gestepm.modelapi.user.service.UserService;
-import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -1197,7 +1200,7 @@ public class ProjectController {
 		List<ShareTableDTO> dsShareTableDTOs = this.getDisplacementShares(projectId.intValue());
 		List<ShareTableDTO> psShareTableDTOs = this.getProgrammedShares(projectId.intValue());
 		List<ShareTableDTO> isShareTableDTOs = this.getInspections(projectId.intValue());
-		List<ShareTableDTO> wsShareTableDTOs = workShareService.getShareTableByProjectId(projectId);
+		List<ShareTableDTO> wsShareTableDTOs = this.getWorkShares(projectId.intValue());
 
 		shareTableDTOs.addAll(csShareTableDTOs);
 		shareTableDTOs.addAll(dsShareTableDTOs);
@@ -1252,5 +1255,14 @@ public class ProjectController {
 		final List<InspectionDto> inspections = this.inspectionService.list(filter);
 
 		return getMapper(MapIToShareTableDto.class).from(inspections);
+	}
+
+	private List<ShareTableDTO> getWorkShares(final Integer projectId) {
+		final WorkShareFilterDto filter = new WorkShareFilterDto();
+		filter.setProjectIds(List.of(projectId));
+
+		final List<WorkShareDto> workShares = this.workShareService.list(filter);
+
+		return getMapper(MapWSToShareTableDto.class).from(workShares);
 	}
 }

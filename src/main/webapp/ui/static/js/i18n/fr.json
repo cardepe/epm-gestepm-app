@@ -149,6 +149,7 @@
         },
         "noprogrammed": {
             "delete": {
+                "alert": "Êtes-vous sûr de vouloir supprimer la partie non programmée {0} ?",
                 "success": "Rapport d'intervention non programmé nº {0} supprimé avec succès."
             },
             "title": "Rapport d'intervention non programmé nº {0}",

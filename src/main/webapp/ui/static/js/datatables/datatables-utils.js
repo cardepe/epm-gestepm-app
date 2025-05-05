@@ -143,7 +143,9 @@ function generateQueryParams(settings) {
     let currentURL = new URL(window.location.href);
     currentURL.search = '';
 
-    window.history.pushState(null, '', queryParams ? '?' + queryParams : currentURL.toString());
+    if (queryParams !== 'order=DESC&orderBy=id') {
+        window.history.pushState(null, '', queryParams ? '?' + queryParams : currentURL.toString());
+    }
 }
 
 function generateColumnDefs(customDataTable) {
