@@ -2124,6 +2124,10 @@ components:
           x-stoplight:
             id: 6hy6vr2ibobsu
           format: date-time
+        detailUrl:
+          type: string
+          x-stoplight:
+            id: jhyummn6uve8i
       required:
         - id
         - type

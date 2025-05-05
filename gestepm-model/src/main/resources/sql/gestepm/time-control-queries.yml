@@ -10,6 +10,7 @@ sql:
         created_at AS start_date,
         closed_at AS end_date,
         null AS description,
+        CONCAT('/shares/construction/', construction_share_id) AS detail_url,
         'CONSTRUCTION_SHARES' AS type
       FROM ${sch-gestepm}.construction_share
       UNION
@@ -19,6 +20,7 @@ sql:
         start_date,
         end_date,
         null AS description,
+        CONCAT('/shares/displacement/', displacement_share_id) AS detail_url,
         'DISPLACEMENT_SHARES' AS type
       FROM ${sch-gestepm}.displacement_share
       UNION
@@ -28,6 +30,7 @@ sql:
         start_date,
         end_date,
         null AS description,
+        CONCAT('/shares/no-programmed/', no_programmed_share_id, '/inspections/', inspection_id) AS detail_url,
         'INSPECTIONS' AS type
       FROM ${sch-gestepm}.inspection
       UNION
@@ -37,6 +40,7 @@ sql:
         start_date,
         end_date,
         mst.NAME AS description,
+        '' AS detail_url,
         'MANUAL_SIGNINGS' AS type
       FROM ${sch-gestepm}.user_manual_signings ums
       LEFT JOIN ${sch-gestepm}.manual_signing_type mst on ums.MANUAL_SIGNING_TYPE_ID = mst.ID
@@ -47,15 +51,17 @@ sql:
         start_date,
         end_date,
         null AS description,
+        '' AS detail_url,
         'PERSONAL_SIGNINGS' AS type
       FROM ${sch-gestepm}.personal_signings
       UNION
       SELECT
-        programmed_share_id,
+        programmed_share_id AS id,
         user_id,
         start_date,
         end_date,
         null AS description,
+        CONCAT('/shares/programmed/', programmed_share_id) AS detail_url,
         'PROGRAMMED_SHARES' AS type
       FROM ${sch-gestepm}.programmed_share
       UNION
@@ -65,6 +71,7 @@ sql:
         started_at AS start_date,
         closed_at AS end_date,
         null AS description,
+        CONCAT('/signings/teleworking/', teleworking_signing_id) AS detail_url,
         'TELEWORKING_SIGNING' AS type
       FROM ${sch-gestepm}.teleworking_signing
       UNION
@@ -74,6 +81,7 @@ sql:
         start_date,
         end_date,
         null AS description,
+        CONCAT('/shares/work/', work_share_id) AS detail_url,
         'WORK_SHARES' AS type
       FROM ${sch-gestepm}.work_share
     ) AS sublist
