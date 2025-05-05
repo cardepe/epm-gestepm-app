@@ -35,7 +35,7 @@ import static com.epm.gestepm.model.shares.construction.dao.constants.Constructi
 import static com.epm.gestepm.model.shares.construction.dao.mappers.ConstructionShareRowMapper.*;
 
 @AllArgsConstructor
-@Component("constructionDao")
+@Component("constructionShareDao")
 @EnableExecutionLog(layerMarker = DAO)
 public class ConstructionShareDaoImpl implements ConstructionShareDao {
 

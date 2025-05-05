@@ -33,7 +33,7 @@ import static com.epm.gestepm.model.shares.programmed.dao.constants.ProgrammedSh
 import static com.epm.gestepm.model.shares.programmed.dao.mappers.ProgrammedShareRowMapper.*;
 
 @AllArgsConstructor
-@Component("programmedDao")
+@Component("programmedShareDao")
 @EnableExecutionLog(layerMarker = DAO)
 public class ProgrammedShareDaoImpl implements ProgrammedShareDao {
 

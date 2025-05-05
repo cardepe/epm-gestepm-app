@@ -956,558 +956,6 @@
 </div>
 <!-- /MODAL -->
 
-<!-- VIEW CONST MODAL -->
-<div id="viewConstModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="viewConstForm" class="needs-validation">
-                <div class="modal-header">
-                    <div class="modal-title">
-                        <h5 id="modalTitle">
-                            <spring:message code="shares.displacement.view.btn"/>
-                        </h5>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <label for="startDate" class="col-form-label"><spring:message
-                                    code="shares.construction.start.date"/></label>
-                            <input type="datetime-local" class="form-control" id="startDate" name="startDate" readonly>
-                        </div>
-
-                        <div class="col-sm-12 col-md-6">
-                            <label for="endDate" class="col-form-label"><spring:message
-                                    code="shares.construction.end.date"/></label>
-                            <input type="datetime-local" class="form-control" id="endDate" name="endDate" readonly>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="observations" class="col-form-label"><spring:message
-                                        code="shares.construction.description"/></label>
-                                <textarea id="observations" name="observations" class="form-control" rows="6"
-                                          readonly></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer clearfix">
-                    <div class="w-100">
-                        <div class="float-left">
-                            <button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message
-                                    code="close"/></button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- /VIEW CONST MODAL -->
-
-<!-- UPDATE CONST MODAL -->
-<div id="updateConstModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="updateConstForm" class="needs-validation">
-                <div class="modal-header">
-                    <div class="modal-title">
-                        <h5 id="modalTitle">
-                            <spring:message code="shares.displacement.update.btn"/>
-                        </h5>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <label for="startDate" class="col-form-label"><spring:message
-                                    code="shares.construction.start.date"/></label>
-                            <input type="datetime-local" class="form-control" id="startDate" name="startDate">
-                        </div>
-
-                        <div class="col-sm-12 col-md-6">
-                            <label for="endDate" class="col-form-label"><spring:message
-                                    code="shares.construction.end.date"/></label>
-                            <input type="datetime-local" class="form-control" id="endDate" name="endDate">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="observations" class="col-form-label"><spring:message
-                                        code="shares.construction.description"/></label>
-                                <textarea id="observations" name="observations" class="form-control"
-                                          rows="6"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer clearfix">
-                    <div class="w-100">
-                        <div class="float-left">
-                            <button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message
-                                    code="close"/></button>
-                        </div>
-                        <div class="float-right">
-                            <button id="updateConstBtn" type="button" class="btn btn-sm btn-success"><spring:message
-                                    code="save"/></button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- /UPDATE CONST MODAL -->
-
-<!-- VIEW PROG MODAL -->
-<div id="viewProgModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="viewProgForm" class="needs-validation">
-                <div class="modal-header">
-                    <div class="modal-title">
-                        <h5 id="modalTitle">
-                            <spring:message code="shares.displacement.view.btn"/>
-                        </h5>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <label for="startDate" class="col-form-label"><spring:message
-                                    code="shares.construction.start.date"/></label>
-                            <input type="datetime-local" class="form-control" id="startDate" name="startDate" readonly>
-                        </div>
-
-                        <div class="col-sm-12 col-md-6">
-                            <label for="endDate" class="col-form-label"><spring:message
-                                    code="shares.construction.end.date"/></label>
-                            <input type="datetime-local" class="form-control" id="endDate" name="endDate" readonly>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="observations" class="col-form-label"><spring:message
-                                        code="shares.construction.description"/></label>
-                                <textarea id="observations" name="observations" class="form-control" rows="6"
-                                          readonly></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer clearfix">
-                    <div class="w-100">
-                        <div class="float-left">
-                            <button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message
-                                    code="close"/></button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- /VIEW PROG MODAL -->
-
-<!-- UPDATE PROG MODAL -->
-<div id="updateProgModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="updateProgForm" class="needs-validation">
-                <div class="modal-header">
-                    <div class="modal-title">
-                        <h5 id="modalTitle">
-                            <spring:message code="shares.displacement.update.btn"/>
-                        </h5>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <label for="startDate" class="col-form-label"><spring:message
-                                    code="shares.construction.start.date"/></label>
-                            <input type="datetime-local" class="form-control" id="startDate" name="startDate">
-                        </div>
-
-                        <div class="col-sm-12 col-md-6">
-                            <label for="endDate" class="col-form-label"><spring:message
-                                    code="shares.construction.end.date"/></label>
-                            <input type="datetime-local" class="form-control" id="endDate" name="endDate">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="observations" class="col-form-label"><spring:message
-                                        code="shares.construction.description"/></label>
-                                <textarea id="observations" name="observations" class="form-control"
-                                          rows="6"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer clearfix">
-                    <div class="w-100">
-                        <div class="float-left">
-                            <button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message
-                                    code="close"/></button>
-                        </div>
-                        <div class="float-right">
-                            <button id="updateProgBtn" type="button" class="btn btn-sm btn-success"><spring:message
-                                    code="save"/></button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- /VIEW PROG MODAL -->
-
-<!-- VIEW DISP MODAL -->
-<div id="viewDispModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="viewDispForm" class="needs-validation">
-                <div class="modal-header">
-                    <div class="modal-title">
-                        <h5 id="modalTitle">
-                            <spring:message code="shares.displacement.view.btn"/>
-                        </h5>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group">
-                                <label for="activityCenter" class="col-form-label"><spring:message
-                                        code="shares.displacement.table.activity.center"/></label>
-                                <select id="activityCenter" name="activityCenter" class="form-control" required readonly
-                                        disabled>
-                                    <option disabled selected="selected">
-                                        <spring:message code="shares.displacement.table.activity.center"/>
-                                    </option>
-                                    <c:forEach items="${teamLeaders}" var="teamLeader">
-                                        <option value="${teamLeader.userId}">
-                                            <spring:message code="${teamLeader.name} ${teamLeader.surnames}"/>
-                                        </option>
-                                    </c:forEach>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group">
-                                <label for="displacementDate" class="col-form-label"><spring:message
-                                        code="shares.displacement.table.total.time"/></label>
-                                <input id="displacementDate" name="displacementDate" type="datetime-local"
-                                       class="form-control" required readonly>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <label for="manualHours" class="col-form-label"><spring:message
-                                    code="shares.displacement.total.time"/></label>
-                            <input type="time" class="form-control" id="manualHours" name="manualHours" readonly>
-                        </div>
-
-                        <div class="col-sm-12 col-md-6">
-                            <label for="roundTrip" class="col-form-label"><spring:message
-                                    code="shares.displacement.round.trip"/></label>
-                            <input type="checkbox" class="form-control" id="roundTrip" name="roundTrip"
-                                   style="width: 20px" readonly disabled>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="observations" class="col-form-label"><spring:message
-                                        code="shares.displacement.observations"/></label>
-                                <textarea id="observations" name="observations" class="form-control" rows="6"
-                                          readonly></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer clearfix">
-                    <div class="w-100">
-                        <div class="float-left">
-                            <button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message
-                                    code="close"/></button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- /VIEW MODAL -->
-
-<!-- UPDATE DISP MODAL -->
-<div id="updateDispModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="updateDispForm" class="needs-validation">
-                <div class="modal-header">
-                    <div class="modal-title">
-                        <h5 id="modalTitle">
-                            <spring:message code="shares.displacement.update.btn"/>
-                        </h5>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group">
-                                <label for="activityCenter" class="col-form-label"><spring:message
-                                        code="shares.displacement.table.activity.center"/></label>
-                                <select id="activityCenter" name="activityCenter" class="form-control" required>
-                                    <option disabled selected="selected">
-                                        <spring:message code="shares.displacement.table.activity.center"/>
-                                    </option>
-                                    <c:forEach items="${teamLeaders}" var="teamLeader">
-                                        <option value="${teamLeader.userId}">
-                                            <spring:message code="${teamLeader.name} ${teamLeader.surnames}"/>
-                                        </option>
-                                    </c:forEach>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group">
-                                <label for="displacementDate" class="col-form-label"><spring:message
-                                        code="shares.displacement.table.total.time"/></label>
-                                <input id="displacementDate" name="displacementDate" type="datetime-local"
-                                       class="form-control" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <label for="manualHours" class="col-form-label"><spring:message
-                                    code="shares.displacement.total.time"/></label>
-                            <input type="time" class="form-control" id="manualHours" name="manualHours">
-                        </div>
-
-                        <div class="col-sm-12 col-md-6">
-                            <label for="roundTrip" class="col-form-label"><spring:message
-                                    code="shares.displacement.round.trip"/></label>
-                            <input type="checkbox" class="form-control" id="roundTrip" name="roundTrip"
-                                   style="width: 20px">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="observations" class="col-form-label"><spring:message
-                                        code="shares.displacement.observations"/></label>
-                                <textarea id="observations" name="observations" class="form-control"
-                                          rows="6"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <input id="manualDisplacement" name="manualDisplacement" type="hidden" class="form-control"/>
-                    <input type="hidden" class="form-control" id="projectId" name="projectId">
-                </div>
-                <div class="modal-footer clearfix">
-                    <div class="w-100">
-                        <div class="float-left">
-                            <button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message
-                                    code="close"/></button>
-                        </div>
-                        <div class="float-right">
-                            <button id="updateDispBtn" type="button" class="btn btn-sm btn-success"><spring:message
-                                    code="save"/></button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- /CREATE MODAL -->
-
-<!-- VIEW WORK MODAL -->
-<div id="viewWorkModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="viewWorkForm" class="needs-validation">
-                <div class="modal-header">
-                    <div class="modal-title">
-                        <h5 id="modalTitle">
-                            <spring:message code="shares.work.view.btn"/>
-                        </h5>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <label for="startDate" class="col-form-label"><spring:message
-                                    code="shares.work.start.date"/></label>
-                            <input type="datetime-local" class="form-control" id="startDate" name="startDate" readonly>
-                        </div>
-
-                        <div class="col-sm-12 col-md-6">
-                            <label for="endDate" class="col-form-label"><spring:message
-                                    code="shares.work.end.date"/></label>
-                            <input type="datetime-local" class="form-control" id="endDate" name="endDate" readonly>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="observations" class="col-form-label"><spring:message
-                                        code="shares.work.description"/></label>
-                                <textarea id="observations" name="observations" class="form-control" rows="6"
-                                          readonly></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="images" class="row justify-content-center"></div>
-                </div>
-                <div class="modal-footer clearfix">
-                    <div class="w-100">
-                        <div class="float-left">
-                            <button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message
-                                    code="close"/></button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- /VIEW WORK MODAL -->
-
-<!-- UPDATE WORK MODAL -->
-<div id="updateWorkModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="updateWorkForm" class="needs-validation">
-                <div class="modal-header">
-                    <div class="modal-title">
-                        <h5 id="modalTitle">
-                            <spring:message code="shares.work.update.btn"/>
-                        </h5>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <label for="startDate" class="col-form-label"><spring:message
-                                    code="shares.work.start.date"/></label>
-                            <input type="datetime-local" class="form-control" id="startDate" name="startDate">
-                        </div>
-
-                        <div class="col-sm-12 col-md-6">
-                            <label for="endDate" class="col-form-label"><spring:message
-                                    code="shares.work.end.date"/></label>
-                            <input type="datetime-local" class="form-control" id="endDate" name="endDate">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="form-group">
-                                <label for="observations" class="col-form-label"><spring:message
-                                        code="shares.work.description"/></label>
-                                <textarea id="observations" name="observations" class="form-control"
-                                          rows="6"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <input type="hidden" class="form-control" id="projectId" name="projectId">
-                </div>
-                <div class="modal-footer clearfix">
-                    <div class="w-100">
-                        <div class="float-left">
-                            <button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message
-                                    code="close"/></button>
-                        </div>
-                        <div class="float-right">
-                            <button id="updateWorkBtn" type="button" class="btn btn-sm btn-success"
-                                    data-dismiss="modal"><spring:message code="update"/></button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- /VIEW WORK MODAL -->
-
-<!-- UPDATE INTERVENTION MODAL -->
-<div id="updateIntModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <form id="updateIntForm" class="needs-validation">
-                <div class="modal-header">
-                    <div class="modal-title">
-                        <h5 id="modalTitle">
-                            <spring:message code="shares.displacement.update.btn"/>
-                        </h5>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <label for="startDate" class="col-form-label"><spring:message
-                                    code="shares.work.start.date"/></label>
-                            <input type="datetime-local" class="form-control" id="startDate" name="startDate">
-                        </div>
-
-                        <div class="col-sm-12 col-md-6">
-                            <label for="endDate" class="col-form-label"><spring:message
-                                    code="shares.work.end.date"/></label>
-                            <input type="datetime-local" class="form-control" id="endDate" name="endDate">
-                        </div>
-                    </div>
-
-                    <input type="hidden" class="form-control" id="projectId" name="projectId">
-                </div>
-                <div class="modal-footer clearfix">
-                    <div class="w-100">
-                        <div class="float-left">
-                            <button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message
-                                    code="close"/></button>
-                        </div>
-                        <div class="float-right">
-                            <button id="updateIntBtn" type="button" class="btn btn-sm btn-success" data-dismiss="modal">
-                                <spring:message code="update"/></button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!-- /VIEW WORK MODAL -->
-
 <!-- DECLINE EXPENSE MODAL -->
 <div id="declineExpenseModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
@@ -1550,6 +998,8 @@
 </div>
 
 <script>
+    const projectId = ${projectId};
+
     $(document).ready(function () {
 
         /* Select 2 */
@@ -1635,53 +1085,7 @@
         });
 
         initializePersonalExpensesDataTables();
-
-        var dTableSignings = $('#dTableSignings').DataTable({
-            "lengthChange": false,
-            "searching": false,
-            "responsive": true,
-            "processing": true,
-            "serverSide": true,
-            "pageLength": 7,
-            "ajax": "/projects/${project.id}/signings/dt",
-            "rowId": "st_id",
-            "language": {
-                "url": "/ui/static/lang/datatables/${locale}.json"
-            },
-            "columns": [
-                {"data": "st_id"},
-                {"data": "st_username"},
-                {"data": "st_startDate"},
-                {"data": "st_endDate"},
-                {"data": "st_shareType"},
-                {"data": null}
-            ],
-            "columnDefs": [
-                {"className": "text-center", "orderable": false, "targets": "_all"},
-                {
-                    "render": function (data) {
-
-                        if (!data) {
-                            return '-';
-                        }
-
-                        return moment(data).format('DD/MM/YYYY HH:mm');
-                    },
-                    "targets": [2, 3]
-                },
-                {
-                    "render": function (data, type, row) {
-                        return parseShareType(data);
-                    },
-                    "targets": 4
-                },
-                {"defaultContent": "${tableShareActionButtons}", "orderable": false, "targets": -1}
-            ],
-            "dom": "<'top'i>rt<'bottom'p><'clear'>",
-            "drawCallback": function () {
-                parseSigningsActionButtons();
-            }
-        });
+        initializeSigningsDataTable();
 
         var dTableEquipments = $('#dTableEquipments').DataTable({
             "lengthChange": false,
@@ -1748,22 +1152,6 @@
         });
 
         /* End Datatables */
-
-        function parseShareType(data) {
-            if (data === 'cs') {
-                return '<span class="badge badge-success"> ${jspUtil.parseTagToText('cs')} </span>';
-            } else if (data === 'ds') {
-                return '<span class="badge badge-warning"> ${jspUtil.parseTagToText('ds')} </span>';
-            } else if (data === 'ips') {
-                return '<div class="badge badge-secondary"> ${jspUtil.parseTagToText('ips')} </div>';
-            } else if (data === 'is') {
-                return '<span class="badge badge-primary"> ${jspUtil.parseTagToText('is')} </span>';
-            } else if (data === 'ws') {
-                return '<span class="badge badge-info"> ${jspUtil.parseTagToText('ws')} </span>';
-            }
-
-            return '';
-        }
 
         /* Select 2 */
 
@@ -2081,332 +1469,6 @@
         });
     }
 
-    function parseSigningsActionButtons() {
-
-        var tableRows = $('#dTableSignings tbody tr');
-        var table = $('#dTableSignings').DataTable();
-
-        tableRows.each(function () {
-
-            var id = $(this).attr('id');
-
-            if (!id) {
-                return;
-            }
-
-            var data = table.row($(this)).data();
-            var action = data.st_action;
-            var shareType = data.st_shareType;
-
-            var lastColumn = $(this).children().last();
-            var emList = lastColumn.children();
-
-            emList.each(function (index) {
-
-                if (index == 0) { // pdf
-
-                    if (!data.st_endDate) {
-                        return $(this).remove();
-                    }
-
-                    if (shareType === 'cs') {
-                        $(this).wrap('<a href="/shares/construction/' + id + '/export" target="_blank"></a>');
-                    } else if (shareType === 'is') {
-
-                        // es 'Seguimiento'
-                        if (action == 3) {
-                            return $(this).remove();
-                        }
-
-                        $(this).wrap('<a href="/v1/shares/no-programmed/0/inspections/' + id + '/export" target="_blank"></a>');
-
-                    } else if (shareType === 'ips') {
-                        $(this).wrap('<a href="/shares/programmed/' + id + '/export" target="_blank"></a>');
-                    } else if (shareType === 'ws') {
-                        $(this).wrap('<a href="/shares/work/' + id + '/export" target="_blank"></a>');
-                    } else {
-                        return $(this).remove();
-                    }
-
-                } else if (index == 1) {
-
-                    if (shareType == 'is') {
-                        $(this).wrap('<a href="/v1/shares/no-programmed/0/inspections/' + id + '/export-materials" target="_blank"></a>');
-                    } else {
-                        $(this).remove();
-                    }
-
-                } else if (index == 2) { // view
-                    if (shareType !== 'is') {
-                        return $(this).attr('onclick', shareType + 'ViewShare(' + id + ')');
-                    }
-
-                    $(this).remove();
-                } else if (index == 3) {
-                    $(this).attr('onclick', shareType + 'EditShare(' + id + ')');
-                } else if (index == 4) {
-                    $(this).attr('onclick', 'deleteSigning(' + id + ', \'' + shareType + '\')');
-                }
-            });
-        });
-    }
-
-    function getCsShare(id) {
-        return $.ajax({
-            url: '/shares/construction/' + id,
-            type: 'GET'
-        });
-    }
-
-    function getDsShare(id) {
-        return $.ajax({
-            url: '/shares/displacement/' + id,
-            type: 'GET'
-        });
-    }
-
-    function getIpsShare(id) {
-        return $.ajax({
-            url: '/shares/programmed/' + id,
-            type: 'GET'
-        });
-    }
-
-    function getIsShare(id) {
-        return $.ajax({
-            url: '/shares/no-programmed/' + id,
-            type: 'GET'
-        });
-    }
-
-    function getWsShare(id) {
-        return $.ajax({
-            url: '/shares/work/' + id,
-            type: 'GET'
-        });
-    }
-
-    function getFiles(id) {
-        return $.ajax({
-            url: '/shares/work/files/' + id,
-            type: 'GET'
-        });
-    }
-
-    function initForm(share, form) {
-        Object.keys(share).forEach(function (key) {
-            if (form.elements[key]) {
-                if (form.elements[key].type === 'checkbox') {
-                    form.elements[key].checked = share[key];
-                } else {
-                    form.elements[key].value = share[key];
-                }
-            }
-        });
-    }
-
-    async function csViewShare(id) {
-        var share = await getCsShare(id);
-        var form = document.forms['viewConstForm'];
-        initForm(share, form);
-        $('#viewConstModal').modal('show');
-    }
-
-    async function dsViewShare(id) {
-        let share = await getDsShare(id);
-        let activityCenterId = share.activityCenter.id;
-        let callbackFunction = function (html) {
-            $('#viewDispForm #displacement').html(html);
-            let form = document.forms['viewDispForm'];
-            initForm(share, form);
-            $('#viewDispModal').modal('show');
-        }
-
-        loadDisplacements(activityCenterId, callbackFunction);
-    }
-
-    async function ipsViewShare(id) {
-        var share = await getIpsShare(id);
-        var form = document.forms['viewProgForm'];
-        initForm(share, form);
-        $('#viewProgModal').modal('show');
-    }
-
-    async function wsViewShare(id) {
-        var share = await getWsShare(id);
-        var form = document.forms['viewWorkForm'];
-        var shareFiles = await getFiles(id);
-        var exampleId = 1;
-        $('#images').empty();
-        shareFiles.forEach(function (shareFile) {
-            var div = document.createElement('div');
-            var a = document.createElement('a');
-            var image = document.createElement('img');
-            var url = 'data:image/' + shareFile.ext + ';base64,' + shareFile.content;
-            image.src = url;
-            image.className = "rounded img-thumbnail";
-            a.href = url;
-            a.dataset.lightbox = "example-" + exampleId++;
-            a.append(image);
-            div.className = "col-3 mb-2";
-            div.append(a);
-            $('#images').append(div);
-        })
-        initForm(share, form);
-        $('#viewWorkModal').modal('show');
-    }
-
-    async function csEditShare(id) {
-        var share = await getCsShare(id);
-        var form = document.forms['updateConstForm'];
-        initForm(share, form);
-        $('#updateConstModal').modal('show');
-
-        $('#updateConstBtn').unbind('click').click(function () {
-
-            showLoading();
-
-            $.ajax({
-                type: "PUT",
-                url: "/shares/construction/" + id,
-                data: $('#updateConstForm').serialize(),
-                success: function (msg) {
-                    $('#dTableSignings').DataTable().ajax.reload();
-                    hideLoading();
-                    showNotify(msg, 'success');
-                },
-                error: function (e) {
-                    hideLoading();
-                    showNotify(e.responseText, 'danger');
-                }
-            });
-
-            $('#updateConstModal').modal('hide');
-        });
-    }
-
-    async function wsEditShare(id) {
-        var share = await getWsShare(id);
-        var form = document.forms['updateWorkForm'];
-        initForm(share, form);
-        $('#updateWorkModal').modal('show');
-
-        $('#updateWorkBtn').unbind('click').click(function () {
-
-            showLoading();
-
-            $.ajax({
-                type: "PUT",
-                url: "/shares/work/" + id,
-                data: $('#updateWorkForm').serialize(),
-                success: function (msg) {
-                    $('#dTableSignings').DataTable().ajax.reload();
-                    hideLoading();
-                    showNotify(msg, 'success');
-                },
-                error: function (e) {
-                    hideLoading();
-                    showNotify(e.responseText, 'danger');
-                }
-            });
-
-            $('#updateWorkModal').modal('hide');
-        });
-    }
-
-    async function dsEditShare(id) {
-        let share = await getDsShare(id);
-        let activityCenterId = share.activityCenter.id;
-        let callbackFunction = function (html) {
-            $('#updateDispForm #displacement').html(html);
-            let form = document.forms['updateDispForm'];
-            initForm(share, form);
-            $('#updateDispModal').modal('show');
-        }
-
-        loadDisplacements(activityCenterId, callbackFunction);
-
-        $('#updateDispBtn').unbind('click').click(function () {
-
-            showLoading();
-
-            $.ajax({
-                type: "PUT",
-                url: "/shares/displacement/" + id,
-                data: $('#updateDispForm').serialize(),
-                success: function (msg) {
-                    $('#dTableSignings').DataTable().ajax.reload();
-                    hideLoading();
-                    showNotify(msg, 'success');
-                },
-                error: function (e) {
-                    hideLoading();
-                    showNotify(e.responseText, 'danger');
-                }
-            });
-
-            $('#updateDispModal').modal('hide');
-        });
-    }
-
-    async function ipsEditShare(id) {
-        var share = await getIpsShare(id);
-        var form = document.forms['updateProgForm'];
-        initForm(share, form);
-        $('#updateProgModal').modal('show');
-
-        $('#updateProgBtn').unbind('click').click(function () {
-
-            showLoading();
-
-            $.ajax({
-                type: "PUT",
-                url: "/shares/programmed/" + id,
-                data: $('#updateProgForm').serialize(),
-                success: function (msg) {
-                    $('#dTableSignings').DataTable().ajax.reload();
-                    hideLoading();
-                    showNotify(msg, 'success');
-                },
-                error: function (e) {
-                    hideLoading();
-                    showNotify(e.responseText, 'danger');
-                }
-            });
-
-            $('#updateProgModal').modal('hide');
-        });
-    }
-
-    async function isEditShare(id) {
-        var share = await getIsShare(id);
-        var form = document.forms['updateIntForm'];
-        initForm(share, form);
-        $('#updateIntModal').modal('show');
-
-        $('#updateIntBtn').unbind('click').click(function () {
-
-            showLoading();
-
-            $.ajax({
-                type: "PUT",
-                url: "/shares/no-programmed/" + id,
-                data: $('#updateIntForm').serialize(),
-                success: function (msg) {
-                    $('#dTableSignings').DataTable().ajax.reload();
-                    hideLoading();
-                    showNotify(msg, 'success');
-                },
-                error: function (e) {
-                    hideLoading();
-                    showNotify(e.responseText, 'danger');
-                }
-            });
-
-            $('#updateIntModal').modal('hide');
-        });
-    }
-
     function deleteMember(memberId) {
 
         showLoading();
@@ -2510,44 +1572,6 @@
         });
     }
 
-    function deleteSigning(signingId, shareType) {
-
-        var ok = confirm("${jspUtil.parseTagToText('share.default.delete.alert')}");
-
-        if (ok) {
-
-            showLoading();
-
-            var deleteUri = '';
-
-            if (shareType === 'cs') {
-                deleteUri = '/shares/construction/' + signingId;
-            } else if (shareType === 'ds') {
-                deleteUri = '/shares/displacement/' + signingId;
-            } else if (shareType === 'ips') {
-                deleteUri = '/shares/intervention/programmed/delete/' + signingId;
-            } else if (shareType === 'is') {
-                deleteUri = '/shares/no-programmed/' + signingId;
-            } else if (shareType === 'ws') {
-                deleteUri = '/shares/work/' + signingId;
-            }
-
-            $.ajax({
-                type: "DELETE",
-                url: deleteUri,
-                success: function (msg) {
-                    $('#dTableSignings').DataTable().ajax.reload();
-                    hideLoading();
-                    showNotify(msg, 'success');
-                },
-                error: function (e) {
-                    hideLoading();
-                    showNotify(e.responseText, 'danger');
-                }
-            });
-        }
-    }
-
     function editMaterialRequired(id, nameES, nameFR, required) {
 
         $('#editMaterialRequiredModal').find('#materialRequiredNameESEditInput').val(nameES);
@@ -2641,6 +1665,7 @@
 <script>
     let locale = '${locale}';
     let dTableExpenses = null;
+    let dTableSignings = null;
 
     document.addEventListener("DOMContentLoaded", function () {
         setReturnButtonUrl();
@@ -2734,9 +1759,9 @@
             }
         ]
 
-        customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
-        dTableExpenses = createDataTable('#dTableExpenses', customDataTable, locale);
-        customDataTable.setCurrentTable(dTableExpenses);
+        let expensesDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
+        dTableExpenses = createDataTable('#dTableExpenses', expensesDataTable, locale);
+        expensesDataTable.setCurrentTable(dTableExpenses);
     }
 
     function parseStatusToBadge(status) {
@@ -2803,6 +1828,68 @@
             return 'PAID';
         }
         return null;
+    }
+
+    function initializeSigningsDataTable() {
+        let columns = ['id', 'user.name', 'startDate', 'endDate', 'type', 'id']
+        let endpoint = '/v1/shares';
+        let actions = [
+            {
+                action: 'file-pdf',
+                url: '/v1{detailUrl}/export',
+                permission: 'edit_shares',
+                conditionGroups: [
+                    {
+                        conditions: [
+                            { key: 'shareType', value: [ 'CONSTRUCTION_SHARES', 'INSPECTIONS', 'PROGRAMMED_SHARES', 'WORK_SHARES' ], operation: '===' },
+                            { key: 'endDate', value: [ undefined ], operation: '!==' }
+                        ]
+                    }
+                ]
+            },
+            {
+                action: 'file',
+                url: '/v1{detailUrl}/export-materials',
+                permission: 'edit_shares',
+                conditionGroups: [
+                    {
+                        conditions: [
+                            { key: 'shareType', value: [ 'INSPECTIONS' ], operation: '===' },
+                            { key: 'endDate', value: [ undefined ], operation: '!==' }
+                        ]
+                    }
+                ]
+            },
+            {
+                action: 'view',
+                url: '{detailUrl}'
+            },
+            {
+                action: 'delete',
+                permission: 'edit_shares'
+            }
+        ]
+        let expand = ['user,project']
+        let filters = [{'projectIds': projectId}]
+        let orderable = [[0, 'DESC']]
+        let columnsDef = [
+            {
+                targets: [2, 3],
+                render: function (data) {
+                    return data ? moment(data).format('DD-MM-YYYY HH:mm') : null;
+                }
+            },
+            {
+                targets: 4,
+                render: function (data) {
+                    return parseShareType(data);
+                }
+            }
+        ]
+
+        let signingsDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnsDef);
+        dTableSignings = createDataTable('#dTableSignings', signingsDataTable, locale);
+        signingsDataTable.setCurrentTable(dTableSignings);
     }
 
 </script>

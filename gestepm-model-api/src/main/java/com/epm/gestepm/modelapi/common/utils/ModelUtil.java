@@ -84,32 +84,6 @@ public class ModelUtil {
 				"<em class=\\\"far fa-thumbs-down\\\"></em>";
 	}
 	
-	public static String getTableProjectShareActionButtons() {
-
-		return "<em class=\\\"fas fa-file-pdf\\\"></em>" +
-				"<em class=\\\"em fas fa-file-alt\\\"></em>" +
-				"<em class=\\\"far fa-eye\\\"></em>" +
-				"<em class=\\\"fas fa-edit\\\"></em>" +
-				"<em class=\\\"far fa-trash-alt\\\"></em>";
-	}
-	
-	public static String getTableDownloadButtons() {
-		return "<a class=\\\"em fas fa-file-pdf\\\"></a>";
-	}
-	
-	public static String getTableDownloadInterventionButtons() {
-		return "<em class=\\\"fas fa-edit\\\"></em>" +
-				"<em class=\\\"em fas fa-file-pdf\\\"></em>" +
-			    "<em class=\\\"em fas fa-file-excel\\\"></em>" +
-				"<em class=\\\"em fas fa-file-alt\\\"></em>";
-	}
-	
-	public static String getTableDownloadActionButtons() {
-		return "<a class=\\\"em fas fa-file-pdf\\\"></a>" +
-			   "<em class=\\\"fas fa-edit\\\"></em>" +
-			   "<em class=\\\"far fa-trash-alt\\\"></em>";
-	}
-	
 	public static String getTableModifyActionButtons() {
 		return "<em class=\\\"fas fa-edit\\\"></em>" +
 			   "<em class=\\\"far fa-trash-alt\\\"></em>";
@@ -133,18 +107,6 @@ public class ModelUtil {
 	
 	public static String getViewActionButton() {
 		return "<em class=\\\"fas fa-eye\\\"></em>";
-	}
-	
-	public static String getViewTrashActionButton() {
-		return "<em class=\\\"fas fa-eye\\\"></em>" +
-				"<em class=\\\"fas fa-trash-alt\\\"></em>";
-	}
-	
-	public static String getInterventionActionButtons() {
-		return "<em class=\\\"fas fa-eye\\\"></em>" +
-			   "<em class=\\\"far fa-calendar-check\\\"></em>" + 
-			   "<em class=\\\"fas fa-file-download\\\"></em>" + 
-			   "<em class=\\\"fas fa-trash-alt\\\"></em>";
 	}
 	
 	public static Map<Integer, String> loadMonths(MessageSource messageSource, Locale locale) {

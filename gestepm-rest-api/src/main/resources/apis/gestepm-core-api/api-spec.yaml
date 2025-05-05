@@ -574,6 +574,78 @@ paths:
       description: delete-displacement-share-v1
       tags:
         - displacement-share-v1
+  /v1/shares:
+    get:
+      summary: V1 - List of shares
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareList'
+      operationId: list-shares-v1
+      description: list-shares-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by share identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: userIds
+          description: Filter by user identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: projectIds
+          description: Filter by project identificator.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: startDate
+          description: Filter by start date after.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: endDate
+          description: Filter by end date before.
+        - schema:
+            type: string
+            enum:
+              - NOT_FINISHED
+              - FINISHED
+          in: query
+          name: status
+          description: Filter by share status.
+        - schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - CONSTRUCTION_SHARES
+                - DISPLACEMENT_SHARES
+                - INSPECTIONS
+                - PROGRAMMED_SHARES
+                - WORK_SHARES
+          in: query
+          name: types
+          description: List of types to filter.
+      tags:
+        - share-v1
   /v1/shares/no-programmed:
     get:
       summary: V1 - List no programmed shares
@@ -2052,6 +2124,49 @@ components:
         - status
         - createdAt
         - createdBy
+    Share:
+      title: Share
+      x-stoplight:
+        id: 3r3zbg2q2mqyb
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        project:
+          $ref: '#/components/schemas/Project'
+        startDate:
+          type: string
+          x-stoplight:
+            id: o6fonyvbnc3c2
+          format: date-time
+        endDate:
+          type: string
+          x-stoplight:
+            id: 5do7qgshembqu
+          format: date-time
+        type:
+          type: string
+          x-stoplight:
+            id: n4kc7issixp7m
+          enum:
+            - CONSTRUCTION_SHARES
+            - DISPLACEMENT_SHARES
+            - INSPECTIONS
+            - PROGRAMMED_SHARES
+            - WORK_SHARES
+        detailUrl:
+          type: string
+          x-stoplight:
+            id: hcd5xp5lzrdat
+      required:
+        - id
+        - user
+        - project
+        - startDate
+        - type
+        - detailUrl
     TeleworkingSigning:
       title: TeleworkingSigning
       x-stoplight:
@@ -2401,6 +2516,32 @@ components:
                   id: dyvkfgdppk87v
                 items:
                   $ref: '#/components/schemas/DisplacementShare'
+    Share:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                $ref: '#/components/schemas/Share'
+    ShareList:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                type: array
+                x-stoplight:
+                  id: dyvkfgdppk87v
+                items:
+                  $ref: '#/components/schemas/Share'
     ConstructionShareExport:
       description: Example response
       content:
@@ -3261,6 +3402,8 @@ tags:
     description: V1 - Programmed Share
   - name: programmed-share-file-v1
     description: V1 - Programmed Share File
+  - name: share-v1
+    description: V1 - Share
   - name: teleworking-signing-v1
     description: V1 - Teleworking Signing
   - name: time-control-v1

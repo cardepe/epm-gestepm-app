@@ -90,8 +90,8 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
                     .map(parts -> new Material(
                             Integer.parseInt(parts[0]),
                             inspection.getId(),
-                            parts[1],
-                            Integer.parseInt(parts[2]),
+                            parts[2],
+                            Integer.parseInt(parts[1]),
                             parts[3]))
                     .forEach(materials::add);
         }

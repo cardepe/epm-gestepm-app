@@ -33,7 +33,7 @@ import static com.epm.gestepm.model.shares.work.dao.constants.WorkShareQueries.*
 import static com.epm.gestepm.model.shares.work.dao.mappers.WorkShareRowMapper.*;
 
 @AllArgsConstructor
-@Component("workDao")
+@Component("workShareDao")
 @EnableExecutionLog(layerMarker = DAO)
 public class WorkShareDaoImpl implements WorkShareDao {
 

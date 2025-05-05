@@ -32,7 +32,7 @@ import static com.epm.gestepm.model.inspection.dao.mappers.InspectionRowMapper.C
 import static com.epm.gestepm.model.personalexpense.dao.constants.PersonalExpenseQueries.*;
 import static com.epm.gestepm.model.personalexpense.dao.mappers.PersonalExpenseRowMapper.COL_PE_ID;
 
-@Component("PersonalExpenseDao")
+@Component("personalExpenseDao")
 @EnableExecutionLog(layerMarker = DAO)
 public class PersonalExpenseDaoImpl implements PersonalExpenseDao {
 

@@ -73,7 +73,6 @@ public class ConstructionShareController extends BaseController implements Const
 
     private final MessageSource messageSource;
 
-
     public ConstructionShareController(final CommonProviders commonProviders, final ApplicationContext appCtx,
                                        final AppLocaleService appLocaleService, final ResponseSuccessfulHelper successHelper,
                                        final ConstructionShareService constructionShareService, ConstructionShareExportService constructionShareExportService, LocaleProvider localeProvider, MessageSource messageSource) {

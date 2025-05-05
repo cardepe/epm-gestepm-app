@@ -149,6 +149,24 @@ function getSigningText(type) {
 	return '';
 }
 
+function parseShareType(type) {
+	const badgeText = getSigningText(type);
+
+	if (type === 'CONSTRUCTION_SHARES') {
+		return '<span class="badge badge-success">' + badgeText + '</span>';
+	} else if (type === 'DISPLACEMENT_SHARES') {
+		return '<span class="badge badge-warning">' + badgeText + '</span>';
+	} else if (type === 'PROGRAMMED_SHARES') {
+		return '<div class="badge badge-secondary">' + badgeText + '</div>';
+	} else if (type === 'INSPECTIONS') {
+		return '<span class="badge badge-primary">' + badgeText + '</span>';
+	} else if (type === 'WORK_SHARES') {
+		return '<span class="badge badge-info">' + badgeText + '</span>';
+	}
+
+	return '';
+}
+
 function preloadSignatures(signaturePad, canvas, signatureClass, signature) {
 	if (signaturePad[signatureClass]) {
 		signaturePad[signatureClass].clear();

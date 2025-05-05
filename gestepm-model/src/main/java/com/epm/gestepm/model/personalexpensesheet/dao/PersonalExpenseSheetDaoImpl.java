@@ -30,7 +30,7 @@ import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
 import static com.epm.gestepm.model.personalexpensesheet.dao.constants.PersonalExpenseSheetQueries.*;
 import static com.epm.gestepm.model.personalexpensesheet.dao.mappers.PersonalExpenseSheetRowMapper.*;
 
-@Component("PersonalExpenseSheetDao")
+@Component("personalExpenseSheetDao")
 @EnableExecutionLog(layerMarker = DAO)
 public class PersonalExpenseSheetDaoImpl implements PersonalExpenseSheetDao {
 
