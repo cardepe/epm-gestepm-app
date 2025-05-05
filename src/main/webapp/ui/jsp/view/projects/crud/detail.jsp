@@ -1871,7 +1871,7 @@
         ]
         let expand = ['user,project']
         let filters = [{'projectIds': projectId}]
-        let orderable = [[0, 'DESC']]
+        let orderable = [[2, 'DESC']]
         let columnsDef = [
             {
                 targets: [2, 3],
