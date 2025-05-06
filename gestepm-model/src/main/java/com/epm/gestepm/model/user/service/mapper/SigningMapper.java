@@ -1,9 +1,9 @@
 package com.epm.gestepm.model.user.service.mapper;
 
 import com.epm.gestepm.modelapi.common.helpers.DatesModel;
-import com.epm.gestepm.modelapi.constructionshare.dto.ConstructionShare;
-import com.epm.gestepm.modelapi.displacementshare.dto.DisplacementShare;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
+import com.epm.gestepm.modelapi.deprecated.constructionshare.dto.ConstructionShare;
+import com.epm.gestepm.modelapi.deprecated.displacementshare.dto.DisplacementShare;
+import com.epm.gestepm.modelapi.deprecated.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningResumeDTO;

@@ -1,7 +1,6 @@
 package com.epm.gestepm.modelapi.deprecated.interventionsubshare.dto;
 
 import com.epm.gestepm.modelapi.inspection.dto.ActionEnumDto;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionShareMaterial;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.deprecated.interventionsubsharefile.dto.InterventionSubShareFile;
 import com.epm.gestepm.modelapi.user.dto.User;

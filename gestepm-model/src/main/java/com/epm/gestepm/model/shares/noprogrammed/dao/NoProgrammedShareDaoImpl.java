@@ -2,6 +2,7 @@ package com.epm.gestepm.model.shares.noprogrammed.dao;
 
 import com.epm.gestepm.lib.entity.AttributeMap;
 import com.epm.gestepm.lib.jdbc.api.datasource.SQLDatasource;
+import com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType;
 import com.epm.gestepm.lib.jdbc.api.query.SQLInsert;
 import com.epm.gestepm.lib.jdbc.api.query.SQLQuery;
 import com.epm.gestepm.lib.jdbc.api.query.fetch.SQLQueryFetchMany;
@@ -16,10 +17,10 @@ import com.epm.gestepm.model.shares.noprogrammed.dao.entity.deleter.NoProgrammed
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.filter.NoProgrammedShareFilter;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.finder.NoProgrammedShareByIdFinder;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.updater.NoProgrammedShareUpdate;
-import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRSManyExtractor;
-import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRSOneExtractor;
+import com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRowMapper;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.math.BigInteger;
@@ -29,6 +30,8 @@ import java.util.Optional;
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
 import static com.epm.gestepm.model.shares.noprogrammed.dao.constants.NoProgrammedShareQueries.*;
+import static com.epm.gestepm.model.shares.noprogrammed.dao.mappers.NoProgrammedShareRowMapper.*;
+import static com.epm.gestepm.model.shares.programmed.dao.mappers.ProgrammedShareRowMapper.*;
 
 @AllArgsConstructor
 @Component("noProgrammedShareDao")
@@ -48,10 +51,12 @@ public class NoProgrammedShareDaoImpl implements NoProgrammedShareDao {
     public List<NoProgrammedShare> list(NoProgrammedShareFilter filter) {
 
         final SQLQueryFetchMany<NoProgrammedShare> sqlQuery = new SQLQueryFetchMany<NoProgrammedShare>()
-                .useRsExtractor(new NoProgrammedShareRSManyExtractor())
+                .useRowMapper(new NoProgrammedShareRowMapper())
                 .useQuery(QRY_LIST_OF_NPS)
                 .useFilter(FILTER_NPS_BY_PARAMS)
                 .withParams(filter.collectAttributes());
+
+        this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
 
         return this.sqlDatasource.fetch(sqlQuery);
     }
@@ -65,13 +70,15 @@ public class NoProgrammedShareDaoImpl implements NoProgrammedShareDao {
     public Page<NoProgrammedShare> list(NoProgrammedShareFilter filter, Long offset, Long limit) {
 
         final SQLQueryFetchPage<NoProgrammedShare> sqlQuery = new SQLQueryFetchPage<NoProgrammedShare>()
-                .useRsExtractor(new NoProgrammedShareRSManyExtractor())
+                .useRowMapper(new NoProgrammedShareRowMapper())
                 .useQuery(QRY_PAGE_OF_NPS)
                 .useCountQuery(QRY_COUNT_OF_NPS)
                 .useFilter(FILTER_NPS_BY_PARAMS)
                 .offset(offset)
                 .limit(limit)
                 .withParams(filter.collectAttributes());
+
+        this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
 
         return this.sqlDatasource.fetch(sqlQuery);
     }
@@ -85,7 +92,7 @@ public class NoProgrammedShareDaoImpl implements NoProgrammedShareDao {
     public Optional<NoProgrammedShare> find(NoProgrammedShareByIdFinder finder) {
 
         final SQLQueryFetchOne<NoProgrammedShare> sqlQuery = new SQLQueryFetchOne<NoProgrammedShare>()
-                .useRsExtractor(new NoProgrammedShareRSOneExtractor())
+                .useRowMapper(new NoProgrammedShareRowMapper())
                 .useQuery(QRY_LIST_OF_NPS)
                 .useFilter(FILTER_NPS_BY_ID)
                 .withParams(finder.collectAttributes());
@@ -159,5 +166,28 @@ public class NoProgrammedShareDaoImpl implements NoProgrammedShareDao {
                 .withParams(params);
 
         this.sqlDatasource.execute(sqlQuery);
+    }
+
+    private void setOrder(final SQLOrderByType order, final String orderBy, final SQLQueryFetchMany<NoProgrammedShare> sqlQuery) {
+        final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id")
+                ? this.getOrderColumn(orderBy)
+                : COL_NPS_ID;
+        final SQLOrderByType orderStatement = order != null
+                ? order
+                : SQLOrderByType.DESC;
+        sqlQuery.addOrderBy(orderByStatement, orderStatement);
+    }
+
+    private String getOrderColumn(final String orderBy) {
+        if ("user.name".equals(orderBy)) {
+            return COL_NPS_USER_ID;
+        } else if ("project.name".equals(orderBy)) {
+            return COL_NPS_PROJECT_NAME;
+        } else if ("startDate".equals(orderBy)) {
+            return COL_NPS_START_DATE;
+        } else if ("endDate".equals(orderBy)) {
+            return COL_NPS_END_DATE;
+        }
+        return orderBy;
     }
 }

@@ -11,15 +11,13 @@ import com.epm.gestepm.lib.jdbc.api.query.fetch.SQLQueryFetchPage;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.types.Page;
-import com.epm.gestepm.model.inspection.dao.entity.Inspection;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.PersonalExpenseSheet;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.creator.PersonalExpenseSheetCreate;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.deleter.PersonalExpenseSheetDelete;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.filter.PersonalExpenseSheetFilter;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.finder.PersonalExpenseSheetByIdFinder;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.updater.PersonalExpenseSheetUpdate;
-import com.epm.gestepm.model.personalexpensesheet.dao.mappers.PersonalExpenseSheetRSManyExtractor;
-import com.epm.gestepm.model.personalexpensesheet.dao.mappers.PersonalExpenseSheetRSOneExtractor;
+import com.epm.gestepm.model.personalexpensesheet.dao.mappers.PersonalExpenseSheetRowMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -27,14 +25,12 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
-import static com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType.ASC;
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
-import static com.epm.gestepm.model.inspection.dao.mappers.InspectionRowMapper.*;
 import static com.epm.gestepm.model.personalexpensesheet.dao.constants.PersonalExpenseSheetQueries.*;
 import static com.epm.gestepm.model.personalexpensesheet.dao.mappers.PersonalExpenseSheetRowMapper.*;
 
-@Component("PersonalExpenseSheetDao")
+@Component("personalExpenseSheetDao")
 @EnableExecutionLog(layerMarker = DAO)
 public class PersonalExpenseSheetDaoImpl implements PersonalExpenseSheetDao {
 
@@ -53,7 +49,7 @@ public class PersonalExpenseSheetDaoImpl implements PersonalExpenseSheetDao {
     public List<PersonalExpenseSheet> list(PersonalExpenseSheetFilter filter) {
 
         final SQLQueryFetchMany<PersonalExpenseSheet> sqlQuery = new SQLQueryFetchMany<PersonalExpenseSheet>()
-                .useRsExtractor(new PersonalExpenseSheetRSManyExtractor())
+                .useRowMapper(new PersonalExpenseSheetRowMapper())
                 .useQuery(QRY_LIST_OF_PES)
                 .useFilter(FILTER_PES_BY_PARAMS)
                 .withParams(filter.collectAttributes());
@@ -72,7 +68,7 @@ public class PersonalExpenseSheetDaoImpl implements PersonalExpenseSheetDao {
     public Page<PersonalExpenseSheet> list(PersonalExpenseSheetFilter filter, Long offset, Long limit) {
 
         final SQLQueryFetchPage<PersonalExpenseSheet> sqlQuery = new SQLQueryFetchPage<PersonalExpenseSheet>()
-                .useRsExtractor(new PersonalExpenseSheetRSManyExtractor())
+                .useRowMapper(new PersonalExpenseSheetRowMapper())
                 .useQuery(QRY_PAGE_OF_PES)
                 .useCountQuery(QRY_COUNT_OF_PES)
                 .useFilter(FILTER_PES_BY_PARAMS)
@@ -94,7 +90,7 @@ public class PersonalExpenseSheetDaoImpl implements PersonalExpenseSheetDao {
     public Optional<PersonalExpenseSheet> find(PersonalExpenseSheetByIdFinder finder) {
 
         final SQLQueryFetchOne<PersonalExpenseSheet> sqlQuery = new SQLQueryFetchOne<PersonalExpenseSheet>()
-                .useRsExtractor(new PersonalExpenseSheetRSOneExtractor())
+                .useRowMapper(new PersonalExpenseSheetRowMapper())
                 .useQuery(QRY_LIST_OF_PES)
                 .useFilter(FILTER_PES_BY_ID)
                 .withParams(finder.collectAttributes());

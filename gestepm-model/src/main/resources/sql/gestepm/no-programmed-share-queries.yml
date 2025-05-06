@@ -3,10 +3,11 @@ sql:
   qry-list-of-nps: |
     
     SELECT
-      nps.no_programmed_share_id AS id_pagination,
       nps.no_programmed_share_id,
       nps.user_id,
+      CONCAT(us.name, us.surnames) AS username,
       nps.project_id,
+      p.name AS project_name,
       nps.start_date,
       nps.end_date,
       nps.description,
@@ -15,24 +16,31 @@ sql:
       nps.topic_id,
       nps.forum_title,
       nps.state,
-      i.inspection_id,
-      npsf.no_programmed_share_file_id
+      GROUP_CONCAT(i.inspection_id) AS inspection_ids,
+      GROUP_CONCAT(npsf.no_programmed_share_file_id) AS no_programmed_share_file_idS
     FROM ${sch-gestepm}.no_programmed_share nps
+    LEFT JOIN ${sch-gestepm}.projects p ON p.id = nps.project_id
+    LEFT JOIN ${sch-gestepm}.users us ON us.ID = nps.user_id
     LEFT JOIN ${sch-gestepm}.inspection i ON i.no_programmed_share_id = nps.no_programmed_share_id
     LEFT JOIN ${sch-gestepm}.no_programmed_share_file npsf ON npsf.no_programmed_share_id = nps.no_programmed_share_id
 
     #whereToken #filter
+    GROUP BY nps.no_programmed_share_id
+    #orderByToken
 
   qry-page-of-nps: |
-
-    ${sql.paginated-query-group-prefix}
+    
     ${sql.qry-list-of-nps}
-    ${sql.paginated-query-suffix}
+    ${sql.paginated-query}
 
   qry-count-of-nps: |
 
-    SELECT COUNT(DISTINCT id_pagination) AS "count"
-    FROM (${sql.qry-list-of-nps}) final
+    SELECT COUNT(DISTINCT no_programmed_share_id) AS "count"
+    FROM (
+      SELECT nps.no_programmed_share_id
+      FROM ${sch-gestepm}.no_programmed_share nps     
+      #whereToken #filter
+    ) final
 
   qry-create-nps: |
     
@@ -73,6 +81,11 @@ sql:
 
     -- [AND
       -- ${sql.predicate-for-nps-ids}
+      -- ${sql.predicate-for-nps-u-ids}
+      -- ${sql.predicate-for-nps-p-ids}
+      -- ${sql.predicate-for-nps-start-date}
+      -- ${sql.predicate-for-nps-end-date}
+      -- ${sql.predicate-for-nps-status}
     -- AND]
 
   filter-nps-by-id: |
@@ -88,3 +101,23 @@ sql:
   predicate-for-nps-ids: |
 
     nps.no_programmed_share_id IN (:attr_nps_ids)
+
+  predicate-for-nps-u-ids: |
+
+    nps.user_id IN (:attr_nps_u_ids)
+
+  predicate-for-nps-p-ids: |
+
+    nps.project_id IN (:attr_nps_p_ids)
+
+  predicate-for-nps-start-date: |
+
+    nps.start_date > :attr_nps_start_date
+
+  predicate-for-nps-end-date: |
+
+    nps.end_date < :attr_nps_end_date
+
+  predicate-for-nps-status: |
+
+    :attr_nps_status IS NOT NULL AND ((:attr_nps_status = 'NOT_FINISHED' AND nps.end_date IS NULL) OR (:attr_nps_status = 'FINISHED' AND nps.end_date IS NOT NULL))

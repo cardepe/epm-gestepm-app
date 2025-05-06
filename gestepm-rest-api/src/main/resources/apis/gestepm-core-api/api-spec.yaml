@@ -270,6 +270,183 @@ paths:
       tags:
         - personal-expense-v1
       description: delete-personal-expense-v1
+  /v1/shares/construction:
+    get:
+      summary: V1 - List construction shares
+      responses:
+        '200':
+          $ref: '#/components/responses/ConstructionShareList'
+      operationId: list-construction-shares-v1
+      description: list-construction-shares-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by construction share identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: userIds
+          description: Filter by user identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: projectIds
+          description: Filter by project identificator.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: startDate
+          description: Filter by start date after.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: endDate
+          description: Filter by end date before.
+        - schema:
+            type: string
+            enum:
+              - NOT_FINISHED
+              - FINISHED
+          in: query
+          name: status
+          description: Filter by construction share status.
+      tags:
+        - construction-share-v1
+    post:
+      summary: V1 - Create construction share
+      operationId: create-construction-share-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ConstructionShare'
+        '404':
+          description: user-not-found | project-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: create-construction-share-v1
+      tags:
+        - construction-share-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateConstructionShare'
+  '/v1/shares/construction/{shareId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+    get:
+      summary: V1 - Find construction share
+      tags:
+        - construction-share-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ConstructionShare'
+        '404':
+          description: construction-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-construction-share-by-id-v1
+      description: find-construction-share-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-locale
+    put:
+      summary: V1 - Update construction share
+      operationId: update-construction-share-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ConstructionShare'
+        '404':
+          description: construction-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: update-construction-share-v1
+      tags:
+        - construction-share-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateConstructionShare'
+    delete:
+      summary: V1 - Delete construction share
+      operationId: delete-construction-share-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: construction-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: delete-construction-share-v1
+      tags:
+        - construction-share-v1
+  '/v1/shares/construction/{shareId}/files/{fileId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+      - $ref: '#/components/parameters/File-Id'
+    delete:
+      summary: V1 - Delete construction share file
+      operationId: delete-construction-share-file-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: construction-share-file-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - construction-share-file-v1
+      description: delete-construction-share-file-v1
+  '/v1/shares/construction/{shareId}/export':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+    get:
+      summary: V1 - Export construction share
+      responses:
+        '200':
+          $ref: '#/components/responses/ConstructionShareExport'
+        '404':
+          description: construction-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: export-construction-share-v1
+      description: export-construction-share-v1
+      parameters: []
+      tags:
+        - construction-share-v1
   /v1/shares/displacement:
     get:
       summary: V1 - List displacement shares
@@ -284,6 +461,8 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
         - schema:
             type: array
             items:
@@ -395,6 +574,78 @@ paths:
       description: delete-displacement-share-v1
       tags:
         - displacement-share-v1
+  /v1/shares:
+    get:
+      summary: V1 - List of shares
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareList'
+      operationId: list-shares-v1
+      description: list-shares-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by share identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: userIds
+          description: Filter by user identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: projectIds
+          description: Filter by project identificator.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: startDate
+          description: Filter by start date after.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: endDate
+          description: Filter by end date before.
+        - schema:
+            type: string
+            enum:
+              - NOT_FINISHED
+              - FINISHED
+          in: query
+          name: status
+          description: Filter by share status.
+        - schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - CONSTRUCTION_SHARES
+                - DISPLACEMENT_SHARES
+                - INSPECTIONS
+                - PROGRAMMED_SHARES
+                - WORK_SHARES
+          in: query
+          name: types
+          description: List of types to filter.
+      tags:
+        - share-v1
   /v1/shares/no-programmed:
     get:
       summary: V1 - List no programmed shares
@@ -409,6 +660,49 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by no programmed share identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: userIds
+          description: Filter by user identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: projectIds
+          description: Filter by project identificator.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: startDate
+          description: Filter by start date after.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: endDate
+          description: Filter by end date before.
+        - schema:
+            type: string
+            enum:
+              - NOT_FINISHED
+              - FINISHED
+          in: query
+          name: status
+          description: Filter by no programmed share status.
       tags:
         - no-programmed-share-v1
     post:
@@ -676,6 +970,360 @@ paths:
       operationId: export-inspection-materials-v1
       description: export-inspection-materials-v1
       parameters: []
+  /v1/shares/programmed:
+    get:
+      summary: V1 - List programmed shares
+      responses:
+        '200':
+          $ref: '#/components/responses/ProgrammedShareList'
+      operationId: list-programmed-shares-v1
+      description: list-programmed-shares-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by programmed share identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: userIds
+          description: Filter by user identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: projectIds
+          description: Filter by project identificator.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: startDate
+          description: Filter by start date after.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: endDate
+          description: Filter by end date before.
+        - schema:
+            type: string
+            enum:
+              - NOT_FINISHED
+              - FINISHED
+          in: query
+          name: status
+          description: Filter by programmed share status.
+      tags:
+        - programmed-share-v1
+    post:
+      summary: V1 - Create programmed share
+      operationId: create-programmed-share-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ProgrammedShare'
+        '404':
+          description: user-not-found | project-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: create-programmed-share-v1
+      tags:
+        - programmed-share-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateProgrammedShare'
+  '/v1/shares/programmed/{shareId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+    get:
+      summary: V1 - Find programmed share
+      tags:
+        - programmed-share-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ProgrammedShare'
+        '404':
+          description: programmed-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-programmed-share-by-id-v1
+      description: find-programmed-share-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-locale
+    put:
+      summary: V1 - Update programmed share
+      operationId: update-programmed-share-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ProgrammedShare'
+        '404':
+          description: programmed-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: update-programmed-share-v1
+      tags:
+        - programmed-share-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateProgrammedShare'
+    delete:
+      summary: V1 - Delete programmed share
+      operationId: delete-programmed-share-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: programmed-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: delete-programmed-share-v1
+      tags:
+        - programmed-share-v1
+  '/v1/shares/programmed/{shareId}/files/{fileId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+      - $ref: '#/components/parameters/File-Id'
+    delete:
+      summary: V1 - Delete programmed share file
+      operationId: delete-programmed-share-file-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: programmed-share-file-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - programmed-share-file-v1
+      description: delete-programmed-share-file-v1
+  '/v1/shares/programmed/{shareId}/export':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+    get:
+      summary: V1 - Export programmed share
+      responses:
+        '200':
+          $ref: '#/components/responses/ProgrammedShareExport'
+        '404':
+          description: programmed-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: export-programmed-share-v1
+      description: export-programmed-share-v1
+      parameters: []
+      tags:
+        - programmed-share-v1
+  /v1/shares/work:
+    get:
+      summary: V1 - List work shares
+      responses:
+        '200':
+          $ref: '#/components/responses/WorkShareList'
+      operationId: list-work-shares-v1
+      description: list-work-shares-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by work share identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: userIds
+          description: Filter by user identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: projectIds
+          description: Filter by project identificator.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: startDate
+          description: Filter by start date after.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: endDate
+          description: Filter by end date before.
+        - schema:
+            type: string
+            enum:
+              - NOT_FINISHED
+              - FINISHED
+          in: query
+          name: status
+          description: Filter by work share status.
+      tags:
+        - work-share-v1
+    post:
+      summary: V1 - Create work share
+      operationId: create-work-share-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/WorkShare'
+        '404':
+          description: user-not-found | project-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: create-work-share-v1
+      tags:
+        - work-share-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateWorkShare'
+  '/v1/shares/work/{shareId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+    get:
+      summary: V1 - Find work share
+      tags:
+        - work-share-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/WorkShare'
+        '404':
+          description: work-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-work-share-by-id-v1
+      description: find-work-share-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-locale
+    put:
+      summary: V1 - Update work share
+      operationId: update-work-share-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/WorkShare'
+        '404':
+          description: work-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: update-work-share-v1
+      tags:
+        - work-share-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateWorkShare'
+    delete:
+      summary: V1 - Delete work share
+      operationId: delete-work-share-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: work-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: delete-work-share-v1
+      tags:
+        - work-share-v1
+  '/v1/shares/work/{shareId}/files/{fileId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+      - $ref: '#/components/parameters/File-Id'
+    delete:
+      summary: V1 - Delete work share file
+      operationId: delete-work-share-file-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: work-share-file-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - work-share-file-v1
+      description: delete-work-share-file-v1
+  '/v1/shares/work/{shareId}/export':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+    get:
+      summary: V1 - Export work share
+      responses:
+        '200':
+          $ref: '#/components/responses/WorkShareExport'
+        '404':
+          description: work-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: export-work-share-v1
+      description: export-work-share-v1
+      parameters: []
+      tags:
+        - work-share-v1
   /v1/signings/teleworking:
     get:
       summary: V1 - List teleworking signings
@@ -902,6 +1550,62 @@ paths:
         - user-v1
 components:
   schemas:
+    ConstructionShare:
+      title: ConstructionShare
+      x-stoplight:
+        id: 0d7ialsinsdm1
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        project:
+          $ref: '#/components/schemas/Project'
+        startDate:
+          type: string
+          x-stoplight:
+            id: hsz4zkkfsxep0
+          format: date-time
+        endDate:
+          type: string
+          x-stoplight:
+            id: 1fgww01i4ptpg
+          format: date-time
+        observations:
+          type: string
+          x-stoplight:
+            id: 2gawbt01bo0fo
+        operatorSignature:
+          type: string
+          x-stoplight:
+            id: n2mhp965w4xqj
+        files:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ShareFile'
+        createdAt:
+          type: string
+          x-stoplight:
+            id: dpztvzlr6lmkf
+          format: date-time
+        createdBy:
+          $ref: '#/components/schemas/User'
+        closedAt:
+          type: string
+          x-stoplight:
+            id: u7ozr13zwh2du
+          format: date-time
+        closedBy:
+          $ref: '#/components/schemas/User'
+      required:
+        - id
+        - user
+        - project
+        - startDate
+        - createdAt
+        - createdBy
     DisplacementShare:
       title: DisplacementShare
       x-stoplight:
@@ -1139,6 +1843,68 @@ components:
         - family
         - subFamily
         - state
+    ProgrammedShare:
+      title: ProgrammedShare
+      x-stoplight:
+        id: 12zy34vxxw9uk
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        secondTechnical:
+          $ref: '#/components/schemas/User'
+        project:
+          $ref: '#/components/schemas/Project'
+        startDate:
+          type: string
+          x-stoplight:
+            id: 3d5zo1j0db2cw
+          format: date-time
+        endDate:
+          type: string
+          x-stoplight:
+            id: xhrrl230wxm91
+          format: date-time
+        observations:
+          type: string
+          x-stoplight:
+            id: 9urv7szzth156
+        customerSignature:
+          type: string
+          x-stoplight:
+            id: ln1za06lt4s7r
+        operatorSignature:
+          type: string
+          x-stoplight:
+            id: jbc0t6h5q322k
+        files:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ShareFile'
+        createdAt:
+          type: string
+          x-stoplight:
+            id: i2h901a5f5v32
+          format: date-time
+        createdBy:
+          $ref: '#/components/schemas/User'
+        closedAt:
+          type: string
+          x-stoplight:
+            id: 1va73to8m1vzt
+          format: date-time
+        closedBy:
+          $ref: '#/components/schemas/User'
+      required:
+        - id
+        - user
+        - project
+        - startDate
+        - createdAt
+        - createdBy
     Project:
       title: Project
       x-stoplight:
@@ -1358,6 +2124,49 @@ components:
         - status
         - createdAt
         - createdBy
+    Share:
+      title: Share
+      x-stoplight:
+        id: 3r3zbg2q2mqyb
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        project:
+          $ref: '#/components/schemas/Project'
+        startDate:
+          type: string
+          x-stoplight:
+            id: o6fonyvbnc3c2
+          format: date-time
+        endDate:
+          type: string
+          x-stoplight:
+            id: 5do7qgshembqu
+          format: date-time
+        type:
+          type: string
+          x-stoplight:
+            id: n4kc7issixp7m
+          enum:
+            - CONSTRUCTION_SHARES
+            - DISPLACEMENT_SHARES
+            - INSPECTIONS
+            - PROGRAMMED_SHARES
+            - WORK_SHARES
+        detailUrl:
+          type: string
+          x-stoplight:
+            id: hcd5xp5lzrdat
+      required:
+        - id
+        - user
+        - project
+        - startDate
+        - type
+        - detailUrl
     TeleworkingSigning:
       title: TeleworkingSigning
       x-stoplight:
@@ -1430,11 +2239,71 @@ components:
           x-stoplight:
             id: 6hy6vr2ibobsu
           format: date-time
+        detailUrl:
+          type: string
+          x-stoplight:
+            id: jhyummn6uve8i
       required:
         - id
         - type
         - startDate
         - endDate
+    WorkShare:
+      title: WorkShare
+      x-stoplight:
+        id: pmo9no8g7upyf
+      type: object
+      properties:
+        id:
+          type: integer
+        user:
+          $ref: '#/components/schemas/User'
+        project:
+          $ref: '#/components/schemas/Project'
+        startDate:
+          type: string
+          x-stoplight:
+            id: c7oqo448n1xue
+          format: date-time
+        endDate:
+          type: string
+          x-stoplight:
+            id: aj4gzr0ocgseq
+          format: date-time
+        observations:
+          type: string
+          x-stoplight:
+            id: 4z43byo877v7z
+        operatorSignature:
+          type: string
+          x-stoplight:
+            id: bh3pb5ugtehlm
+        files:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/ShareFile'
+        createdAt:
+          type: string
+          x-stoplight:
+            id: araby1te6q0tf
+          format: date-time
+        createdBy:
+          $ref: '#/components/schemas/User'
+        closedAt:
+          type: string
+          x-stoplight:
+            id: 72okv5cc2fayg
+          format: date-time
+        closedBy:
+          $ref: '#/components/schemas/User'
+      required:
+        - id
+        - user
+        - project
+        - startDate
+        - createdAt
+        - createdBy
   securitySchemes:
     bearerAuth:
       type: http
@@ -1595,6 +2464,32 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/TimeControl'
+    ConstructionShare:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                $ref: '#/components/schemas/ConstructionShare'
+    ConstructionShareList:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                type: array
+                x-stoplight:
+                  id: dyvkfgdppk87v
+                items:
+                  $ref: '#/components/schemas/ConstructionShare'
     DisplacementShare:
       description: Example response
       content:
@@ -1621,6 +2516,105 @@ components:
                   id: dyvkfgdppk87v
                 items:
                   $ref: '#/components/schemas/DisplacementShare'
+    Share:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                $ref: '#/components/schemas/Share'
+    ShareList:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                type: array
+                x-stoplight:
+                  id: dyvkfgdppk87v
+                items:
+                  $ref: '#/components/schemas/Share'
+    ConstructionShareExport:
+      description: Example response
+      content:
+        application/octet-stream:
+          schema:
+            type: string
+            format: binary
+    WorkShare:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                $ref: '#/components/schemas/WorkShare'
+    WorkShareList:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                type: array
+                x-stoplight:
+                  id: dyvkfgdppk87v
+                items:
+                  $ref: '#/components/schemas/WorkShare'
+    WorkShareExport:
+      description: Example response
+      content:
+        application/octet-stream:
+          schema:
+            type: string
+            format: binary
+    ProgrammedShare:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                $ref: '#/components/schemas/ProgrammedShare'
+    ProgrammedShareList:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                type: array
+                x-stoplight:
+                  id: dyvkfgdppk87v
+                items:
+                  $ref: '#/components/schemas/ProgrammedShare'
+    ProgrammedShareExport:
+      description: Example response
+      content:
+        application/octet-stream:
+          schema:
+            type: string
+            format: binary
   requestBodies:
     CreateNoProgrammedShare:
       content:
@@ -1687,6 +2681,29 @@ components:
                         id: 6ce64ca1txbth
             required:
               - userId
+    CreateProgrammedShare:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userId:
+                type: integer
+                x-stoplight:
+                  id: yfv1w10988omh
+              projectId:
+                type: integer
+                x-stoplight:
+                  id: cqzartm0o29wp
+              startDate:
+                type: string
+                x-stoplight:
+                  id: mugxnbf5tzgci
+                format: date-time
+            required:
+              - userId
+              - projectId
+              - startDate
     CreateInspection:
       content:
         application/json:
@@ -2063,6 +3080,29 @@ components:
               - type
               - startDate
               - endDate
+    CreateConstructionShare:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userId:
+                type: integer
+                x-stoplight:
+                  id: 53jm58zwsoki3
+              projectId:
+                type: integer
+                x-stoplight:
+                  id: 9lippqadj9w1n
+              startDate:
+                type: string
+                x-stoplight:
+                  id: 0f9zbwdc0s09u
+                format: date-time
+            required:
+              - userId
+              - projectId
+              - startDate
     CreateDisplacementShare:
       content:
         application/json:
@@ -2101,6 +3141,166 @@ components:
               - description
               - startDate
               - endDate
+    CreateWorkShare:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userId:
+                type: integer
+                x-stoplight:
+                  id: 5iw71wtzbb2vg
+              projectId:
+                type: integer
+                x-stoplight:
+                  id: k3xn6lzhfxfeo
+              startDate:
+                type: string
+                x-stoplight:
+                  id: o964vmy2xyero
+                format: date-time
+            required:
+              - userId
+              - projectId
+              - startDate
+    UpdateConstructionShare:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              projectId:
+                type: integer
+                x-stoplight:
+                  id: pxse3yn75h7cw
+              startDate:
+                type: string
+                x-stoplight:
+                  id: o130b23mstyam
+                format: date-time
+              endDate:
+                type: string
+                x-stoplight:
+                  id: 9kif43i1jwn4s
+                format: date-time
+              observations:
+                type: string
+                x-stoplight:
+                  id: 6nihi8qpf5z2s
+              operatorSignature:
+                type: string
+                x-stoplight:
+                  id: 5xlprmjlumq02
+              files:
+                type: array
+                items:
+                  type: object
+                  format: binary
+                  properties:
+                    name:
+                      type: string
+                    content:
+                      type: string
+                      x-field-extra-annotation: '@com.fasterxml.jackson.annotation.JsonIgnore'
+              notify:
+                type: boolean
+                x-stoplight:
+                  id: 056faw4s2fxpf
+    UpdateWorkShare:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              projectId:
+                type: integer
+                x-stoplight:
+                  id: 5k3mxul84cosb
+              startDate:
+                type: string
+                x-stoplight:
+                  id: 2dkkrrd2zxu3f
+                format: date-time
+              endDate:
+                type: string
+                x-stoplight:
+                  id: 1ul11yimaz5r8
+                format: date-time
+              observations:
+                type: string
+                x-stoplight:
+                  id: jrqkuxluuxym8
+              operatorSignature:
+                type: string
+                x-stoplight:
+                  id: 4i9cmfs7dw6b4
+              files:
+                type: array
+                items:
+                  type: object
+                  format: binary
+                  properties:
+                    name:
+                      type: string
+                    content:
+                      type: string
+                      x-field-extra-annotation: '@com.fasterxml.jackson.annotation.JsonIgnore'
+              notify:
+                type: boolean
+                x-stoplight:
+                  id: eb0k05xm2xuf3
+    UpdateProgrammedShare:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              projectId:
+                type: integer
+                x-stoplight:
+                  id: b6hkrbe3fr5qd
+              secondTechnicalId:
+                type: integer
+                x-stoplight:
+                  id: 1r9527ena6bni
+              startDate:
+                type: string
+                x-stoplight:
+                  id: eawwjjrxioh3x
+                format: date-time
+              endDate:
+                type: string
+                x-stoplight:
+                  id: 52qbswhsljf4p
+                format: date-time
+              observations:
+                type: string
+                x-stoplight:
+                  id: a5ricn3p3wsar
+              customerSignature:
+                type: string
+                x-stoplight:
+                  id: ymudq1zb14mwg
+              operatorSignature:
+                type: string
+                x-stoplight:
+                  id: il4qgichpo4yz
+              files:
+                type: array
+                items:
+                  type: object
+                  format: binary
+                  properties:
+                    name:
+                      type: string
+                    content:
+                      type: string
+                      x-field-extra-annotation: '@com.fasterxml.jackson.annotation.JsonIgnore'
+              notify:
+                type: boolean
+                x-stoplight:
+                  id: 3byt4qf86eswz
     UpdateDisplacementShare:
       content:
         application/json:
@@ -2115,10 +3315,6 @@ components:
                 type: string
                 x-stoplight:
                   id: u98ottf67wmcq
-              observations:
-                type: string
-                x-stoplight:
-                  id: m3wb8a1zma8ti
               startDate:
                 type: string
                 x-stoplight:
@@ -2129,6 +3325,14 @@ components:
                 x-stoplight:
                   id: 63qdtg25jd5a0
                 format: date-time
+              observations:
+                type: string
+                x-stoplight:
+                  id: m3wb8a1zma8ti
+              operatorSignature:
+                type: string
+                x-stoplight:
+                  id: zmqrb1t22nlyz
             required:
               - projectId
               - description
@@ -2182,6 +3386,8 @@ tags:
     description: V1 - Personal Expense Sheets
   - name: personal-expense-v1
     description: V1 - Personal Expenses
+  - name: construction-share-v1
+    description: V1 - Construction Share
   - name: inspection-v1
     description: V1 - Inspection
   - name: inspection-file-v1
@@ -2192,9 +3398,19 @@ tags:
     description: V1 - No Programmed Share
   - name: no-programmed-share-file-v1
     description: V1 - No Programmed Share File
+  - name: programmed-share-v1
+    description: V1 - Programmed Share
+  - name: programmed-share-file-v1
+    description: V1 - Programmed Share File
+  - name: share-v1
+    description: V1 - Share
   - name: teleworking-signing-v1
     description: V1 - Teleworking Signing
   - name: time-control-v1
     description: V1 - Time control
   - name: user-v1
     description: V1 - User
+  - name: work-share-v1
+    description: V1 - Work Share
+  - name: work-share-file-v1
+    description: V1 - Work Share File

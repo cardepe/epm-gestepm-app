@@ -26,4 +26,6 @@ public class TimeControlDto implements Serializable {
     @NotNull
     private LocalDateTime endDate;
 
+    private String detailUrl;
+
 }

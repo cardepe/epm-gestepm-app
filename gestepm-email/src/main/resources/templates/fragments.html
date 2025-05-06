@@ -1,3 +1,13 @@
+<th:block th:fragment="close-construction-share">
+    <p th:text="#{email.constructionshare.close.line.1(${fullName}, ${constructionShareId}, ${projectName}, ${createdAt}, ${closedAt})}"></p>
+    <p th:text="#{email.constructionshare.close.line.2}"></p>
+</th:block>
+
+<th:block th:fragment="close-programmed-share">
+    <p th:text="#{email.programmedshare.close.line.1(${fullName}, ${programmedShareId}, ${projectName}, ${createdAt}, ${closedAt})}"></p>
+    <p th:text="#{email.programmedshare.close.line.2}"></p>
+</th:block>
+
 <th:block th:fragment="close-inspection">
     <p th:text="#{email.inspection.close.line.1(${fullName}, ${action}, ${inspectionId}, ${forumTitle}, ${projectName}, ${createdAt}, ${closedAt})}"></p>
     <p th:text="#{email.inspection.close.line.2}"></p>
@@ -34,4 +44,9 @@
         <th:block th:text="#{email.noprogrammedshare.open.line.4}"></th:block>
         <a th:href="@{'http://forum.gestepm.com/' + ${forumUrl}}" th:text="@{'http://forum.gestepm.com/' + ${forumUrl}}"></a>.
     </p>
+</th:block>
+
+<th:block th:fragment="close-work-share">
+    <p th:text="#{email.workshare.close.line.1(${fullName}, ${workShareId}, ${projectName}, ${createdAt}, ${closedAt})}"></p>
+    <p th:text="#{email.workshare.close.line.2}"></p>
 </th:block>

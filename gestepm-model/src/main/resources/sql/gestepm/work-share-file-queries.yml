@@ -1,0 +1,55 @@
+sql:
+
+  qry-list-of-wsf: |
+    
+    SELECT
+      wsf.work_share_file_id AS id_pagination,
+      wsf.work_share_file_id,
+      wsf.work_share_id,
+      wsf.name,
+      wsf.content
+    FROM ${sch-gestepm}.work_share_file wsf
+    
+    #whereToken #filter
+
+  qry-create-wsf: |
+    
+    INSERT INTO ${sch-gestepm}.work_share_file (
+      work_share_id,
+      name,
+      content
+    )
+    VALUES (
+      :attr_wsf_share_id,
+      :attr_wsf_name,
+      :attr_wsf_content
+    )
+
+  qry-delete-wsf: |
+    
+    DELETE FROM ${sch-gestepm}.work_share_file WHERE work_share_file_id = :attr_wsf_id
+
+  filter-wsf-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-wsf-ids}
+      -- ${sql.predicate-for-wsf-share-id}
+    -- AND]
+
+  filter-wsf-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-wsf-id}
+    -- AND]
+
+  predicate-for-wsf-id: |
+
+    wsf.work_share_file_id = :attr_wsf_id
+
+  predicate-for-wsf-ids: |
+
+    wsf.work_share_file_id IN (:attr_wsf_ids)
+
+  predicate-for-wsf-share-id: |
+
+    wsf.work_share_id = :attr_wsf_share_id

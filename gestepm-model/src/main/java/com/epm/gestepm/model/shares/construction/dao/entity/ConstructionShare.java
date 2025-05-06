@@ -18,7 +18,18 @@ public class ConstructionShare implements AuditCreateClose, Serializable {
     private Integer userId;
 
     @NotNull
+    private String username;
+
+    @NotNull
     private Integer projectId;
+
+    @NotNull
+    private String projectName;
+
+    @NotNull
+    private LocalDateTime startDate;
+
+    private LocalDateTime endDate;
 
     private String observations;
 

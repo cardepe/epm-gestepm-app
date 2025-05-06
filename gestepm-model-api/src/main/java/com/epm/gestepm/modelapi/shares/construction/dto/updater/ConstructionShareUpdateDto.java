@@ -16,15 +16,17 @@ public class ConstructionShareUpdateDto {
 
     private Integer projectId;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime startDate;
 
-    private LocalDateTime closedAt;
+    private LocalDateTime endDate;
 
     private String observations;
 
-    private Integer operatorSignature;
+    private String operatorSignature;
 
     @Singular
     private Set<ConstructionShareFileCreateDto> files;
+
+    private Boolean notify;
 
 }

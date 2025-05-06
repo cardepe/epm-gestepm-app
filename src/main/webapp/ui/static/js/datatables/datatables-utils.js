@@ -118,6 +118,9 @@ function createDataTable(tableId, customDataTable, locale) {
         },
         fixedColumns: customDataTable.stickyColumns,
         dom: '<\'top\'i>rt<\'bottom\'p><\'clear\'>',
+        drawCallback: function (settings) {
+            generateQueryParams(settings);
+        },
     })
 }
 
@@ -140,7 +143,9 @@ function generateQueryParams(settings) {
     let currentURL = new URL(window.location.href);
     currentURL.search = '';
 
-    window.history.pushState(null, '', queryParams ? '?' + queryParams : currentURL.toString());
+    if (queryParams !== 'order=DESC&orderBy=id') {
+        window.history.pushState(null, '', queryParams ? '?' + queryParams : currentURL.toString());
+    }
 }
 
 function generateColumnDefs(customDataTable) {
@@ -255,8 +260,14 @@ function printActions(data, actions, id) {
 
     actions.forEach(a => {
 
+        let currentUrl = a.url;
+
+        if (currentUrl && data.detailUrl) {
+            currentUrl = currentUrl.replace('{detailUrl}', data.detailUrl);
+        }
+
         if (a.action === 'view') { // FIXME: && a.permission && authentication.permissions.includes(a.permission)) {
-            buttonHtml += '<a href="' + a.url.replace('{id}', id) + '" class="menu-link">' +
+            buttonHtml += '<a href="' + currentUrl.replace('{id}', id) + '" class="menu-link">' +
                 '<em class="far fa-eye"></em>' +
                 '</a>';
         }
@@ -275,7 +286,7 @@ function printActions(data, actions, id) {
 
         if (a.action === 'edit') { // FIXME: } && a.permission && authentication.permissions.includes(a.permission)) {
             if (a.type === 'redirect') {
-                buttonHtml += '<a href="' + a.url.replace('{id}', id) + '" class="menu-link">' +
+                buttonHtml += '<a href="' + currentUrl.replace('{id}', id) + '" class="menu-link">' +
                     '<em class="fas fa-edit"></em>' +
                     '</a>';
             } else {
@@ -289,10 +300,20 @@ function printActions(data, actions, id) {
             }
         }
 
+        if (a.action === 'file') {
+            if (checkConditionGroups(data, a.conditionGroups)) {
+                buttonHtml += '<a href="' + currentUrl.replace('{id}', id) + '" target="_blank" class="menu-link">' +
+                    '<em class="fas fa-file-alt"></em>' +
+                    '</a>';
+            }
+        }
+
         if (a.action === 'file-pdf') {
-            buttonHtml += '<a href="' + a.url.replace('{id}', id) + '" target="_blank" class="menu-link">' +
-                '<em class="fas fa-file-pdf" onclick="edit(' + id + ')"></em>' +
-                '</a>';
+            if (checkConditionGroups(data, a.conditionGroups)) {
+                buttonHtml += '<a href="' + currentUrl.replace('{id}', id) + '" target="_blank" class="menu-link">' +
+                    '<em class="fas fa-file-pdf"></em>' +
+                    '</a>';
+            }
         }
     });
 
@@ -316,6 +337,14 @@ function checkConditionGroups(data, conditionGroups) {
                         } else if (condition.value.includes('ROLE_ADMINISTRATION_ID')) {
                             return condition.current >= 7;
                         }
+                    }
+                } else if (condition.key === 'endDate') {
+                    if (condition.operation === '!==') {
+                        return condition.value[0] !== data.endDate;
+                    }
+                } else if (condition.key === 'shareType') {
+                    if (condition.operation === '===') {
+                        return condition.value.includes(data.type);
                     }
                 }
                 return false;

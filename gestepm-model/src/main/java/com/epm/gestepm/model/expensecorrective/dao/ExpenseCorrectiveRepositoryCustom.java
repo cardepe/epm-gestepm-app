@@ -1,7 +1,7 @@
 package com.epm.gestepm.model.expensecorrective.dao;
 
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpensesMonthDTO;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrectiveTableDTO;
 
 import java.util.List;

@@ -26,4 +26,6 @@ public class TimeControl implements Serializable {
   @NotNull
   private LocalDateTime endDate;
 
+  private String detailUrl;
+
 }

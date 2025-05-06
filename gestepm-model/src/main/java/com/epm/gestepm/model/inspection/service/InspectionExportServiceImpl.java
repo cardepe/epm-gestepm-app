@@ -33,6 +33,7 @@ import com.itextpdf.text.pdf.AcroFields;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfReader;
 import com.itextpdf.text.pdf.PdfStamper;
+import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,7 @@ import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
 
 @Service
 @Validated
+@AllArgsConstructor
 @EnableExecutionLog(layerMarker = SERVICE)
 public class InspectionExportServiceImpl implements InspectionExportService {
 
@@ -82,17 +84,6 @@ public class InspectionExportServiceImpl implements InspectionExportService {
     private final SubFamilyService subFamilyService;
     
     private final UserService userService;
-
-    public InspectionExportServiceImpl(FamilyService familyService, InspectionFileService inspectionFileService, LocaleProvider localeProvider, MessageSource messageSource, NoProgrammedShareService noProgrammedShareService, ProjectService projectService, SubFamilyService subFamilyService, UserService userService) {
-        this.familyService = familyService;
-        this.inspectionFileService = inspectionFileService;
-        this.localeProvider = localeProvider;
-        this.messageSource = messageSource;
-        this.noProgrammedShareService = noProgrammedShareService;
-        this.projectService = projectService;
-        this.subFamilyService = subFamilyService;
-        this.userService = userService;
-    }
 
     @Override
     public byte[] generate(InspectionDto inspection) {

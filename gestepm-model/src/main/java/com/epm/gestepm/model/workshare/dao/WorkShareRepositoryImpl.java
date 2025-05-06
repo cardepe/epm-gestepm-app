@@ -1,21 +1,14 @@
 package com.epm.gestepm.model.workshare.dao;
 
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
-import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
-import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpensesMonthDTO;
 import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
-import com.epm.gestepm.modelapi.workshare.dto.WorkShareTableDTO;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -25,143 +18,6 @@ public class WorkShareRepositoryImpl implements WorkShareRepositoryCustom {
 
 	@PersistenceContext	
 	private EntityManager entityManager;
-
-	@Override
-	public List<ShareTableDTO> findShareTableByActivityCenterId(Long id, Long activityCenterId, Long projectId, Integer progress) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<ShareTableDTO> cq = cb.createQuery(ShareTableDTO.class);
-
-			Root<WorkShare> root = cq.from(WorkShare.class);
-
-			cq.multiselect(root.get("id"), root.get("project").get("name"), root.get("startDate"), root.get("endDate"), cb.literal("ws"));
-
-			final List<Predicate> predicates = new ArrayList<>();
-			predicates.add(cb.equal(root.get("project").get("activityCenter"), activityCenterId));
-
-			if (id != null) {
-				predicates.add(cb.equal(root.get("id"), id));
-			}
-
-			if (progress != null) {
-
-				if (progress == 1) {
-					predicates.add(cb.isNull(root.get("endDate")));
-				} else {
-					predicates.add(cb.isNotNull(root.get("endDate")));
-				}
-			}
-
-			if (projectId != null) {
-				predicates.add(cb.equal(root.get("project"), projectId));
-			}
-
-			cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-
-			return entityManager.createQuery(cq).getResultList();
-
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
-	}
-
-	@Override
-	public Long findWorkSharesCountByUserId(Long userId) {
-		
-		try {
-			
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-			
-			Root<WorkShare> root = cq.from(WorkShare.class);
-			
-			cq.select(cb.count(root)).where(cb.equal(root.get("user"), userId));
-			
-			return entityManager.createQuery(cq).getSingleResult();
-			
-		} catch (Exception e) {
-			return 0L;
-		}
-	}
-	
-	@Override
-	public List<ShareTableDTO> findShareTableByProjectId(Long projectId) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<ShareTableDTO> cq = cb.createQuery(ShareTableDTO.class);
-			
-			Root<WorkShare> root = cq.from(WorkShare.class);
-
-			cq.multiselect(root.get("id"), root.get("project").get("name"), cb.concat(cb.concat(root.get("user").get("name"), " "), root.get("user").get("surnames")), root.get("startDate"), root.get("endDate"), cb.literal("ws")).where(cb.equal(root.get("project"), projectId));
-			
-			return entityManager.createQuery(cq).getResultList();
-			
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
-	}
-
-	@Override
-	public List<WorkShareTableDTO> findWorkSharesByUserDataTables(Long userId, PaginationCriteria pagination) {
-		
-		try {
-			
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<WorkShareTableDTO> cq = cb.createQuery(WorkShareTableDTO.class);
-
-			/* #BASE_QUERY */
-			
-			Root<WorkShare> isRoot = cq.from(WorkShare.class);
-			Join<WorkShare, Project> prRoot = isRoot.join("project", JoinType.INNER);
-			
-			List<Predicate> predicates = new ArrayList<>();
-			
-			cq.multiselect(isRoot.get("id").alias("id"), prRoot.get("name").alias("name"), isRoot.get("startDate"), isRoot.get("endDate"));
-			
-			/* END #BASE_QUERY */
-			
-			/* #WHERE_CLAUSE */
-			Predicate whereFilter = DataTableUtil.generateWhereCondition(pagination, cb, isRoot, prRoot);
-				
-			if (whereFilter != null) {
-				predicates.add(whereFilter);
-			}
-			/* END #WHERE_CLAUSE */
-			
-			/* #ORDER_CLAUSE */
-			List<Order> orderList = DataTableUtil.generateOrderByCondition(pagination, cb, isRoot, prRoot);
-			
-			if(!orderList.isEmpty()) {
-				cq.orderBy(orderList);
-			}
-			/* END #ORDER_CLAUSE */
-			
-			Predicate predicateUser = cb.equal(isRoot.get("user"), userId);
-			predicates.add(predicateUser);
-			
-			// Appending all Predicates
-			cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-		
-			TypedQuery<WorkShareTableDTO> criteriaQuery = entityManager.createQuery(cq);
-
-			/* #PAGE_NUMBER */
-			criteriaQuery.setFirstResult(pagination.getPageNumber());
-			/* END #PAGE_NUMBER */
-			
-			/* #PAGE_SIZE */
-			criteriaQuery.setMaxResults(pagination.getPageSize());
-			/* END #PAGE_SIZE */
-			
-			return criteriaQuery.getResultList();
-			
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
-	}
 	
 	@Override
 	public List<WorkShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId) {
@@ -173,19 +29,6 @@ public class WorkShareRepositoryImpl implements WorkShareRepositoryCustom {
 		
 		cq.select(root).where(cb.and(cb.between(root.get("endDate"), startDate, endDate), cb.equal(root.get("user"), userId)));
 		
-		return entityManager.createQuery(cq).getResultList();
-	}
-
-	@Override
-	public List<WorkShare> findWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId) {
-
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-		CriteriaQuery<WorkShare> cq = cb.createQuery(WorkShare.class);
-
-		Root<WorkShare> root = cq.from(WorkShare.class);
-
-		cq.select(root).where(cb.and(cb.between(root.get("endDate"), startDate, endDate), cb.equal(root.get("project"), projectId)));
-
 		return entityManager.createQuery(cq).getResultList();
 	}
 	

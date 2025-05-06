@@ -11,6 +11,7 @@ import com.epm.gestepm.lib.jdbc.api.query.fetch.SQLQueryFetchPage;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.model.shares.construction.dao.entity.ConstructionShare;
 import com.epm.gestepm.model.shares.displacement.dao.entity.DisplacementShare;
 import com.epm.gestepm.model.shares.displacement.dao.entity.creator.DisplacementShareCreate;
 import com.epm.gestepm.model.shares.displacement.dao.entity.deleter.DisplacementShareDelete;
@@ -29,6 +30,7 @@ import java.util.Optional;
 import static com.epm.gestepm.lib.jdbc.api.orderby.SQLOrderByType.DESC;
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
+import static com.epm.gestepm.model.shares.construction.dao.mappers.ConstructionShareRowMapper.*;
 import static com.epm.gestepm.model.shares.displacement.dao.constants.DisplacementShareQueries.*;
 import static com.epm.gestepm.model.shares.displacement.dao.mappers.DisplacementShareRowMapper.COL_DS_ID;
 
@@ -53,7 +55,7 @@ public class DisplacementShareDaoImpl implements DisplacementShareDao {
                 .useFilter(FILTER_DS_BY_PARAMS)
                 .withParams(filter.collectAttributes());
 
-        setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
+        this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
 
         return this.sqlDatasource.fetch(sqlQuery);
     }
@@ -75,7 +77,7 @@ public class DisplacementShareDaoImpl implements DisplacementShareDao {
                 .limit(limit)
                 .withParams(filter.collectAttributes());
 
-        setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
+        this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
 
         return this.sqlDatasource.fetch(sqlQuery);
     }
@@ -159,11 +161,24 @@ public class DisplacementShareDaoImpl implements DisplacementShareDao {
         this.sqlDatasource.execute(sqlQuery);
     }
 
-    private void setOrder(SQLOrderByType order, String orderBy, SQLQueryFetchMany<DisplacementShare> sqlQuery) {
-
-        final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id") ? orderBy : COL_DS_ID;
-        final SQLOrderByType orderStatement = order != null ? order : DESC;
-
+    private void setOrder(final SQLOrderByType order, final String orderBy, final SQLQueryFetchMany<DisplacementShare> sqlQuery) {
+        final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id")
+                ? this.getOrderColumn(orderBy)
+                : COL_DS_ID;
+        final SQLOrderByType orderStatement = order != null
+                ? order
+                : SQLOrderByType.DESC;
         sqlQuery.addOrderBy(orderByStatement, orderStatement);
+    }
+
+    private String getOrderColumn(final String orderBy) {
+        if ("project.name".equals(orderBy)) {
+            return COL_CS_P_NAME;
+        } else if ("startDate".equals(orderBy)) {
+            return COL_CS_START_DATE;
+        } else if ("endDate".equals(orderBy)) {
+            return COL_CS_END_DATE;
+        }
+        return orderBy;
     }
 }

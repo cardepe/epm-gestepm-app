@@ -1,0 +1,55 @@
+sql:
+
+  qry-list-of-psf: |
+    
+    SELECT
+      psf.programmed_share_file_id AS id_pagination,
+      psf.programmed_share_file_id,
+      psf.programmed_share_id,
+      psf.name,
+      psf.content
+    FROM ${sch-gestepm}.programmed_share_file psf
+    
+    #whereToken #filter
+
+  qry-create-psf: |
+    
+    INSERT INTO ${sch-gestepm}.programmed_share_file (
+      programmed_share_id,
+      name,
+      content
+    )
+    VALUES (
+      :attr_psf_share_id,
+      :attr_psf_name,
+      :attr_psf_content
+    )
+
+  qry-delete-psf: |
+    
+    DELETE FROM ${sch-gestepm}.programmed_share_file WHERE programmed_share_file_id = :attr_psf_id
+
+  filter-psf-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-psf-ids}
+      -- ${sql.predicate-for-psf-share-id}
+    -- AND]
+
+  filter-psf-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-psf-id}
+    -- AND]
+
+  predicate-for-psf-id: |
+
+    psf.programmed_share_file_id = :attr_psf_id
+
+  predicate-for-psf-ids: |
+
+    psf.programmed_share_file_id IN (:attr_psf_ids)
+
+  predicate-for-psf-share-id: |
+
+    psf.programmed_share_id = :attr_psf_share_id

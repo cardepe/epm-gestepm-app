@@ -14,4 +14,7 @@ public class ConstructionShareCreateDto {
     @NotNull
     private Integer projectId;
 
+    @NotNull
+    private LocalDateTime startDate;
+
 }

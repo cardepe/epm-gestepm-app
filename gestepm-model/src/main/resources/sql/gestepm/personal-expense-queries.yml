@@ -3,7 +3,6 @@ sql:
   qry-list-of-pe: |
     
     SELECT
-      pe.personal_expense_id AS id_pagination,
       pe.personal_expense_id,
       pe.personal_expense_sheet_id,
       pe.notice_date,
@@ -14,22 +13,27 @@ sql:
       pe.quantity,
       pe.amount,
       pe.payment_type,
-      pef.personal_expense_file_id
+      GROUP_CONCAT(pef.personal_expense_file_id) AS personal_expense_file_ids
     FROM ${sch-gestepm}.personal_expense pe
     LEFT JOIN ${sch-gestepm}.personal_expense_file pef ON pe.personal_expense_id = pef.personal_expense_id
 
     #whereToken #filter
+    GROUP BY pe.personal_expense_id
+    #orderByToken
 
   qry-page-of-pe: |
 
-    ${sql.paginated-query-group-prefix}
     ${sql.qry-list-of-pe}
-    ${sql.paginated-query-suffix}
+    ${sql.paginated-query}
 
   qry-count-of-pe: |
 
-    SELECT COUNT(DISTINCT id_pagination) AS "count"
-    FROM (${sql.qry-list-of-pe}) final
+    SELECT COUNT(DISTINCT personal_expense_id) AS "count"
+    FROM (
+      SELECT pe.personal_expense_id
+      FROM ${sch-gestepm}.personal_expense pe      
+      #whereToken #filter
+    ) final
 
   qry-create-pe: |
     

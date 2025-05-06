@@ -156,6 +156,7 @@
 						color: getColor(timeControl.type),
 						textColor: '#fff',
 						extendedProps: {
+							detailUrl: timeControl.detailUrl,
 							type: timeControl.type
 						}
 					}));
@@ -165,11 +166,10 @@
 			},
 			eventClick: function(info) {
 				const calendarSigning = info.event;
-				const id = calendarSigning.id;
-				const type = calendarSigning.extendedProps.type;
+				const detailUrl = calendarSigning.extendedProps.detailUrl;
 
-				if (type === 'TELEWORKING_SIGNING') {
-					window.location.href = '/signings/teleworking/' + id;
+				if (detailUrl) {
+					window.location.href = detailUrl;
 				} else {
 					loadModalForm(calendarSigning);
 				}

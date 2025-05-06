@@ -3,14 +3,13 @@ sql:
   qry-list-of-pes: |
     
     SELECT
-      pes.personal_expense_sheet_id AS id_pagination,
       pes.personal_expense_sheet_id,
       pes.project_id,
       pes.description,
       pes.status,
       pes.observations,
-      pe.personal_expense_id,
-      pe.amount,
+      GROUP_CONCAT(pe.personal_expense_id) AS personal_expense_ids,
+      GROUP_CONCAT(pe.amount) AS amounts,
       pes.created_at,
       pes.created_by,
       pes.approved_at,
@@ -23,17 +22,22 @@ sql:
     LEFT JOIN ${sch-gestepm}.personal_expense pe ON pes.personal_expense_sheet_id = pe.personal_expense_sheet_id
 
     #whereToken #filter
+    GROUP BY pes.personal_expense_sheet_id
+    #orderByToken
 
   qry-page-of-pes: |
 
-    ${sql.paginated-query-group-prefix}
     ${sql.qry-list-of-pes}
-    ${sql.paginated-query-suffix}
+    ${sql.paginated-query}
 
   qry-count-of-pes: |
 
-    SELECT COUNT(DISTINCT id_pagination) AS "count"
-    FROM (${sql.qry-list-of-pes}) final
+    SELECT COUNT(DISTINCT personal_expense_sheet_id) AS "count"
+    FROM (
+      SELECT pes.personal_expense_sheet_id
+      FROM ${sch-gestepm}.personal_expense_sheet pes
+      #whereToken #filter
+    ) final
 
   qry-create-pes: |
     

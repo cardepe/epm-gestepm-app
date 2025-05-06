@@ -3,7 +3,6 @@ sql:
   qry-list-of-i: |
     
     SELECT
-      i.inspection_id AS id_pagination,
       i.inspection_id,
       pr.id AS project_id,
       pr.name AS project_name,
@@ -22,11 +21,8 @@ sql:
       i.materials_file_name,
       i.equipment_hours,   
       i.topic_id,
-      ifi.inspection_file_id,
-      im.inspection_material_id AS material_id,
-      im.units AS material_units,
-      im.description AS material_description,
-      im.reference AS material_reference
+      GROUP_CONCAT(ifi.inspection_file_id) AS inspection_file_ids,
+      GROUP_CONCAT(CONCAT_WS('|', im.inspection_material_id, im.units, im.description, im.reference)) AS inspection_materials
     FROM ${sch-gestepm}.inspection i
     LEFT JOIN ${sch-gestepm}.no_programmed_share nps ON i.no_programmed_share_id = nps.no_programmed_share_id
     LEFT JOIN ${sch-gestepm}.inspection_file ifi ON i.inspection_id = ifi.inspection_id
@@ -35,17 +31,22 @@ sql:
     LEFT JOIN ${sch-gestepm}.users ft ON i.first_technical = ft.ID
 
     #whereToken #filter
+    GROUP BY i.inspection_id
+    #orderByToken
 
   qry-page-of-i: |
 
-    ${sql.paginated-query-group-prefix}
     ${sql.qry-list-of-i}
-    ${sql.paginated-query-suffix}
+    ${sql.paginated-query}
 
   qry-count-of-i: |
 
-    SELECT COUNT(DISTINCT id_pagination) AS "count"
-    FROM (${sql.qry-list-of-i}) final
+    SELECT COUNT(DISTINCT inspection_id) AS "count"
+    FROM (
+      SELECT i.inspection_id
+      FROM ${sch-gestepm}.inspection i
+      #whereToken #filter
+    ) final
 
   qry-create-i: |
     

@@ -3,7 +3,6 @@ sql:
   qry-list-of-ds: |
 
     SELECT
-      ds.displacement_share_id AS id_pagination,
       ds.displacement_share_id,
       ds.user_id,
       CONCAT(us.name, us.surnames) AS username,
@@ -22,17 +21,22 @@ sql:
     LEFT JOIN ${sch-gestepm}.users us ON ds.user_id = us.ID
 
     #whereToken #filter
+    GROUP BY ds.displacement_share_id
+    #orderByToken
 
   qry-page-of-ds: |
 
-    ${sql.paginated-query-group-prefix}
     ${sql.qry-list-of-ds}
-    ${sql.paginated-query-suffix}
+    ${sql.paginated-query}
 
   qry-count-of-ds: |
 
-    SELECT COUNT(DISTINCT id_pagination) AS "count"
-    FROM (${sql.qry-list-of-ds}) final
+    SELECT COUNT(DISTINCT displacement_share_id) AS "count"
+    FROM (
+      SELECT ds.displacement_share_id
+      FROM ${sch-gestepm}.displacement_share ds
+      #whereToken #filter
+    ) final
 
   qry-create-ds: |
 

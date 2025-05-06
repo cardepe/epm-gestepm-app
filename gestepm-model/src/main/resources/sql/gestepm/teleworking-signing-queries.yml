@@ -3,7 +3,6 @@ sql:
   qry-list-of-ts: |
 
     SELECT
-      ts.teleworking_signing_id AS id_pagination,
       ts.teleworking_signing_id,
       ts.user_id,
       ts.project_id,
@@ -16,17 +15,22 @@ sql:
     LEFT JOIN ${sch-gestepm}.projects pr ON ts.project_id = pr.id
 
     #whereToken #filter
+    GROUP BY ts.teleworking_signing_id
+    #orderByToken
 
   qry-page-of-ts: |
 
-    ${sql.paginated-query-group-prefix}
     ${sql.qry-list-of-ts}
-    ${sql.paginated-query-suffix}
+    ${sql.paginated-query}
 
   qry-count-of-ts: |
 
-    SELECT COUNT(DISTINCT id_pagination) AS "count"
-    FROM (${sql.qry-list-of-ts}) final
+    SELECT COUNT(DISTINCT teleworking_signing_id) AS "count"
+    FROM (
+      SELECT ts.teleworking_signing_id
+      FROM ${sch-gestepm}.teleworking_signing ts      
+      #whereToken #filter
+    ) final
 
   qry-create-ts: |
 

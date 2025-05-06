@@ -38,7 +38,7 @@
                 <form id="form">
                     <input id="geolocationInput" type="hidden" name="geolocation"/>
 
-                    <div id="form-page-header" class="page-header">
+                    <div id="form-page-header" class="page-header pl-3">
                         <div class="row start-date-info-row">
                             <div class="col" style="margin-top: -3px">
                                 <span class="start-date-info"></span>
@@ -56,7 +56,7 @@
                             </div>
 
                             <div class="col-sm-12 col-md-3 p-0 pl-1">
-                                <button type="button" class="btn btn-default btn-sm" onclick="submitTeleworking()">
+                                <button type="button" class="btn btn-default btn-sm w-100" onclick="submitTeleworking()">
                                     <spring:message code="init"/>
                                 </button>
                             </div>

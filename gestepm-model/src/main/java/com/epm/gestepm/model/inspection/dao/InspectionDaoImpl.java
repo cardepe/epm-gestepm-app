@@ -20,8 +20,8 @@ import com.epm.gestepm.model.inspection.dao.entity.deleter.MaterialDelete;
 import com.epm.gestepm.model.inspection.dao.entity.filter.InspectionFilter;
 import com.epm.gestepm.model.inspection.dao.entity.finder.InspectionByIdFinder;
 import com.epm.gestepm.model.inspection.dao.entity.updater.InspectionUpdate;
-import com.epm.gestepm.model.inspection.dao.mappers.InspectionRSManyExtractor;
-import com.epm.gestepm.model.inspection.dao.mappers.InspectionRSOneExtractor;
+import com.epm.gestepm.model.inspection.dao.mappers.InspectionRowMapper;
+import com.epm.gestepm.model.personalexpensesheet.dao.mappers.PersonalExpenseSheetRowMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -59,7 +59,7 @@ public class InspectionDaoImpl implements InspectionDao {
     public List<Inspection> list(InspectionFilter filter) {
 
         final SQLQueryFetchMany<Inspection> sqlQuery = new SQLQueryFetchMany<Inspection>()
-                .useRsExtractor(new InspectionRSManyExtractor())
+                .useRowMapper(new InspectionRowMapper())
                 .useQuery(QRY_LIST_OF_I)
                 .useFilter(FILTER_I_BY_PARAMS)
                 .withParams(filter.collectAttributes());
@@ -78,7 +78,7 @@ public class InspectionDaoImpl implements InspectionDao {
     public Page<Inspection> list(InspectionFilter filter, Long offset, Long limit) {
 
         final SQLQueryFetchPage<Inspection> sqlQuery = new SQLQueryFetchPage<Inspection>()
-                .useRsExtractor(new InspectionRSManyExtractor())
+                .useRowMapper(new InspectionRowMapper())
                 .useQuery(QRY_PAGE_OF_I)
                 .useCountQuery(QRY_COUNT_OF_I)
                 .useFilter(FILTER_I_BY_PARAMS)
@@ -100,7 +100,7 @@ public class InspectionDaoImpl implements InspectionDao {
     public Optional<Inspection> find(InspectionByIdFinder finder) {
 
         final SQLQueryFetchOne<Inspection> sqlQuery = new SQLQueryFetchOne<Inspection>()
-                .useRsExtractor(new InspectionRSOneExtractor())
+                .useRowMapper(new InspectionRowMapper())
                 .useQuery(QRY_LIST_OF_I)
                 .useFilter(FILTER_I_BY_ID)
                 .withParams(finder.collectAttributes());

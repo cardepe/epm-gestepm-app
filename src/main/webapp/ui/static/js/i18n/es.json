@@ -116,7 +116,23 @@
     "shares": {
         "name": "Parte",
         "construction": {
-            "name": "Parte de construcción"
+            "name": "Parte de construcción",
+            "create": {
+                "success": "Parte de construcción creado con éxito."
+            },
+            "delete" : {
+                "alert": "¿Está seguro que quiere borrar el parte de construcción {0}?",
+                "success": "Parte de construcción nº {0} eliminado con éxito."
+            },
+            "update": {
+                "success": "Se ha actualizado el parte de construcción con éxito."
+            },
+            "files": {
+                "delete": {
+                    "alert": "¿Está seguro que desea eliminar el adjunto {0}?",
+                    "success": "Adjunto {0} eliminado con éxito."
+                }
+            }
         },
         "displacement": {
             "name": "Parte de desplazamiento",
@@ -133,6 +149,7 @@
         },
         "noprogrammed": {
             "delete": {
+                "alert": "¿Está seguro que quiere borrar el parte no programado {0}?",
                 "success": "Parte de intervención no programado nº {0} eliminado con éxito."
             },
             "title": "Parte de intervención no programado nº {0}",
@@ -153,10 +170,42 @@
             "postForumUrl": "Puede ver la entrada en el foro clicando aquí."
         },
         "programmed": {
-            "name": "Parte programado"
+            "name": "Parte programado",
+            "create": {
+                "success": "Parte programado creado con éxito."
+            },
+            "delete" : {
+                "alert": "¿Está seguro que quiere borrar el parte programado {0}?",
+                "success": "Parte programado nº {0} eliminado con éxito."
+            },
+            "update": {
+                "success": "Se ha actualizado el parte programado con éxito."
+            },
+            "files": {
+                "delete": {
+                    "alert": "¿Está seguro que desea eliminar el adjunto {0}?",
+                    "success": "Adjunto {0} eliminado con éxito."
+                }
+            }
         },
         "work": {
-            "name": "Parte de trabajo"
+            "name": "Parte de trabajo",
+            "create": {
+                "success": "Parte de trabajo creado con éxito."
+            },
+            "delete" : {
+                "alert": "¿Está seguro que quiere borrar el parte de trabajo {0}?",
+                "success": "Parte de trabajo nº {0} eliminado con éxito."
+            },
+            "update": {
+                "success": "Se ha actualizado el parte de trabajo con éxito."
+            },
+            "files": {
+                "delete": {
+                    "alert": "¿Está seguro que desea eliminar el adjunto {0}?",
+                    "success": "Adjunto {0} eliminado con éxito."
+                }
+            }
         }
     },
     "priceType": {

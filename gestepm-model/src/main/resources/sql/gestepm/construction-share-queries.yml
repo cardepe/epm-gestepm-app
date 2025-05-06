@@ -3,45 +3,56 @@ sql:
   qry-list-of-cs: |
 
     SELECT
-      cs.construction_share_id AS id_pagination,
       cs.construction_share_id,
       cs.user_id,
+      CONCAT(us.name, us.surnames) AS username,
       cs.project_id,
+      p.name AS project_name,
       cs.observations,
+      cs.start_date,
+      cs.end_date,
       cs.operator_signature,
       cs.created_at,
       cs.created_by,
       cs.closed_at,
       cs.closed_by,
-      csf.id AS construction_share_file_id
+      GROUP_CONCAT(csf.construction_share_file_id) AS construction_share_file_ids
     FROM ${sch-gestepm}.construction_share cs
-    LEFT JOIN ${sch-gestepm}.projects p ON p.id = cs.projct_id
-    LEFT JOIN ${sch-gestepm}.activity_center ac ON ac.activity_center_id = p.activity_center_id
+    LEFT JOIN ${sch-gestepm}.projects p ON p.id = cs.project_id
+    LEFT JOIN ${sch-gestepm}.users us ON cs.user_id = us.ID
+    LEFT JOIN ${sch-gestepm}.construction_share_file csf ON cs.construction_share_id = csf.construction_share_id
 
     #whereToken #filter
+    GROUP BY cs.construction_share_id
+    #orderByToken
 
   qry-page-of-cs: |
 
-    ${sql.paginated-query-group-prefix}
     ${sql.qry-list-of-cs}
-    ${sql.paginated-query-suffix}
+    ${sql.paginated-query}
 
   qry-count-of-cs: |
 
-    SELECT COUNT(DISTINCT id_pagination) AS "count"
-    FROM (${sql.qry-list-of-cs}) final
+    SELECT COUNT(DISTINCT construction_share_id) AS "count"
+    FROM (
+      SELECT cs.construction_share_id
+      FROM ${sch-gestepm}.construction_share cs
+      #whereToken #filter
+    ) final
 
   qry-create-cs: |
 
     INSERT INTO ${sch-gestepm}.construction_share (
       user_id,
       project_id,
+      start_date,
       created_at,
       created_by
     )
     VALUES (
       :attr_cs_u_id,
       :attr_cs_p_id,
+      :attr_cs_start_date,
       :attr_cs_created_at,
       :attr_cs_created_by
     )
@@ -51,11 +62,13 @@ sql:
     UPDATE
       ${sch-gestepm}.construction_share
     SET
-      created_at = :attr_cs_created_at,
-      closed_at = :attr_cs_closed_at,
-      closed_by = :attr_cs_closed_by,
+      project_id = :attr_cs_p_id,
+      start_date = :attr_cs_start_date,
+      end_date = :attr_cs_end_date,
       observations = :attr_cs_observations,
-      operator_signature = :attr_cs_operator_signature
+      operator_signature = :attr_cs_operator_signature,
+      closed_at = :attr_cs_closed_at,
+      closed_by = :attr_cs_closed_by
     WHERE
       construction_share_id = :attr_cs_id
 
@@ -67,12 +80,11 @@ sql:
 
     -- [AND
       -- ${sql.predicate-for-cs-ids}
-      -- ${sql.predicate-for-cs-u-id}
-      -- ${sql.predicate-for-cs-p-id}
+      -- ${sql.predicate-for-cs-u-ids}
+      -- ${sql.predicate-for-cs-p-ids}
       -- ${sql.predicate-for-cs-start-date}
       -- ${sql.predicate-for-cs-end-date}
-      -- ${sql.predicate-for-cs-progress}
-      -- ${sql.predicate-for-cs-ac-id}
+      -- ${sql.predicate-for-cs-status}
     -- AND]
 
   filter-cs-by-id: |
@@ -89,26 +101,22 @@ sql:
 
     cs.construction_share_id IN (:attr_cs_ids)
 
-  predicate-for-cs-u-id: |
+  predicate-for-cs-u-ids: |
 
-    cs.user_id = :attr_cs_u_id
+    cs.user_id IN (:attr_cs_u_ids)
 
-  predicate-for-cs-p-id: |
+  predicate-for-cs-p-ids: |
 
-    cs.project_id = :attr_cs_p_id
+    cs.project_id IN (:attr_cs_p_ids)
 
   predicate-for-cs-start-date: |
 
-    cs.created_at > :attr_cs_created_at
+    cs.start_date > :attr_cs_start_date
 
   predicate-for-cs-end-date: |
 
-    cs.closed_at < :attr_cs_closed_at
+    cs.end_date < :attr_cs_end_date
 
-  predicate-for-cs-progress: |
-
-    (:attr_cs_progress = 1 AND cs.end_date IS NULL) OR (cs.end_date IS NOT NULL)
-
-  predicate-for-cs-ac-id: |
-
-    ac.id = :attr_cs_ac_id
+  predicate-for-cs-status: |
+    
+    :attr_cs_status IS NOT NULL AND ((:attr_cs_status = 'NOT_FINISHED' AND cs.end_date IS NULL) OR (:attr_cs_status = 'FINISHED' AND cs.end_date IS NOT NULL))

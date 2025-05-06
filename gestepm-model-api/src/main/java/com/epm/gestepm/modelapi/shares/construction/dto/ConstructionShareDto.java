@@ -1,12 +1,10 @@
 package com.epm.gestepm.modelapi.shares.construction.dto;
 
 import lombok.Data;
-import lombok.Singular;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Data
@@ -19,7 +17,18 @@ public class ConstructionShareDto implements Serializable {
     private Integer userId;
 
     @NotNull
+    private String username;
+
+    @NotNull
     private Integer projectId;
+
+    @NotNull
+    private String projectName;
+
+    @NotNull
+    private LocalDateTime startDate;
+
+    private LocalDateTime endDate;
 
     private String observations;
 

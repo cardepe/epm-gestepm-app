@@ -2,27 +2,29 @@ package com.epm.gestepm.modelapi.shares.construction.dto.filter;
 
 import com.epm.gestepm.lib.cache.CacheKeyBuilder;
 import com.epm.gestepm.lib.cache.UsableAsCacheKey;
+import com.epm.gestepm.lib.dto.OrderableDto;
+import com.epm.gestepm.modelapi.shares.common.dto.ShareStatusDto;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
-public class ConstructionShareFilterDto implements UsableAsCacheKey {
+@EqualsAndHashCode(callSuper = true)
+public class ConstructionShareFilterDto extends OrderableDto implements UsableAsCacheKey {
 
   private List<Integer> ids;
 
-  private Integer userId;
+  private List<Integer> userIds;
 
-  private Integer projectId;
+  private List<Integer> projectIds;
 
   private LocalDateTime startDate;
 
   private LocalDateTime endDate;
 
-  private Integer progress;
-
-  private Integer activityCenterId;
+  private ShareStatusDto status;
 
   @Override
   public String asCacheKey() {
@@ -30,12 +32,12 @@ public class ConstructionShareFilterDto implements UsableAsCacheKey {
     final CacheKeyBuilder cacheKeyBuilder = new CacheKeyBuilder();
 
     cacheKeyBuilder.addElement("ids", this.ids);
-    cacheKeyBuilder.addElement("userId", this.userId);
-    cacheKeyBuilder.addElement("projectId", this.projectId);
+    cacheKeyBuilder.addElement("userIds", this.userIds);
+    cacheKeyBuilder.addElement("projectIds", this.projectIds);
     cacheKeyBuilder.addElement("startDate", this.startDate);
     cacheKeyBuilder.addElement("endDate", this.endDate);
-    cacheKeyBuilder.addElement("progress", this.progress);
-    cacheKeyBuilder.addElement("activityCenterId", this.activityCenterId);
+    cacheKeyBuilder.addElement("status", this.status);
+    cacheKeyBuilder.addElement("orderable", super.toString());
 
     return cacheKeyBuilder.toString();
   }

@@ -29,11 +29,6 @@
 	
 	<!-- CSS Year Calendar -->
 	<link rel="stylesheet" href="/ui/static/css/plugins/js-year-calendar/js-year-calendar.min.css">
-	
-	<c:if test="${pageName eq '/shares/intervention'}">
-		<!-- CSS BS Stepper -->
-		<link rel="stylesheet" href="/ui/static/css/plugins/bs-stepper/bs-stepper.css">
-	</c:if>
 
 	<c:if test="${fn:startsWith(pageName, '/signing') || fn:startsWith(pageName, '/shares') || fn:startsWith(pageName, '/expenses') || fn:startsWith(pageName, '/users') || fn:startsWith(pageName,'/projects') || fn:startsWith(pageName,'/holidays/admin')}">
 		<!-- CSS Select 2 -->
@@ -51,7 +46,7 @@
 		<link rel="stylesheet" href="/webjars/bootstrap-select/1.13.17/css/bootstrap-select.min.css">
 	</c:if>
 	
-	<c:if test="${fn:startsWith(pageName,'/projects/') || pageName eq '/shares/intervention' || pageName eq '/shares/work'}">
+	<c:if test="${fn:startsWith(pageName,'/projects/') || pageName eq '/shares/work'}">
 		<!-- CSS Lightbox -->
 		<link rel="stylesheet" href="/webjars/lightbox2/2.11.1/dist/css/lightbox.min.css">
 	</c:if>
@@ -92,7 +87,7 @@
 
 	</c:if>
 	
-	<c:if test="${pageName eq '/shares/intervention' || fn:startsWith(pageName, '/shares/no-programmed/') || pageName eq '/signing'}">
+	<c:if test="${fn:startsWith(pageName, '/shares/no-programmed/') || pageName eq '/signing'}">
 	
 		<!-- JS BS Stepper -->
 		<script type="text/javascript" src="/ui/static/js/plugins/bs-stepper/bs-stepper.min.js"></script>
@@ -120,7 +115,7 @@
 		<script type="text/javascript" src="/webjars/bootstrap-select/1.13.17/js/bootstrap-select.min.js"></script>
 	</c:if>
 	
-	<c:if test="${fn:startsWith(pageName,'/projects/') || pageName eq '/shares/intervention' || pageName eq '/shares/work'}">
+	<c:if test="${fn:startsWith(pageName,'/projects/') || pageName eq '/shares/work'}">
 		<!-- JS Lightbox -->
 		<script type="text/javascript" src="/webjars/lightbox2/2.11.1/dist/js/lightbox.min.js"></script>
 	</c:if>

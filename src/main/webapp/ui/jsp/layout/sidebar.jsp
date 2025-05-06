@@ -63,9 +63,12 @@
                 <sec:authorize access="hasAuthority('ROLE_OPERARIO')">
 	                <li class="menu-item-has-children dropdown <c:if test="${fn:startsWith(pageName, '/shares')}">active</c:if>">
 	                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-clipboard"></i><spring:message code="sidebar.share" /></a>
-	                    <ul class="sub-menu children dropdown-menu">                            
-	                    	<li><i class="fa fa-hand-paper"></i><a href="/shares/intervention"><spring:message code="sidebar.share.intervention" /></a></li>
-	                    	<li><i class="fa fa-car"></i><a href="/shares/displacement"><spring:message code="sidebar.share.displacement" /></a></li>
+	                    <ul class="sub-menu children dropdown-menu">
+							<li><i class="fa fa-cog"></i><a href="/shares/construction"><spring:message code="sidebar.share.construction" /></a></li>
+							<li><i class="fa fa-car"></i><a href="/shares/displacement"><spring:message code="sidebar.share.displacement" /></a></li>
+	                    	<li><i class="fa fa-exclamation-triangle"></i><a href="/shares/no-programmed"><spring:message code="sidebar.share.intervention" /></a></li>
+							<li><i class="fa fa-clock"></i><a href="/shares/programmed"><spring:message code="sidebar.share.programmed" /></a></li>
+							<li><i class="fa fa-hand-paper"></i><a href="/shares/work"><spring:message code="sidebar.share.work" /></a></li>
 	                    </ul>
 	                </li>
                 </sec:authorize>

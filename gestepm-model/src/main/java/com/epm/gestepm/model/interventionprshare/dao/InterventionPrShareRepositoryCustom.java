@@ -1,17 +1,14 @@
 package com.epm.gestepm.model.interventionprshare.dao;
 
-import com.epm.gestepm.modelapi.expense.dto.ExpensesMonthDTO;
-import com.epm.gestepm.modelapi.interventionprshare.dto.InterventionPrShare;
-import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
+import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpensesMonthDTO;
+import com.epm.gestepm.modelapi.deprecated.interventionprshare.dto.InterventionPrShare;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface InterventionPrShareRepositoryCustom {
 
-	List<ShareTableDTO> findShareTableByActivityCenterId(Long id, Long activityCenterId, Long projectId, Integer progress);
-	List<ShareTableDTO> findShareTableByProjectId(Long projectId);
 	List<InterventionPrShare> findWeekSigningsByUserId(LocalDateTime startDate, LocalDateTime endDate, Long userId);
-	List<InterventionPrShare> findWeekSigningsByProjectId(LocalDateTime startDate, LocalDateTime endDate, Long projectId);
 	List<ExpensesMonthDTO> findExpensesMonthDTOByProjectId(Long projectId, Integer year);
+
 }

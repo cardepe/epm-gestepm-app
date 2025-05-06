@@ -148,3 +148,62 @@ function getSigningText(type) {
 
 	return '';
 }
+
+function parseShareType(type) {
+	const badgeText = getSigningText(type);
+
+	if (type === 'CONSTRUCTION_SHARES') {
+		return '<span class="badge badge-success">' + badgeText + '</span>';
+	} else if (type === 'DISPLACEMENT_SHARES') {
+		return '<span class="badge badge-warning">' + badgeText + '</span>';
+	} else if (type === 'PROGRAMMED_SHARES') {
+		return '<div class="badge badge-secondary">' + badgeText + '</div>';
+	} else if (type === 'INSPECTIONS') {
+		return '<span class="badge badge-primary">' + badgeText + '</span>';
+	} else if (type === 'WORK_SHARES') {
+		return '<span class="badge badge-info">' + badgeText + '</span>';
+	}
+
+	return '';
+}
+
+function preloadSignatures(signaturePad, canvas, signatureClass, signature) {
+	if (signaturePad[signatureClass]) {
+		signaturePad[signatureClass].clear();
+	}
+
+	canvas[signatureClass] = document.querySelector('.' + signatureClass + '-signature .signature-canvas');
+
+	resizeCanvas(canvas[signatureClass]);
+
+	signaturePad[signatureClass] = new SignaturePad(canvas[signatureClass]);
+	if (typeof signature !== 'undefined' && signature !== '') {
+		signaturePad[signatureClass].fromDataURL(signature);
+	}
+}
+
+function resizeCanvas(canvas) {
+	let ratio = Math.max(window.devicePixelRatio || 1, 1);
+
+	if (typeof canvas !== 'undefined' && canvas) {
+		canvas.width = canvas.offsetWidth * ratio;
+		canvas.height = canvas.offsetHeight * ratio;
+		canvas.getContext("2d").scale(ratio, ratio);
+	}
+}
+
+async function parseFiles(editForm) {
+	const selector = editForm.querySelector('[name="files"]');
+	let filesData = [];
+	if (selector && selector.files) {
+		for (let i = 0; i < selector.files.length; i++) {
+			const file = selector.files[i];
+
+			filesData.push({
+				name: file.name,
+				content: await toBase64(file)
+			});
+		}
+	}
+	return filesData ? filesData : null;
+}

@@ -5,8 +5,6 @@ import com.epm.gestepm.forum.model.api.service.UserForumService;
 import com.epm.gestepm.model.family.service.mapper.FamilyMapper;
 import com.epm.gestepm.model.materialrequired.service.mapper.MaterialRequiredMapper;
 import com.epm.gestepm.model.project.service.mapper.ProjectMapper;
-import com.epm.gestepm.model.shares.displacement.mapper.MapDSToShareTableDto;
-import com.epm.gestepm.model.shares.noprogrammed.mapper.MapIToShareTableDto;
 import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.deprecated.activitycenter.service.ActivityCenterService;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
@@ -15,7 +13,6 @@ import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.constructionshare.service.ConstructionShareOldService;
 import com.epm.gestepm.modelapi.customer.dto.Customer;
 import com.epm.gestepm.modelapi.customer.dto.CustomerDTO;
 import com.epm.gestepm.modelapi.customer.service.CustomerService;
@@ -23,11 +20,7 @@ import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
 import com.epm.gestepm.modelapi.family.dto.FamilyTableDTO;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
-import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
-import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
 import com.epm.gestepm.modelapi.inspection.service.InspectionService;
-import com.epm.gestepm.modelapi.interventionprshare.service.InterventionPrShareService;
-import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.ShareTableDTO;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequiredDTO;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequiredTableDTO;
@@ -35,14 +28,14 @@ import com.epm.gestepm.modelapi.materialrequired.service.MaterialRequiredService
 import com.epm.gestepm.modelapi.project.dto.*;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.role.dto.Role;
-import com.epm.gestepm.modelapi.shares.displacement.dto.DisplacementShareDto;
-import com.epm.gestepm.modelapi.shares.displacement.dto.filter.DisplacementShareFilterDto;
+import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareService;
 import com.epm.gestepm.modelapi.shares.displacement.service.DisplacementShareService;
+import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareService;
+import com.epm.gestepm.modelapi.shares.work.service.WorkShareService;
 import com.epm.gestepm.modelapi.user.dto.User;
 import com.epm.gestepm.modelapi.user.dto.UserDTO;
 import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
 import com.epm.gestepm.modelapi.user.service.UserService;
-import com.epm.gestepm.modelapi.workshare.service.WorkShareService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -64,8 +57,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.mapstruct.factory.Mappers.getMapper;
-
 @Controller
 @RequestMapping("/projects")
 public class ProjectController {
@@ -79,22 +70,7 @@ public class ProjectController {
 	private ActivityCenterService activityCenterServiceOld;
 	
 	@Autowired
-	private ConstructionShareOldService constructionShareOldService;
-
-	@Autowired
-	private InspectionService inspectionService;
-
-	@Autowired
-	private InterventionPrShareService interventionPrShareService;
-	
-	@Autowired
-	private WorkShareService workShareService;
-	
-	@Autowired
 	private CustomerService customerService;
-	
-	@Autowired
-	private DisplacementShareService displacementShareService;
 
 	@Autowired
 	private MessageSource messageSource;
@@ -531,6 +507,7 @@ public class ProjectController {
 			List<Long> responsablesIds = project.getResponsables().stream().map(User::getId).collect(Collectors.toList());
 
 			// Add project to model
+			model.addAttribute("projectId", id);
 			model.addAttribute("userDTOs", userDTOs);
 			model.addAttribute("project", project);
 			model.addAttribute("notMembers", notMembers);
@@ -546,7 +523,6 @@ public class ProjectController {
 			// Load Action Buttons for DataTable
 			model.addAttribute("tableActionButtons", ModelUtil.getTableActionButtonsOnlyTrash());
 			model.addAttribute("tableModifyButtons", ModelUtil.getTableModifyActionButtons());
-			model.addAttribute("tableShareActionButtons", ModelUtil.getTableProjectShareActionButtons());
 			model.addAttribute("tableExpenseActionButtons", ModelUtil.getTableExpenseActionButtons());
 			model.addAttribute("tableEquipmentActionButtons", ModelUtil.getTableModifyActionButtons());			
 
@@ -715,32 +691,6 @@ public class ProjectController {
 
 		if (materialsRequired != null && !materialsRequired.isEmpty() && !dataTableInRQ.getPaginationRequest().isFilterByEmpty()) {
 			dataTableResult.setRecordsFiltered(Integer.toString(materialsRequired.size()));
-		}
-
-		return dataTableResult;
-	}
-
-	@SuppressWarnings("unchecked")
-	@ResponseBody
-	@GetMapping("/{id}/signings/dt")
-	public DataTableResults<ShareTableDTO> projectSigningsDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
-
-		DataTableRequest<Project> dataTableInRQ = new DataTableRequest<>(request);
-		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
-		
-		Object[] obj = filterByShare(id, (pagination.getPageNumber() / pagination.getPageSize()), pagination.getPageSize());
-
-		Long totalRecords = (Long) obj[0];
-		List<ShareTableDTO> signings = (List<ShareTableDTO>) obj[1];
-
-		DataTableResults<ShareTableDTO> dataTableResult = new DataTableResults<>();
-		dataTableResult.setDraw(dataTableInRQ.getDraw());
-		dataTableResult.setData(signings);
-		dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
-		dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
-
-		if (signings != null && !signings.isEmpty() && !dataTableInRQ.getPaginationRequest().isFilterByEmpty()) {
-			dataTableResult.setRecordsFiltered(Integer.toString(signings.size()));
 		}
 
 		return dataTableResult;
@@ -1179,54 +1129,5 @@ public class ProjectController {
 		}
 		
 		return strText.toString();
-	}
-	
-	private Object[] filterByShare(Long projectId, Integer pageNumber, Integer pageSize) {
-
-		// TODO: need refactor for MULTIQUERY.
-
-		List<ShareTableDTO> shareTableDTOs = new ArrayList<>();
-
-		List<ShareTableDTO> csShareTableDTOs = constructionShareOldService.getShareTableByProjectId(projectId);
-		List<ShareTableDTO> dsShareTableDTOs = this.getDisplacementShares(projectId.intValue());
-		List<ShareTableDTO> ipsShareTableDTOs = interventionPrShareService.getShareTableByProjectId(projectId);
-		List<ShareTableDTO> isShareTableDTOs = this.getInspections(projectId.intValue());
-		List<ShareTableDTO> wsShareTableDTOs = workShareService.getShareTableByProjectId(projectId);
-
-		shareTableDTOs.addAll(csShareTableDTOs);
-		shareTableDTOs.addAll(dsShareTableDTOs);
-		shareTableDTOs.addAll(ipsShareTableDTOs);
-		shareTableDTOs.addAll(isShareTableDTOs);
-		shareTableDTOs.addAll(wsShareTableDTOs);
-
-		Collections.sort(shareTableDTOs, 
-                (o1, o2) -> o2.getStartDate().compareTo(o1.getStartDate()));
-		
-		int fromIndex = pageNumber * pageSize;
-		
-		Object[] obj = new Object[2];
-		
-		obj[0] = new Long(shareTableDTOs.size());
-		obj[1] = shareTableDTOs.subList(fromIndex, Math.min(fromIndex + pageSize, shareTableDTOs.size()));
-		
-		return obj;
-	}
-
-	private List<ShareTableDTO> getDisplacementShares(final Integer projectId) {
-		final DisplacementShareFilterDto filter = new DisplacementShareFilterDto();
-		filter.setProjectIds(List.of(projectId));
-
-		final List<DisplacementShareDto> displacementShares = this.displacementShareService.list(filter);
-
-		return getMapper(MapDSToShareTableDto.class).from(displacementShares);
-	}
-
-	private List<ShareTableDTO> getInspections(final Integer projectId) {
-		final InspectionFilterDto filter = new InspectionFilterDto();
-		filter.setProjectId(projectId);
-
-		final List<InspectionDto> inspections = this.inspectionService.list(filter);
-
-		return getMapper(MapIToShareTableDto.class).from(inspections);
 	}
 }

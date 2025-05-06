@@ -40,8 +40,6 @@
     let locale = '${locale}';
     let share;
     let inspection;
-    let canvas, canvasOp;
-    let signaturePad, signaturePadOp;
 
     async function getInspection() {
         await axios.get('/v1' + window.location.pathname, { params: { _expand: 'files,firstTechnical,secondTechnical' }}).then((response) => {
