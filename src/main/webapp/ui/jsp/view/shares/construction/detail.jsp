@@ -48,7 +48,7 @@
                                 <select class="form-control input mt-1" name="projectId" required>
                                     <option></option>
                                     <c:forEach items="${projects}" var="project">
-                                        <option value="${project.id}" ${project.id == share.projectId ? 'selected' : ''}><spring:message code="${project.name}"/></option>
+                                        <option value="${project.id}" ${project.id == constructionShare.projectId ? 'selected' : ''}><spring:message code="${project.name}"/></option>
                                     </c:forEach>
                                 </select>
                             </label>
@@ -58,7 +58,7 @@
                     <div class="col-sm-12 col-md-4">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100"><spring:message code="start.date" />
-                                <input name="startDate" type="datetime-local" class="form-control mt-1" value="${share.startDate}" required />
+                                <input name="startDate" type="datetime-local" class="form-control mt-1" value="${constructionShare.startDate}" required />
                             </label>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                     <div class="col-sm-12 col-md-4">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100"><spring:message code="end.date"/>
-                                <input name="endDate" type="datetime-local" class="form-control mt-1" value="${share.endDate}" />
+                                <input name="endDate" type="datetime-local" class="form-control mt-1" value="${constructionShare.endDate}" />
                             </label>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                     <div class="col-sm-12 col-md-8">
                         <div class="form-group">
                             <label class="col-form-label w-100"><spring:message code="observations" />
-                                <textarea name="observations" type="text" class="form-control" rows="6" required>${share.observations}</textarea>
+                                <textarea name="observations" type="text" class="form-control" rows="6" required>${constructionShare.observations}</textarea>
                             </label>
                         </div>
                     </div>
@@ -140,7 +140,7 @@
 
     const locale = '${locale}';
     const canUpdate = ${canUpdate};
-    const isShareFinished = ${ share.endDate != null };
+    const isShareFinished = ${ constructionShare.endDate != null };
     const files = <%= filesJson %>;
 
     let signatures = { operator: null }
@@ -148,7 +148,7 @@
 
     $(document).ready(function() {
         initializeSelects();
-        loadSignatures('${share.operatorSignature}');
+        loadSignatures('${constructionShare.operatorSignature}');
         loadFiles(files);
         initialize();
         save();
@@ -298,7 +298,7 @@
 
             showLoading();
 
-            axios.delete('/v1/shares/construction/${share.id}/files/' + file.id).then(() => {
+            axios.delete('/v1/shares/construction/${constructionShare.id}/files/' + file.id).then(() => {
                 const successMessage = messages.shares.construction.files.delete.success.replace('{0}', file.name);
                 link.remove();
                 btn.remove();

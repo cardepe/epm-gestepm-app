@@ -2695,15 +2695,9 @@ components:
                 type: integer
                 x-stoplight:
                   id: cqzartm0o29wp
-              startDate:
-                type: string
-                x-stoplight:
-                  id: mugxnbf5tzgci
-                format: date-time
             required:
               - userId
               - projectId
-              - startDate
     CreateInspection:
       content:
         application/json:
@@ -3094,15 +3088,9 @@ components:
                 type: integer
                 x-stoplight:
                   id: 9lippqadj9w1n
-              startDate:
-                type: string
-                x-stoplight:
-                  id: 0f9zbwdc0s09u
-                format: date-time
             required:
               - userId
               - projectId
-              - startDate
     CreateDisplacementShare:
       content:
         application/json:
@@ -3155,15 +3143,9 @@ components:
                 type: integer
                 x-stoplight:
                   id: k3xn6lzhfxfeo
-              startDate:
-                type: string
-                x-stoplight:
-                  id: o964vmy2xyero
-                format: date-time
             required:
               - userId
               - projectId
-              - startDate
     UpdateConstructionShare:
       content:
         application/json:

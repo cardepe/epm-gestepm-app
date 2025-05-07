@@ -14,7 +14,4 @@ public class ProgrammedShareCreateDto {
     @NotNull
     private Integer projectId;
 
-    @NotNull
-    private LocalDateTime startDate;
-
 }

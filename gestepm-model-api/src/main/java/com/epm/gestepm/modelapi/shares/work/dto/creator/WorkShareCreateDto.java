@@ -14,7 +14,4 @@ public class WorkShareCreateDto {
     @NotNull
     private Integer projectId;
 
-    @NotNull
-    private LocalDateTime startDate;
-
 }

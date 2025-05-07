@@ -138,6 +138,7 @@ public class WorkShareServiceImpl implements WorkShareService {
             errorMsg = "Failed to create new work share")
     public WorkShareDto create(WorkShareCreateDto createDto) {
         final WorkShareCreate create = getMapper(MapWSToWorkShareCreate.class).from(createDto);
+        create.setStartDate(LocalDateTime.now());
 
         this.auditProvider.auditCreate(create);
 

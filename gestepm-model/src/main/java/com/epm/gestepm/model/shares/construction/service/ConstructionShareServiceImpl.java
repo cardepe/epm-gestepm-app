@@ -145,6 +145,7 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
             errorMsg = "Failed to create new construction share")
     public ConstructionShareDto create(ConstructionShareCreateDto createDto) {
         final ConstructionShareCreate create = getMapper(MapCSToConstructionShareCreate.class).from(createDto);
+        create.setStartDate(LocalDateTime.now());
 
         this.auditProvider.auditCreate(create);
 

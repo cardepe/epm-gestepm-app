@@ -138,6 +138,7 @@ public class ProgrammedShareServiceImpl implements ProgrammedShareService {
             errorMsg = "Failed to create new programmed share")
     public ProgrammedShareDto create(ProgrammedShareCreateDto createDto) {
         final ProgrammedShareCreate create = getMapper(MapPSToProgrammedShareCreate.class).from(createDto);
+        create.setStartDate(LocalDateTime.now());
 
         this.auditProvider.auditCreate(create);
 

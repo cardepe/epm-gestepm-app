@@ -122,8 +122,7 @@ function create() {
 
     axios.post(endpoint, {
         userId: userId,
-        projectId: projectId,
-        startDate: new Date().toISOString().slice(0, 19)
+        projectId: projectId
     }).then((response) => {
         const programmed = response.data.data;
         window.location.replace('/shares/programmed/' + programmed.id);
