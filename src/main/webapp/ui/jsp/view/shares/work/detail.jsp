@@ -76,7 +76,7 @@
                     <div class="col-sm-12 col-md-8">
                         <div class="form-group">
                             <label class="col-form-label w-100"><spring:message code="observations" />
-                                <textarea name="observations" type="text" class="form-control" rows="6">${workShare.observations}</textarea>
+                                <textarea name="observations" type="text" class="form-control" rows="6" required>${workShare.observations}</textarea>
                             </label>
                         </div>
                     </div>

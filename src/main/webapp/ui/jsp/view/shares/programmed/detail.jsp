@@ -76,7 +76,7 @@
                     <div class="col-sm-12 col-md-8">
                         <div class="form-group">
                             <label class="col-form-label w-100"><spring:message code="observations" />
-                                <textarea name="observations" type="text" class="form-control" rows="6">${programmedShare.observations}</textarea>
+                                <textarea name="observations" type="text" class="form-control" rows="6" required>${programmedShare.observations}</textarea>
                             </label>
                         </div>
                     </div>
@@ -84,7 +84,7 @@
                     <div class="col-sm-12 col-md-4">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100 bootstrap-select"><spring:message code="inspection.second.technical"/>
-                                <select class="form-control input mt-1" name="secondTechnicalId" required>
+                                <select class="form-control input mt-1" name="secondTechnicalId">
                                     <option></option>
                                     <c:forEach items="${users}" var="user">
                                         <option value="${user.id}" ${user.id == programmedShare.secondTechnicalId ? 'selected' : ''}><spring:message code="${user.fullName}"/></option>
