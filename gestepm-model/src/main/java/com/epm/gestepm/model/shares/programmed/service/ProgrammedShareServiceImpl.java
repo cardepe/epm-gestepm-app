@@ -9,6 +9,7 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.model.shares.common.checker.ShareDateChecker;
 import com.epm.gestepm.model.shares.programmed.dao.ProgrammedShareDao;
 import com.epm.gestepm.model.shares.programmed.dao.entity.ProgrammedShare;
 import com.epm.gestepm.model.shares.programmed.dao.entity.creator.ProgrammedShareCreate;
@@ -69,6 +70,8 @@ public class ProgrammedShareServiceImpl implements ProgrammedShareService {
     private final MessageSource messageSource;
 
     private final ProjectService projectService;
+
+    private final ShareDateChecker shareDateChecker;
 
     @Override
     @RequirePermits(value = PRMT_READ_PS, action = "List programmed shares")
@@ -163,8 +166,12 @@ public class ProgrammedShareServiceImpl implements ProgrammedShareService {
         final ProgrammedShareUpdate update = getMapper(MapPSToProgrammedShareUpdate.class).from(updateDto,
                 getMapper(MapPSToProgrammedShareUpdate.class).from(programmedShareDto));
 
+        final LocalDateTime endDate = this.shareDateChecker.checker(update.getStartDate(), update.getEndDate() != null
+                ? update.getEndDate()
+                : LocalDateTime.now());
+        update.setEndDate(endDate);
+
         if (update.getClosedAt() == null) {
-            update.setEndDate(LocalDateTime.now());
             this.auditProvider.auditClose(update);
         }
 
