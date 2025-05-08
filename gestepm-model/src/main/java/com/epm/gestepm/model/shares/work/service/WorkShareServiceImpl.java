@@ -9,6 +9,7 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.model.shares.common.checker.ShareDateChecker;
 import com.epm.gestepm.model.shares.work.dao.WorkShareDao;
 import com.epm.gestepm.model.shares.work.dao.entity.WorkShare;
 import com.epm.gestepm.model.shares.work.dao.entity.creator.WorkShareCreate;
@@ -69,6 +70,8 @@ public class WorkShareServiceImpl implements WorkShareService {
     private final MessageSource messageSource;
 
     private final ProjectService projectService;
+
+    private final ShareDateChecker shareDateChecker;
 
     @Override
     @RequirePermits(value = PRMT_READ_WS, action = "List work shares")
@@ -163,8 +166,12 @@ public class WorkShareServiceImpl implements WorkShareService {
         final WorkShareUpdate update = getMapper(MapWSToWorkShareUpdate.class).from(updateDto,
                 getMapper(MapWSToWorkShareUpdate.class).from(workShareDto));
 
+        final LocalDateTime endDate = this.shareDateChecker.checker(update.getStartDate(), update.getEndDate() != null
+                ? update.getEndDate()
+                : LocalDateTime.now());
+        update.setEndDate(endDate);
+
         if (update.getClosedAt() == null) {
-            update.setEndDate(LocalDateTime.now());
             this.auditProvider.auditClose(update);
         }
 

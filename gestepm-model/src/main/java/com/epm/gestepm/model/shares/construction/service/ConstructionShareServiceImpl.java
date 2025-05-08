@@ -9,6 +9,7 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.model.shares.common.checker.ShareDateChecker;
 import com.epm.gestepm.model.shares.construction.dao.ConstructionShareDao;
 import com.epm.gestepm.model.shares.construction.dao.entity.ConstructionShare;
 import com.epm.gestepm.model.shares.construction.dao.entity.filter.ConstructionShareFilter;
@@ -76,6 +77,8 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
     private final MessageSource messageSource;
 
     private final ProjectService projectService;
+
+    private final ShareDateChecker shareDateChecker;
 
     @Override
     @RequirePermits(value = PRMT_READ_CS, action = "List construction shares")
@@ -170,8 +173,12 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
         final ConstructionShareUpdate update = getMapper(MapCSToConstructionShareUpdate.class).from(updateDto,
                 getMapper(MapCSToConstructionShareUpdate.class).from(constructionShareDto));
 
+        final LocalDateTime endDate = this.shareDateChecker.checker(update.getStartDate(), update.getEndDate() != null
+                ? update.getEndDate()
+                : LocalDateTime.now());
+        update.setEndDate(endDate);
+
         if (update.getClosedAt() == null) {
-            update.setEndDate(LocalDateTime.now());
             this.auditProvider.auditClose(update);
         }
 
@@ -212,7 +219,7 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
                 .orElseThrow(projectNotFound);
 
         final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));
-        final String fileName = this.messageSource.getMessage("shares.construction.pdf.name", new Object[] {
+        final String fileName = this.messageSource.getMessage("shares.construction.pdf.name", new Object[]{
                 constructionShare.getId().toString(),
                 Utiles.transform(constructionShare.getStartDate(), "dd-MM-yyyy")
         }, locale) + ".pdf";
@@ -222,7 +229,7 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
         attachment.setFileData(base64PDF);
         attachment.setContentType("application/pdf");
 
-        final String subject = messageSource.getMessage("email.constructionshare.close.subject", new Object[] {
+        final String subject = messageSource.getMessage("email.constructionshare.close.subject", new Object[]{
                 constructionShare.getId()
         }, locale);
 
