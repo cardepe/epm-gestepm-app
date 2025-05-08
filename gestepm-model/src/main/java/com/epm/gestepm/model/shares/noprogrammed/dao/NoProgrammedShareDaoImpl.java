@@ -187,6 +187,8 @@ public class NoProgrammedShareDaoImpl implements NoProgrammedShareDao {
             return COL_NPS_START_DATE;
         } else if ("endDate".equals(orderBy)) {
             return COL_NPS_END_DATE;
+        } else if ("forumTitle".equals(orderBy)) {
+            return COL_NPS_FORUM_TITLE;
         }
         return orderBy;
     }
