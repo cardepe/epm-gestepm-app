@@ -42,7 +42,7 @@ public class PersonalExpenseSheetRowMapper extends CommonRowMapper implements Ro
         personalExpenseSheet.setStatus(nullableStatusEnum(resultSet.getString(COL_PES_STATUS)));
         personalExpenseSheet.setObservations(nullableString(resultSet, COL_PES_OBSERVATIONS));
         personalExpenseSheet.setAmount(hasValue(resultSet, COL_PES_AMOUNTS)
-                ? Arrays.stream(resultSet.getString(COL_PES_PERSONAL_EXPENSE_IDS).split(","))
+                ? Arrays.stream(resultSet.getString(COL_PES_AMOUNTS).split("\\|"))
                     .mapToDouble(Double::parseDouble)
                     .sum()
                 : 0.0);
