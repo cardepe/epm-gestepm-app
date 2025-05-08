@@ -53,7 +53,7 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
 
     public static final String COL_I_TOPIC_ID = "topic_id";
 
-    public static final String COL_I_FILE_ID = "inspection_file_id";
+    public static final String COL_I_FILE_IDS = "inspection_file_ids";
 
     @Override
     public Inspection mapRow(ResultSet rs, int i) throws SQLException {
@@ -100,8 +100,8 @@ public class InspectionRowMapper implements RowMapper<Inspection> {
 
         final List<Integer> fileIds = new ArrayList<>();
 
-        if (hasValue(rs, COL_I_FILE_ID)) {
-            Arrays.stream(rs.getString(COL_I_FILE_ID).split(","))
+        if (hasValue(rs, COL_I_FILE_IDS)) {
+            Arrays.stream(rs.getString(COL_I_FILE_IDS).split(","))
                     .map(Integer::parseInt)
                     .forEach(fileIds::add);
         }

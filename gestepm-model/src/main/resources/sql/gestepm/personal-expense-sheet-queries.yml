@@ -9,7 +9,7 @@ sql:
       pes.status,
       pes.observations,
       GROUP_CONCAT(pe.personal_expense_id) AS personal_expense_ids,
-      GROUP_CONCAT(pe.amount) AS amounts,
+      GROUP_CONCAT(pe.amount SEPARATOR '|') AS amounts,
       pes.created_at,
       pes.created_by,
       pes.approved_at,
