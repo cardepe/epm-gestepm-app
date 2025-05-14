@@ -117,8 +117,10 @@ public class DisplacementShareServiceImpl implements DisplacementShareService {
             msgOut = "New displacement share created OK",
             errorMsg = "Failed to create new displacement share")
     public DisplacementShareDto create(DisplacementShareCreateDto createDto) {
-        final LocalDateTime endDate = this.shareDateChecker.checker(createDto.getStartDate(), createDto.getEndDate());
+        final LocalDateTime endDate = this.shareDateChecker.checkMaxHours(createDto.getStartDate(), createDto.getEndDate());
         createDto.setEndDate(endDate);
+
+        this.shareDateChecker.checkStartBeforeEndDate(createDto.getStartDate(), createDto.getEndDate());
 
         final DisplacementShareCreate create = getMapper(MapDSToDisplacementShareCreate.class).from(createDto);
 
