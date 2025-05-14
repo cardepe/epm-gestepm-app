@@ -173,10 +173,12 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
         final ConstructionShareUpdate update = getMapper(MapCSToConstructionShareUpdate.class).from(updateDto,
                 getMapper(MapCSToConstructionShareUpdate.class).from(constructionShareDto));
 
-        final LocalDateTime endDate = this.shareDateChecker.checker(update.getStartDate(), update.getEndDate() != null
+        final LocalDateTime endDate = this.shareDateChecker.checkMaxHours(update.getStartDate(), update.getEndDate() != null
                 ? update.getEndDate()
                 : LocalDateTime.now());
         update.setEndDate(endDate);
+
+        this.shareDateChecker.checkStartBeforeEndDate(update.getStartDate(), update.getEndDate());
 
         if (update.getClosedAt() == null) {
             this.auditProvider.auditClose(update);

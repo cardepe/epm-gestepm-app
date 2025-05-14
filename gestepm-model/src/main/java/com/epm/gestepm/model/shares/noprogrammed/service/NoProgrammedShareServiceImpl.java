@@ -147,12 +147,14 @@ public class NoProgrammedShareServiceImpl implements NoProgrammedShareService {
         this.noProgrammedShareChecker.checker(updateDto, noProgrammedShareDto);
 
         if (NoProgrammedShareStateEnumDto.CLOSED.equals(updateDto.getState())) {
-            final LocalDateTime endDate = this.shareDateChecker.checker(noProgrammedShareDto.getStartDate(), LocalDateTime.now());
+            final LocalDateTime endDate = this.shareDateChecker.checkMaxHours(noProgrammedShareDto.getStartDate(), LocalDateTime.now());
             updateDto.setEndDate(endDate);
         }
 
         final NoProgrammedShareUpdate update = getMapper(MapNPSToNoProgrammedShareUpdate.class).from(updateDto,
                 getMapper(MapNPSToNoProgrammedShareUpdate.class).from(noProgrammedShareDto));
+
+        this.shareDateChecker.checkStartBeforeEndDate(update.getStartDate(), update.getEndDate());
 
         final NoProgrammedShare updated = this.noProgrammedShareDao.update(update);
 
