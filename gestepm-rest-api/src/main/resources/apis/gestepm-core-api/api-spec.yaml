@@ -405,6 +405,130 @@ paths:
       description: delete-construction-share-v1
       tags:
         - construction-share-v1
+  '/v1/shares/construction/{shareId}/breaks':
+    get:
+      summary: V1 - List construction share breaks
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreakList'
+      operationId: list-construction-share-breaks-v1
+      description: list-construction-share-breaks-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by construction share break identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: constructionShareIds
+          description: Filter by construction share identificator.
+        - schema:
+            type: string
+            enum:
+              - NOT_FINISHED
+              - FINISHED
+          in: query
+          name: status
+          description: Filter by construction share break status.
+      tags:
+        - construction-share-break-v1
+    post:
+      summary: V1 - Create construction share break
+      operationId: create-construction-share-break-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreak'
+        '404':
+          description: construction-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: create-construction-share-break-v1
+      tags:
+        - construction-share-break-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateShareBreak'
+    parameters:
+      - name: shareId
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Share identificator.
+  '/v1/shares/construction/{shareId}/breaks/{breakId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+      - $ref: '#/components/parameters/Break-Id'
+    get:
+      summary: V1 - Find construction share break
+      tags:
+        - construction-share-break-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreak'
+        '404':
+          description: construction-share-not-found | construction-share-break-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-construction-share-break-by-id-v1
+      description: find-construction-share-break-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-locale
+    put:
+      summary: V1 - Update construction share break
+      operationId: update-construction-share-break-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreak'
+        '404':
+          description: construction-share-break-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: update-construction-share-break-v1
+      tags:
+        - construction-share-break-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateShareBreak'
+    delete:
+      summary: V1 - Delete construction share break
+      operationId: delete-construction-share-break-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: construction-share-break-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: delete-construction-share-break-v1
+      tags:
+        - construction-share-break-v1
   '/v1/shares/construction/{shareId}/files/{fileId}':
     parameters:
       - $ref: '#/components/parameters/Share-Id'
@@ -906,6 +1030,137 @@ paths:
       tags:
         - inspection-v1
       description: delete-inspection-v1
+  '/v1/shares/no-programmed/{shareId}/inspections/{inspectionId}/breaks':
+    get:
+      summary: V1 - List inspection breaks
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreakList'
+      operationId: list-inspection-breaks-v1
+      description: list-inspection-breaks-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by inspection break identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: programmedShareIds
+          description: Filter by inspection identificator.
+        - schema:
+            type: string
+            enum:
+              - NOT_FINISHED
+              - FINISHED
+          in: query
+          name: status
+          description: Filter by inspection break status.
+      tags:
+        - programmed-share-break-v1
+    post:
+      summary: V1 - Create inspection break
+      operationId: create-inspection-break-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreak'
+        '404':
+          description: inspection-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: create-inspection-break-v1
+      tags:
+        - inspection-break-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateShareBreak'
+    parameters:
+      - name: shareId
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Share identificator.
+      - name: inspectionId
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Inspection identificator.
+  '/v1/shares/no-programmed/{shareId}/inspections/{inspectionId}/breaks/{breakId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+      - $ref: '#/components/parameters/Inspection-Id'
+      - $ref: '#/components/parameters/Break-Id'
+    get:
+      summary: V1 - Find inspection break
+      tags:
+        - inspection-break-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreak'
+        '404':
+          description: inspection-not-found | inspection-break-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-inspection-break-by-id-v1
+      description: find-inspection-break-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-locale
+    put:
+      summary: V1 - Update inspection break
+      operationId: update-inspection-break-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreak'
+        '404':
+          description: inspection-break-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: update-inspection-break-v1
+      tags:
+        - inspection-break-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateShareBreak'
+    delete:
+      summary: V1 - Delete inspection break
+      operationId: delete-inspection-break-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: inspection-break-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: delete-inspection-break-v1
+      tags:
+        - inspection-break-v1
   '/v1/shares/no-programmed/{shareId}/inspections/{inspectionId}/files/{fileId}':
     parameters:
       - $ref: '#/components/parameters/Share-Id'
@@ -1105,6 +1360,130 @@ paths:
       description: delete-programmed-share-v1
       tags:
         - programmed-share-v1
+  '/v1/shares/programmed/{shareId}/breaks':
+    get:
+      summary: V1 - List programmed share breaks
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreakList'
+      operationId: list-programmed-share-breaks-v1
+      description: list-programmed-share-breaks-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by programmed share break identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: programmedShareIds
+          description: Filter by programmed share identificator.
+        - schema:
+            type: string
+            enum:
+              - NOT_FINISHED
+              - FINISHED
+          in: query
+          name: status
+          description: Filter by programmed share break status.
+      tags:
+        - programmed-share-break-v1
+    post:
+      summary: V1 - Create programmed share break
+      operationId: create-programmed-share-break-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreak'
+        '404':
+          description: programmed-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: create-programmed-share-break-v1
+      tags:
+        - programmed-share-break-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateShareBreak'
+    parameters:
+      - name: shareId
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Share identificator.
+  '/v1/shares/programmed/{shareId}/breaks/{breakId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+      - $ref: '#/components/parameters/Break-Id'
+    get:
+      summary: V1 - Find programmed share break
+      tags:
+        - programmed-share-break-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreak'
+        '404':
+          description: programmed-share-not-found | programmed-share-break-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-programmed-share-break-by-id-v1
+      description: find-programmed-share-break-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-locale
+    put:
+      summary: V1 - Update programmed share break
+      operationId: update-programmed-share-break-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreak'
+        '404':
+          description: programmed-share-break-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: update-programmed-share-break-v1
+      tags:
+        - programmed-share-break-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateShareBreak'
+    delete:
+      summary: V1 - Delete programmed share break
+      operationId: delete-programmed-share-break-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: programmed-share-break-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: delete-programmed-share-break-v1
+      tags:
+        - programmed-share-break-v1
   '/v1/shares/programmed/{shareId}/files/{fileId}':
     parameters:
       - $ref: '#/components/parameters/Share-Id'
@@ -1282,6 +1661,130 @@ paths:
       description: delete-work-share-v1
       tags:
         - work-share-v1
+  '/v1/shares/work/{shareId}/breaks':
+    get:
+      summary: V1 - List work share breaks
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreakList'
+      operationId: list-work-share-breaks-v1
+      description: list-work-share-breaks-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by work share break identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: workShareIds
+          description: Filter by work share identificator.
+        - schema:
+            type: string
+            enum:
+              - NOT_FINISHED
+              - FINISHED
+          in: query
+          name: status
+          description: Filter by work share break status.
+      tags:
+        - work-share-break-v1
+    post:
+      summary: V1 - Create work share break
+      operationId: create-work-share-break-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreak'
+        '404':
+          description: work-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: create-work-share-break-v1
+      tags:
+        - work-share-break-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateShareBreak'
+    parameters:
+      - name: shareId
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Share identificator.
+  '/v1/shares/work/{shareId}/breaks/{breakId}':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+      - $ref: '#/components/parameters/Break-Id'
+    get:
+      summary: V1 - Find work share break
+      tags:
+        - work-share-break-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreak'
+        '404':
+          description: work-share-not-found | work-share-break-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-work-share-break-by-id-v1
+      description: find-work-share-break-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-locale
+    put:
+      summary: V1 - Update work share break
+      operationId: update-work-share-break-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ShareBreak'
+        '404':
+          description: work-share-break-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: update-work-share-break-v1
+      tags:
+        - work-share-break-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateShareBreak'
+    delete:
+      summary: V1 - Delete work share break
+      operationId: delete-work-share-break-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: work-share-break-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      description: delete-work-share-break-v1
+      tags:
+        - work-share-break-v1
   '/v1/shares/work/{shareId}/files/{fileId}':
     parameters:
       - $ref: '#/components/parameters/Share-Id'
@@ -2167,6 +2670,35 @@ components:
         - startDate
         - type
         - detailUrl
+    ShareBreak:
+      title: ShareBreak
+      x-stoplight:
+        id: 8d7wr0k5s4o13
+      type: object
+      properties:
+        id:
+          type: integer
+        startDate:
+          type: string
+          x-stoplight:
+            id: y9b36gawnfinq
+          format: date-time
+        endDate:
+          type: string
+          x-stoplight:
+            id: n8uog59mtplb4
+          format: date-time
+        constructionShare:
+          $ref: '#/components/schemas/ConstructionShare'
+        programmedShare:
+          $ref: '#/components/schemas/ProgrammedShare'
+        inspection:
+          $ref: '#/components/schemas/Inspection'
+        workShare:
+          $ref: '#/components/schemas/WorkShare'
+      required:
+        - id
+        - startDate
     TeleworkingSigning:
       title: TeleworkingSigning
       x-stoplight:
@@ -2542,6 +3074,32 @@ components:
                   id: dyvkfgdppk87v
                 items:
                   $ref: '#/components/schemas/Share'
+    ShareBreak:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                $ref: '#/components/schemas/ShareBreak'
+    ShareBreakList:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                type: array
+                x-stoplight:
+                  id: 4ngqlxmr6keq1
+                items:
+                  $ref: '#/components/schemas/ShareBreak'
     ConstructionShareExport:
       description: Example response
       content:
@@ -3320,6 +3878,44 @@ components:
               - description
               - startDate
               - endDate
+    CreateShareBreak:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              constructionShareId:
+                type: integer
+                x-stoplight:
+                  id: hcfrtaqfz6qta
+              programmedShareId:
+                type: integer
+                x-stoplight:
+                  id: 65y4aw0n11g3x
+              inspectionId:
+                type: integer
+                x-stoplight:
+                  id: g9ai7ysgjufcy
+              workShareId:
+                type: integer
+                x-stoplight:
+                  id: 7xsn42pukj5e5
+    UpdateShareBreak:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              startDate:
+                type: string
+                x-stoplight:
+                  id: 42bx8fvvvzocu
+                format: date-time
+              endDate:
+                type: string
+                x-stoplight:
+                  id: mlr5djk5zbupo
+                format: date-time
   parameters:
     Share-Id:
       name: shareId
@@ -3363,6 +3959,13 @@ components:
       schema:
         type: integer
       description: Teleworking signing identificator.
+    Break-Id:
+      name: breakId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Break identificator.
 tags:
   - name: personal-expense-sheet-v1
     description: V1 - Personal Expense Sheets
@@ -3370,8 +3973,12 @@ tags:
     description: V1 - Personal Expenses
   - name: construction-share-v1
     description: V1 - Construction Share
+  - name: construction-share-break-v1
+    description: V1 - Construction Share Break
   - name: inspection-v1
     description: V1 - Inspection
+  - name: inspection-break-v1
+    description: V1 - Inspection Break
   - name: inspection-file-v1
     description: V1 - Inspection File
   - name: displacement-share-v1
@@ -3382,6 +3989,8 @@ tags:
     description: V1 - No Programmed Share File
   - name: programmed-share-v1
     description: V1 - Programmed Share
+  - name: programmed-share-break-v1
+    description: V1 - Programmed Share Break
   - name: programmed-share-file-v1
     description: V1 - Programmed Share File
   - name: share-v1
@@ -3394,5 +4003,7 @@ tags:
     description: V1 - User
   - name: work-share-v1
     description: V1 - Work Share
+  - name: work-share-break-v1
+    description: V1 - Work Share Break
   - name: work-share-file-v1
     description: V1 - Work Share File
