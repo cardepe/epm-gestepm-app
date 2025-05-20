@@ -34,12 +34,52 @@
             <jsp:include page="inspection-form.jsp" />
         </div>
     </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <div class="title mb-0">
+                        <spring:message code="breaks"/>
+                    </div>
+                </div>
+                <div class="col text-right">
+                    <c:if test="${inspection.endDate == null}">
+                        <c:if test="${empty currentShareBreak}">
+                            <button type="button" class="btn btn-default btn-sm" onclick="startBreak()">
+                                <spring:message code="breaks.start"/>
+                            </button>
+                        </c:if>
+
+                        <c:if test="${not empty currentShareBreak}">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="finishBreak()">
+                                <spring:message code="breaks.end"/>
+                            </button>
+                        </c:if>
+                    </c:if>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table id="dTable" class="table table-striped table-borderer dataTable w-100">
+                    <thead>
+                    <tr>
+                        <th><spring:message code="start.date"/></th>
+                        <th><spring:message code="end.date"/></th>
+                        <th><spring:message code="actions"/></th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
     let locale = '${locale}';
     let share;
     let inspection;
+    const isShareFinished = ${ inspection.endDate != null };
 
     async function getInspection() {
         await axios.get('/v1' + window.location.pathname, { params: { _expand: 'files,firstTechnical,secondTechnical' }}).then((response) => {
@@ -78,12 +118,80 @@
         backButton.href = '/shares/no-programmed/' + inspection.share.id;
     }
 
+    function loadDataTables() {
+        let columns = ['startDate', 'endDate', 'id']
+        let endpoint = '/v1/shares/no-programmed/${inspection.shareId}/inspections/${inspection.id}/breaks';
+        let actions = []
+        if (!isShareFinished) {
+            actions.push(
+                {
+                    action: 'delete',
+                    permission: 'edit_inspections',
+                    conditionGroups: [
+                        {
+                            conditions: [
+                                { key: 'endDate', value: [ undefined ], operation: '!==' }
+                            ]
+                        }
+                    ]
+                }
+            );
+        }
+        let expand = []
+        let columnDefs = [
+            {
+                targets: [0, 1],
+                render: function (data) {
+                    return data ? parseDate(data, 'DD-MM-YYYY HH:mm') : '-';
+                }
+            }
+        ]
+
+        customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, null, columnDefs);
+        dTable = createDataTable('#dTable', customDataTable, locale);
+        customDataTable.setCurrentTable(dTable);
+    }
+
+    function startBreak() {
+        showLoading();
+
+        axios.post('/v1/shares/no-programmed/${inspection.shareId}/inspections/${inspection.id}/breaks', { })
+            .then(() => location.reload())
+            .catch(error => showNotify(error.response.data.detail, 'danger'))
+            .finally(() => hideLoading());
+    }
+
+    function finishBreak() {
+        showLoading();
+
+        axios.put('/v1/shares/no-programmed/${inspection.shareId}/inspections/${inspection.id}/breaks/${currentShareBreak.id}', { })
+            .then(() => location.reload())
+            .catch(error => showNotify(error.response.data.detail, 'danger'))
+            .finally(() => hideLoading());
+    }
+
+    function remove(id) {
+        const alertMessage = messages.breaks.delete.alert;
+        if (confirm(alertMessage)) {
+
+            showLoading();
+
+            axios.delete('/v1/shares/no-programmed/${inspection.shareId}/inspections/${inspection.id}/breaks/' + id).then(() => {
+                dTable.ajax.reload();
+                const successMessage = messages.breaks.delete.success;
+                showNotify(successMessage);
+            }).catch(error => showNotify(error.response.data.detail, 'danger'))
+                .finally(() => hideLoading());
+        }
+    }
+
     $(document).ready(async function () {
         await getInspection();
         await getShare(inspection.share.id);
         init();
         update();
         save();
+        loadDataTables();
     });
 
 </script>

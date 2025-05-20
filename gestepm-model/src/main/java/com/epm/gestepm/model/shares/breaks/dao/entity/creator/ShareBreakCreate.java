@@ -28,11 +28,11 @@ public class ShareBreakCreate implements AuditCreate, CollectableAttributes {
     public AttributeMap collectAttributes() {
         final AttributeMap map = new AttributeMap();
 
-        map.put(ATTR_CSB_CS_ID, this.constructionShareId);
-        map.put(ATTR_CSB_PS_ID, this.programmedShareId);
-        map.put(ATTR_CSB_INS_ID, this.inspectionId);
-        map.put(ATTR_CSB_WS_ID, this.workShareId);
-        map.putTimestamp(ATTR_CSB_START_DATE, this.startDate);
+        map.put(ATTR_SB_CS_ID, this.constructionShareId);
+        map.put(ATTR_SB_PS_ID, this.programmedShareId);
+        map.put(ATTR_SB_INS_ID, this.inspectionId);
+        map.put(ATTR_SB_WS_ID, this.workShareId);
+        map.putTimestamp(ATTR_SB_START_DATE, this.startDate);
 
         return map;
     }

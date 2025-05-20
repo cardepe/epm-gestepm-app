@@ -32,12 +32,12 @@ public class ShareBreakFilter extends Orderable implements CollectableAttributes
 
         final AttributeMap map = new AttributeMap();
 
-        map.putList(ATTR_CSB_IDS, this.ids);
-        map.putList(ATTR_CSB_CS_IDS, this.constructionShareIds);
-        map.putList(ATTR_CSB_PS_IDS, this.programmedShareIds);
-        map.putList(ATTR_CSB_INS_IDS, this.inspectionIds);
-        map.putList(ATTR_CSB_WS_IDS, this.workShareIds);
-        map.putEnum(ATTR_CSB_STATUS, this.status);
+        map.putList(ATTR_SB_IDS, this.ids);
+        map.putList(ATTR_SB_CS_IDS, this.constructionShareIds);
+        map.putList(ATTR_SB_PS_IDS, this.programmedShareIds);
+        map.putList(ATTR_SB_INS_IDS, this.inspectionIds);
+        map.putList(ATTR_SB_WS_IDS, this.workShareIds);
+        map.putEnum(ATTR_SB_STATUS, this.status);
 
         return map;
     }

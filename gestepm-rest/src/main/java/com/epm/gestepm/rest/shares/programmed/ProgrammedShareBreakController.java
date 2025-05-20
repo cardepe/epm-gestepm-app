@@ -1,4 +1,4 @@
-package com.epm.gestepm.rest.shares.construction;
+package com.epm.gestepm.rest.shares.programmed;
 
 import com.epm.gestepm.lib.applocale.apimodel.service.AppLocaleService;
 import com.epm.gestepm.lib.controller.BaseController;
@@ -18,14 +18,17 @@ import com.epm.gestepm.modelapi.shares.breaks.service.ShareBreakService;
 import com.epm.gestepm.rest.common.CommonProviders;
 import com.epm.gestepm.rest.common.MetadataMapper;
 import com.epm.gestepm.rest.common.ResSuccessMapper;
-import com.epm.gestepm.rest.shares.construction.operations.FindConstructionShareBreakV1Operation;
-import com.epm.gestepm.rest.shares.construction.operations.ListConstructionShareBreakV1Operation;
-import com.epm.gestepm.rest.shares.construction.request.ConstructionShareBreakFindRestRequest;
-import com.epm.gestepm.rest.shares.construction.request.ConstructionShareBreakListRestRequest;
-import com.epm.gestepm.rest.shares.construction.response.ResponsesForConstructionShareBreak;
-import com.epm.gestepm.rest.shares.construction.response.ResponsesForConstructionShareBreakList;
-import com.epm.gestepm.rest.shares.share.mappers.*;
-import com.epm.gestepm.restapi.openapi.api.ConstructionShareBreakV1Api;
+import com.epm.gestepm.rest.shares.programmed.operations.FindProgrammedShareBreakV1Operation;
+import com.epm.gestepm.rest.shares.programmed.operations.ListProgrammedShareBreakV1Operation;
+import com.epm.gestepm.rest.shares.programmed.request.ProgrammedShareBreakFindRestRequest;
+import com.epm.gestepm.rest.shares.programmed.request.ProgrammedShareBreakListRestRequest;
+import com.epm.gestepm.rest.shares.programmed.response.ResponsesForProgrammedShareBreak;
+import com.epm.gestepm.rest.shares.programmed.response.ResponsesForProgrammedShareBreakList;
+import com.epm.gestepm.rest.shares.share.mappers.MapSBToShareBreakByIdFinderDto;
+import com.epm.gestepm.rest.shares.share.mappers.MapSBToShareBreakFilterDto;
+import com.epm.gestepm.rest.shares.share.mappers.MapSBToShareBreakResponse;
+import com.epm.gestepm.rest.shares.share.mappers.MapSBToShareBreakUpdateDto;
+import com.epm.gestepm.restapi.openapi.api.ProgrammedShareBreakV1Api;
 import com.epm.gestepm.restapi.openapi.model.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
@@ -37,20 +40,19 @@ import java.util.Set;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.REST;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
-import static com.epm.gestepm.modelapi.shares.construction.security.ConstructionSharePermission.PRMT_EDIT_CS;
-import static com.epm.gestepm.modelapi.shares.construction.security.ConstructionSharePermission.PRMT_READ_CS;
+import static com.epm.gestepm.modelapi.shares.programmed.security.ProgrammedSharePermission.*;
 import static org.mapstruct.factory.Mappers.getMapper;
 
 @RestController
 @EnableExecutionLog(layerMarker = REST)
-public class ConstructionShareBreakController extends BaseController implements ConstructionShareBreakV1Api,
-        ResponsesForConstructionShareBreak, ResponsesForConstructionShareBreakList {
+public class ProgrammedShareBreakController extends BaseController implements ProgrammedShareBreakV1Api,
+        ResponsesForProgrammedShareBreak, ResponsesForProgrammedShareBreakList {
 
     private final ShareBreakService shareBreakService;
 
-    public ConstructionShareBreakController(final CommonProviders commonProviders, final ApplicationContext appCtx,
-                                            final AppLocaleService appLocaleService, final ResponseSuccessfulHelper successHelper,
-                                            ShareBreakService shareBreakService) {
+    public ProgrammedShareBreakController(final CommonProviders commonProviders, final ApplicationContext appCtx,
+                                          final AppLocaleService appLocaleService, final ResponseSuccessfulHelper successHelper,
+                                          ShareBreakService shareBreakService) {
 
         super(commonProviders.localeProvider(), commonProviders.executionRequestProvider(),
                 commonProviders.executionTimeProvider(), commonProviders.restContextProvider(), appCtx, appLocaleService,
@@ -60,12 +62,12 @@ public class ConstructionShareBreakController extends BaseController implements 
     }
 
     @Override
-    @RequirePermits(value = PRMT_READ_CS, action = "Get construction share break list")
+    @RequirePermits(value = PRMT_READ_PS, action = "Get programmed share break list")
     @LogExecution(operation = OP_READ)
-    public ResponseEntity<ListConstructionShareBreaksV1200Response> listConstructionShareBreaksV1(final Integer constructionShareId, final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit, final String order, final String orderBy,
+    public ResponseEntity<ListConstructionShareBreaksV1200Response> listProgrammedShareBreaksV1(final Integer programmedShareId, final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit, final String order, final String orderBy,
                                                                                         final List<Integer> ids, final String status) {
 
-        final ConstructionShareBreakListRestRequest req = new ConstructionShareBreakListRestRequest(constructionShareId, ids, status);
+        final ProgrammedShareBreakListRestRequest req = new ProgrammedShareBreakListRestRequest(programmedShareId, ids, status);
 
         this.setCommon(req, meta, links, expand);
         this.setDefaults(req);
@@ -75,18 +77,18 @@ public class ConstructionShareBreakController extends BaseController implements 
         final ShareBreakFilterDto filterDto = getMapper(MapSBToShareBreakFilterDto.class).from(req);
         final Page<ShareBreakDto> page = this.shareBreakService.list(filterDto, offset, limit);
 
-        final APIMetadata metadata = this.getMetadata(req, page, new ListConstructionShareBreakV1Operation());
+        final APIMetadata metadata = this.getMetadata(req, page, new ListProgrammedShareBreakV1Operation());
         final List<ShareBreak> data = getMapper(MapSBToShareBreakResponse.class).from(page);
 
-        return toListConstructionShareBreaksV1200Response(metadata, data, page.hashCode());
+        return toListProgrammedShareBreaksV1200Response(metadata, data, page.hashCode());
     }
 
     @Override
-    @RequirePermits(value = PRMT_READ_CS, action = "Find construction share break")
+    @RequirePermits(value = PRMT_READ_PS, action = "Find programmed share break")
     @LogExecution(operation = OP_READ)
-    public ResponseEntity<CreateConstructionShareBreakV1200Response> findConstructionShareBreakByIdV1(final Integer constructionShareId, final Integer breakId, final List<String> meta, final Boolean links, final Set<String> expand, final String locale) {
+    public ResponseEntity<CreateConstructionShareBreakV1200Response> findProgrammedShareBreakByIdV1(final Integer programmedShareId, final Integer breakId, final List<String> meta, final Boolean links, final Set<String> expand, final String locale) {
 
-        final ConstructionShareBreakFindRestRequest req = new ConstructionShareBreakFindRestRequest(constructionShareId, breakId);
+        final ProgrammedShareBreakFindRestRequest req = new ProgrammedShareBreakFindRestRequest(programmedShareId, breakId);
         req.setLocale(locale);
 
         this.setCommon(req, meta, links, expand);
@@ -94,19 +96,19 @@ public class ConstructionShareBreakController extends BaseController implements 
         final ShareBreakByIdFinderDto finderDto = getMapper(MapSBToShareBreakByIdFinderDto.class).from(req);
         final ShareBreakDto dto = this.shareBreakService.findOrNotFound(finderDto);
 
-        final APIMetadata metadata = this.getMetadata(req, new FindConstructionShareBreakV1Operation());
+        final APIMetadata metadata = this.getMetadata(req, new FindProgrammedShareBreakV1Operation());
         final ShareBreak data = getMapper(MapSBToShareBreakResponse.class).from(dto);
 
-        return toResConstructionShareBreakResponse(metadata, data, dto.hashCode());
+        return toResProgrammedShareBreakResponse(metadata, data, dto.hashCode());
     }
 
     @Override
-    @RequirePermits(value = PRMT_EDIT_CS, action = "Create construction share break")
+    @RequirePermits(value = PRMT_EDIT_PS, action = "Create programmed share break")
     @LogExecution(operation = OP_CREATE)
-    public ResponseEntity<CreateConstructionShareBreakV1200Response> createConstructionShareBreakV1(final Integer shareId) {
+    public ResponseEntity<CreateConstructionShareBreakV1200Response> createProgrammedShareBreakV1(final Integer shareId) {
 
         final ShareBreakCreateDto createDto = new ShareBreakCreateDto();
-        createDto.setConstructionShareId(shareId);
+        createDto.setProgrammedShareId(shareId);
         createDto.setStartDate(LocalDateTime.now());
 
         final ShareBreakDto dto = this.shareBreakService.create(createDto);
@@ -122,11 +124,11 @@ public class ConstructionShareBreakController extends BaseController implements 
     }
 
     @Override
-    @RequirePermits(value = PRMT_EDIT_CS, action = "Update construction share break")
+    @RequirePermits(value = PRMT_EDIT_PS, action = "Update programmed share break")
     @LogExecution(operation = OP_UPDATE)
-    public ResponseEntity<CreateConstructionShareBreakV1200Response> updateConstructionShareBreakV1(final Integer shareId, final Integer id, final UpdateConstructionShareBreakV1Request reqUpdateConstructionShare) {
+    public ResponseEntity<CreateConstructionShareBreakV1200Response> updateProgrammedShareBreakV1(final Integer shareId, final Integer id, final UpdateConstructionShareBreakV1Request reqUpdateProgrammedShare) {
 
-        final ShareBreakUpdateDto updateDto = getMapper(MapSBToShareBreakUpdateDto.class).from(reqUpdateConstructionShare);
+        final ShareBreakUpdateDto updateDto = getMapper(MapSBToShareBreakUpdateDto.class).from(reqUpdateProgrammedShare);
         updateDto.setId(id);
 
         final ShareBreakDto dto = this.shareBreakService.update(updateDto);
@@ -142,9 +144,9 @@ public class ConstructionShareBreakController extends BaseController implements 
     }
 
     @Override
-    @RequirePermits(value = PRMT_EDIT_CS, action = "Delete construction share break")
+    @RequirePermits(value = PRMT_EDIT_PS, action = "Delete programmed share break")
     @LogExecution(operation = OP_DELETE)
-    public ResponseEntity<ResSuccess> deleteConstructionShareBreakV1(final Integer shareId, final Integer id) {
+    public ResponseEntity<ResSuccess> deleteProgrammedShareBreakV1(final Integer shareId, final Integer id) {
 
         final ShareBreakDeleteDto deleteDto = new ShareBreakDeleteDto();
         deleteDto.setId(id);

@@ -48,8 +48,8 @@ public class ShareBreakDaoImpl implements ShareBreakDao {
 
         final SQLQueryFetchMany<ShareBreak> sqlQuery = new SQLQueryFetchMany<ShareBreak>()
                 .useRowMapper(new ShareBreakRowMapper())
-                .useQuery(QRY_LIST_OF_CSB)
-                .useFilter(FILTER_CSB_BY_PARAMS)
+                .useQuery(QRY_LIST_OF_SB)
+                .useFilter(FILTER_SB_BY_PARAMS)
                 .withParams(filter.collectAttributes());
 
         this.setOrder(filter.getOrder(), filter.getOrderBy(), sqlQuery);
@@ -67,9 +67,9 @@ public class ShareBreakDaoImpl implements ShareBreakDao {
 
         final SQLQueryFetchPage<ShareBreak> sqlQuery = new SQLQueryFetchPage<ShareBreak>()
                 .useRowMapper(new ShareBreakRowMapper())
-                .useQuery(QRY_PAGE_OF_CSB)
-                .useCountQuery(QRY_COUNT_OF_CSB)
-                .useFilter(FILTER_CSB_BY_PARAMS)
+                .useQuery(QRY_PAGE_OF_SB)
+                .useCountQuery(QRY_COUNT_OF_SB)
+                .useFilter(FILTER_SB_BY_PARAMS)
                 .offset(offset)
                 .limit(limit)
                 .withParams(filter.collectAttributes());
@@ -89,8 +89,8 @@ public class ShareBreakDaoImpl implements ShareBreakDao {
 
         final SQLQueryFetchOne<ShareBreak> sqlQuery = new SQLQueryFetchOne<ShareBreak>()
                 .useRowMapper(new ShareBreakRowMapper())
-                .useQuery(QRY_LIST_OF_CSB)
-                .useFilter(FILTER_CSB_BY_ID)
+                .useQuery(QRY_LIST_OF_SB)
+                .useFilter(FILTER_SB_BY_ID)
                 .withParams(finder.collectAttributes());
 
         return this.sqlDatasource.fetch(sqlQuery);
@@ -109,7 +109,7 @@ public class ShareBreakDaoImpl implements ShareBreakDao {
         final ShareBreakByIdFinder finder = new ShareBreakByIdFinder();
 
         final SQLInsert<BigInteger> sqlInsert = new SQLInsert<BigInteger>()
-                .useQuery(QRY_CREATE_CSB)
+                .useQuery(QRY_CREATE_SB)
                 .withParams(params)
                 .onGeneratedKey(f -> finder.setId(f.intValue()));
 
@@ -133,7 +133,7 @@ public class ShareBreakDaoImpl implements ShareBreakDao {
         finder.setId(id);
 
         final SQLQuery sqlQuery = new SQLQuery()
-                .useQuery(QRY_UPDATE_CSB)
+                .useQuery(QRY_UPDATE_SB)
                 .withParams(params);
 
         this.sqlDatasource.execute(sqlQuery);
@@ -152,7 +152,7 @@ public class ShareBreakDaoImpl implements ShareBreakDao {
         final AttributeMap params = delete.collectAttributes();
 
         final SQLQuery sqlQuery = new SQLQuery()
-                .useQuery(QRY_DELETE_CSB)
+                .useQuery(QRY_DELETE_SB)
                 .withParams(params);
 
         this.sqlDatasource.execute(sqlQuery);

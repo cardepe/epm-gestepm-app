@@ -1737,7 +1737,6 @@
         ]
         let expand = ['project']
         let filters = [{'projectId': ${project.id}}]
-        let orderable = [[0, 'DESC']]
         let columnDefs = [
             {
                 targets: 3,
@@ -1759,7 +1758,7 @@
             }
         ]
 
-        let expensesDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
+        let expensesDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, columnDefs);
         dTableExpenses = createDataTable('#dTableExpenses', expensesDataTable, locale);
         expensesDataTable.setCurrentTable(dTableExpenses);
     }
@@ -1871,7 +1870,6 @@
         ]
         let expand = ['user,project']
         let filters = [{'projectIds': projectId}]
-        let orderable = [[2, 'DESC']]
         let columnsDef = [
             {
                 targets: [2, 3],
@@ -1887,7 +1885,7 @@
             }
         ]
 
-        let signingsDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnsDef);
+        let signingsDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, columnsDef);
         dTableSignings = createDataTable('#dTableSignings', signingsDataTable, locale);
         signingsDataTable.setCurrentTable(dTableSignings);
     }

@@ -4,7 +4,7 @@ import com.epm.gestepm.lib.entity.AttributeMap;
 import com.epm.gestepm.lib.entity.CollectableAttributes;
 import lombok.Data;
 
-import static com.epm.gestepm.model.shares.breaks.dao.constants.ShareBreakAttributes.ATTR_CSB_ID;
+import static com.epm.gestepm.model.shares.breaks.dao.constants.ShareBreakAttributes.ATTR_SB_ID;
 
 @Data
 public class ShareBreakByIdFinder implements CollectableAttributes {
@@ -16,7 +16,7 @@ public class ShareBreakByIdFinder implements CollectableAttributes {
 
     final AttributeMap map = new AttributeMap();
 
-    map.put(ATTR_CSB_ID, this.id);
+    map.put(ATTR_SB_ID, this.id);
 
     return map;
   }

@@ -112,7 +112,6 @@ public class ShareBreakServiceImpl implements ShareBreakService {
             errorMsg = "Failed to create new share break")
     public ShareBreakDto create(ShareBreakCreateDto createDto) {
         final ShareBreakCreate create = getMapper(MapSBToShareBreakCreate.class).from(createDto);
-        create.setStartDate(LocalDateTime.now());
 
         // TODO: check if has current
 

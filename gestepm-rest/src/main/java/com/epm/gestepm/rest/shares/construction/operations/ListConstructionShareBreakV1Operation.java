@@ -12,9 +12,9 @@ public class ListConstructionShareBreakV1Operation extends APIOperation<Construc
         super("listConstructionShareBreakV1");
 
         this.generateLinksWith(
-                (apiClass, req) -> apiClass.listConstructionShareBreaksV1(req.getId(),
+                (apiClass, req) -> apiClass.listConstructionShareBreaksV1(req.getConstructionShareId(),
                         req.getMeta(), req.getLinks(), req.getExpand(), req.getOffset(), req.getLimit(), req.getOrder(),
-                        req.getOrderBy(), req.getIds(), req.getConstructionShareIds(), req.getStatus()));
+                        req.getOrderBy(), req.getIds(), req.getStatus()));
     }
 
 }

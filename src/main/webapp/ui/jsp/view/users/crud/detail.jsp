@@ -1645,7 +1645,6 @@
 		]
 		let expand = ['project']
 		let filters = [{'createdBy': ${userDetail.id}}]
-		let orderable = [[0, 'DESC']]
 		let columnDefs = [
 			{
 				targets: 3,
@@ -1667,7 +1666,7 @@
 			}
 		]
 
-		customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
+		customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, columnDefs);
 		dTableExpenses = createDataTable('#dTableExpenses', customDataTable, locale);
 		customDataTable.setCurrentTable(dTableExpenses);
 	}

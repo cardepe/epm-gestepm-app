@@ -2,8 +2,16 @@ package com.epm.gestepm.rest.inspection;
 
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
+import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
+import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
+import com.epm.gestepm.modelapi.inspection.dto.finder.InspectionByIdFinderDto;
+import com.epm.gestepm.modelapi.inspection.service.InspectionService;
 import com.epm.gestepm.modelapi.role.dto.RoleDTO;
+import com.epm.gestepm.modelapi.shares.breaks.dto.ShareBreakDto;
+import com.epm.gestepm.modelapi.shares.breaks.dto.filter.ShareBreakFilterDto;
+import com.epm.gestepm.modelapi.shares.breaks.service.ShareBreakService;
+import com.epm.gestepm.modelapi.shares.common.dto.ShareStatusDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
@@ -30,7 +38,11 @@ import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
 @EnableExecutionLog(layerMarker = VIEW)
 public class InspectionViewController {
 
+    private final InspectionService inspectionService;
+
     private final NoProgrammedShareService noProgrammedShareService;
+
+    private final ShareBreakService shareBreakService;
 
     private final SubFamilyService subFamilyService;
 
@@ -55,6 +67,18 @@ public class InspectionViewController {
                 || subRoles.stream().anyMatch(subRole -> subRole.getName().equals(userLevel));
 
         model.addAttribute("hasRole", hasRole);
+
+        final InspectionDto inspection = this.inspectionService.findOrNotFound(new InspectionByIdFinderDto(id));
+        model.addAttribute("inspection", inspection);
+
+        final ShareBreakFilterDto shareBreakFilterDto = new ShareBreakFilterDto();
+        shareBreakFilterDto.setInspectionIds(List.of(id));
+        shareBreakFilterDto.setStatus(ShareStatusDto.NOT_FINISHED);
+
+        final Page<ShareBreakDto> list = this.shareBreakService.list(shareBreakFilterDto, 0L, 1L);
+        if (!list.isEmpty() && list.get(0).isPresent()) {
+            model.addAttribute("currentShareBreak", list.get(0).get());
+        }
 
         return "inspection-detail";
     }

@@ -429,13 +429,6 @@ paths:
           name: ids
           description: Filter by construction share break identificator.
         - schema:
-            type: array
-            items:
-              type: integer
-          in: query
-          name: constructionShareIds
-          description: Filter by construction share identificator.
-        - schema:
             type: string
             enum:
               - NOT_FINISHED
@@ -460,8 +453,6 @@ paths:
       description: create-construction-share-break-v1
       tags:
         - construction-share-break-v1
-      requestBody:
-        $ref: '#/components/requestBodies/CreateShareBreak'
     parameters:
       - name: shareId
         in: path
@@ -1054,13 +1045,6 @@ paths:
           name: ids
           description: Filter by inspection break identificator.
         - schema:
-            type: array
-            items:
-              type: integer
-          in: query
-          name: programmedShareIds
-          description: Filter by inspection identificator.
-        - schema:
             type: string
             enum:
               - NOT_FINISHED
@@ -1069,7 +1053,7 @@ paths:
           name: status
           description: Filter by inspection break status.
       tags:
-        - programmed-share-break-v1
+        - inspection-break-v1
     post:
       summary: V1 - Create inspection break
       operationId: create-inspection-break-v1
@@ -1085,8 +1069,6 @@ paths:
       description: create-inspection-break-v1
       tags:
         - inspection-break-v1
-      requestBody:
-        $ref: '#/components/requestBodies/CreateShareBreak'
     parameters:
       - name: shareId
         in: path
@@ -1384,13 +1366,6 @@ paths:
           name: ids
           description: Filter by programmed share break identificator.
         - schema:
-            type: array
-            items:
-              type: integer
-          in: query
-          name: programmedShareIds
-          description: Filter by programmed share identificator.
-        - schema:
             type: string
             enum:
               - NOT_FINISHED
@@ -1415,8 +1390,6 @@ paths:
       description: create-programmed-share-break-v1
       tags:
         - programmed-share-break-v1
-      requestBody:
-        $ref: '#/components/requestBodies/CreateShareBreak'
     parameters:
       - name: shareId
         in: path
@@ -1685,13 +1658,6 @@ paths:
           name: ids
           description: Filter by work share break identificator.
         - schema:
-            type: array
-            items:
-              type: integer
-          in: query
-          name: workShareIds
-          description: Filter by work share identificator.
-        - schema:
             type: string
             enum:
               - NOT_FINISHED
@@ -1716,8 +1682,6 @@ paths:
       description: create-work-share-break-v1
       tags:
         - work-share-break-v1
-      requestBody:
-        $ref: '#/components/requestBodies/CreateShareBreak'
     parameters:
       - name: shareId
         in: path
@@ -3878,28 +3842,6 @@ components:
               - description
               - startDate
               - endDate
-    CreateShareBreak:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              constructionShareId:
-                type: integer
-                x-stoplight:
-                  id: hcfrtaqfz6qta
-              programmedShareId:
-                type: integer
-                x-stoplight:
-                  id: 65y4aw0n11g3x
-              inspectionId:
-                type: integer
-                x-stoplight:
-                  id: g9ai7ysgjufcy
-              workShareId:
-                type: integer
-                x-stoplight:
-                  id: 7xsn42pukj5e5
     UpdateShareBreak:
       content:
         application/json:

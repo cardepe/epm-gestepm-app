@@ -17,7 +17,7 @@ sql:
 
   qry-page-of-sb: |
 
-    ${sql.qry-list-of-cs}
+    ${sql.qry-list-of-sb}
     ${sql.paginated-query}
 
   qry-count-of-sb: |
@@ -95,7 +95,7 @@ sql:
 
   predicate-for-sb-ins-ids: |
 
-    sb.inspection_share_id IN (:attr_sb_ins_ids)
+    sb.inspection_id IN (:attr_sb_ins_ids)
 
   predicate-for-sb-ws-ids: |
 

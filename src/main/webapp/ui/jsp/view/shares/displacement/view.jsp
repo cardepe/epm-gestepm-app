@@ -154,7 +154,6 @@
         let actions = [ { action: 'view', url: '/shares/displacement/{id}', permission: 'read_displacement_shares' }, { action: 'delete', permission: 'edit_displacement_shares' }]
         let expand = [ 'project' ]
         let filters = [{'userIds': userId}]
-        let orderable = [[0, 'DESC']]
         let columnsDef = [
             {
                 targets: [3, 4],
@@ -164,7 +163,7 @@
             },
         ]
 
-        customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnsDef);
+        customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, columnsDef);
         dTable = createDataTable('#dTable', customDataTable, locale);
         customDataTable.setCurrentTable(dTable);
 

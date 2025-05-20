@@ -165,6 +165,45 @@
             </form>
         </div>
     </div>
+
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <div class="title mb-0">
+                        <spring:message code="breaks"/>
+                    </div>
+                </div>
+                <div class="col text-right">
+                    <c:if test="${programmedShare.endDate == null}">
+                        <c:if test="${empty currentShareBreak}">
+                            <button type="button" class="btn btn-default btn-sm" onclick="startBreak()">
+                                <spring:message code="breaks.start"/>
+                            </button>
+                        </c:if>
+
+                        <c:if test="${not empty currentShareBreak}">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="finishBreak()">
+                                <spring:message code="breaks.end"/>
+                            </button>
+                        </c:if>
+                    </c:if>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table id="dTable" class="table table-striped table-borderer dataTable w-100">
+                    <thead>
+                    <tr>
+                        <th><spring:message code="start.date"/></th>
+                        <th><spring:message code="end.date"/></th>
+                        <th><spring:message code="actions"/></th>
+                    </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap-select/1.13.17/js/bootstrap-select.min.js"></script>
@@ -187,6 +226,7 @@
         loadFiles(files);
         initialize();
         save();
+        loadDataTables();
     });
 
     function initializeSelects() {
@@ -344,6 +384,73 @@
                 const successMessage = messages.shares.programmed.files.delete.success.replace('{0}', file.name);
                 link.remove();
                 btn.remove();
+                showNotify(successMessage);
+            }).catch(error => showNotify(error.response.data.detail, 'danger'))
+                .finally(() => hideLoading());
+        }
+    }
+
+    function loadDataTables() {
+        let columns = ['startDate', 'endDate', 'id']
+        let endpoint = '/v1/shares/programmed/${programmedShare.id}/breaks';
+        let actions = []
+        if (!isShareFinished) {
+            actions.push(
+                {
+                    action: 'delete',
+                    permission: 'edit_programmed_shares',
+                    conditionGroups: [
+                        {
+                            conditions: [
+                                { key: 'endDate', value: [ undefined ], operation: '!==' }
+                            ]
+                        }
+                    ]
+                }
+            );
+        }
+        let expand = []
+        let columnDefs = [
+            {
+                targets: [0, 1],
+                render: function (data) {
+                    return data ? parseDate(data, 'DD-MM-YYYY HH:mm') : '-';
+                }
+            }
+        ]
+
+        customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, null, columnDefs);
+        dTable = createDataTable('#dTable', customDataTable, locale);
+        customDataTable.setCurrentTable(dTable);
+    }
+
+    function startBreak() {
+        showLoading();
+
+        axios.post('/v1/shares/programmed/${programmedShare.id}/breaks', { })
+            .then(() => location.reload())
+            .catch(error => showNotify(error.response.data.detail, 'danger'))
+            .finally(() => hideLoading());
+    }
+
+    function finishBreak() {
+        showLoading();
+
+        axios.put('/v1/shares/programmed/${programmedShare.id}/breaks/${currentShareBreak.id}', { })
+            .then(() => location.reload())
+            .catch(error => showNotify(error.response.data.detail, 'danger'))
+            .finally(() => hideLoading());
+    }
+
+    function remove(id) {
+        const alertMessage = messages.breaks.delete.alert;
+        if (confirm(alertMessage)) {
+
+            showLoading();
+
+            axios.delete('/v1/shares/programmed/${programmedShare.id}/breaks/' + id).then(() => {
+                dTable.ajax.reload();
+                const successMessage = messages.breaks.delete.success;
                 showNotify(successMessage);
             }).catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());

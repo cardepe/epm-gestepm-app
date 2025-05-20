@@ -6,7 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 
-import static com.epm.gestepm.model.shares.breaks.dao.constants.ShareBreakAttributes.ATTR_CSB_ID;
+import static com.epm.gestepm.model.shares.breaks.dao.constants.ShareBreakAttributes.ATTR_SB_ID;
 
 @Data
 public class ShareBreakDelete implements CollectableAttributes {
@@ -19,7 +19,7 @@ public class ShareBreakDelete implements CollectableAttributes {
 
         final AttributeMap map = new AttributeMap();
 
-        map.put(ATTR_CSB_ID, this.id);
+        map.put(ATTR_SB_ID, this.id);
 
         return map;
     }

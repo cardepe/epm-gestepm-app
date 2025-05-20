@@ -12,8 +12,13 @@ public class ShareBreakDto implements Serializable {
     @NotNull
     private Integer id;
 
-    @NotNull
-    private Integer shareId;
+    private Integer constructionShareId;
+
+    private Integer programmedShareId;
+
+    private Integer inspectionId;
+
+    private Integer workShareId;
 
     @NotNull
     private LocalDateTime startDate;

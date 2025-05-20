@@ -13,7 +13,6 @@ function initializeDataTables() {
     ]
     const expand = ['project']
     const filters = [{ 'userIds': userId, 'current': false }]
-    const orderable = [[0, 'DESC']]
     const columnDefs = [
         {
             targets: [2, 3],
@@ -29,7 +28,7 @@ function initializeDataTables() {
         }
     ]
 
-    customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
+    customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, columnDefs);
     dTable = createDataTable('#dTable', customDataTable, locale);
     customDataTable.setCurrentTable(dTable);
 }
