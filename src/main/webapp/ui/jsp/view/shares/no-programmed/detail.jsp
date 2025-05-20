@@ -45,7 +45,7 @@
                             <label class="col-form-label w-100">
                                 <spring:message code="family"/>
                                 <select name="familyId" class="form-control" required>
-                                    <option><spring:message code="family.selection"/></option>
+                                    <option value><spring:message code="family.selection"/></option>
                                     <c:forEach items="${families}" var="family">
                                         <option value="${family.id}">
                                             <c:choose>
@@ -64,7 +64,7 @@
                             <label class="col-form-label w-100">
                                 <spring:message code="subfamily"/>
                                 <select name="subFamilyId" class="form-control" required>
-                                    <option selected><spring:message code="subfamily.selection"/></option>
+                                    <option value selected><spring:message code="subfamily.selection"/></option>
                                 </select>
                             </label>
                         </div>
@@ -367,7 +367,7 @@
         }
 
         if (share.user) {
-            form.querySelector('[name="user"]').value = share.user.name + ' ' + share.user.surnames;
+            form.querySelector('[name="user"]').value = share.user.name;
         }
 
         if (share.description) {
@@ -401,7 +401,7 @@
                     const subFamily = form.querySelector('[name="subFamilyId"]');
                     subFamily.innerHTML = '';
 
-                    appendElementToList({name: '<spring:message code="family.selection" />'}, subFamily);
+                    appendElementToList({id: '', name: '<spring:message code="family.selection" />'}, subFamily);
 
                     response.data.forEach((element) => {
                         appendElementToList(element, subFamily);
@@ -474,8 +474,6 @@
             actions.push({action: 'delete', permission: 'edit_no_programmed_shares'});
         }
         let expand = []
-        let filters = []
-        let orderable = [[0, 'DESC']]
         let columnDefs = [
             {
                 targets: [1, 2],
@@ -491,7 +489,7 @@
             }
         ]
 
-        customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
+        customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, null, columnDefs);
         dTable = createDataTable('#dTable', customDataTable, locale);
         customDataTable.setCurrentTable(dTable);
     }

@@ -192,7 +192,6 @@
         ] : []
         let expand = []
         let filters = [{'personalExpenseSheetId': personalExpenseSheet.id}]
-        let orderable = [[0, 'DESC']]
         let columnDefs = [
             {
                 targets: 2,
@@ -220,7 +219,7 @@
             }
         ]
 
-        customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, orderable, columnDefs);
+        customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, columnDefs);
         dTable = createDataTable('#dTable', customDataTable, locale);
         customDataTable.setCurrentTable(dTable);
     }

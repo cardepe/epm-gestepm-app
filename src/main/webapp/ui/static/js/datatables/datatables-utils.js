@@ -3,14 +3,13 @@ let customDataTable;
 
 class CustomDataTable {
 
-    constructor(columns, endpoint, data, actions, expand, filters, orderable, columnDefs, stickyColumns) {
+    constructor(columns, endpoint, data, actions, expand, filters, columnDefs, stickyColumns) {
         this.columns = columns
         this.endpoint = endpoint
         this.data = data;
         this.actions = actions
         this.expand = expand
         this.filters = filters
-        this.orderable = orderable
         this.columnDefs = columnDefs
         this.stickyColumns = stickyColumns
         this.currentTable = null;
@@ -38,14 +37,6 @@ class CustomDataTable {
 
     setFilters(filters) {
         this.filters = filters
-    }
-
-    orderable() {
-        return this.orderable
-    }
-
-    setOrderable(orderable) {
-        this.orderable = orderable
     }
 
     columnDefs() {
@@ -92,7 +83,7 @@ function createDataTable(tableId, customDataTable, locale) {
         searching: false,
         processing: true,
         serverSide: customDataTable.endpoint,
-        order: customDataTable.orderable,
+        order: [[0]],
         ajax: {
             url: customDataTable.endpoint,
             // beforeSend: function (request) {
@@ -135,6 +126,10 @@ function generateQueryParams(settings) {
     } else {
         delete ajaxData.pageNumber;
     }
+    if (!ajaxData.order) {
+        delete ajaxData.orderBy;
+    }
+
     let keys = Object.keys(ajaxData).filter(field => !staticParams.includes(field) && ajaxData[field] !== undefined);
     let queryParams = keys.map(key => {
         return key + '=' + ajaxData[key];
@@ -143,9 +138,7 @@ function generateQueryParams(settings) {
     let currentURL = new URL(window.location.href);
     currentURL.search = '';
 
-    if (queryParams !== 'order=DESC&orderBy=id') {
-        window.history.pushState(null, '', queryParams ? '?' + queryParams : currentURL.toString());
-    }
+    window.history.pushState(null, '', queryParams ? '?' + queryParams : currentURL.toString());
 }
 
 function generateColumnDefs(customDataTable) {
@@ -216,12 +209,12 @@ function calculateFiltersQueryParams(d, customDataTable) {
 
 function calculateOrderQueryParams(d, customDataTable) {
 
-    if (customDataTable.currentTable) {
-        let info = customDataTable.currentTable.order()
+    let info = dTable.order()
 
-        d.order = info[0][1]
-        d.orderBy = customDataTable.columns[info[0][0]]
-    }
+    let orderIndex = info[0][0]
+
+    d.order = info[0][1]
+    d.orderBy = customDataTable.columns[orderIndex]
 }
 
 function calculateExpandQueryParams(d, customDataTable) {
