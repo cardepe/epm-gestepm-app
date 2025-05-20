@@ -11,6 +11,12 @@
             "success": "Centre d'activité supprimé avec succès."
         }
     },
+    "breaks": {
+        "delete": {
+            "alert" : "Êtes-vous sûr de vouloir supprimer cette pause?",
+            "success" : "Pause supprimée avec succès"
+        }
+    },
     "countries": {
         "create": {
             "success": "Pays créé avec succès."

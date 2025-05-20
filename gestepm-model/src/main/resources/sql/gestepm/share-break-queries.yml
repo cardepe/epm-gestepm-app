@@ -1,0 +1,106 @@
+sql:
+
+  qry-list-of-sb: |
+
+    SELECT
+      sb.share_break_id,
+      sb.construction_share_id,
+      sb.programmed_share_id,
+      sb.inspection_id,
+      sb.work_share_id,
+      sb.start_date,
+      sb.end_date
+    FROM ${sch-gestepm}.share_break sb
+
+    #whereToken #filter
+    #orderByToken
+
+  qry-page-of-sb: |
+
+    ${sql.qry-list-of-sb}
+    ${sql.paginated-query}
+
+  qry-count-of-sb: |
+
+    SELECT COUNT(DISTINCT share_break_id) AS "count"
+    FROM (
+      SELECT sb.share_break_id
+      FROM ${sch-gestepm}.share_break sb
+      #whereToken #filter
+    ) final
+
+  qry-create-sb: |
+
+    INSERT INTO ${sch-gestepm}.share_break (
+      construction_share_id,
+      programmed_share_id,
+      inspection_id,
+      work_share_id,
+      start_date
+    )
+    VALUES (
+      :attr_sb_cs_id,
+      :attr_sb_ps_id,
+      :attr_sb_ins_id,
+      :attr_sb_ws_id,
+      :attr_sb_start_date
+    )
+
+  qry-update-sb: |
+
+    UPDATE
+      ${sch-gestepm}.share_break
+    SET
+      start_date = :attr_sb_start_date,
+      end_date = :attr_sb_end_date
+    WHERE
+      share_break_id = :attr_sb_id
+
+  qry-delete-sb: |
+
+    DELETE FROM ${sch-gestepm}.share_break WHERE share_break_id = :attr_sb_id
+
+  filter-sb-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-sb-ids}
+      -- ${sql.predicate-for-sb-cs-ids}
+      -- ${sql.predicate-for-sb-ps-ids}
+      -- ${sql.predicate-for-sb-ins-ids}
+      -- ${sql.predicate-for-sb-ws-ids}
+      -- ${sql.predicate-for-sb-status}
+    -- AND]
+
+  filter-sb-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-sb-id}
+    -- AND]
+
+  predicate-for-sb-id: |
+
+    sb.share_break_id = :attr_sb_id
+
+  predicate-for-sb-ids: |
+
+    sb.share_break_id IN (:attr_sb_ids)
+
+  predicate-for-sb-cs-ids: |
+
+    sb.construction_share_id IN (:attr_sb_cs_ids)
+
+  predicate-for-sb-ps-ids: |
+
+    sb.programmed_share_id IN (:attr_sb_ps_ids)
+
+  predicate-for-sb-ins-ids: |
+
+    sb.inspection_id IN (:attr_sb_ins_ids)
+
+  predicate-for-sb-ws-ids: |
+
+    sb.work_share_id IN (:attr_sb_ws_ids)
+
+  predicate-for-sb-status: |
+    
+    :attr_sb_status IS NOT NULL AND ((:attr_sb_status = 'NOT_FINISHED' AND sb.end_date IS NULL) OR (:attr_sb_status = 'FINISHED' AND sb.end_date IS NOT NULL))

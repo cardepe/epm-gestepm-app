@@ -2,11 +2,16 @@ package com.epm.gestepm.rest.shares.construction;
 
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
+import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.shares.breaks.dto.ShareBreakDto;
+import com.epm.gestepm.modelapi.shares.breaks.dto.filter.ShareBreakFilterDto;
+import com.epm.gestepm.modelapi.shares.breaks.service.ShareBreakService;
+import com.epm.gestepm.modelapi.shares.common.dto.ShareStatusDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareFileDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.filter.ConstructionShareFileFilterDto;
@@ -45,6 +50,8 @@ public class ConstructionShareViewController {
     private final ConstructionShareFileService constructionShareFileService;
 
     private final ProjectService projectService;
+
+    private final ShareBreakService shareBreakService;
 
     private final UserService userService;
 
@@ -97,6 +104,15 @@ public class ConstructionShareViewController {
                 .sorted(Comparator.comparing(ConstructionShareFileDto::getName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
         model.addAttribute("files", files);
+
+        final ShareBreakFilterDto shareBreakFilterDto = new ShareBreakFilterDto();
+        shareBreakFilterDto.setConstructionShareIds(List.of(id));
+        shareBreakFilterDto.setStatus(ShareStatusDto.NOT_FINISHED);
+
+        final Page<ShareBreakDto> list = this.shareBreakService.list(shareBreakFilterDto, 0L, 1L);
+        if (!list.isEmpty() && list.get(0).isPresent()) {
+            model.addAttribute("currentShareBreak", list.get(0).get());
+        }
 
         return "construction-share-detail";
     }
