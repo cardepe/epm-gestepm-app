@@ -134,7 +134,14 @@ public class ConstructionShareExportServiceImpl implements ConstructionShareExpo
                 final byte[] compressedBytes = ImageUtils.compressImage(imageBytes, IMAGE_COMPRESSION_QUALITY);
                 final Image image = Image.getInstance(compressedBytes);
 
-                image.scaleToFit(pageWidth, pageHeight);
+                float margin = 36f;
+                float availableWidth = pageWidth - 2 * margin;
+                float availableHeight = pageHeight - 2 * margin;
+
+                if (image.getWidth() > availableWidth || image.getHeight() > availableHeight) {
+                    image.scaleToFit(availableWidth, availableHeight);
+                }
+
                 final float x = (pageWidth - image.getScaledWidth()) / 2;
                 final float y = (pageHeight - image.getScaledHeight()) / 2;
                 image.setAbsolutePosition(x, y);
