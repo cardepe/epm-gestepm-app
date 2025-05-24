@@ -17,9 +17,7 @@
             </div>
             <div class="col-12 col-lg-2">
                 <div class="page-header float-right">
-                    <a class="btn btn-default btn-sm"
-                       href="${pageContext.request.contextPath}/shares/displacement"><spring:message
-                            code="back"/></a>
+                    <a id="returnBtn" class="btn btn-default btn-sm"><spring:message code="back"/></a>
                 </div>
             </div>
         </div>
@@ -109,6 +107,7 @@
         initializeSelects();
         initialize();
         save();
+        setReturnButtonUrl();
     });
 
     function initializeSelects() {
@@ -160,12 +159,25 @@
                     ...(observations && {observations})
                 };
 
-                axios.put('/v1' + window.location.pathname, params).then((response) => {
+                axios.put('/v1' + window.location.pathname, params).then(() => {
                     showNotify(messages.shares.displacement.update.success);
                 }).catch(error => showNotify(error.response.data.detail, 'danger'))
                     .finally(() => hideLoading());
             }
         })
+    }
+
+    function setReturnButtonUrl() {
+        let lastPageUrl = '/shares/displacement';
+
+        if (document.referrer) {
+            const lastPagePath = new URL(document.referrer).pathname;
+            const queryParams = document.referrer.split('?')[1];
+
+            lastPageUrl = lastPagePath + (queryParams ? '?' + queryParams : '');
+        }
+
+        $('#returnBtn').attr('href', lastPageUrl);
     }
 
 </script>

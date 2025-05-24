@@ -15,30 +15,30 @@ import java.util.Iterator;
 public class ImageUtils {
 
     public static byte[] compressImage(byte[] imageBytes, float quality) throws IOException {
-        final ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
-        final BufferedImage originalImage = ImageIO.read(bais);
+        try (
+                ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream()
+        ) {
+            BufferedImage originalImage = ImageIO.read(bais);
+            if (originalImage == null) {
+                throw new IOException("No se pudo leer la imagen.");
+            }
 
-        final int newWidth = originalImage.getWidth() / 2;
-        final int newHeight = originalImage.getHeight() / 2;
-        final BufferedImage resizedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
-        final Graphics2D g2d = resizedImage.createGraphics();
-        g2d.drawImage(originalImage, 0, 0, newWidth, newHeight, null);
-        g2d.dispose();
+            Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpeg");
+            if (!writers.hasNext()) {
+                throw new IllegalStateException("No JPEG writers found!");
+            }
 
-        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        final Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpeg");
-        if (!writers.hasNext()) {
-            throw new IllegalStateException("No JPEG writers found!");
+            ImageWriter writer = writers.next();
+            ImageWriteParam param = writer.getDefaultWriteParam();
+            param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+            param.setCompressionQuality(quality); // Ej: 0.85f para buena calidad visual
+
+            writer.setOutput(new MemoryCacheImageOutputStream(baos));
+            writer.write(null, new javax.imageio.IIOImage(originalImage, null, null), param);
+            writer.dispose();
+
+            return baos.toByteArray();
         }
-        final ImageWriter writer = writers.next();
-        final ImageWriteParam param = writer.getDefaultWriteParam();
-        param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-        param.setCompressionQuality(quality); // Calidad (0.0 = peor calidad, 1.0 = mejor calidad)
-
-        writer.setOutput(new MemoryCacheImageOutputStream(baos));
-        writer.write(null, new IIOImage(resizedImage, null, null), param);
-        writer.dispose();
-
-        return baos.toByteArray();
     }
 }

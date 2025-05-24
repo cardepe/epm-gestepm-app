@@ -178,7 +178,7 @@ public class ProgrammedShareController extends BaseController implements Program
     }
 
     @Override
-    @RequirePermits(value = PRMT_READ_I, action = "Export programmed share")
+    @RequirePermits(value = PRMT_READ_PS, action = "Export programmed share")
     @LogExecution(operation = OP_READ)
     public ResponseEntity<Resource> exportProgrammedShareV1(final Integer shareId) {
         final String language = this.localeProvider.getLocale().orElse("es");

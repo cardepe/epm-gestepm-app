@@ -24,7 +24,7 @@
             </div>
             <div class="col-12 col-lg-2">
                 <div class="page-header float-right">
-                    <a class="btn btn-default btn-sm" href="javascript:history.back()"><spring:message code="back"/></a>
+                    <a id="returnBtn" class="btn btn-default btn-sm"><spring:message code="back"/></a>
                 </div>
             </div>
         </div>
@@ -227,6 +227,7 @@
         initialize();
         save();
         loadDataTables();
+        setReturnButtonUrl();
     });
 
     function initializeSelects() {
@@ -455,6 +456,19 @@
             }).catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());
         }
+    }
+
+    function setReturnButtonUrl() {
+        let lastPageUrl = '/shares/programmed';
+
+        if (document.referrer) {
+            const lastPagePath = new URL(document.referrer).pathname;
+            const queryParams = document.referrer.split('?')[1];
+
+            lastPageUrl = lastPagePath + (queryParams ? '?' + queryParams : '');
+        }
+
+        $('#returnBtn').attr('href', lastPageUrl);
     }
 
 </script>
