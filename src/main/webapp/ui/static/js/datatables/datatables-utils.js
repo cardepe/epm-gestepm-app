@@ -223,8 +223,7 @@ function calculateFiltersQueryParams(d, customDataTable) {
 
 function calculateOrderQueryParams(d, customDataTable) {
 
-    let info = dTable.order()
-
+    let info = customDataTable.currentTable.order()
     let orderIndex = info[0][0]
 
     d.order = info[0][1]
