@@ -7,7 +7,7 @@ import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionFileDto;
 import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFileFilterDto;
 import com.epm.gestepm.modelapi.inspection.service.InspectionFileService;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import com.epm.gestepm.rest.inspection.mappers.MapIFToFileResponse;
 import com.epm.gestepm.rest.inspection.request.InspectionFindRestRequest;
 import com.epm.gestepm.restapi.openapi.model.Inspection;
@@ -35,12 +35,12 @@ public class InspectionResponseDecorator extends BaseResponseDataDecorator<Inspe
 
     private final InspectionFileService inspectionFileService;
 
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
     
-    public InspectionResponseDecorator(ApplicationContext applicationContext, InspectionFileService inspectionFileService, UserService userService) {
+    public InspectionResponseDecorator(ApplicationContext applicationContext, InspectionFileService inspectionFileService, UserServiceOld userServiceOld) {
         super(applicationContext);
         this.inspectionFileService = inspectionFileService;
-        this.userService = userService;
+        this.userServiceOld = userServiceOld;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class InspectionResponseDecorator extends BaseResponseDataDecorator<Inspe
         if (request.hasExpand(I_FIRST_TECHNICAL_EXPAND) && data.getFirstTechnical() != null && data.getFirstTechnical().getId() != null) {
             final Integer firstTechnicalId = data.getFirstTechnical().getId();
 
-            final com.epm.gestepm.modelapi.user.dto.User userDto = this.userService.getUserById(Long.valueOf(firstTechnicalId));
+            final com.epm.gestepm.modelapi.userold.dto.User userDto = this.userServiceOld.getUserById(Long.valueOf(firstTechnicalId));
             final User response = new User().id(firstTechnicalId).name(userDto.getName()).surnames(userDto.getSurnames());
 
             data.setFirstTechnical(response);
@@ -79,7 +79,7 @@ public class InspectionResponseDecorator extends BaseResponseDataDecorator<Inspe
         if (request.hasExpand(I_SECOND_TECHNICAL_EXPAND) && data.getSecondTechnical() != null && data.getSecondTechnical().getId() != null) {
             final Integer secondTechnicalId = data.getSecondTechnical().getId();
 
-            final com.epm.gestepm.modelapi.user.dto.User userDto = this.userService.getUserById(Long.valueOf(secondTechnicalId));
+            final com.epm.gestepm.modelapi.userold.dto.User userDto = this.userServiceOld.getUserById(Long.valueOf(secondTechnicalId));
             final User response = new User().id(secondTechnicalId).name(userDto.getName()).surnames(userDto.getSurnames());
 
             data.setSecondTechnical(response);

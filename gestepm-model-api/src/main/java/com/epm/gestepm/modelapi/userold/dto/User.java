@@ -1,4 +1,4 @@
-package com.epm.gestepm.modelapi.user.dto;
+package com.epm.gestepm.modelapi.userold.dto;
 
 import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.deprecated.displacementshare.dto.DisplacementShare;

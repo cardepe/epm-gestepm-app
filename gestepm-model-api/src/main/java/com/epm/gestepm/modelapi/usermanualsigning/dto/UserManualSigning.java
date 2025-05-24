@@ -1,7 +1,7 @@
 package com.epm.gestepm.modelapi.usermanualsigning.dto;
 
 import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 import lombok.Data;
 
 import javax.persistence.*;

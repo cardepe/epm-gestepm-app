@@ -6,8 +6,8 @@ import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,13 +29,13 @@ public class ProvisionalController {
 
     private final SubFamilyService subFamilyService;
 
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
 
     @ResponseBody
     @GetMapping("/shares/no-programmed/user-permissions")
     public NoProgrammedShareUserPermissionsResponse findNoProgrammedShareUserPermissions(@RequestParam Integer shareId, @RequestParam Integer userId) {
 
-        final User user = this.userService.getUserById(userId.longValue());
+        final User user = this.userServiceOld.getUserById(userId.longValue());
         final NoProgrammedShareDto share = this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(shareId));
 
         boolean hasRole = false;

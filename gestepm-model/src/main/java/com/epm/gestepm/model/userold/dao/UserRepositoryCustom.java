@@ -1,11 +1,11 @@
-package com.epm.gestepm.model.user.dao;
+package com.epm.gestepm.model.userold.dao;
 
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseUserValidateDTO;
 import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseValidateDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectMemberDTO;
-import com.epm.gestepm.modelapi.user.dto.UserDTO;
-import com.epm.gestepm.modelapi.user.dto.UserTableDTO;
+import com.epm.gestepm.modelapi.userold.dto.UserDTO;
+import com.epm.gestepm.modelapi.userold.dto.UserTableDTO;
 
 import java.util.List;
 

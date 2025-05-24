@@ -1,4 +1,4 @@
-package com.epm.gestepm.model.user.dao;
+package com.epm.gestepm.model.userold.dao;
 
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.PersonalExpenseSheetStatusEnum;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
@@ -13,9 +13,9 @@ import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectMemberDTO;
 import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.dto.UserDTO;
-import com.epm.gestepm.modelapi.user.dto.UserTableDTO;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.UserDTO;
+import com.epm.gestepm.modelapi.userold.dto.UserTableDTO;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

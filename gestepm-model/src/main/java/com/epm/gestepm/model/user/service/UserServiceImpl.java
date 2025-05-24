@@ -1,139 +1,157 @@
 package com.epm.gestepm.model.user.service;
 
-import com.epm.gestepm.model.user.dao.UserRepository;
-import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseUserValidateDTO;
-import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseValidateDTO;
-import com.epm.gestepm.modelapi.project.dto.ProjectMemberDTO;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.dto.UserDTO;
-import com.epm.gestepm.modelapi.user.dto.UserTableDTO;
+import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
+import com.epm.gestepm.lib.logging.annotation.LogExecution;
+import com.epm.gestepm.lib.security.annotation.RequirePermits;
+import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.model.user.dao.UserDao;
+import com.epm.gestepm.model.user.dao.entity.User;
+import com.epm.gestepm.model.user.dao.entity.creator.UserCreate;
+import com.epm.gestepm.model.user.dao.entity.deleter.UserDelete;
+import com.epm.gestepm.model.user.dao.entity.filter.UserFilter;
+import com.epm.gestepm.model.user.dao.entity.finder.UserByIdFinder;
+import com.epm.gestepm.model.user.dao.entity.updater.UserUpdate;
+import com.epm.gestepm.model.user.service.mapper.*;
+import com.epm.gestepm.modelapi.user.dto.UserDto;
+import com.epm.gestepm.modelapi.user.dto.creator.UserCreateDto;
+import com.epm.gestepm.modelapi.user.dto.deleter.UserDeleteDto;
+import com.epm.gestepm.modelapi.user.dto.filter.UserFilterDto;
+import com.epm.gestepm.modelapi.user.dto.finder.UserByIdFinderDto;
+import com.epm.gestepm.modelapi.user.dto.updater.UserUpdateDto;
+import com.epm.gestepm.modelapi.user.exception.UserNotFoundException;
 import com.epm.gestepm.modelapi.user.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.function.Supplier;
 
+import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
+import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
+import static com.epm.gestepm.modelapi.user.security.UserPermission.PRMT_EDIT_U;
+import static com.epm.gestepm.modelapi.user.security.UserPermission.PRMT_READ_U;
+import static org.mapstruct.factory.Mappers.getMapper;
+
+@Validated
 @Service
+@AllArgsConstructor
+@EnableExecutionLog(layerMarker = SERVICE)
 public class UserServiceImpl implements UserService {
+    
+    private final UserDao userDao;
 
-	@Autowired
-	private UserRepository userRepository;
+    @Override
+    @RequirePermits(value = PRMT_READ_U, action = "List users")
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Listing users",
+            msgOut = "Listing users OK",
+            errorMsg = "Failed to list users")
+    public List<UserDto> list(UserFilterDto filterDto) {
+        final UserFilter filter = getMapper(MapUToUserFilter.class).from(filterDto);
 
-	@Override
-	@Transactional
-	public User save(User user) {
-		return userRepository.save(user);
-	}
+        final List<User> list = this.userDao.list(filter);
 
-	@Override
-	@Transactional
-	public void deleteUserById(Long id) {
-		userRepository.deleteById(id);
-	}
+        return getMapper(MapUToUserDto.class).from(list);
+    }
 
-	@Override
-	@Transactional
-	public void deleteUser(User user) {
-		userRepository.delete(user);
-	}
+    @Override
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Listing users",
+            msgOut = "Listing users OK",
+            errorMsg = "Failed to list users")
+    public Page<UserDto> list(UserFilterDto filterDto, Long offset, Long limit) {
 
-	public User getUsuarioByEmailAndPassword(String email, String password) {
-		return userRepository.findUsuarioByEmailAndPassword(email, password);
-	}
+        final UserFilter filter = getMapper(MapUToUserFilter.class).from(filterDto);
 
-	public User getUserById(Long id) {
-		return userRepository.findById(id).orElse(null);
-	}
+        final Page<User> page = this.userDao.list(filter, offset, limit);
 
-	@Override
-	public List<User> findBySigningIds(List<Long> ids) {
-		return userRepository.findBySigningIds(ids);
-	}
+        return getMapper(MapUToUserDto.class).from(page);
+    }
 
-	@Override
-	public List<User> findByState(Integer state) {
-		return userRepository.findByState(state);
-	}
+    @Override
+    @RequirePermits(value = PRMT_READ_U, action = "Find user by ID")
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Finding user by ID, result can be empty",
+            msgOut = "Found user by ID",
+            errorMsg = "Failed to find user by ID")
+    public Optional<UserDto> find(final UserByIdFinderDto finderDto) {
+        final UserByIdFinder finder = getMapper(MapUToUserByIdFinder.class).from(finderDto);
 
-	public User getUserBySigningId(Long signingId) {
-		return userRepository.findBySigningId(signingId);
-	}
+        final Optional<User> found = this.userDao.find(finder);
 
-	public List<UserDTO> getAllUserDTOs() {
-		return userRepository.findAllUserDTOs();
-	}
+        return found.map(getMapper(MapUToUserDto.class)::from);
+    }
 
-	public List<UserDTO> getNotBossDTOsByProjectId(Long projectId) {
-		return userRepository.findNotBossDTOsByProjectId(projectId);
-	}
+    @Override
+    @RequirePermits(value = PRMT_READ_U, action = "Find user by ID")
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Finding user by ID, result is expected or will fail",
+            msgOut = "Found user by ID",
+            errorMsg = "User by ID not found")
+    public UserDto findOrNotFound(final UserByIdFinderDto finderDto) {
+        final Supplier<RuntimeException> notFound = () -> new UserNotFoundException(finderDto.getId());
 
-	public List<UserDTO> getAllProjectResponsables() {
-		return userRepository.findAllProjectResponsables();
-	}
+        return this.find(finderDto).orElseThrow(notFound);
+    }
 
-	public List<ProjectMemberDTO> getAllMembersDTOByProjectId(Long projectId) {
-		return userRepository.findAllMembersDTOByProjectId(projectId);
-	}
+    @Override
+    @Transactional
+    @RequirePermits(value = PRMT_EDIT_U, action = "Create new user")
+    @LogExecution(operation = OP_CREATE,
+            debugOut = true,
+            msgIn = "Creating new user",
+            msgOut = "New user created OK",
+            errorMsg = "Failed to create new user")
+    public UserDto create(UserCreateDto createDto) {
+        final UserCreate create = getMapper(MapUToUserCreate.class).from(createDto);
 
-	public List<UserDTO> getUserDTOsByProjectId(Long projectId) {
-		return userRepository.findUserDTOsByProjectId(projectId);
-	}
+        final User result = this.userDao.create(create);
 
-	public List<UserDTO> getNotUserDTOsByProjectId(Long projectId) {
-		return userRepository.findNotUserDTOsByProjectId(projectId);
-	}
+        return getMapper(MapUToUserDto.class).from(result);
+    }
 
-	public List<ProjectMemberDTO> getProjectMemberDTOsByProjectId(Long projectId, PaginationCriteria pagination) {
-		return userRepository.findProjectMemberDTOsByProjectId(projectId, pagination);
-	}
+    @Override
+    @Transactional
+    @RequirePermits(value = PRMT_EDIT_U, action = "Update user")
+    @LogExecution(operation = OP_UPDATE,
+            debugOut = true,
+            msgIn = "Updating user",
+            msgOut = "User updated OK",
+            errorMsg = "Failed to update user")
+    public UserDto update(final UserUpdateDto updateDto) {
+        final UserByIdFinderDto finderDto = new UserByIdFinderDto(updateDto.getId());
 
-	public Long getProjectMembersCountByProjectId(Long projectId) {
-		return userRepository.findProjectMembersCountByProjectId(projectId);
-	}
+        final UserDto userDto = findOrNotFound(finderDto);
 
-	public List<ProjectMemberDTO> getProjectBossDTOsByProjectId(Long projectId, PaginationCriteria pagination) {
-		return userRepository.findProjectBossDTOsByProjectId(projectId, pagination);
-	}
+        final UserUpdate update = getMapper(MapUToUserUpdate.class).from(updateDto,
+                getMapper(MapUToUserUpdate.class).from(userDto));
 
-	public Long getProjectBossesCountByProjectId(Long projectId) {
-		return userRepository.findProjectBossesCountByProjectId(projectId);
-	}
+        final User updated = this.userDao.update(update);
 
-	public List<UserDTO> getUserDTOsByRank(Long rankId) {
-		return userRepository.findUserDTOsByRank(rankId);
-	}
+        return getMapper(MapUToUserDto.class).from(updated);
+    }
 
-	public List<UserTableDTO> getUsersDataTables(Integer state, List<Long> projectIds, PaginationCriteria pagination) {
-		return userRepository.findUsersDataTables(state, projectIds, pagination);
-	}
+    @Override
+    @RequirePermits(value = PRMT_EDIT_U, action = "Delete user")
+    @LogExecution(operation = OP_DELETE,
+            debugOut = true,
+            msgIn = "Deleting user",
+            msgOut = "User deleted OK",
+            errorMsg = "Failed to delete user")
+    public void delete(UserDeleteDto deleteDto) {
 
-	public Long getUsersCount(Integer state, List<Long> projectIds) {
-		return userRepository.findUsersCount(state, projectIds);
-	}
+        final UserByIdFinderDto finderDto = new UserByIdFinderDto(deleteDto.getId());
 
-	public UserTableDTO getUserDTOByUserId(Long userId, Integer state) {
-		return userRepository.findUserDTOByUserId(userId, state);
-	}
+        findOrNotFound(finderDto);
 
-	public List<ExpenseValidateDTO> getExpensesToValidateByUserId(Long userId) {
-		return userRepository.findExpensesToValidateByUserId(userId);
-	}
+        final UserDelete delete = getMapper(MapUToUserDelete.class).from(deleteDto);
 
-	public List<ExpenseUserValidateDTO> getExpensesToPay() {
-		return userRepository.findExpensesToPay().stream().filter(e -> e.getExpenseSheetsCount() > 0).sorted(Comparator.comparing(ExpenseUserValidateDTO::getName, String.CASE_INSENSITIVE_ORDER)).collect(Collectors.toList());
-	}
-
-	@Override
-	public void updateHolidaysInNewYear() {
-		this.userRepository.updateHolidaysInNewYear();
-	}
-
-	@Override
-	public void resetLastYearHolidays() {
-		this.userRepository.resetLastYearHolidays();
-	}
+        this.userDao.delete(delete);
+    }
 }

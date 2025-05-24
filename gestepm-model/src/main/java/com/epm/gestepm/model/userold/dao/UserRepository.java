@@ -1,6 +1,6 @@
-package com.epm.gestepm.model.user.dao;
+package com.epm.gestepm.model.userold.dao;
 
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

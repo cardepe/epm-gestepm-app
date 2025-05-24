@@ -1,4 +1,4 @@
-package com.epm.gestepm.model.user.service.mapper;
+package com.epm.gestepm.model.userold.service.mapper;
 
 import com.epm.gestepm.modelapi.common.helpers.DatesModel;
 import com.epm.gestepm.modelapi.deprecated.constructionshare.dto.ConstructionShare;

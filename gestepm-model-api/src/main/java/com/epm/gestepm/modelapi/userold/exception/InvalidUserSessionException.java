@@ -1,4 +1,4 @@
-package com.epm.gestepm.modelapi.user.exception;
+package com.epm.gestepm.modelapi.userold.exception;
 
 public class InvalidUserSessionException extends Exception {
 

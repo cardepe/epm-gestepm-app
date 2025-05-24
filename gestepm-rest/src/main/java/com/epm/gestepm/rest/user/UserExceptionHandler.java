@@ -4,7 +4,7 @@ import com.epm.gestepm.lib.controller.error.APIError;
 import com.epm.gestepm.lib.controller.error.I18nErrorMessageSource;
 import com.epm.gestepm.lib.controller.exception.BaseRestExceptionHandler;
 import com.epm.gestepm.lib.executiontrace.ExecutionRequestProvider;
-import com.epm.gestepm.modelapi.user.exception.UserByIdNotFoundException;
+import com.epm.gestepm.modelapi.userold.exception.UserByIdNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

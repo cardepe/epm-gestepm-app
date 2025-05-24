@@ -1,4 +1,4 @@
-package com.epm.gestepm.model.user.service.mapper;
+package com.epm.gestepm.model.userold.service.mapper;
 
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
@@ -6,8 +6,8 @@ import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import com.epm.gestepm.modelapi.common.utils.CipherUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.dto.UserDTO;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.UserDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

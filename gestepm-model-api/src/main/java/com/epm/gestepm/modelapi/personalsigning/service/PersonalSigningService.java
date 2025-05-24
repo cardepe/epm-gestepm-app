@@ -1,7 +1,7 @@
 package com.epm.gestepm.modelapi.personalsigning.service;
 
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.time.LocalDateTime;

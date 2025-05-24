@@ -1,7 +1,7 @@
 package com.epm.gestepm.modelapi.userabsence.dto;
 
 import com.epm.gestepm.modelapi.absencetype.dto.AbsenceType;
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 
 import java.util.Date;
 

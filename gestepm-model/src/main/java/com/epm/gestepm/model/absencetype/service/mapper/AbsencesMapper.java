@@ -2,7 +2,7 @@ package com.epm.gestepm.model.absencetype.service.mapper;
 
 import java.util.Date;
 
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 import com.epm.gestepm.modelapi.userabsence.dto.UserAbsence;
 import com.epm.gestepm.model.common.utils.classes.SingletonUtil;
 

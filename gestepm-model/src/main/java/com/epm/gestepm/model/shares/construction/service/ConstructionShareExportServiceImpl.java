@@ -4,8 +4,6 @@ import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.model.common.pdf.ImageUtils;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.inspection.exception.InspectionExportException;
-import com.epm.gestepm.modelapi.inspection.exception.InspectionNotEndedException;
 import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareFileDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.finder.ConstructionShareFileByIdFinderDto;
@@ -13,8 +11,8 @@ import com.epm.gestepm.modelapi.shares.construction.exception.ConstructionShareE
 import com.epm.gestepm.modelapi.shares.construction.exception.ConstructionShareNotEndedException;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareExportService;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareFileService;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
@@ -45,7 +43,7 @@ public class ConstructionShareExportServiceImpl implements ConstructionShareExpo
 
     private final ConstructionShareFileService constructionShareFileService;
     private final LocaleProvider localeProvider;
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
 
     @Override
     public byte[] generate(final ConstructionShareDto constructionShare) {
@@ -56,7 +54,7 @@ public class ConstructionShareExportServiceImpl implements ConstructionShareExpo
             pdfTemplate = loadPdfTemplate();
 
             final PdfStamper stamper = new PdfStamper(pdfTemplate, baos);
-            final User user = userService.getUserById(constructionShare.getUserId().longValue());
+            final User user = userServiceOld.getUserById(constructionShare.getUserId().longValue());
 
             this.populateFields(stamper.getAcroFields(), constructionShare, user);
             this.addOperatorSignatureIfPresent(stamper, constructionShare);

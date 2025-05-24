@@ -31,11 +31,11 @@ import com.epm.gestepm.modelapi.shares.displacement.dto.updater.DisplacementShar
 import com.epm.gestepm.modelapi.shares.displacement.service.DisplacementShareService;
 import com.epm.gestepm.modelapi.timecontrolold.dto.TimeControlTableDTO;
 import com.epm.gestepm.modelapi.timecontrolold.service.TimeControlOldService;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.dto.UserDTO;
-import com.epm.gestepm.modelapi.user.dto.UserTableDTO;
-import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.UserDTO;
+import com.epm.gestepm.modelapi.userold.dto.UserTableDTO;
+import com.epm.gestepm.modelapi.userold.exception.InvalidUserSessionException;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningDTO;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigningTableDTO;
@@ -102,7 +102,7 @@ public class SigningController {
     private TimeControlOldService timeControlOldService;
 
     @Autowired
-    private UserService userService;
+    private UserServiceOld userServiceOld;
 
     @Autowired
     private UserManualSigningService userManualSigningService;
@@ -170,7 +170,7 @@ public class SigningController {
                     return "unauthorized";
                 }
 
-                UserTableDTO userDTO = userService.getUserDTOByUserId(userId, null);
+                UserTableDTO userDTO = userServiceOld.getUserDTOByUserId(userId, null);
 
                 if (userDTO != null) {
                     model.addAttribute("userId", userDTO.getId());
@@ -251,7 +251,7 @@ public class SigningController {
             User signingUser = user;
 
             if (user.getId() != userManualSigningDTO.getUserId()) {
-                signingUser = this.userService.getUserById(userManualSigningDTO.getUserId());
+                signingUser = this.userServiceOld.getUserById(userManualSigningDTO.getUserId());
             }
 
             final ManualSigningType manualType = this.manualSigningTypeService.findById(userManualSigningDTO.getManualTypeId());
@@ -387,7 +387,7 @@ public class SigningController {
             User signingUser = user;
 
             if (user.getId() != personalSigningDTO.getUserId()) {
-                signingUser = this.userService.getUserById(personalSigningDTO.getUserId());
+                signingUser = this.userServiceOld.getUserById(personalSigningDTO.getUserId());
             }
 
             log.info("El usuario " + user.getId() + " ha creado un fichaje personal al usuario " + signingUser.getId());
@@ -426,7 +426,7 @@ public class SigningController {
 
             log.info("El usuario " + user.getId() + " está generando el excel de horas imputadas del usuario " + id);
 
-            final User userSigning = userService.getUserById(id);
+            final User userSigning = userServiceOld.getUserById(id);
 
             final ByteArrayOutputStream file = new ByteArrayOutputStream();
 
@@ -475,7 +475,7 @@ public class SigningController {
 
             log.info("El usuario " + user.getId() + " está generando el woffu excel de horas imputadas del usuario " + id);
 
-            final User userSigning = userService.getUserById(id);
+            final User userSigning = userServiceOld.getUserById(id);
 
             final ByteArrayOutputStream file = new ByteArrayOutputStream();
 
@@ -563,7 +563,7 @@ public class SigningController {
             User userDetail = null;
 
             if (userId != null) {
-                userDetail = userService.getUserById(userId);
+                userDetail = userServiceOld.getUserById(userId);
             } else {
                 userDetail = user;
             }
@@ -670,7 +670,7 @@ public class SigningController {
             ModelUtil.loadConstants(locale, model, request);
 
             final User user = Utiles.getUsuario();
-            final List<UserDTO> usersDTO = userService.getAllUserDTOs();
+            final List<UserDTO> usersDTO = userServiceOld.getAllUserDTOs();
 
             model.addAttribute("usersDTO", usersDTO);
             model.addAttribute("tableActionButtons", ModelUtil.getThumbsTableActionButtons());

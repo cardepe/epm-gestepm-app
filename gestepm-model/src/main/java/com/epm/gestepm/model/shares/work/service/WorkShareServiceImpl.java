@@ -31,7 +31,7 @@ import com.epm.gestepm.modelapi.shares.work.dto.updater.WorkShareUpdateDto;
 import com.epm.gestepm.modelapi.shares.work.exception.WorkShareNotFoundException;
 import com.epm.gestepm.modelapi.shares.work.service.WorkShareExportService;
 import com.epm.gestepm.modelapi.shares.work.service.WorkShareService;
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
