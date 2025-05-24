@@ -207,3 +207,20 @@ async function parseFiles(editForm) {
 	}
 	return filesData ? filesData : null;
 }
+
+function resetForm(formSelector) {
+	const form = document.querySelector(formSelector);
+	if (!form) return;
+
+	form.reset();
+
+	const selects = form.querySelectorAll('select');
+	selects.forEach(select => {
+		if ($(select).hasClass('select2-hidden-accessible')) {
+			$(select).val(null).trigger('change');
+		}
+	});
+
+	const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+	checkboxes.forEach(cb => cb.checked = false);
+}

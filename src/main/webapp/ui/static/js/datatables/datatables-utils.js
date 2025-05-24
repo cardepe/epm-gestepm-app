@@ -83,7 +83,7 @@ function createDataTable(tableId, customDataTable, locale) {
         searching: false,
         processing: true,
         serverSide: customDataTable.endpoint,
-        order: [[0]],
+        order: generateDefaultOrderTable(customDataTable),
         ajax: {
             url: customDataTable.endpoint,
             // beforeSend: function (request) {
@@ -113,6 +113,20 @@ function createDataTable(tableId, customDataTable, locale) {
             generateQueryParams(settings);
         },
     })
+}
+
+function generateDefaultOrderTable(customDataTable) {
+    const params = new URLSearchParams(window.location.search);
+    const orderBy = params.get('orderBy');
+    const order = params.get('order') || 'desc';
+
+    let orderIndex = 0;
+    if (orderBy && Array.isArray(customDataTable.columns)) {
+        const idx = customDataTable.columns.indexOf(orderBy);
+        if (idx !== -1) orderIndex = idx;
+    }
+
+    return orderIndex ? [[orderIndex, order]] : [[0]];
 }
 
 function generateQueryParams(settings) {
@@ -234,17 +248,6 @@ function parseArrayToDataTableColumns(columns) {
     });
 
     return dtColumns
-}
-
-function countToArray(count) {
-
-    let arrayCount = []
-
-    for (let i = 1; i < count; i++) {
-        arrayCount.push(i)
-    }
-
-    return arrayCount;
 }
 
 function printActions(data, actions, id) {
