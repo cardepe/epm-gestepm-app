@@ -92,11 +92,11 @@ function filter(isReset) {
         projectId.value && filters.push({'projectIds': projectId.value});
         status.value && filters.push({'status': status.value});
     } else {
-        $('#filterForm')[0].reset();
+        resetForm('#filterForm');
     }
 
     customDataTable.setFilters(filters);
-    dTable.ajax.reload();
+    dTable.order([[0]]).ajax.reload();
 }
 
 function create() {
