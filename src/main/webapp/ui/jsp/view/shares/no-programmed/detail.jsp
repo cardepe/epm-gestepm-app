@@ -241,8 +241,6 @@
 <script>
 
     let locale = '${locale}';
-
-    let lastPageUrl;
     let returnBtn = $('#returnBtn');
 
     let share;
@@ -633,17 +631,17 @@
     }
 
     function setReturnButtonUrl() {
-        lastPageUrl = '/shares/no-programmed';
+        let lastPageUrl = '/shares/no-programmed';
 
         if (document.referrer) {
             const lastPagePath = new URL(document.referrer).pathname;
 
-            if (lastPagePath === 'no-programmed') {
+            if (/^\/shares\/no-programmed\/\d+\/inspections\/\d+$/.test(lastPagePath)) {
+                lastPageUrl = sessionStorage.getItem('noProgrammedSharesFilter');
+            } else {
                 const queryParams = document.referrer.split('?')[1];
                 lastPageUrl = lastPagePath + (queryParams ? '?' + queryParams : '');
-                sessionStorage.setItem('sharesFilter', lastPageUrl);
-            } else if (lastPagePath.startsWith('/shares/no-programmed/')) {
-                lastPageUrl = sessionStorage.getItem('sharesFilter');
+                sessionStorage.setItem('noProgrammedSharesFilter', lastPageUrl);
             }
         }
 

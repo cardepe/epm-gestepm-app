@@ -25,10 +25,10 @@ public class DisplacementShare {
 	@JoinColumn(name = "project_id", referencedColumnName = "ID", nullable = false)
 	private Project project;
 	
-	@Column(name = "startDate", nullable = false)
+	@Column(name = "start_date", nullable = false)
 	private LocalDateTime startDate;
 
-	@Column(name = "endDate", nullable = false)
+	@Column(name = "end_date")
 	private LocalDateTime endDate;
 	
 	@Column(name="observations")

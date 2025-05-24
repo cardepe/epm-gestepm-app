@@ -12,11 +12,11 @@ function filter(isReset) {
 		filters.push({'name': name.value});
 		filters.push({'countryIds': countryId.value});
 	} else {
-		$('#filterForm')[0].reset();
+		resetForm('#filterForm');
 	}
 
 	customDataTable.setFilters(filters)
-	dTable.ajax.reload();
+	dTable.order([[0]]).ajax.reload();
 }
 
 function create() {
