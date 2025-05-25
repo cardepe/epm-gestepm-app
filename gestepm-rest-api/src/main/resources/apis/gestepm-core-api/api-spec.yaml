@@ -3930,6 +3930,10 @@ components:
                 type: integer
                 x-stoplight:
                   id: czmo5dnulg2ap
+              signingId:
+                type: integer
+                x-stoplight:
+                  id: backm1dblmumv
               roleId:
                 type: integer
                 x-stoplight:
@@ -3942,10 +3946,6 @@ components:
                 type: number
                 x-stoplight:
                   id: ogce45swgjeqm
-              signingId:
-                type: integer
-                x-stoplight:
-                  id: backm1dblmumv
             required:
               - name
               - surnames
@@ -3979,6 +3979,18 @@ components:
                 type: integer
                 x-stoplight:
                   id: czmo5dnulg2ap
+              signingId:
+                type: integer
+                x-stoplight:
+                  id: backm1dblmumv
+              forumUsername:
+                type: string
+                x-stoplight:
+                  id: cso3nfnlf3nve
+              forumPassword:
+                type: string
+                x-stoplight:
+                  id: f1lp03z6jfvj9
               roleId:
                 type: integer
                 x-stoplight:
@@ -3991,17 +4003,14 @@ components:
                 type: number
                 x-stoplight:
                   id: ogce45swgjeqm
-              signingId:
+              currentYearHolidaysCount:
                 type: integer
                 x-stoplight:
-                  id: backm1dblmumv
-            required:
-              - name
-              - surnames
-              - email
-              - password
-              - activityCenterId
-              - roleId
+                  id: 79qzla01vb66u
+              lastYearHolidaysCount:
+                type: integer
+                x-stoplight:
+                  id: 62h2alswvyo76
   parameters:
     Share-Id:
       name: shareId
