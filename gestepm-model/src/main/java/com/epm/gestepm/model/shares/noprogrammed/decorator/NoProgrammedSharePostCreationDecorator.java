@@ -6,47 +6,37 @@ import com.epm.gestepm.emailapi.service.EmailService;
 import com.epm.gestepm.forum.model.api.service.TopicService;
 import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.model.shares.noprogrammed.dao.NoProgrammedShareDao;
-import com.epm.gestepm.model.shares.noprogrammed.dao.entity.NoProgrammedShare;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.creator.NoProgrammedShareFileCreate;
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.updater.NoProgrammedShareUpdate;
 import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSToNoProgrammedShareDto;
 import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSToNoProgrammedShareUpdate;
-import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSToNoProgrammedShareUpdateDto;
-import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
-import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseNoProgrammedShareMailTemplateDto;
-import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenNoProgrammedShareMailTemplateDto;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
-import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.NoProgrammedShareUpdateDto;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.exception.UserByIdNotFoundException;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import com.itextpdf.xmp.impl.Base64;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.mapstruct.factory.Mappers.getMapper;
 
@@ -71,7 +61,7 @@ public class NoProgrammedSharePostCreationDecorator {
 
     private final TopicService topicService;
 
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
 
     private final MessageSource messageSource;
 
@@ -89,7 +79,7 @@ public class NoProgrammedSharePostCreationDecorator {
                 : new ArrayList<>();
 
         final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));
-        final User user = this.userService.getUserById(Long.valueOf(noProgrammedShare.getUserId()));
+        final User user = this.userServiceOld.getUserById(Long.valueOf(noProgrammedShare.getUserId()));
 
         topicService.create(forumTitle, noProgrammedShare.getDescription(), forumId, ip, user.getUsername(), multipartFiles)
                 .whenComplete((topic, throwable) -> {

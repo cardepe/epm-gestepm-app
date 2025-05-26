@@ -3,13 +3,13 @@ package com.epm.gestepm.controller;
 import com.epm.gestepm.modelapi.project.dto.ProjectDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectTableDTO;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.dto.UserDTO;
-import com.epm.gestepm.modelapi.user.dto.UserTableDTO;
-import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.UserDTO;
+import com.epm.gestepm.modelapi.userold.dto.UserTableDTO;
+import com.epm.gestepm.modelapi.userold.exception.InvalidUserSessionException;
 import com.epm.gestepm.forum.model.api.service.UserForumService;
 import com.epm.gestepm.model.absencetype.service.mapper.AbsencesMapper;
-import com.epm.gestepm.model.user.service.mapper.UserMapper;
+import com.epm.gestepm.model.userold.service.mapper.UserMapper;
 import com.epm.gestepm.modelapi.absencetype.dto.AbsenceType;
 import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.deprecated.country.dto.Country;
@@ -17,7 +17,7 @@ import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import com.epm.gestepm.modelapi.userabsence.dto.UserAbsence;
 import com.epm.gestepm.modelapi.userabsence.dto.UserAbsenceDTO;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
@@ -70,7 +70,7 @@ public class UserController {
 	private int firstYear;
 	
 	@Autowired
-	private UserService userService;
+	private UserServiceOld userServiceOld;
 	
 	@Autowired
 	private RoleService roleService;
@@ -133,14 +133,14 @@ public class UserController {
 				usersDTO = new ArrayList<>();
 
 				for (Project project : user.getBossProjects()) {
-					List<UserDTO> userDTOsByProjectId = userService.getUserDTOsByProjectId(project.getId());
+					List<UserDTO> userDTOsByProjectId = userServiceOld.getUserDTOsByProjectId(project.getId());
 					usersDTO.addAll(userDTOsByProjectId);
 				}
 
 				usersDTO = usersDTO.stream().collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(UserDTO::getUserId))), ArrayList::new));
 
 			} else {
-				usersDTO = userService.getAllUserDTOs();
+				usersDTO = userServiceOld.getAllUserDTOs();
 			}
 
 			// Load all countries
@@ -188,12 +188,12 @@ public class UserController {
 					projectIds = user.getBossProjects().stream().map(Project::getId).collect(Collectors.toList());
 				}
 
-				users = userService.getUsersDataTables(state, projectIds, pagination);
-				totalRecords = userService.getUsersCount(state, projectIds);
+				users = userServiceOld.getUsersDataTables(state, projectIds, pagination);
+				totalRecords = userServiceOld.getUsersCount(state, projectIds);
 
 			} else {
 
-				UserTableDTO userTableDTO = userService.getUserDTOByUserId(userId, state);
+				UserTableDTO userTableDTO = userServiceOld.getUserDTOByUserId(userId, state);
 
 				if (userTableDTO != null) {
 
@@ -238,7 +238,7 @@ public class UserController {
 			
 			User newUser = UserMapper.mapDTOToUser(userDTO, activityCenter, role, subRole);
 			
-			newUser = userService.save(newUser);
+			newUser = userServiceOld.save(newUser);
 
 			log.info("Usuario " + newUser.getId() + " creado con éxito por parte del usuario " + user.getId());
 			
@@ -266,7 +266,7 @@ public class UserController {
 			log.info("El usuario " + me.getId() + " ha accedido a la vista de Detalles de Usuario " + id);
 						
 			// Load user
-			User user = userService.getUserById(id);
+			User user = userServiceOld.getUserById(id);
 			
 			// Load absence types
 			List<AbsenceType> absenceTypes = singletonUtil.getAbsenceTypes();
@@ -359,7 +359,7 @@ public class UserController {
 			ActivityCenter activityCenter = activityCenterServiceOld.getById(userDTO.getActivityCenterId());
 			Role role = roleService.getRoleById(userDTO.getRoleId());
 			SubRole subRole = subRoleService.getSubRoleById(userDTO.getSubRoleId());
-			User user = userService.getUserById(id);
+			User user = userServiceOld.getUserById(id);
 			String actualPassword = user.getPassword();
 			String actualForumPassword = user.getForumPassword();
 			
@@ -379,7 +379,7 @@ public class UserController {
 				}
 			}
 			
-			userService.save(user);
+			userServiceOld.save(user);
 			
 			log.info("Usuario " + id + " actualizado con éxito por parte del usuario " + me.getId());
 			
@@ -464,7 +464,7 @@ public class UserController {
 			User me = Utiles.getUsuario();
 						
 			// Get user
-			User user = userService.getUserById(id);
+			User user = userServiceOld.getUserById(id);
 			
 			UserAbsence userAbsence = AbsencesMapper.mapFormToUserAbsence(user, absenceType, date, singletonUtil);
 			
@@ -542,7 +542,7 @@ public class UserController {
 			// Recover user
 			User me = Utiles.getUsuario();
 						
-			userService.deleteUserById(userId);
+			userServiceOld.deleteUserById(userId);
 			
 			log.info("Usuario " + userId + " eliminado con éxito por parte del usuario " + me.getId());
 			

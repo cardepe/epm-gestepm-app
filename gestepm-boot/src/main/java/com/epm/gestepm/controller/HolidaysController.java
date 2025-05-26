@@ -2,14 +2,14 @@ package com.epm.gestepm.controller;
 
 import com.epm.gestepm.modelapi.holiday.dto.YearCalendarDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.dto.UserDTO;
-import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.UserDTO;
+import com.epm.gestepm.modelapi.userold.exception.InvalidUserSessionException;
 import com.epm.gestepm.model.holiday.service.mapper.HolidayMapper;
 import com.epm.gestepm.modelapi.holiday.dto.Holiday;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.role.dto.Role;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
 import com.epm.gestepm.modelapi.holiday.service.HolidayService;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
@@ -31,7 +31,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
 import java.time.Year;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,7 +59,7 @@ public class HolidaysController {
 	private SMTPService smtpService;
 
 	@Autowired
-	private UserService userService;
+	private UserServiceOld userServiceOld;
 
 	@Autowired
 	private UserHolidaysService userHolidayService;
@@ -288,13 +287,13 @@ public class HolidaysController {
 			List<UserDTO> usersDTO;
 
 			if (user.getRole().getId() == Constants.ROLE_ADMIN_ID || user.getRole().getId() == Constants.ROLE_RRHH_ID) {
-				usersDTO = userService.getAllUserDTOs();
+				usersDTO = userServiceOld.getAllUserDTOs();
 			} else {
 
 				usersDTO = new ArrayList<>();
 
 				for (ProjectListDTO projectListDTO : projects) {
-					List<UserDTO> userDTOsByProjectId = userService.getUserDTOsByProjectId(projectListDTO.getId());
+					List<UserDTO> userDTOsByProjectId = userServiceOld.getUserDTOsByProjectId(projectListDTO.getId());
 					usersDTO.addAll(userDTOsByProjectId);
 				}
 

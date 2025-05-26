@@ -3,7 +3,7 @@ package com.epm.gestepm.modelapi.deprecated.activitycenter.dto;
 import com.epm.gestepm.modelapi.deprecated.country.dto.Country;
 import com.epm.gestepm.modelapi.holiday.dto.Holiday;
 import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 
 import javax.persistence.*;
 import java.util.List;

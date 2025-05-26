@@ -23,11 +23,10 @@ import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShare
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
-import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.AcroFields;
 import com.itextpdf.text.pdf.PdfContentByte;
@@ -39,18 +38,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.stream.MemoryCacheImageOutputStream;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -83,7 +73,7 @@ public class InspectionExportServiceImpl implements InspectionExportService {
     
     private final SubFamilyService subFamilyService;
     
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
 
     @Override
     public byte[] generate(InspectionDto inspection) {
@@ -95,7 +85,7 @@ public class InspectionExportServiceImpl implements InspectionExportService {
             final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(
                     new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
             final Project project = this.projectService.getProjectById(noProgrammedShare.getProjectId().longValue());
-            final User firstTechnical = this.userService.getUserById(inspection.getFirstTechnicalId().longValue());
+            final User firstTechnical = this.userServiceOld.getUserById(inspection.getFirstTechnicalId().longValue());
 
             final String language = localeProvider.getLocale().orElse("es");
             final Locale locale = new Locale(language);
@@ -115,7 +105,7 @@ public class InspectionExportServiceImpl implements InspectionExportService {
             acroFields.setField("technic1", firstTechnical.getFullName());
             
             if (inspection.getSecondTechnicalId() != null) {
-                final User secondTechnical = this.userService.getUserById(inspection.getSecondTechnicalId().longValue());
+                final User secondTechnical = this.userServiceOld.getUserById(inspection.getSecondTechnicalId().longValue());
                 acroFields.setField("technic2", secondTechnical.getFullName());
             }
 

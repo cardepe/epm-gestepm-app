@@ -11,8 +11,8 @@ import com.epm.gestepm.modelapi.shares.work.exception.WorkShareExportException;
 import com.epm.gestepm.modelapi.shares.work.exception.WorkShareNotEndedException;
 import com.epm.gestepm.modelapi.shares.work.service.WorkShareExportService;
 import com.epm.gestepm.modelapi.shares.work.service.WorkShareFileService;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
@@ -43,7 +43,7 @@ public class WorkShareExportServiceImpl implements WorkShareExportService {
 
     private final WorkShareFileService workShareFileService;
     private final LocaleProvider localeProvider;
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
 
     @Override
     public byte[] generate(final WorkShareDto workShare) {
@@ -54,7 +54,7 @@ public class WorkShareExportServiceImpl implements WorkShareExportService {
             pdfTemplate = loadPdfTemplate();
 
             final PdfStamper stamper = new PdfStamper(pdfTemplate, baos);
-            final User user = userService.getUserById(workShare.getUserId().longValue());
+            final User user = userServiceOld.getUserById(workShare.getUserId().longValue());
 
             this.populateFields(stamper.getAcroFields(), workShare, user);
             this.addOperatorSignatureIfPresent(stamper, workShare);

@@ -5,7 +5,7 @@ import com.epm.gestepm.lib.controller.decorator.BaseResponseDataDecorator;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import com.epm.gestepm.rest.shares.displacement.request.DisplacementShareFindRestRequest;
 import com.epm.gestepm.restapi.openapi.model.*;
 import org.springframework.context.ApplicationContext;
@@ -24,12 +24,12 @@ public class DisplacementShareResponseDecorator extends BaseResponseDataDecorato
 
     private final ProjectService projectService;
 
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
 
-    public DisplacementShareResponseDecorator(ApplicationContext applicationContext, ProjectService projectService, UserService userService) {
+    public DisplacementShareResponseDecorator(ApplicationContext applicationContext, ProjectService projectService, UserServiceOld userServiceOld) {
         super(applicationContext);
         this.projectService = projectService;
-        this.userService = userService;
+        this.userServiceOld = userServiceOld;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class DisplacementShareResponseDecorator extends BaseResponseDataDecorato
             final User user = data.getUser();
             final Integer id = user.getId();
 
-            final com.epm.gestepm.modelapi.user.dto.User userDto = this.userService.getUserById(Long.valueOf(id));
+            final com.epm.gestepm.modelapi.userold.dto.User userDto = this.userServiceOld.getUserById(Long.valueOf(id));
             final User response = new User().id(id).name(userDto.getFullName());
 
             data.setUser(response);

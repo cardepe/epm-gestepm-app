@@ -1,7 +1,7 @@
 package com.epm.gestepm.modelapi.subrole.dto;
 
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 
 import java.util.List;
 

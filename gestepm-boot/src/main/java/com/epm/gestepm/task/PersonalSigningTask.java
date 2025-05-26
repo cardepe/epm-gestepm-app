@@ -5,8 +5,8 @@ import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.service.PersonalSigningService;
 import com.epm.gestepm.modelapi.timecontrolold.dto.SigningScheduledDTO;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import com.epm.gestepm.task.config.PersonalSigningFtpClient;
 import com.mysql.jdbc.StringUtils;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +45,7 @@ public class PersonalSigningTask {
 
     private final PersonalSigningService personalSigningService;
 
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
 
     @Scheduled(cron = "${scheduler.personal-signings.cron}")
     @LogExecution(operation = OP_PROCESS,
@@ -87,7 +87,7 @@ public class PersonalSigningTask {
         final List<SigningScheduledDTO> signings = buildSignings(fileContent);
         signings.sort(Comparator.comparing(SigningScheduledDTO::getUserSigningId));
 
-        final Map<Long, User> userMap = this.userService.findBySigningIds(
+        final Map<Long, User> userMap = this.userServiceOld.findBySigningIds(
                 signings.stream().map(SigningScheduledDTO::getUserSigningId).collect(Collectors.toList())
         ).stream().collect(Collectors.toMap(User::getSigningId, user -> user));
 

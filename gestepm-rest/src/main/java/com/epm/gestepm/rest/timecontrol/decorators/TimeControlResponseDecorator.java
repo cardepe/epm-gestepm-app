@@ -4,7 +4,7 @@ import com.epm.gestepm.lib.controller.RestRequest;
 import com.epm.gestepm.lib.controller.decorator.BaseResponseDataDecorator;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import com.epm.gestepm.restapi.openapi.model.TimeControl;
 import com.epm.gestepm.restapi.openapi.model.User;
 import org.springframework.context.ApplicationContext;
@@ -19,11 +19,11 @@ public class TimeControlResponseDecorator extends BaseResponseDataDecorator<Time
 
     public static final String TC_U_EXPAND = "user";
 
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
     
-    public TimeControlResponseDecorator(ApplicationContext applicationContext, UserService userService) {
+    public TimeControlResponseDecorator(ApplicationContext applicationContext, UserServiceOld userServiceOld) {
         super(applicationContext);
-        this.userService = userService;
+        this.userServiceOld = userServiceOld;
     }
 
     @Override
@@ -38,7 +38,7 @@ public class TimeControlResponseDecorator extends BaseResponseDataDecorator<Time
             final User user = data.getUser();
             final Integer id = user.getId();
 
-            final com.epm.gestepm.modelapi.user.dto.User userDto = this.userService.getUserById(Long.valueOf(id));
+            final com.epm.gestepm.modelapi.userold.dto.User userDto = this.userServiceOld.getUserById(Long.valueOf(id));
             final User response = new User().id(id).name(userDto.getName());
 
             data.setUser(response);

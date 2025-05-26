@@ -31,7 +31,7 @@ import com.epm.gestepm.modelapi.shares.programmed.dto.updater.ProgrammedShareUpd
 import com.epm.gestepm.modelapi.shares.programmed.exception.ProgrammedShareNotFoundException;
 import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareExportService;
 import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareService;
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;

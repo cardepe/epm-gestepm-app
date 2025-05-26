@@ -9,9 +9,9 @@ import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareStateEn
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.creator.NoProgrammedShareCreateDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.NoProgrammedShareUpdateDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareForbiddenException;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.exception.UserByIdNotFoundException;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.exception.UserByIdNotFoundException;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +29,7 @@ public class NoProgrammedShareChecker {
 
     private final ProjectService projectService;
 
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
 
     public void checker(final NoProgrammedShareCreateDto dto) {
         this.checker(dto.getUserId(), dto.getProjectId(), dto, null);
@@ -43,7 +43,7 @@ public class NoProgrammedShareChecker {
         final boolean closeShare = updateDto != null && NoProgrammedShareStateEnumDto.CLOSED.equals(updateDto.getState());
 
         final Supplier<RuntimeException> userNotFound = () -> new UserByIdNotFoundException(userId);
-        final User user = Optional.ofNullable(this.userService.getUserById(userId.longValue()))
+        final User user = Optional.ofNullable(this.userServiceOld.getUserById(userId.longValue()))
                 .orElseThrow(userNotFound);
 
         if (closeShare) {

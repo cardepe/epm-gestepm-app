@@ -5,7 +5,6 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.security.annotation.RequirePermits;
 import com.epm.gestepm.lib.types.Page;
-import com.epm.gestepm.lib.user.UserProvider;
 import com.epm.gestepm.model.personalexpensesheet.dao.PersonalExpenseSheetDao;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.PersonalExpenseSheet;
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.PersonalExpenseSheetStatusEnum;
@@ -31,14 +30,12 @@ import com.epm.gestepm.modelapi.personalexpensesheet.exception.PersonalExpenseSh
 import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetService;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

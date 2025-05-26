@@ -48,7 +48,7 @@
                                 <select class="form-control input mt-1" name="projectId" required>
                                     <option></option>
                                     <c:forEach items="${projects}" var="project">
-                                        <option value="${project.id}" ${project.id == constructionShare.projectId ? 'selected' : ''}><spring:message code="${project.name}"/></option>
+                                        <option value="${project.id}" ${project.id == user.projectId ? 'selected' : ''}><spring:message code="${project.name}"/></option>
                                     </c:forEach>
                                 </select>
                             </label>
@@ -58,7 +58,7 @@
                     <div class="col-sm-12 col-md-4">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100"><spring:message code="start.date" />
-                                <input name="startDate" type="datetime-local" class="form-control mt-1" value="${constructionShare.startDate}" required />
+                                <input name="startDate" type="datetime-local" class="form-control mt-1" value="${user.startDate}" required />
                             </label>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                     <div class="col-sm-12 col-md-4">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100"><spring:message code="end.date"/>
-                                <input name="endDate" type="datetime-local" class="form-control mt-1" value="${constructionShare.endDate}" />
+                                <input name="endDate" type="datetime-local" class="form-control mt-1" value="${user.endDate}" />
                             </label>
                         </div>
                     </div>
@@ -76,7 +76,7 @@
                     <div class="col-sm-12 col-md-8">
                         <div class="form-group">
                             <label class="col-form-label w-100"><spring:message code="observations" />
-                                <textarea name="observations" type="text" class="form-control" rows="6" required>${constructionShare.observations}</textarea>
+                                <textarea name="observations" type="text" class="form-control" rows="6" required>${user.observations}</textarea>
                             </label>
                         </div>
                     </div>
@@ -140,7 +140,7 @@
                     </div>
                 </div>
                 <div class="col text-right">
-                    <c:if test="${constructionShare.endDate == null}">
+                    <c:if test="${user.endDate == null}">
                         <c:if test="${empty currentShareBreak}">
                         <button type="button" class="btn btn-default btn-sm" onclick="startBreak()">
                             <spring:message code="breaks.start"/>
@@ -179,7 +179,7 @@
 
     const locale = '${locale}';
     const canUpdate = ${canUpdate};
-    const isShareFinished = ${ constructionShare.endDate != null };
+    const isShareFinished = ${ user.endDate != null };
     const files = <%= filesJson %>;
 
     let signatures = { operator: null }
@@ -187,7 +187,7 @@
 
     $(document).ready(function() {
         initializeSelects();
-        loadSignatures('${constructionShare.operatorSignature}');
+        loadSignatures('${user.operatorSignature}');
         loadFiles(files);
         initialize();
         save();
@@ -339,7 +339,7 @@
 
             showLoading();
 
-            axios.delete('/v1/shares/construction/${constructionShare.id}/files/' + file.id).then(() => {
+            axios.delete('/v1/shares/construction/${user.id}/files/' + file.id).then(() => {
                 const successMessage = messages.shares.construction.files.delete.success.replace('{0}', file.name);
                 link.remove();
                 btn.remove();
@@ -351,7 +351,7 @@
 
     function loadDataTables() {
         let columns = ['startDate', 'endDate', 'id']
-        let endpoint = '/v1/shares/construction/${constructionShare.id}/breaks';
+        let endpoint = '/v1/shares/construction/${user.id}/breaks';
         let actions = []
         if (!isShareFinished) {
             actions.push(
@@ -386,7 +386,7 @@
     function startBreak() {
         showLoading();
 
-        axios.post('/v1/shares/construction/${constructionShare.id}/breaks', { })
+        axios.post('/v1/shares/construction/${user.id}/breaks', { })
             .then(() => location.reload())
             .catch(error => showNotify(error.response.data.detail, 'danger'))
             .finally(() => hideLoading());
@@ -395,7 +395,7 @@
     function finishBreak() {
         showLoading();
 
-        axios.put('/v1/shares/construction/${constructionShare.id}/breaks/${currentShareBreak.id}', { })
+        axios.put('/v1/shares/construction/${user.id}/breaks/${currentShareBreak.id}', { })
             .then(() => location.reload())
             .catch(error => showNotify(error.response.data.detail, 'danger'))
             .finally(() => hideLoading());
@@ -407,7 +407,7 @@
 
             showLoading();
 
-            axios.delete('/v1/shares/construction/${constructionShare.id}/breaks/' + id).then(() => {
+            axios.delete('/v1/shares/construction/${user.id}/breaks/' + id).then(() => {
                 dTable.ajax.reload();
                 const successMessage = messages.breaks.delete.success;
                 showNotify(successMessage);

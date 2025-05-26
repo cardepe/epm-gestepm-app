@@ -1,9 +1,9 @@
 package com.epm.gestepm.modelapi.common.utils;
 
 import com.epm.gestepm.modelapi.common.config.ApplicationContextProvider;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.exception.InvalidUserSessionException;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.MessageSource;
@@ -181,10 +181,10 @@ public class Utiles {
 		}
 		
 		// Load Service
-		UserService userService = ApplicationContextProvider.getBean(UserService.class);
+		UserServiceOld userServiceOld = ApplicationContextProvider.getBean(UserServiceOld.class);
 		
 		// Reload from DB
-		return userService.getUserById(user.getId());
+		return userServiceOld.getUserById(user.getId());
 	}
 
 	public static User getCurrentUser() {

@@ -4,8 +4,8 @@ import com.epm.gestepm.modelapi.common.config.ApplicationContextProvider;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseUserValidateDTO;
 import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseValidateDTO;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import org.springframework.context.MessageSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,10 +35,10 @@ public class ModelUtil {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		User user = (User) authentication.getDetails();
 
-		UserService userService = ApplicationContextProvider.getBean(UserService.class);
+		UserServiceOld userServiceOld = ApplicationContextProvider.getBean(UserServiceOld.class);
 
 		// Reload from DB
-		user = userService.getUserById(user.getId());
+		user = userServiceOld.getUserById(user.getId());
 
 		if (user != null) {
 
@@ -47,12 +47,12 @@ public class ModelUtil {
 			// If user is Team Leader, load expenses count to validate
 			if (user.getRole().getId() == Constants.ROLE_PL_ID) {
 
-				List<ExpenseValidateDTO> expensesPending = userService.getExpensesToValidateByUserId(user.getId());
+				List<ExpenseValidateDTO> expensesPending = userServiceOld.getExpensesToValidateByUserId(user.getId());
 				model.addAttribute("expensesPending", expensesPending);
 
 			} else if (user.getRole().getId() == Constants.ROLE_ADMINISTRATION_ID || user.getRole().getId() == Constants.ROLE_ADMIN_ID) {
 
-				List<ExpenseUserValidateDTO> expensesPending = userService.getExpensesToPay();
+				List<ExpenseUserValidateDTO> expensesPending = userServiceOld.getExpensesToPay();
 				model.addAttribute("expensesPending", expensesPending);
 			}
 		}

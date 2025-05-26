@@ -6,7 +6,7 @@ import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.holiday.dto.Holiday;
 import com.epm.gestepm.modelapi.holiday.dto.HolidayDTO;
 import com.epm.gestepm.modelapi.holiday.dto.YearCalendarDTO;
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

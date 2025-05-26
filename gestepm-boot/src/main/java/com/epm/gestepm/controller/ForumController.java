@@ -6,11 +6,11 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.exception.InvalidUserSessionException;
 import com.epm.gestepm.forum.model.api.dto.UserForumDTO;
 import com.epm.gestepm.forum.model.api.service.UserForumService;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,7 +48,7 @@ public class ForumController {
 	private MessageSource messageSource;
 
 	@Autowired
-	private UserService userService;
+	private UserServiceOld userServiceOld;
 	
 	@Autowired
 	private UserForumService userForumService;
@@ -94,7 +94,7 @@ public class ForumController {
 			User user = Utiles.getUsuario();
 			
 			// Set username to User
-			User forumUser = userService.getUserById(userForumDTO.getUserId());
+			User forumUser = userServiceOld.getUserById(userForumDTO.getUserId());
 			
 			if (StringUtils.isNotEmpty(forumUser.getUsername())) {
 				log.error("Usuario " + forumUser.getId() + " ya registrado en el foro: " + forumUser.getUsername());
@@ -110,7 +110,7 @@ public class ForumController {
 			userForumService.createUser(userForumDTO.getUsername(), forumUser.getEmail(), plainPassword);
 			
 			// Update username in epm DB
-			userService.save(forumUser);
+			userServiceOld.save(forumUser);
 			
 			// Print log
 			log.info("Usuario del Foro " + forumUser.getId() + " creado con éxito por parte del usuario " + user.getId());

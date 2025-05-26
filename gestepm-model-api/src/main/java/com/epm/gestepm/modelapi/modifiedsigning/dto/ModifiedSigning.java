@@ -1,6 +1,6 @@
 package com.epm.gestepm.modelapi.modifiedsigning.dto;
 
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 import lombok.Data;
 
 import javax.persistence.*;

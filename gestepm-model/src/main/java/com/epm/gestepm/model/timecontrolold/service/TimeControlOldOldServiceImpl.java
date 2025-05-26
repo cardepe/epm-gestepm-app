@@ -1,7 +1,7 @@
 package com.epm.gestepm.model.timecontrolold.service;
 
 import com.epm.gestepm.model.holiday.dao.HolidayRepository;
-import com.epm.gestepm.model.user.dao.UserRepository;
+import com.epm.gestepm.model.userold.dao.UserRepository;
 import com.epm.gestepm.model.userholiday.dao.UserHolidaysRepository;
 import com.epm.gestepm.modelapi.common.helpers.DatesModel;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
@@ -12,7 +12,7 @@ import com.epm.gestepm.modelapi.timecontrol.dto.filter.TimeControlFilterDto;
 import com.epm.gestepm.modelapi.timecontrol.service.TimeControlService;
 import com.epm.gestepm.modelapi.timecontrolold.dto.TimeControlTableDTO;
 import com.epm.gestepm.modelapi.timecontrolold.service.TimeControlOldService;
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;

@@ -20,7 +20,6 @@ import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
 import com.epm.gestepm.modelapi.family.dto.FamilyTableDTO;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
-import com.epm.gestepm.modelapi.inspection.service.InspectionService;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequiredDTO;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequiredTableDTO;
@@ -28,14 +27,10 @@ import com.epm.gestepm.modelapi.materialrequired.service.MaterialRequiredService
 import com.epm.gestepm.modelapi.project.dto.*;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.role.dto.Role;
-import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareService;
-import com.epm.gestepm.modelapi.shares.displacement.service.DisplacementShareService;
-import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareService;
-import com.epm.gestepm.modelapi.shares.work.service.WorkShareService;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.dto.UserDTO;
-import com.epm.gestepm.modelapi.user.exception.InvalidUserSessionException;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.UserDTO;
+import com.epm.gestepm.modelapi.userold.exception.InvalidUserSessionException;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -85,7 +80,7 @@ public class ProjectController {
 	private ProjectService projectService;
 
 	@Autowired
-	private UserService userService;
+	private UserServiceOld userServiceOld;
 	
 	@Autowired
 	private UserForumService userForumService;
@@ -105,10 +100,10 @@ public class ProjectController {
 			log.info("El usuario " + user.getId() + " ha accedido a la vista de Proyectos");
 
 			// Recover Team Leaders
-			List<UserDTO> teamLeaders = userService.getUserDTOsByRank(Constants.ROLE_PL_ID);
+			List<UserDTO> teamLeaders = userServiceOld.getUserDTOsByRank(Constants.ROLE_PL_ID);
 			
 			// Recover All Responsables
-			List<UserDTO> responsables = userService.getAllProjectResponsables();
+			List<UserDTO> responsables = userServiceOld.getAllProjectResponsables();
 			
 			// Recover Activity Centers
 			List<ActivityCenter> activityCenters = activityCenterServiceOld.findAll();
@@ -214,7 +209,7 @@ public class ProjectController {
 			log.info("El usuario " + user.getId() + " ha accedido a la vista de Consulta de Proyectos");
 			
 			// Recover All Responsables
-			List<UserDTO> responsables = userService.getAllProjectResponsables();
+			List<UserDTO> responsables = userServiceOld.getAllProjectResponsables();
 
 			// Recover Project Stations
 			List<ProjectListDTO> projectListDTO = projectService.getAllProjectsDTOs();
@@ -288,7 +283,7 @@ public class ProjectController {
 			
 			for (Long responsableId : projectDTO.getResponsables()) {
 				
-				User responsable = userService.getUserById(responsableId);
+				User responsable = userServiceOld.getUserById(responsableId);
 				
 				if (responsable != null) {
 					responsables.add(responsable);
@@ -474,16 +469,16 @@ public class ProjectController {
 			}
 
 			// Load all Users
-			List<UserDTO> userDTOs = userService.getAllUserDTOs();
+			List<UserDTO> userDTOs = userServiceOld.getAllUserDTOs();
 			
 			// Load no project members
-			List<UserDTO> notMembers = userService.getNotUserDTOsByProjectId(id);
+			List<UserDTO> notMembers = userServiceOld.getNotUserDTOsByProjectId(id);
 						
 			// Load no team leaders
-			List<UserDTO> notBosses = userService.getNotBossDTOsByProjectId(id);
+			List<UserDTO> notBosses = userServiceOld.getNotBossDTOsByProjectId(id);
 
 			// Recover Team Leaders
-			List<UserDTO> teamLeaders = userService.getUserDTOsByRank(Constants.ROLE_PL_ID);
+			List<UserDTO> teamLeaders = userServiceOld.getUserDTOsByRank(Constants.ROLE_PL_ID);
 			
 			// PHPBB Forums
 			List<ForumDTO> forumDTOs = userForumService.getAllForumsToDTO();
@@ -550,7 +545,7 @@ public class ProjectController {
 			
 			for (Long responsableId : projectDto.getResponsables()) {
 				
-				User responsable = userService.getUserById(responsableId);
+				User responsable = userServiceOld.getUserById(responsableId);
 				
 				if (responsable != null) {
 					responsables.add(responsable);
@@ -631,9 +626,9 @@ public class ProjectController {
 		DataTableRequest<Project> dataTableInRQ = new DataTableRequest<>(request);
 		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
 
-		List<ProjectMemberDTO> bosses = userService.getProjectBossDTOsByProjectId(id, pagination);
+		List<ProjectMemberDTO> bosses = userServiceOld.getProjectBossDTOsByProjectId(id, pagination);
 
-		Long totalRecords = userService.getProjectBossesCountByProjectId(id);
+		Long totalRecords = userServiceOld.getProjectBossesCountByProjectId(id);
 
 		DataTableResults<ProjectMemberDTO> dataTableResult = new DataTableResults<>();
 		dataTableResult.setDraw(dataTableInRQ.getDraw());
@@ -703,9 +698,9 @@ public class ProjectController {
 		DataTableRequest<Project> dataTableInRQ = new DataTableRequest<>(request);
 	    PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
 
-	    List<ProjectMemberDTO> members = userService.getProjectMemberDTOsByProjectId(id, pagination);
+	    List<ProjectMemberDTO> members = userServiceOld.getProjectMemberDTOsByProjectId(id, pagination);
 	    
-	    Long totalRecords = userService.getProjectMembersCountByProjectId(id);
+	    Long totalRecords = userServiceOld.getProjectMembersCountByProjectId(id);
 
 	    DataTableResults<ProjectMemberDTO> dataTableResult = new DataTableResults<>();
 	    dataTableResult.setDraw(dataTableInRQ.getDraw());
@@ -1099,7 +1094,7 @@ public class ProjectController {
 	@ResponseBody
 	@GetMapping("/{id}/members")
 	public List<UserDTO> getProjectMembers(@PathVariable Long id) {
-		return userService.getUserDTOsByProjectId(id);
+		return userServiceOld.getUserDTOsByProjectId(id);
 	}
 	
 	@ResponseBody
