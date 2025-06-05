@@ -1984,6 +1984,11 @@ paths:
         - schema:
             type: string
           in: query
+          name: nameContains
+          description: Filter by user name.
+        - schema:
+            type: string
+          in: query
           name: email
           description: Filter by user email.
         - schema:
@@ -2784,6 +2789,10 @@ components:
           type: string
         surnames:
           type: string
+        fullName:
+          type: string
+          x-stoplight:
+            id: enqu6ivmk02je
         email:
           type: string
           x-stoplight:
@@ -2822,6 +2831,7 @@ components:
         - id
         - name
         - surnames
+        - fullName
         - email
         - state
         - role

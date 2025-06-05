@@ -7,17 +7,24 @@ sql:
       u.name,
       u.surnames,
       u.email,
+      u.password,
       u.activity_center_id,
+      ac.name AS activity_center_name,
       u.state,
       u.signing_id,
       u.forum_username,
       u.forum_password,
       u.role_id,
+      ro.role AS role_name,
       u.level_id,
+      le.rol AS level_name,
       u.working_hours,
       u.current_year_holidays_count,
       u.last_year_holidays_count
     FROM ${sch-gestepm}.user u
+    LEFT JOIN ${sch-gestepm}.activity_center ac ON ac.activity_center_id = u.activity_center_id
+    LEFT JOIN ${sch-gestepm}.roles ro ON ro.id = u.role_id
+    LEFT JOIN ${sch-gestepm}.sub_roles le ON le.id = u.level_id
 
     #whereToken #filter
     GROUP BY u.user_id
@@ -44,24 +51,30 @@ sql:
       surnames,
       email,
       password,
+      forum_password,
       activity_center_id,
       state,
       signing_id,
       role_id,
       level_id,
-      working_hours
+      working_hours,
+      current_year_holidays_count,
+      last_year_holidays_count
     )
     VALUES (
       :attr_u_name,
       :attr_u_surnames,
       :attr_u_email,
       :attr_u_password,
+      :attr_u_forum_password,
       :attr_u_activity_center_id,
       :attr_u_state,
       :attr_u_signing_id,
       :attr_u_role_id,
       :attr_u_level_id,
-      :attr_u_working_hours
+      :attr_u_working_hours,
+      :attr_u_current_year_holidays_count,
+      0
     )
 
   qry-update-u: |
@@ -94,6 +107,7 @@ sql:
 
     -- [AND
       -- ${sql.predicate-for-u-ids}
+      -- ${sql.predicate-for-u-name-contains}
       -- ${sql.predicate-for-u-email}
       -- ${sql.predicate-for-u-password}
       -- ${sql.predicate-for-u-activity-center-ids}
@@ -116,6 +130,10 @@ sql:
   predicate-for-u-ids: |
 
     u.user_id IN (:attr_u_ids)
+
+  predicate-for-u-name-contains: |
+
+    LOWER(CONCAT(u.name, ' ', u.surnames)) LIKE LOWER(:attr_u_name_contains)
 
   predicate-for-u-email: |
 

@@ -17,7 +17,7 @@ public class UserHoliday {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "USER_ID", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
 	@Column(name = "DATE", nullable = false)

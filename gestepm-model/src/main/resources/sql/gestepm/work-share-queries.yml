@@ -19,7 +19,7 @@ sql:
       GROUP_CONCAT(wsf.work_share_file_id) AS work_share_file_ids
     FROM ${sch-gestepm}.work_share ws
     LEFT JOIN ${sch-gestepm}.projects p ON p.id = ws.project_id
-    LEFT JOIN ${sch-gestepm}.users us ON ws.user_id = us.ID
+    LEFT JOIN ${sch-gestepm}.user us ON ws.user_id = us.user_id
     LEFT JOIN ${sch-gestepm}.work_share_file wsf ON ws.work_share_id = wsf.work_share_id
 
     #whereToken #filter

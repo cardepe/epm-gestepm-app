@@ -20,6 +20,7 @@ public class User implements Serializable {
     @NotNull
     private String email;
 
+    @NotNull
     private String password;
 
     @NotNull
@@ -33,6 +34,7 @@ public class User implements Serializable {
 
     private String forumUsername;
 
+    @NotNull
     private String forumPassword;
 
     @NotNull

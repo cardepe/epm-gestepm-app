@@ -7,6 +7,7 @@ import org.mapstruct.Mapper;
 @Mapper
 public interface MapUToUserFilterDto {
 
+  // todo password to md5
   UserFilterDto from(UserListRestRequest req);
 
 }

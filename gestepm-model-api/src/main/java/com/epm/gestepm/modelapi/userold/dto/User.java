@@ -21,57 +21,57 @@ import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID", unique = true, nullable = false, precision = 10)
+	@Column(name = "user_id", unique = true, nullable = false, precision = 10)
 	private Long id;
-	
-	@Column(name = "SIGNING_ID", nullable = false, length = 11)
-	private Long signingId;
 
-	@Column(name = "USERNAME", unique = true, length = 32)
-	private String username;
-	
-	@Column(name = "EMAIL", unique = true, nullable = false, length = 256)
+	@Column(name = "name", nullable = false, length = 32)
+	private String name;
+
+	@Column(name = "surnames", nullable = false, length = 64)
+	private String surnames;
+
+	@Column(name = "email", unique = true, nullable = false, length = 256)
 	private String email;
 
-	@Column(name = "PASSWORD", nullable = false, length = 320)
+	@Column(name = "password", nullable = false, length = 320)
 	private String password;
-	
-	@Column(name = "FORUM_PASSWORD", nullable = false, length = 320)
+
+	@ManyToOne
+	@JoinColumn(name = "activity_center_id", nullable = false)
+	private ActivityCenter activityCenter;
+
+	@Column(name = "state", nullable = false, length = 1)
+	private Integer state;
+
+	@Column(name = "signing_id", nullable = false, length = 11)
+	private Long signingId;
+
+	@Column(name = "forum_username", unique = true, length = 32)
+	private String username;
+
+	@Column(name = "forum_password", length = 320)
 	private String forumPassword;
 
 	@ManyToOne
-	@JoinColumn(name = "ROLE", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "role_id", nullable = false)
 	private Role role;
 
-	@Column(name = "NAME", nullable = false, length = 32)
-	private String name;
-
-	@Column(name = "SURNAMES", nullable = false, length = 64)
-	private String surnames;
-
 	@ManyToOne
-	@JoinColumn(name = "SUB_ROLE", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "level_id")
 	private SubRole subRole;
 	
-	@ManyToOne
-	@JoinColumn(name = "ACTIVITY_CENTER_ID", referencedColumnName = "activity_center_id", nullable = false)
-	private ActivityCenter activityCenter;
-	
-	@Column(name = "WORKING_HOURS", nullable = false, length = 2)
+	@Column(name = "working_hours", nullable = false, length = 2)
 	private Double workingHours;
-	
-	@Column(name = "STATE", nullable = false, length = 1)
-	private Integer state;
 
-	@Column(name = "CURRENT_YEAR_HOLIDAYS_COUNT", nullable = false, length = 2)
+	@Column(name = "current_year_holidays_count", nullable = false, length = 2)
 	private Integer currentYearHolidaysCount;
 
-	@Column(name = "LAST_YEAR_HOLIDAYS_COUNT", nullable = false, length = 2)
+	@Column(name = "last_year_holidays_count", nullable = false, length = 2)
 	private Integer lastYearHolidaysCount;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)

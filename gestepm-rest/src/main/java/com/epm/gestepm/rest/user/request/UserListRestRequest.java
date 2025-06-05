@@ -17,6 +17,8 @@ public class UserListRestRequest extends RestRequest {
 
     private List<Integer> ids;
 
+    private String nameContains;
+
     private String email;
 
     private String password;

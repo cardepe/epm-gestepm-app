@@ -25,34 +25,6 @@ public class UserMapper {
 
 	}
 
-	public static User mapDTOToUser(UserDTO userDTO, ActivityCenter activityCenter, Role role, SubRole subRole) {
-
-		try {
-			
-			User user = new User();
-			user.setId(userDTO.getUserId());
-			user.setSigningId(userDTO.getSigningId());
-			user.setEmail(userDTO.getEmail());
-			user.setPassword(Utiles.textToMD5(userDTO.getPassword()));
-			user.setForumPassword(Base64.getEncoder().encodeToString(CipherUtil.encryptMessage(userDTO.getPassword().getBytes(), Constants.ENCRYPTION_KEY.getBytes())));
-			user.setActivityCenter(activityCenter);
-			user.setRole(role);
-			user.setSubRole(subRole);
-			user.setName(userDTO.getName());
-			user.setSurnames(userDTO.getSurnames());
-			user.setWorkingHours(userDTO.getWorkingHours() != null ? userDTO.getWorkingHours() : 8);
-			user.setState(userDTO.getState());
-			user.setCurrentYearHolidaysCount(activityCenter.getCountry().getId() == 1 ? 22 : 30);
-			user.setLastYearHolidaysCount(0);
-			
-			return user;
-			
-		} catch (Exception e) {
-			log.error(e);
-			return null;
-		}
-	}
-
 	public static User mapUpdateUserDTOToUser(User user, UserDTO userDTO, ActivityCenter activityCenter, Role role, SubRole subRole) {
 		
 		try {

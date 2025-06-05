@@ -23,6 +23,9 @@ public class UserDto implements Serializable {
     private String email;
 
     @NotNull
+    private String password;
+
+    @NotNull
     private Integer activityCenterId;
 
     @NotNull
@@ -32,6 +35,8 @@ public class UserDto implements Serializable {
     private Integer signingId;
 
     private String forumUsername;
+
+    private String forumPassword;
 
     @NotNull
     private Integer roleId;

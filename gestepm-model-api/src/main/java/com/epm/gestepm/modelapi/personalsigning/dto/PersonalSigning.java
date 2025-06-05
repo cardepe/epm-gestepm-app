@@ -19,7 +19,7 @@ public class PersonalSigning {
 
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "USER_ID", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 
 	@Column(name = "START_DATE", nullable = false)

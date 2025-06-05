@@ -19,7 +19,7 @@ public class InterventionPrShare {
 	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -33,7 +33,7 @@ public class InterventionPrShare {
 	private LocalDateTime endDate;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SECOND_TECHNICAL_ID", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "SECOND_TECHNICAL_ID", referencedColumnName = "user_id", nullable = false)
 	private User secondTechnical;
 	
 	@Column(name="OBSERVATIONS")

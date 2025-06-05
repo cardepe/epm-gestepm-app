@@ -8,13 +8,17 @@ public class UserAttributes {
 
     public static final String ATTR_U_NAME = "attr_u_name";
 
-    public static final String ATTR_U_SURNAMES = "attr_u_surnamem";
+    public static final String ATTR_U_NAME_CONTAINS = "attr_u_name_contains";
+
+    public static final String ATTR_U_SURNAMES = "attr_u_surnames";
 
     public static final String ATTR_U_EMAIL = "attr_u_email";
 
     public static final String ATTR_U_PASSWORD = "attr_u_password";
 
     public static final String ATTR_U_ACTIVITY_CENTER_ID = "attr_u_activity_center_id";
+
+    public static final String ATTR_U_ACTIVITY_CENTER_IDS = "attr_u_activity_center_ids";
 
     public static final String ATTR_U_STATE = "attr_u_state";
 
@@ -26,7 +30,11 @@ public class UserAttributes {
 
     public static final String ATTR_U_ROLE_ID = "attr_u_role_id";
 
+    public static final String ATTR_U_ROLE_IDS = "attr_u_role_ids";
+
     public static final String ATTR_U_LEVEL_ID = "attr_u_level_id";
+
+    public static final String ATTR_U_LEVEL_IDS = "attr_u_level_ids";
 
     public static final String ATTR_U_WORKING_HOURS = "attr_u_working_hours";
 

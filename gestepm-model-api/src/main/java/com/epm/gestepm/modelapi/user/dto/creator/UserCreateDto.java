@@ -16,13 +16,11 @@ public class UserCreateDto {
     @NotNull
     private String email;
 
+    @NotNull
     private String password;
 
     @NotNull
     private Integer activityCenterId;
-
-    @NotNull
-    private Integer state;
 
     @NotNull
     private Integer signingId;
@@ -31,8 +29,5 @@ public class UserCreateDto {
     private Integer roleId;
 
     private Integer levelId;
-
-    @NotNull
-    private Double workingHours;
 
 }

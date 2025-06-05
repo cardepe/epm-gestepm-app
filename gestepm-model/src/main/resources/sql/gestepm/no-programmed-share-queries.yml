@@ -20,7 +20,7 @@ sql:
       GROUP_CONCAT(npsf.no_programmed_share_file_id) AS no_programmed_share_file_idS
     FROM ${sch-gestepm}.no_programmed_share nps
     LEFT JOIN ${sch-gestepm}.projects p ON p.id = nps.project_id
-    LEFT JOIN ${sch-gestepm}.users us ON us.ID = nps.user_id
+    LEFT JOIN ${sch-gestepm}.user us ON us.user_id = nps.user_id
     LEFT JOIN ${sch-gestepm}.inspection i ON i.no_programmed_share_id = nps.no_programmed_share_id
     LEFT JOIN ${sch-gestepm}.no_programmed_share_file npsf ON npsf.no_programmed_share_id = nps.no_programmed_share_id
 

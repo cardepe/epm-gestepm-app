@@ -26,7 +26,7 @@ function create() {
 	const createElement = document.getElementById('createModal');
 	const createForm = createElement.querySelector('#createForm');
 
-	if (validateForm()) {
+	if (!isValidForm('#createForm')) {
 		createFromJQ.addClass('was-validated');
 	} else {
 
@@ -46,14 +46,6 @@ function create() {
 				createModal.modal('hide');
 			});
 	}
-}
-
-function validateForm() {
-
-	let name = $('#createName').val();
-	let countryId = $('#createCountry').val();
-
-	return !name || !countryId;
 }
 
 function edit(id) {

@@ -23,6 +23,8 @@ public class UserRowMapper extends CommonRowMapper implements RowMapper<User> {
 
     public static final String COL_U_ACTIVITY_CENTER_ID = "activity_center_id";
 
+    public static final String COL_U_ACTIVITY_CENTER_NAME = "activity_center_name";
+
     public static final String COL_U_STATE = "state";
 
     public static final String COL_U_SIGNING_ID = "signing_id";
@@ -33,7 +35,11 @@ public class UserRowMapper extends CommonRowMapper implements RowMapper<User> {
 
     public static final String COL_U_ROLE_ID = "role_id";
 
+    public static final String COL_U_ROLE_NAME = "role_name";
+
     public static final String COL_U_LEVEL_ID = "level_id";
+
+    public static final String COL_U_LEVEL_NAME = "level_name";
 
     public static final String COL_U_WORKING_HOURS = "working_hours";
 

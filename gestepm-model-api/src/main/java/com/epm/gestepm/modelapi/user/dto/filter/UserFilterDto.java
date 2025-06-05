@@ -14,6 +14,8 @@ public class UserFilterDto extends OrderableDto implements UsableAsCacheKey {
 
   private List<Integer> ids;
 
+  private String nameContains;
+
   private String email;
 
   private String password;

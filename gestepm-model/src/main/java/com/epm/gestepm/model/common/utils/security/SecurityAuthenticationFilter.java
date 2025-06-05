@@ -53,7 +53,7 @@ public class SecurityAuthenticationFilter extends UsernamePasswordAuthentication
 		
 				if (user != null) {
 		
-					if (user.getState() == 1) {
+					if (user.getState() == 0) {
 						state = 1;
 					} else {
 					

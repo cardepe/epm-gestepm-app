@@ -11,7 +11,7 @@ public class ListUserV1Operation extends APIOperation<UserV1Api, UserListRestReq
 
         this.generateLinksWith(
                 (apiClass, req) -> apiClass.listUsersV1(req.getMeta(), req.getLinks(), req.getExpand(), req.getOffset(), req.getLimit(),
-                        req.getOrder(), req.getOrderBy(), req.getIds(), req.getEmail(), req.getPassword(), req.getActivityCenterIds(), req.getState(), req.getSigningIds(),
+                        req.getOrder(), req.getOrderBy(), req.getIds(), req.getNameContains(), req.getEmail(), req.getPassword(), req.getActivityCenterIds(), req.getState(), req.getSigningIds(),
                         req.getRoleIds(), req.getLevelIds()));
     }
 

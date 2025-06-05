@@ -29,6 +29,7 @@ import java.util.Optional;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
+import static com.epm.gestepm.model.inspection.dao.mappers.InspectionRowMapper.COL_I_START_DATE;
 import static com.epm.gestepm.model.user.dao.constants.UserQueries.*;
 import static com.epm.gestepm.model.user.dao.mappers.UserRowMapper.*;
 
@@ -160,16 +161,25 @@ public class UserDaoImpl implements UserDao {
     }
 
     private void setOrder(final SQLOrderByType order, final String orderBy, final SQLQueryFetchMany<User> sqlQuery) {
-        final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id")
+        final List<String> orderByStatements = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id")
                 ? this.getOrderColumn(orderBy)
-                : COL_U_ID;
+                : List.of(COL_U_ID);
         final SQLOrderByType orderStatement = order != null
                 ? order
-                : SQLOrderByType.DESC;
-        sqlQuery.addOrderBy(orderByStatement, orderStatement);
+                : SQLOrderByType.ASC;
+        sqlQuery.addOrderBy(orderByStatements, orderStatement);
     }
 
-    private String getOrderColumn(final String orderBy) {
-        return orderBy;
+    private List<String> getOrderColumn(final String orderBy) {
+        if ("activityCenter.name".equals(orderBy)) {
+            return List.of(COL_U_ACTIVITY_CENTER_NAME);
+        } else if ("fullName".equals(orderBy)) {
+            return List.of(COL_U_NAME, COL_U_SURNAMES);
+        } else if ("role.name".equals(orderBy)) {
+            return List.of(COL_U_ROLE_NAME);
+        } else if ("level.name".equals(orderBy)) {
+            return List.of(COL_U_LEVEL_NAME);
+        }
+        return List.of(orderBy);
     }
 }

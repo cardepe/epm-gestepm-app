@@ -63,10 +63,10 @@ public class UserController extends BaseController implements UserV1Api,
     @RequirePermits(value = PRMT_READ_U, action = "Get user list")
     @LogExecution(operation = OP_READ)
     public ResponseEntity<ListUsersV1200Response> listUsersV1(final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit, final String order, final String orderBy,
-                                                              final List<Integer> ids, final String email, final String password, final List<Integer> activityCenterIds,
+                                                              final List<Integer> ids, final String nameContains, final String email, final String password, final List<Integer> activityCenterIds,
                                                               final Integer state, final List<Integer> signingIds, final List<Integer> roleIds, final List<Integer> levelIds) {
 
-        final UserListRestRequest req = new UserListRestRequest(ids, email, password, activityCenterIds, state, signingIds, roleIds, levelIds);
+        final UserListRestRequest req = new UserListRestRequest(ids, nameContains, email, password, activityCenterIds, state, signingIds, roleIds, levelIds);
 
         this.setCommon(req, meta, links, expand);
         this.setDefaults(req);
