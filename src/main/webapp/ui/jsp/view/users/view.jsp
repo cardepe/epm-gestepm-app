@@ -2,15 +2,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<style>
-    #filterForm {
-        top: auto !important;
-        left: auto !important;
-        right: 15px;
-        min-width: 20rem;
-    }
-</style>
-
 <div class="breadcrumbs">
     <div class="breadcrumbs-inner">
         <div class="row m-0">
@@ -252,8 +243,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    let locale = '${locale}';
-    let userId = ${user.id};
-</script>

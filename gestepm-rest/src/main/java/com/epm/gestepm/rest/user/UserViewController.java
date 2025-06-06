@@ -77,6 +77,7 @@ public class UserViewController {
         this.loadCommonSelects(model);
 
         model.addAttribute("loadingPath", "users");
+        model.addAttribute("type", "view");
 
         return "users";
     }
