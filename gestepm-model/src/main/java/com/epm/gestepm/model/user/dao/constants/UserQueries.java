@@ -18,4 +18,6 @@ public class UserQueries {
 
     public static final String FILTER_U_BY_ID = "filter-u-by-id";
 
+    public static final String FILTER_U_BY_EMAIL_AND_PASSWORD = "filter-u-by-email-and-password";
+
 }

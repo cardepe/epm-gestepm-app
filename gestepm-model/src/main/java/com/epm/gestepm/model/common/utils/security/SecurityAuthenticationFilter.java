@@ -3,8 +3,9 @@ package com.epm.gestepm.model.common.utils.security;
 import com.epm.gestepm.lib.http.cookies.CookieUtils;
 import com.epm.gestepm.model.common.utils.classes.SessionUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.userold.dto.User;
-import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
+import com.epm.gestepm.modelapi.user.dto.UserDto;
+import com.epm.gestepm.modelapi.user.dto.finder.UserByEmailAndPasswordFinderDto;
+import com.epm.gestepm.modelapi.user.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,7 +28,7 @@ public class SecurityAuthenticationFilter extends UsernamePasswordAuthentication
 	private final Integer COOKIE_MAX_AGE = 31536000;
 
 	@Autowired
-	private UserServiceOld userServiceOld;
+	private UserService userService;
 	
 	@Autowired
 	private SessionUtil sessionUtil;
@@ -48,9 +49,9 @@ public class SecurityAuthenticationFilter extends UsernamePasswordAuthentication
 				log.info("Iniciando sesión el usuario " + email);
 				
 				String passwordHash = Utiles.textToMD5(password);
-	
-				User user = userServiceOld.getUsuarioByEmailAndPassword(email, passwordHash);
-		
+
+				final UserDto user = this.userService.findOrNotFound(new UserByEmailAndPasswordFinderDto(email, passwordHash));
+
 				if (user != null) {
 		
 					if (user.getState() == 0) {

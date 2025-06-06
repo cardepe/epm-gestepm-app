@@ -5,6 +5,7 @@ import com.epm.gestepm.model.user.dao.entity.User;
 import com.epm.gestepm.model.user.dao.entity.creator.UserCreate;
 import com.epm.gestepm.model.user.dao.entity.deleter.UserDelete;
 import com.epm.gestepm.model.user.dao.entity.filter.UserFilter;
+import com.epm.gestepm.model.user.dao.entity.finder.UserByEmailAndPasswordFinder;
 import com.epm.gestepm.model.user.dao.entity.finder.UserByIdFinder;
 import com.epm.gestepm.model.user.dao.entity.updater.UserUpdate;
 
@@ -19,6 +20,8 @@ public interface UserDao {
     Page<@Valid User> list(@Valid UserFilter filter, Long offset, Long limit);
 
     Optional<@Valid User> find(@Valid UserByIdFinder finder);
+
+    Optional<@Valid User> find(@Valid UserByEmailAndPasswordFinder finder);
 
     @Valid
     User create(@Valid UserCreate create);

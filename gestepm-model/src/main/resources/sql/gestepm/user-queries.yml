@@ -123,6 +123,13 @@ sql:
       -- ${sql.predicate-for-u-id}
     -- AND]
 
+  filter-u-by-email-and-password: |
+    
+    -- [AND
+      -- ${sql.predicate-for-u-email}
+      -- ${sql.predicate-for-u-password}
+    -- AND]
+
   predicate-for-u-id: |
 
     u.user_id = :attr_u_id

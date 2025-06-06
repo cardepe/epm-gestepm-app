@@ -5,6 +5,7 @@ import com.epm.gestepm.modelapi.user.dto.UserDto;
 import com.epm.gestepm.modelapi.user.dto.creator.UserCreateDto;
 import com.epm.gestepm.modelapi.user.dto.deleter.UserDeleteDto;
 import com.epm.gestepm.modelapi.user.dto.filter.UserFilterDto;
+import com.epm.gestepm.modelapi.user.dto.finder.UserByEmailAndPasswordFinderDto;
 import com.epm.gestepm.modelapi.user.dto.finder.UserByIdFinderDto;
 import com.epm.gestepm.modelapi.user.dto.updater.UserUpdateDto;
 
@@ -20,8 +21,13 @@ public interface UserService {
     
     Optional<@Valid UserDto> find(@Valid UserByIdFinderDto finderDto);
 
+    Optional<@Valid UserDto> find(@Valid UserByEmailAndPasswordFinderDto finderDto);
+
     @Valid
     UserDto findOrNotFound(@Valid UserByIdFinderDto finderDto);
+
+    @Valid
+    UserDto findOrNotFound(@Valid UserByEmailAndPasswordFinderDto finderDto);
 
     @Valid
     UserDto create(@Valid UserCreateDto createDto);

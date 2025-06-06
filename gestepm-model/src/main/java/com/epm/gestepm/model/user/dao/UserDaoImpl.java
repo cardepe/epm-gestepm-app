@@ -15,6 +15,7 @@ import com.epm.gestepm.model.user.dao.entity.User;
 import com.epm.gestepm.model.user.dao.entity.creator.UserCreate;
 import com.epm.gestepm.model.user.dao.entity.deleter.UserDelete;
 import com.epm.gestepm.model.user.dao.entity.filter.UserFilter;
+import com.epm.gestepm.model.user.dao.entity.finder.UserByEmailAndPasswordFinder;
 import com.epm.gestepm.model.user.dao.entity.finder.UserByIdFinder;
 import com.epm.gestepm.model.user.dao.entity.updater.UserUpdate;
 import com.epm.gestepm.model.user.dao.mappers.UserRowMapper;
@@ -93,6 +94,23 @@ public class UserDaoImpl implements UserDao {
                 .useRowMapper(new UserRowMapper())
                 .useQuery(QRY_LIST_OF_U)
                 .useFilter(FILTER_U_BY_ID)
+                .withParams(finder.collectAttributes());
+
+        return this.sqlDatasource.fetch(sqlQuery);
+    }
+
+    @Override
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Querying to find user by email and password",
+            msgOut = "Querying to find user by email and password OK",
+            errorMsg = "Failed query to find user by email and password")
+    public Optional<User> find(UserByEmailAndPasswordFinder finder) {
+
+        final SQLQueryFetchOne<User> sqlQuery = new SQLQueryFetchOne<User>()
+                .useRowMapper(new UserRowMapper())
+                .useQuery(QRY_LIST_OF_U)
+                .useFilter(FILTER_U_BY_EMAIL_AND_PASSWORD)
                 .withParams(finder.collectAttributes());
 
         return this.sqlDatasource.fetch(sqlQuery);

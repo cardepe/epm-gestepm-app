@@ -13,6 +13,7 @@ import com.epm.gestepm.model.user.dao.entity.User;
 import com.epm.gestepm.model.user.dao.entity.creator.UserCreate;
 import com.epm.gestepm.model.user.dao.entity.deleter.UserDelete;
 import com.epm.gestepm.model.user.dao.entity.filter.UserFilter;
+import com.epm.gestepm.model.user.dao.entity.finder.UserByEmailAndPasswordFinder;
 import com.epm.gestepm.model.user.dao.entity.finder.UserByIdFinder;
 import com.epm.gestepm.model.user.dao.entity.updater.UserUpdate;
 import com.epm.gestepm.model.user.service.mapper.*;
@@ -23,6 +24,7 @@ import com.epm.gestepm.modelapi.user.dto.UserDto;
 import com.epm.gestepm.modelapi.user.dto.creator.UserCreateDto;
 import com.epm.gestepm.modelapi.user.dto.deleter.UserDeleteDto;
 import com.epm.gestepm.modelapi.user.dto.filter.UserFilterDto;
+import com.epm.gestepm.modelapi.user.dto.finder.UserByEmailAndPasswordFinderDto;
 import com.epm.gestepm.modelapi.user.dto.finder.UserByIdFinderDto;
 import com.epm.gestepm.modelapi.user.dto.updater.UserUpdateDto;
 import com.epm.gestepm.modelapi.user.exception.UserForumAlreadyException;
@@ -107,6 +109,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @RequirePermits(value = PRMT_READ_U, action = "Find user by email and password")
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Finding user by email and password, result can be empty",
+            msgOut = "Found user by email and password",
+            errorMsg = "Failed to find user by email and password")
+    public Optional<UserDto> find(final UserByEmailAndPasswordFinderDto finderDto) {
+        final UserByEmailAndPasswordFinder finder = getMapper(MapUToUserByEmailAndPasswordFinder.class).from(finderDto);
+
+        final Optional<User> found = this.userDao.find(finder);
+
+        return found.map(getMapper(MapUToUserDto.class)::from);
+    }
+
+    @Override
     @RequirePermits(value = PRMT_READ_U, action = "Find user by ID")
     @LogExecution(operation = OP_READ,
             debugOut = true,
@@ -115,6 +132,19 @@ public class UserServiceImpl implements UserService {
             errorMsg = "User by ID not found")
     public UserDto findOrNotFound(final UserByIdFinderDto finderDto) {
         final Supplier<RuntimeException> notFound = () -> new UserNotFoundException(finderDto.getId());
+
+        return this.find(finderDto).orElseThrow(notFound);
+    }
+
+    @Override
+    @RequirePermits(value = PRMT_READ_U, action = "Find user by email and password")
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Finding user by email and password, result is expected or will fail",
+            msgOut = "Found user by email and password",
+            errorMsg = "User by email and password not found")
+    public UserDto findOrNotFound(final UserByEmailAndPasswordFinderDto finderDto) {
+        final Supplier<RuntimeException> notFound = () -> new UserNotFoundException(0); // TODO: new exception
 
         return this.find(finderDto).orElseThrow(notFound);
     }

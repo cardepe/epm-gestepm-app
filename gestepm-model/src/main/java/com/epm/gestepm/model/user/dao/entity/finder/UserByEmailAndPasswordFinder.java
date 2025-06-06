@@ -6,21 +6,24 @@ import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 
-import static com.epm.gestepm.model.shares.construction.dao.constants.ConstructionShareAttributes.ATTR_CS_ID;
-import static com.epm.gestepm.model.user.dao.constants.UserAttributes.ATTR_U_ID;
+import static com.epm.gestepm.model.user.dao.constants.UserAttributes.*;
 
 @Data
-public class UserByIdFinder implements CollectableAttributes {
+public class UserByEmailAndPasswordFinder implements CollectableAttributes {
 
   @NotNull
-  private Integer id;
+  private String email;
+
+  @NotNull
+  private String password;
 
   @Override
   public AttributeMap collectAttributes() {
 
     final AttributeMap map = new AttributeMap();
 
-    map.put(ATTR_U_ID, this.id);
+    map.put(ATTR_U_EMAIL, this.email);
+    map.put(ATTR_U_PASSWORD, this.password);
 
     return map;
   }
