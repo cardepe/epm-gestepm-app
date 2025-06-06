@@ -2,7 +2,6 @@ const endpoint = '/v1/shares/programmed';
 
 function initializeDataTables() {
     let columns = ['id', 'user.name', 'project.name', 'startDate', 'endDate', 'id']
-    let endpoint = '/v1/shares/programmed';
     let actions = [
         {
             action: 'view',
@@ -113,20 +112,28 @@ function filter(isReset) {
 
 function create() {
 
-    showLoading();
+    const createFromJQ = $('#createForm');
 
-    const form = document.querySelector('#createForm');
+    if (!isValidForm('#createForm')) {
+        createFromJQ.addClass('was-validated');
+    } else {
 
-    const projectId = form.querySelector('[name="projectId"]').value;
+        showLoading();
+        createFromJQ.removeClass('was-validated');
 
-    axios.post(endpoint, {
-        userId: userId,
-        projectId: projectId
-    }).then((response) => {
-        const programmed = response.data.data;
-        window.location.replace('/shares/programmed/' + programmed.id);
-    }).catch(error => showNotify(error.response.data.detail, 'danger'))
-        .finally(() => hideLoading());
+        const form = document.querySelector('#createForm');
+
+        const projectId = form.querySelector('[name="projectId"]').value;
+
+        axios.post(endpoint, {
+            userId: userId,
+            projectId: projectId
+        }).then((response) => {
+            const programmed = response.data.data;
+            window.location.replace('/shares/programmed/' + programmed.id);
+        }).catch(error => showNotify(error.response.data.detail, 'danger'))
+            .finally(() => hideLoading());
+    }
 }
 
 function remove(id) {

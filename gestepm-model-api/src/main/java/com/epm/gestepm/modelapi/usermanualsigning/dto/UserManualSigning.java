@@ -1,7 +1,7 @@
 package com.epm.gestepm.modelapi.usermanualsigning.dto;
 
 import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -18,7 +18,7 @@ public class UserManualSigning {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID", referencedColumnName = "ID", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)

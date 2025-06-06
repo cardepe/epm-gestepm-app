@@ -28,7 +28,7 @@ sql:
     LEFT JOIN ${sch-gestepm}.inspection_file ifi ON i.inspection_id = ifi.inspection_id
     LEFT JOIN ${sch-gestepm}.inspection_material im ON i.inspection_id = im.inspection_id
     LEFT JOIN ${sch-gestepm}.projects pr ON nps.project_id = pr.ID
-    LEFT JOIN ${sch-gestepm}.users ft ON i.first_technical = ft.ID
+    LEFT JOIN ${sch-gestepm}.user ft ON i.first_technical = ft.user_id
 
     #whereToken #filter
     GROUP BY i.inspection_id

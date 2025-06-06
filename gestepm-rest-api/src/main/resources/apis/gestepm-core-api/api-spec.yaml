@@ -1972,49 +1972,127 @@ paths:
         - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
         - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by user identificator.
+        - schema:
+            type: string
+          in: query
+          name: nameContains
+          description: Filter by user name.
+        - schema:
+            type: string
+          in: query
+          name: email
+          description: Filter by user email.
+        - schema:
+            type: string
+          in: query
+          name: password
+          description: Filter by user password.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: activityCenterIds
+          description: Filter by user activity center id.
+        - schema:
+            type: integer
+          in: query
+          name: state
+          description: Filter by user state.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: signingIds
+          description: Filter by signing id.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: roleIds
+          description: Filter by role id.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: levelIds
+          description: Filter by level id.
       tags:
         - user-v1
     post:
-      summary: ''
-      operationId: post-api-users
+      summary: V1 - Create user
+      operationId: create-user-v1
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/User'
       tags:
         - user-v1
+      description: create-user-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateUser'
     parameters: []
-  '/v1/users/{id}':
+  '/v1/users/{userId}':
     parameters:
-      - schema:
-          type: string
-        name: id
-        in: path
-        required: true
-        description: User id.
+      - $ref: '#/components/parameters/User-Id'
     get:
-      summary: Your GET endpoint
+      summary: V1 - Find user
       tags:
         - user-v1
       responses:
         '200':
-          description: OK
-      operationId: get-api-users-id
-    put:
-      summary: ''
-      operationId: put-api-users-id
+          $ref: '#/components/responses/User'
+        '404':
+          description: user-not-found
+      operationId: find-user-by-id-v1
+      description: find-user-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+    patch:
+      summary: V1 - Update user
+      operationId: update-user-v1
       responses:
         '200':
-          description: OK
+          $ref: '#/components/responses/User'
+        '404':
+          description: user-not-found
       tags:
         - user-v1
+      description: update-user-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateUser'
     delete:
-      summary: ''
-      operationId: delete-api-users-id
+      summary: V1 - Delete user
+      operationId: delete-user-v1
       responses:
         '200':
-          description: OK
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: user-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
       tags:
         - user-v1
+      description: delete-user-v1
 components:
   schemas:
     ConstructionShare:
@@ -2220,23 +2298,6 @@ components:
         - action
         - startDate
         - firstTechnical
-    InspectionExport:
-      title: InspectionExport
-      x-stoplight:
-        id: tasr45536jkpv
-      type: object
-      properties:
-        fileName:
-          type: string
-          x-stoplight:
-            id: e1jgjm7ps0rai
-        content:
-          type: string
-          x-stoplight:
-            id: f9995ys9avvcv
-      required:
-        - fileName
-        - content
     NoProgrammedShare:
       title: NoProgrammedShare
       x-stoplight:
@@ -2416,32 +2477,6 @@ components:
           type: string
           x-stoplight:
             id: lnngd121n48ga
-    User:
-      title: User
-      type: object
-      properties:
-        id:
-          type: integer
-        username:
-          type: string
-        mail:
-          type: string
-        name:
-          type: string
-        surnames:
-          type: string
-        country:
-          $ref: ../gestepm-master-data-api/api-spec.yaml#/components/schemas/Country
-        activityCenter:
-          $ref: ../gestepm-master-data-api/api-spec.yaml#/components/schemas/ActivityCenter
-        role:
-          $ref: ../gestepm-app-config-api/api-spec.yaml#/components/schemas/Role
-        level:
-          $ref: ../gestepm-master-data-api/api-spec.yaml#/components/schemas/Level
-      required:
-        - id
-        - username
-        - mail
     Material:
       title: Material
       x-stoplight:
@@ -2744,6 +2779,65 @@ components:
         - type
         - startDate
         - endDate
+    User:
+      title: User
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        surnames:
+          type: string
+        fullName:
+          type: string
+          x-stoplight:
+            id: enqu6ivmk02je
+        email:
+          type: string
+          x-stoplight:
+            id: 59vgomk4axlzd
+        activityCenter:
+          $ref: ../gestepm-master-data-api/api-spec.yaml#/components/schemas/ActivityCenter
+        state:
+          type: integer
+          x-stoplight:
+            id: 3amxnirelezop
+        signingId:
+          x-stoplight:
+            id: vu87etbxd1yl7
+          type: integer
+        forumUsername:
+          type: string
+          x-stoplight:
+            id: lzb03wvdgsp4s
+        role:
+          $ref: ../gestepm-app-config-api/api-spec.yaml#/components/schemas/Role
+        level:
+          $ref: ../gestepm-master-data-api/api-spec.yaml#/components/schemas/Level
+        workingHours:
+          type: number
+          x-stoplight:
+            id: zmfk0xio0smfd
+        currentYearHolidaysCount:
+          type: integer
+          x-stoplight:
+            id: cgd6s04xrx4po
+        lastYearHolidaysCount:
+          type: integer
+          x-stoplight:
+            id: okhm5os3bs84d
+      required:
+        - id
+        - name
+        - surnames
+        - fullName
+        - email
+        - state
+        - role
+        - workingHours
+        - currentYearHolidaysCount
+        - lastYearHolidaysCount
     WorkShare:
       title: WorkShare
       x-stoplight:
@@ -3012,17 +3106,6 @@ components:
                   id: dyvkfgdppk87v
                 items:
                   $ref: '#/components/schemas/DisplacementShare'
-    Share:
-      description: Example response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              metadata:
-                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
-              data:
-                $ref: '#/components/schemas/Share'
     ShareList:
       description: Example response
       content:
@@ -3137,6 +3220,17 @@ components:
           schema:
             type: string
             format: binary
+    User:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                $ref: '#/components/schemas/User'
   requestBodies:
     CreateNoProgrammedShare:
       content:
@@ -3558,44 +3652,6 @@ components:
                 type: string
                 x-stoplight:
                   id: sssa78w366kr3
-    UpdateTimeControl:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              id:
-                type: integer
-                x-stoplight:
-                  id: biznvw8hlbkwt
-              type:
-                type: string
-                x-stoplight:
-                  id: 2b5jgobitny2u
-                enum:
-                  - CONSTRUCTION_SHARES
-                  - DISPLACEMENT_SHARES
-                  - INSPECTIONS
-                  - MANUAL_SIGNINGS
-                  - PERSONAL_SIGNINGS
-                  - PROGRAMMED_SHARES
-                  - TELEWORKING_SIGNING
-                  - WORK_SHARES
-              startDate:
-                type: string
-                x-stoplight:
-                  id: s31ddoarqqkye
-                format: date-time
-              endDate:
-                type: string
-                x-stoplight:
-                  id: usavruicx3kib
-                format: date-time
-            required:
-              - id
-              - type
-              - startDate
-              - endDate
     CreateConstructionShare:
       content:
         application/json:
@@ -3858,6 +3914,113 @@ components:
                 x-stoplight:
                   id: mlr5djk5zbupo
                 format: date-time
+    CreateUser:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                x-stoplight:
+                  id: mxwlz31ktuc6b
+              surnames:
+                type: string
+                x-stoplight:
+                  id: 5xi0gyk6a6lee
+              email:
+                type: string
+                x-stoplight:
+                  id: xpnhlimn5t7lf
+              password:
+                type: string
+                x-stoplight:
+                  id: pydbdc7t2gduz
+              activityCenterId:
+                type: integer
+                x-stoplight:
+                  id: czmo5dnulg2ap
+              signingId:
+                type: integer
+                x-stoplight:
+                  id: backm1dblmumv
+              roleId:
+                type: integer
+                x-stoplight:
+                  id: 9lmjp0pmmqfdg
+              levelId:
+                type: integer
+                x-stoplight:
+                  id: odvc3vw91wf72
+              workingHours:
+                type: number
+                x-stoplight:
+                  id: ogce45swgjeqm
+            required:
+              - name
+              - surnames
+              - email
+              - password
+              - activityCenterId
+              - roleId
+    UpdateUser:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                x-stoplight:
+                  id: mxwlz31ktuc6b
+              surnames:
+                type: string
+                x-stoplight:
+                  id: 5xi0gyk6a6lee
+              email:
+                type: string
+                x-stoplight:
+                  id: xpnhlimn5t7lf
+              password:
+                type: string
+                x-stoplight:
+                  id: pydbdc7t2gduz
+              activityCenterId:
+                type: integer
+                x-stoplight:
+                  id: czmo5dnulg2ap
+              signingId:
+                type: integer
+                x-stoplight:
+                  id: backm1dblmumv
+              forumUsername:
+                type: string
+                x-stoplight:
+                  id: cso3nfnlf3nve
+              forumPassword:
+                type: string
+                x-stoplight:
+                  id: f1lp03z6jfvj9
+              roleId:
+                type: integer
+                x-stoplight:
+                  id: 9lmjp0pmmqfdg
+              levelId:
+                type: integer
+                x-stoplight:
+                  id: odvc3vw91wf72
+              workingHours:
+                type: number
+                x-stoplight:
+                  id: ogce45swgjeqm
+              currentYearHolidaysCount:
+                type: integer
+                x-stoplight:
+                  id: 79qzla01vb66u
+              lastYearHolidaysCount:
+                type: integer
+                x-stoplight:
+                  id: 62h2alswvyo76
   parameters:
     Share-Id:
       name: shareId
@@ -3908,6 +4071,13 @@ components:
       schema:
         type: integer
       description: Break identificator.
+    User-Id:
+      name: userId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: User identificator.
 tags:
   - name: personal-expense-sheet-v1
     description: V1 - Personal Expense Sheets
@@ -3915,6 +4085,8 @@ tags:
     description: V1 - Personal Expenses
   - name: construction-share-v1
     description: V1 - Construction Share
+  - name: construction-share-file-v1
+    description: V1 - Construction Share File
   - name: construction-share-break-v1
     description: V1 - Construction Share Break
   - name: inspection-v1

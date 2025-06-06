@@ -1,6 +1,6 @@
 package com.epm.gestepm.modelapi.personalsigning.dto;
 
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
@@ -19,7 +19,7 @@ public class PersonalSigning {
 
 	@JsonIgnore
 	@ManyToOne
-	@JoinColumn(name = "USER_ID", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "USER_ID", nullable = false)
 	private User user;
 
 	@Column(name = "START_DATE", nullable = false)

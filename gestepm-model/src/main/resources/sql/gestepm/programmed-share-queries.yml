@@ -22,8 +22,8 @@ sql:
       GROUP_CONCAT(psf.programmed_share_file_id) AS programmed_share_file_ids
     FROM ${sch-gestepm}.programmed_share ps
     LEFT JOIN ${sch-gestepm}.projects p ON p.id = ps.project_id
-    LEFT JOIN ${sch-gestepm}.users us ON ps.user_id = us.ID
-    LEFT JOIN ${sch-gestepm}.users st ON ps.second_technical_id = st.ID
+    LEFT JOIN ${sch-gestepm}.user us ON ps.user_id = us.user_id
+    LEFT JOIN ${sch-gestepm}.user st ON ps.second_technical_id = st.user_id
     LEFT JOIN ${sch-gestepm}.programmed_share_file psf ON ps.programmed_share_id = psf.programmed_share_id
 
     #whereToken #filter

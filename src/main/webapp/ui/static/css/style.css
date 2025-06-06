@@ -204,6 +204,14 @@ img.idioma {
 	background: url('/ui/static/images/fa-project-diagram.png') no-repeat scroll 9px;
 }
 
+.select-sm + span > span > span {
+    font-size: 12px;
+    height: 30px !important;
+    border-color: #ced4da !important;
+    text-align: center;
+    background: url('/ui/static/images/fa-project-diagram.png') no-repeat scroll 9px;
+}
+
 #sharesTypeDropdown + span > span > span {
 	font-size: 12px;
 	height: 30px !important;
@@ -501,4 +509,18 @@ img.idioma {
 	right: 10px;
 	top: 0;
 	width: 30px;
+}
+
+.btn-tab {
+	background-color: #eeeeee;
+	border-radius: 0.25rem;
+	color: rgba(0, 0, 0, 0.55);
+	font-size: 14px;
+	text-transform: uppercase;
+	border-bottom: 2px solid lightgray;
+}
+
+.btn-tab-current {
+	background-color: rgb(223, 243, 243);
+	color: rgb(0, 90, 91);
 }

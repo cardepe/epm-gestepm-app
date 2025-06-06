@@ -45,6 +45,11 @@ public class SQLQueryFetch extends SQLQuery {
         return this;
     }
 
+    public SQLQueryFetch addOrderBy(final List<String> columnNames, final SQLOrderByType type) {
+        columnNames.forEach(columnName -> this.orderBy.add(new SQLColumnOrderBy(columnName, type)));
+        return this;
+    }
+
     public List<SQLColumnOrderBy> getOrderBy() {
         return orderBy;
     }

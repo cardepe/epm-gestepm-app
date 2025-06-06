@@ -11,8 +11,8 @@ import com.epm.gestepm.modelapi.shares.programmed.exception.ProgrammedShareExpor
 import com.epm.gestepm.modelapi.shares.programmed.exception.ProgrammedShareNotEndedException;
 import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareExportService;
 import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareFileService;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
@@ -43,7 +43,7 @@ public class ProgrammedShareExportServiceImpl implements ProgrammedShareExportSe
 
     private final ProgrammedShareFileService programmedShareFileService;
     private final LocaleProvider localeProvider;
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
 
     @Override
     public byte[] generate(final ProgrammedShareDto programmedShare) {
@@ -54,7 +54,7 @@ public class ProgrammedShareExportServiceImpl implements ProgrammedShareExportSe
             pdfTemplate = loadPdfTemplate();
 
             final PdfStamper stamper = new PdfStamper(pdfTemplate, baos);
-            final User user = userService.getUserById(programmedShare.getUserId().longValue());
+            final User user = userServiceOld.getUserById(programmedShare.getUserId().longValue());
 
             this.populateFields(stamper.getAcroFields(), programmedShare, user);
             this.addCustomerSignatureIfPresent(stamper, programmedShare);

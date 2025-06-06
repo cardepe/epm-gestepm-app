@@ -5,7 +5,6 @@ import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
-import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.breaks.dto.ShareBreakDto;
@@ -18,9 +17,8 @@ import com.epm.gestepm.modelapi.shares.construction.dto.filter.ConstructionShare
 import com.epm.gestepm.modelapi.shares.construction.dto.finder.ConstructionShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareFileService;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareService;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.dto.UserDTO;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +29,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -53,7 +50,7 @@ public class ConstructionShareViewController {
 
     private final ShareBreakService shareBreakService;
 
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
 
     @ModelAttribute
     public User loadCommonModelView(final Locale locale, final Model model) {
@@ -72,7 +69,7 @@ public class ConstructionShareViewController {
                 .collect(Collectors.toList());
         model.addAttribute("projects", projects);
 
-        final List<User> users = this.userService.findByState(0).stream()
+        final List<User> users = this.userServiceOld.findByState(0).stream()
                 .sorted(Comparator.comparing(User::getFullName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
         model.addAttribute("users", users);

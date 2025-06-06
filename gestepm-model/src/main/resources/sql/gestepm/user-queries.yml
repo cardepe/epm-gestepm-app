@@ -1,0 +1,171 @@
+sql:
+
+  qry-list-of-u: |
+
+    SELECT
+      u.user_id,
+      u.name,
+      u.surnames,
+      u.email,
+      u.password,
+      u.activity_center_id,
+      ac.name AS activity_center_name,
+      u.state,
+      u.signing_id,
+      u.forum_username,
+      u.forum_password,
+      u.role_id,
+      ro.role AS role_name,
+      u.level_id,
+      le.rol AS level_name,
+      u.working_hours,
+      u.current_year_holidays_count,
+      u.last_year_holidays_count
+    FROM ${sch-gestepm}.user u
+    LEFT JOIN ${sch-gestepm}.activity_center ac ON ac.activity_center_id = u.activity_center_id
+    LEFT JOIN ${sch-gestepm}.roles ro ON ro.id = u.role_id
+    LEFT JOIN ${sch-gestepm}.sub_roles le ON le.id = u.level_id
+
+    #whereToken #filter
+    GROUP BY u.user_id
+    #orderByToken
+
+  qry-page-of-u: |
+
+    ${sql.qry-list-of-u}
+    ${sql.paginated-query}
+
+  qry-count-of-u: |
+
+    SELECT COUNT(DISTINCT user_id) AS "count"
+    FROM (
+      SELECT u.user_id
+      FROM ${sch-gestepm}.user u
+      #whereToken #filter
+    ) final
+
+  qry-create-u: |
+
+    INSERT INTO ${sch-gestepm}.user (
+      name,
+      surnames,
+      email,
+      password,
+      forum_password,
+      activity_center_id,
+      state,
+      signing_id,
+      role_id,
+      level_id,
+      working_hours,
+      current_year_holidays_count,
+      last_year_holidays_count
+    )
+    VALUES (
+      :attr_u_name,
+      :attr_u_surnames,
+      :attr_u_email,
+      :attr_u_password,
+      :attr_u_forum_password,
+      :attr_u_activity_center_id,
+      :attr_u_state,
+      :attr_u_signing_id,
+      :attr_u_role_id,
+      :attr_u_level_id,
+      :attr_u_working_hours,
+      :attr_u_current_year_holidays_count,
+      0
+    )
+
+  qry-update-u: |
+
+    UPDATE
+      ${sch-gestepm}.user
+    SET
+      name = :attr_u_name,
+      surnames = :attr_u_surnames,
+      email = :attr_u_email,
+      password = :attr_u_password,
+      activity_center_id = :attr_u_activity_center_id,
+      state = :attr_u_state,
+      signing_id = :attr_u_signing_id,
+      forum_username = :attr_u_forum_username,
+      forum_password = :attr_u_forum_password,
+      role_id = :attr_u_role_id,
+      level_id = :attr_u_level_id,
+      working_hours = :attr_u_working_hours,
+      current_year_holidays_count = :attr_u_current_year_holidays_count,
+      last_year_holidays_count = :attr_u_last_year_holidays_count
+    WHERE
+      user_id = :attr_u_id
+
+  qry-delete-u: |
+
+    DELETE FROM ${sch-gestepm}.user WHERE user_id = :attr_u_id
+    
+  filter-u-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-u-ids}
+      -- ${sql.predicate-for-u-name-contains}
+      -- ${sql.predicate-for-u-email}
+      -- ${sql.predicate-for-u-password}
+      -- ${sql.predicate-for-u-activity-center-ids}
+      -- ${sql.predicate-for-u-state}
+      -- ${sql.predicate-for-u-signing-id}
+      -- ${sql.predicate-for-u-role-ids}
+      -- ${sql.predicate-for-u-level-ids}
+    -- AND]
+
+  filter-u-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-u-id}
+    -- AND]
+
+  filter-u-by-email-and-password: |
+    
+    -- [AND
+      -- ${sql.predicate-for-u-email}
+      -- ${sql.predicate-for-u-password}
+    -- AND]
+
+  predicate-for-u-id: |
+
+    u.user_id = :attr_u_id
+
+  predicate-for-u-ids: |
+
+    u.user_id IN (:attr_u_ids)
+
+  predicate-for-u-name-contains: |
+
+    LOWER(CONCAT(u.name, ' ', u.surnames)) LIKE LOWER(:attr_u_name_contains)
+
+  predicate-for-u-email: |
+
+    u.email = :attr_u_email
+
+  predicate-for-u-password: |
+
+    u.password = :attr_u_password
+
+  predicate-for-u-activity-center-ids: |
+
+    u.activity_center_id IN (:attr_u_activity_center_ids)
+
+  predicate-for-u-state: |
+
+    u.state = :attr_u_state
+
+  predicate-for-u-signing-id: |
+
+    u.signing_id = :attr_u_signing_id
+
+  predicate-for-u-role-ids: |
+
+    u.role_id IN (:attr_u_role_ids)
+
+  predicate-for-u-level-ids: |
+
+    u.level_id IN (:attr_u_level_ids)

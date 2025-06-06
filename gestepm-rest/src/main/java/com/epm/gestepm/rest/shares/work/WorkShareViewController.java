@@ -17,8 +17,8 @@ import com.epm.gestepm.modelapi.shares.work.dto.filter.WorkShareFileFilterDto;
 import com.epm.gestepm.modelapi.shares.work.dto.finder.WorkShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.work.service.WorkShareFileService;
 import com.epm.gestepm.modelapi.shares.work.service.WorkShareService;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,7 +50,7 @@ public class WorkShareViewController {
 
     private final ShareBreakService shareBreakService;
 
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
 
     @ModelAttribute
     public User loadCommonModelView(final Locale locale, final Model model) {
@@ -69,7 +69,7 @@ public class WorkShareViewController {
                 .collect(Collectors.toList());
         model.addAttribute("projects", projects);
 
-        final List<User> users = this.userService.findByState(0).stream()
+        final List<User> users = this.userServiceOld.findByState(0).stream()
                 .sorted(Comparator.comparing(User::getFullName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
         model.addAttribute("users", users);
