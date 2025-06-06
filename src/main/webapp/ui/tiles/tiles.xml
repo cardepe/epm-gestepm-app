@@ -7,7 +7,14 @@
 	<!-- Plantillas -->
 	
 	<!-- Plantilla Layout -->
-    <definition name="fullFrameLayout" template="/ui/jsp/layout/main.jsp">
+    <definition name="mainFrameLayout" template="/ui/jsp/layout/main.jsp">
+        <put-attribute name="header" value="/ui/jsp/layout/header.jsp" />
+        <put-attribute name="sidebar" value="/ui/jsp/layout/sidebar.jsp" />
+        <put-attribute name="body" value="" />
+        <put-attribute name="footer" value="/ui/jsp/layout/footer.jsp" />
+    </definition>
+
+    <definition name="fullFrameLayout" template="/ui/jsp/layout/main-old.jsp">
         <put-attribute name="header" value="/ui/jsp/layout/header.jsp" />
         <put-attribute name="sidebar" value="/ui/jsp/layout/sidebar.jsp" />
         <put-attribute name="body" value="" />
@@ -141,13 +148,11 @@
     </definition>
     
     <!-- Users -->
-    <definition name="users" extends="fullFrameLayout">
-        <!--<put-attribute name="body" value="/ui/jsp/view/users/users.jsp" />-->
+    <definition name="users" extends="mainFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/users/view.jsp" />
     </definition>
     
     <definition name="user-detail" extends="fullFrameLayout">
-        <!--<put-attribute name="body" value="/ui/jsp/view/users/crud/detail.jsp" />-->
         <put-attribute name="body" value="/ui/jsp/view/users/detail.jsp" />
     </definition>
     

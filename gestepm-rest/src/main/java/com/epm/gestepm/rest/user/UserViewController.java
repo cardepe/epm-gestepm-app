@@ -76,6 +76,8 @@ public class UserViewController {
         this.loadCommonModelView(locale, model);
         this.loadCommonSelects(model);
 
+        model.addAttribute("loadingPath", "users");
+
         return "users";
     }
 

@@ -1,6 +1,12 @@
 const view = '/users'
 const endpoint = '/v1/users';
 
+$(document).ready(function() {
+	initializeDataTables();
+	initializeSelects();
+	filterByParams();
+});
+
 function initializeDataTables() {
 	let columns = ['id', 'fullName', 'activityCenter.name', 'level.name', 'role.name', 'id']
 	let actions = [
