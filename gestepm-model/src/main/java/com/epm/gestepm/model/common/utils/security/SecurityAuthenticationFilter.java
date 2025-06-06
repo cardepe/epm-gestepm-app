@@ -3,9 +3,8 @@ package com.epm.gestepm.model.common.utils.security;
 import com.epm.gestepm.lib.http.cookies.CookieUtils;
 import com.epm.gestepm.model.common.utils.classes.SessionUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.user.dto.UserDto;
-import com.epm.gestepm.modelapi.user.dto.finder.UserByEmailAndPasswordFinderDto;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,7 +27,7 @@ public class SecurityAuthenticationFilter extends UsernamePasswordAuthentication
 	private final Integer COOKIE_MAX_AGE = 31536000;
 
 	@Autowired
-	private UserService userService;
+	private UserServiceOld userServiceOld;
 	
 	@Autowired
 	private SessionUtil sessionUtil;
@@ -50,7 +49,7 @@ public class SecurityAuthenticationFilter extends UsernamePasswordAuthentication
 				
 				String passwordHash = Utiles.textToMD5(password);
 
-				final UserDto user = this.userService.findOrNotFound(new UserByEmailAndPasswordFinderDto(email, passwordHash));
+				User user = userServiceOld.getUsuarioByEmailAndPassword(email, passwordHash);
 
 				if (user != null) {
 		
