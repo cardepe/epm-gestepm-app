@@ -3,7 +3,7 @@ package com.epm.gestepm.modelapi.deprecated.expensesheet.dto;
 import com.epm.gestepm.modelapi.deprecated.expense.dto.Expense;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetStatusEnumDto;
 import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 import lombok.Data;
 
 import java.util.Date;

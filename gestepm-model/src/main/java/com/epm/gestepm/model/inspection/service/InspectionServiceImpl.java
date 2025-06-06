@@ -19,8 +19,6 @@ import com.epm.gestepm.model.inspection.dao.entity.finder.InspectionByIdFinder;
 import com.epm.gestepm.model.inspection.dao.entity.updater.InspectionUpdate;
 import com.epm.gestepm.model.inspection.service.mapper.*;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
-import com.epm.gestepm.modelapi.common.utils.smtp.dto.CloseInspectionMailTemplateDto;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.creator.InspectionCreateDto;
 import com.epm.gestepm.modelapi.inspection.dto.deleter.InspectionDeleteDto;
@@ -38,11 +36,9 @@ import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareStateEn
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.NoProgrammedShareUpdateDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.exception.UserByIdNotFoundException;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -90,7 +86,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     private final TopicService topicService;
 
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
 
     @Override
     @RequirePermits(value = PRMT_READ_I, action = "List inspections")
@@ -250,7 +246,7 @@ public class InspectionServiceImpl implements InspectionService {
             final String content = stringBuilder.toString();
             final String ip = request.getLocalAddr();
 
-            final User user = this.userService.getUserById(Long.valueOf(inspection.getFirstTechnicalId()));
+            final User user = this.userServiceOld.getUserById(Long.valueOf(inspection.getFirstTechnicalId()));
 
             // TODO: same with files, now null.
 

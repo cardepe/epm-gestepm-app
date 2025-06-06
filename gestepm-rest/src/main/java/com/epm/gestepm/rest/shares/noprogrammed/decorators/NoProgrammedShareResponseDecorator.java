@@ -9,7 +9,7 @@ import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareFileByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareFileService;
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import com.epm.gestepm.rest.shares.noprogrammed.mappers.MapNPSFToFileResponse;
 import com.epm.gestepm.rest.shares.noprogrammed.request.NoProgrammedShareFindRestRequest;
 import com.epm.gestepm.restapi.openapi.model.*;
@@ -47,15 +47,15 @@ public class NoProgrammedShareResponseDecorator extends BaseResponseDataDecorato
 
     private final SubFamilyService subFamilyService;
 
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
 
-    public NoProgrammedShareResponseDecorator(ApplicationContext applicationContext, FamilyService familyService, NoProgrammedShareFileService noProgrammedShareFileService, ProjectService projectService, SubFamilyService subFamilyService, UserService userService) {
+    public NoProgrammedShareResponseDecorator(ApplicationContext applicationContext, FamilyService familyService, NoProgrammedShareFileService noProgrammedShareFileService, ProjectService projectService, SubFamilyService subFamilyService, UserServiceOld userServiceOld) {
         super(applicationContext);
         this.familyService = familyService;
         this.noProgrammedShareFileService = noProgrammedShareFileService;
         this.projectService = projectService;
         this.subFamilyService = subFamilyService;
-        this.userService = userService;
+        this.userServiceOld = userServiceOld;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class NoProgrammedShareResponseDecorator extends BaseResponseDataDecorato
             final User user = data.getUser();
             final Integer id = user.getId();
 
-            final com.epm.gestepm.modelapi.user.dto.User userDto = this.userService.getUserById(Long.valueOf(id));
+            final com.epm.gestepm.modelapi.userold.dto.User userDto = this.userServiceOld.getUserById(Long.valueOf(id));
             final User response = new User().id(id).name(userDto.getFullName());
 
             data.setUser(response);

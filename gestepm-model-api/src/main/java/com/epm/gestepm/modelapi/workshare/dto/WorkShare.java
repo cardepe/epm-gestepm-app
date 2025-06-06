@@ -1,7 +1,7 @@
 package com.epm.gestepm.modelapi.workshare.dto;
 
 import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 import com.epm.gestepm.modelapi.worksharefile.dto.WorkShareFile;
 import lombok.Data;
 
@@ -20,7 +20,7 @@ public class WorkShare {
 	private Long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

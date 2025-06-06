@@ -15,12 +15,10 @@ import com.epm.gestepm.modelapi.personalexpensesheet.exception.PersonalExpenseSh
 import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetExportService;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.service.UserService;
+import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.*;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -59,21 +57,21 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
 
     private final ProjectService projectService;
 
-    private final UserService userService;
+    private final UserServiceOld userServiceOld;
 
-    public PersonalExpenseSheetExportServiceImpl(LocaleProvider localeProvider, MessageSource messageSource, PersonalExpenseService personalExpenseService, PersonalExpenseFileService personalExpenseFileService, ProjectService projectService, UserService userService) {
+    public PersonalExpenseSheetExportServiceImpl(LocaleProvider localeProvider, MessageSource messageSource, PersonalExpenseService personalExpenseService, PersonalExpenseFileService personalExpenseFileService, ProjectService projectService, UserServiceOld userServiceOld) {
         this.localeProvider = localeProvider;
         this.messageSource = messageSource;
         this.personalExpenseService = personalExpenseService;
         this.personalExpenseFileService = personalExpenseFileService;
         this.projectService = projectService;
-        this.userService = userService;
+        this.userServiceOld = userServiceOld;
     }
 
     @Override
     public byte[] generate(PersonalExpenseSheetDto personalExpenseSheet) {
         try {
-            final User user = this.userService.getUserById(personalExpenseSheet.getCreatedBy().longValue());
+            final User user = this.userServiceOld.getUserById(personalExpenseSheet.getCreatedBy().longValue());
             final Project project = this.projectService.getProjectById(personalExpenseSheet.getProjectId().longValue());
 
             final String language = localeProvider.getLocale().orElse("es");

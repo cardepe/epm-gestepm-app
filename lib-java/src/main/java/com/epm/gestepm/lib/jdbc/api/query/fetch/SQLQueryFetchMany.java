@@ -70,6 +70,12 @@ public class SQLQueryFetchMany<T> extends SQLQueryFetch {
     }
 
     @Override
+    public SQLQueryFetchMany<T> addOrderBy(List<String> columnNames, SQLOrderByType type) {
+        super.addOrderBy(columnNames, type);
+        return this;
+    }
+
+    @Override
     // DO NOT AUTOGENERATE
     public boolean equals(Object o) {
         if (this == o) {

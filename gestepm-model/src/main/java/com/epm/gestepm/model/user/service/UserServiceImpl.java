@@ -1,139 +1,245 @@
 package com.epm.gestepm.model.user.service;
 
-import com.epm.gestepm.model.user.dao.UserRepository;
-import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseUserValidateDTO;
-import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseValidateDTO;
-import com.epm.gestepm.modelapi.project.dto.ProjectMemberDTO;
-import com.epm.gestepm.modelapi.user.dto.User;
-import com.epm.gestepm.modelapi.user.dto.UserDTO;
-import com.epm.gestepm.modelapi.user.dto.UserTableDTO;
+import com.epm.gestepm.forum.model.api.service.UserForumService;
+import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
+import com.epm.gestepm.lib.logging.annotation.LogExecution;
+import com.epm.gestepm.lib.security.annotation.RequirePermits;
+import com.epm.gestepm.lib.types.Page;
+import com.epm.gestepm.masterdata.api.activitycenter.dto.ActivityCenterDto;
+import com.epm.gestepm.masterdata.api.activitycenter.dto.finder.ActivityCenterByIdFinderDto;
+import com.epm.gestepm.masterdata.api.activitycenter.service.ActivityCenterService;
+import com.epm.gestepm.model.user.dao.UserDao;
+import com.epm.gestepm.model.user.dao.entity.User;
+import com.epm.gestepm.model.user.dao.entity.creator.UserCreate;
+import com.epm.gestepm.model.user.dao.entity.deleter.UserDelete;
+import com.epm.gestepm.model.user.dao.entity.filter.UserFilter;
+import com.epm.gestepm.model.user.dao.entity.finder.UserByEmailAndPasswordFinder;
+import com.epm.gestepm.model.user.dao.entity.finder.UserByIdFinder;
+import com.epm.gestepm.model.user.dao.entity.updater.UserUpdate;
+import com.epm.gestepm.model.user.service.mapper.*;
+import com.epm.gestepm.modelapi.common.utils.CipherUtil;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.common.utils.classes.Constants;
+import com.epm.gestepm.modelapi.user.dto.UserDto;
+import com.epm.gestepm.modelapi.user.dto.creator.UserCreateDto;
+import com.epm.gestepm.modelapi.user.dto.deleter.UserDeleteDto;
+import com.epm.gestepm.modelapi.user.dto.filter.UserFilterDto;
+import com.epm.gestepm.modelapi.user.dto.finder.UserByEmailAndPasswordFinderDto;
+import com.epm.gestepm.modelapi.user.dto.finder.UserByIdFinderDto;
+import com.epm.gestepm.modelapi.user.dto.updater.UserUpdateDto;
+import com.epm.gestepm.modelapi.user.exception.UserForumAlreadyException;
+import com.epm.gestepm.modelapi.user.exception.UserNotFoundException;
 import com.epm.gestepm.modelapi.user.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.function.Supplier;
 
+import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
+import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
+import static com.epm.gestepm.modelapi.user.security.UserPermission.PRMT_EDIT_U;
+import static com.epm.gestepm.modelapi.user.security.UserPermission.PRMT_READ_U;
+import static org.mapstruct.factory.Mappers.getMapper;
+
+@Validated
 @Service
+@AllArgsConstructor
+@EnableExecutionLog(layerMarker = SERVICE)
 public class UserServiceImpl implements UserService {
 
-	@Autowired
-	private UserRepository userRepository;
+    private static final Double DEFAULT_WORKING_HOURS = 8.0;
 
-	@Override
-	@Transactional
-	public User save(User user) {
-		return userRepository.save(user);
-	}
+    private static final Integer HOLIDAYS_COUNT_SPAIN = 22;
 
-	@Override
-	@Transactional
-	public void deleteUserById(Long id) {
-		userRepository.deleteById(id);
-	}
+    private static final Integer HOLIDAYS_COUNT_FRANCE = 30;
 
-	@Override
-	@Transactional
-	public void deleteUser(User user) {
-		userRepository.delete(user);
-	}
+    private final ActivityCenterService activityCenterService;
 
-	public User getUsuarioByEmailAndPassword(String email, String password) {
-		return userRepository.findUsuarioByEmailAndPassword(email, password);
-	}
+    private final UserDao userDao;
 
-	public User getUserById(Long id) {
-		return userRepository.findById(id).orElse(null);
-	}
+    private final UserForumService userForumService;
 
-	@Override
-	public List<User> findBySigningIds(List<Long> ids) {
-		return userRepository.findBySigningIds(ids);
-	}
+    @Override
+    @RequirePermits(value = PRMT_READ_U, action = "List users")
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Listing users",
+            msgOut = "Listing users OK",
+            errorMsg = "Failed to list users")
+    public List<UserDto> list(UserFilterDto filterDto) {
+        final UserFilter filter = getMapper(MapUToUserFilter.class).from(filterDto);
 
-	@Override
-	public List<User> findByState(Integer state) {
-		return userRepository.findByState(state);
-	}
+        final List<User> list = this.userDao.list(filter);
 
-	public User getUserBySigningId(Long signingId) {
-		return userRepository.findBySigningId(signingId);
-	}
+        return getMapper(MapUToUserDto.class).from(list);
+    }
 
-	public List<UserDTO> getAllUserDTOs() {
-		return userRepository.findAllUserDTOs();
-	}
+    @Override
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Listing users",
+            msgOut = "Listing users OK",
+            errorMsg = "Failed to list users")
+    public Page<UserDto> list(UserFilterDto filterDto, Long offset, Long limit) {
 
-	public List<UserDTO> getNotBossDTOsByProjectId(Long projectId) {
-		return userRepository.findNotBossDTOsByProjectId(projectId);
-	}
+        final UserFilter filter = getMapper(MapUToUserFilter.class).from(filterDto);
 
-	public List<UserDTO> getAllProjectResponsables() {
-		return userRepository.findAllProjectResponsables();
-	}
+        final Page<User> page = this.userDao.list(filter, offset, limit);
 
-	public List<ProjectMemberDTO> getAllMembersDTOByProjectId(Long projectId) {
-		return userRepository.findAllMembersDTOByProjectId(projectId);
-	}
+        return getMapper(MapUToUserDto.class).from(page);
+    }
 
-	public List<UserDTO> getUserDTOsByProjectId(Long projectId) {
-		return userRepository.findUserDTOsByProjectId(projectId);
-	}
+    @Override
+    @RequirePermits(value = PRMT_READ_U, action = "Find user by ID")
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Finding user by ID, result can be empty",
+            msgOut = "Found user by ID",
+            errorMsg = "Failed to find user by ID")
+    public Optional<UserDto> find(final UserByIdFinderDto finderDto) {
+        final UserByIdFinder finder = getMapper(MapUToUserByIdFinder.class).from(finderDto);
 
-	public List<UserDTO> getNotUserDTOsByProjectId(Long projectId) {
-		return userRepository.findNotUserDTOsByProjectId(projectId);
-	}
+        final Optional<User> found = this.userDao.find(finder);
 
-	public List<ProjectMemberDTO> getProjectMemberDTOsByProjectId(Long projectId, PaginationCriteria pagination) {
-		return userRepository.findProjectMemberDTOsByProjectId(projectId, pagination);
-	}
+        return found.map(getMapper(MapUToUserDto.class)::from);
+    }
 
-	public Long getProjectMembersCountByProjectId(Long projectId) {
-		return userRepository.findProjectMembersCountByProjectId(projectId);
-	}
+    @Override
+    @RequirePermits(value = PRMT_READ_U, action = "Find user by email and password")
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Finding user by email and password, result can be empty",
+            msgOut = "Found user by email and password",
+            errorMsg = "Failed to find user by email and password")
+    public Optional<UserDto> find(final UserByEmailAndPasswordFinderDto finderDto) {
+        final UserByEmailAndPasswordFinder finder = getMapper(MapUToUserByEmailAndPasswordFinder.class).from(finderDto);
 
-	public List<ProjectMemberDTO> getProjectBossDTOsByProjectId(Long projectId, PaginationCriteria pagination) {
-		return userRepository.findProjectBossDTOsByProjectId(projectId, pagination);
-	}
+        final Optional<User> found = this.userDao.find(finder);
 
-	public Long getProjectBossesCountByProjectId(Long projectId) {
-		return userRepository.findProjectBossesCountByProjectId(projectId);
-	}
+        return found.map(getMapper(MapUToUserDto.class)::from);
+    }
 
-	public List<UserDTO> getUserDTOsByRank(Long rankId) {
-		return userRepository.findUserDTOsByRank(rankId);
-	}
+    @Override
+    @RequirePermits(value = PRMT_READ_U, action = "Find user by ID")
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Finding user by ID, result is expected or will fail",
+            msgOut = "Found user by ID",
+            errorMsg = "User by ID not found")
+    public UserDto findOrNotFound(final UserByIdFinderDto finderDto) {
+        final Supplier<RuntimeException> notFound = () -> new UserNotFoundException(finderDto.getId());
 
-	public List<UserTableDTO> getUsersDataTables(Integer state, List<Long> projectIds, PaginationCriteria pagination) {
-		return userRepository.findUsersDataTables(state, projectIds, pagination);
-	}
+        return this.find(finderDto).orElseThrow(notFound);
+    }
 
-	public Long getUsersCount(Integer state, List<Long> projectIds) {
-		return userRepository.findUsersCount(state, projectIds);
-	}
+    @Override
+    @RequirePermits(value = PRMT_READ_U, action = "Find user by email and password")
+    @LogExecution(operation = OP_READ,
+            debugOut = true,
+            msgIn = "Finding user by email and password, result is expected or will fail",
+            msgOut = "Found user by email and password",
+            errorMsg = "User by email and password not found")
+    public UserDto findOrNotFound(final UserByEmailAndPasswordFinderDto finderDto) {
+        final Supplier<RuntimeException> notFound = () -> new UserNotFoundException(0); // TODO: new exception
 
-	public UserTableDTO getUserDTOByUserId(Long userId, Integer state) {
-		return userRepository.findUserDTOByUserId(userId, state);
-	}
+        return this.find(finderDto).orElseThrow(notFound);
+    }
 
-	public List<ExpenseValidateDTO> getExpensesToValidateByUserId(Long userId) {
-		return userRepository.findExpensesToValidateByUserId(userId);
-	}
+    @Override
+    @Transactional
+    @RequirePermits(value = PRMT_EDIT_U, action = "Create new user")
+    @LogExecution(operation = OP_CREATE,
+            debugOut = true,
+            msgIn = "Creating new user",
+            msgOut = "New user created OK",
+            errorMsg = "Failed to create new user")
+    public UserDto create(UserCreateDto createDto) {
+        final ActivityCenterDto activityCenter = this.activityCenterService.findOrNotFound(
+                new ActivityCenterByIdFinderDto(createDto.getActivityCenterId())
+        );
 
-	public List<ExpenseUserValidateDTO> getExpensesToPay() {
-		return userRepository.findExpensesToPay().stream().filter(e -> e.getExpenseSheetsCount() > 0).sorted(Comparator.comparing(ExpenseUserValidateDTO::getName, String.CASE_INSENSITIVE_ORDER)).collect(Collectors.toList());
-	}
+        final UserCreate create = getMapper(MapUToUserCreate.class).from(createDto);
+        create.setState(1);
+        create.setPassword(Utiles.textToMD5(createDto.getPassword()));
+        create.setForumPassword(generateForumPassword(createDto.getPassword()));
+        create.setWorkingHours(DEFAULT_WORKING_HOURS);
+        create.setCurrentYearHolidaysCount(activityCenter.getCountryId() == 1 ? HOLIDAYS_COUNT_SPAIN : HOLIDAYS_COUNT_FRANCE);
 
-	@Override
-	public void updateHolidaysInNewYear() {
-		this.userRepository.updateHolidaysInNewYear();
-	}
+        final User result = this.userDao.create(create);
 
-	@Override
-	public void resetLastYearHolidays() {
-		this.userRepository.resetLastYearHolidays();
-	}
+        return getMapper(MapUToUserDto.class).from(result);
+    }
+
+    @Override
+    @Transactional
+    @RequirePermits(value = PRMT_EDIT_U, action = "Update user")
+    @LogExecution(operation = OP_UPDATE,
+            debugOut = true,
+            msgIn = "Updating user",
+            msgOut = "User updated OK",
+            errorMsg = "Failed to update user")
+    public UserDto update(final UserUpdateDto updateDto) {
+        final UserByIdFinderDto finderDto = new UserByIdFinderDto(updateDto.getId());
+
+        final UserDto userDto = findOrNotFound(finderDto);
+
+        if (StringUtils.isNoneEmpty(updateDto.getForumUsername())) {
+            checkAndCreateForumUser(updateDto.getForumUsername(), userDto);
+        }
+
+        final UserUpdate update = getMapper(MapUToUserUpdate.class).from(updateDto,
+                getMapper(MapUToUserUpdate.class).from(userDto));
+
+        if (StringUtils.isNoneEmpty(updateDto.getPassword())) {
+            update.setPassword(Utiles.textToMD5(updateDto.getPassword()));
+            update.setForumPassword(generateForumPassword(updateDto.getPassword()));
+
+            if (StringUtils.isNotEmpty(update.getForumUsername())) {
+                userForumService.updateUserPassword(update.getEmail(), updateDto.getPassword());
+            }
+        }
+
+        final User updated = this.userDao.update(update);
+
+        return getMapper(MapUToUserDto.class).from(updated);
+    }
+
+    @Override
+    @RequirePermits(value = PRMT_EDIT_U, action = "Delete user")
+    @LogExecution(operation = OP_DELETE,
+            debugOut = true,
+            msgIn = "Deleting user",
+            msgOut = "User deleted OK",
+            errorMsg = "Failed to delete user")
+    public void delete(UserDeleteDto deleteDto) {
+
+        final UserByIdFinderDto finderDto = new UserByIdFinderDto(deleteDto.getId());
+
+        findOrNotFound(finderDto);
+
+        final UserDelete delete = getMapper(MapUToUserDelete.class).from(deleteDto);
+
+        this.userDao.delete(delete);
+    }
+
+    private String generateForumPassword(final String password) {
+        return Base64.getEncoder().encodeToString(CipherUtil.encryptMessage(password.getBytes(), Constants.ENCRYPTION_KEY.getBytes()));
+    }
+
+    private void checkAndCreateForumUser(final String forumUsername, final UserDto userDto) {
+
+        if (StringUtils.isNoneEmpty(userDto.getForumUsername())) {
+            throw new UserForumAlreadyException(userDto.getForumUsername());
+        }
+
+        final byte[] forumPasswordDecoded = Base64.getDecoder().decode(userDto.getForumPassword().getBytes());
+        final String plainPassword = new String(CipherUtil.decryptMessage(forumPasswordDecoded, Constants.ENCRYPTION_KEY.getBytes()));
+
+        // TODO: In future, check if username exists in forum db
+        this.userForumService.createUser(forumUsername, userDto.getEmail(), plainPassword);
+    }
 }

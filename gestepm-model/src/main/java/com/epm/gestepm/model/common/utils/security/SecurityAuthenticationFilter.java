@@ -3,7 +3,8 @@ package com.epm.gestepm.model.common.utils.security;
 import com.epm.gestepm.lib.http.cookies.CookieUtils;
 import com.epm.gestepm.model.common.utils.classes.SessionUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.user.dto.UserDto;
+import com.epm.gestepm.modelapi.user.dto.finder.UserByEmailAndPasswordFinderDto;
 import com.epm.gestepm.modelapi.user.service.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -48,12 +49,12 @@ public class SecurityAuthenticationFilter extends UsernamePasswordAuthentication
 				log.info("Iniciando sesión el usuario " + email);
 				
 				String passwordHash = Utiles.textToMD5(password);
-	
-				User user = userService.getUsuarioByEmailAndPassword(email, passwordHash);
-		
+
+				final UserDto user = this.userService.findOrNotFound(new UserByEmailAndPasswordFinderDto(email, passwordHash));
+
 				if (user != null) {
 		
-					if (user.getState() == 1) {
+					if (user.getState() == 0) {
 						state = 1;
 					} else {
 					

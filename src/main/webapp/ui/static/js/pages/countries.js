@@ -5,7 +5,7 @@ function create() {
     const createElement = document.getElementById('createModal');
     const createForm = createElement.querySelector('#createForm');
 
-    if (validateForm()) {
+    if (!isValidForm('#createForm')) {
         createFromJQ.addClass('was-validated');
     } else {
 
@@ -24,14 +24,6 @@ function create() {
                 createModal.modal('hide');
             });
     }
-}
-
-function validateForm() {
-
-    let name = $('#createName').val();
-    let tag = $('#createTag').val();
-
-    return !name || !tag;
 }
 
 function edit(id) {

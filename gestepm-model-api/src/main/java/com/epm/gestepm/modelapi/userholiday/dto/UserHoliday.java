@@ -1,10 +1,9 @@
 package com.epm.gestepm.modelapi.userholiday.dto;
 
-import com.epm.gestepm.modelapi.user.dto.User;
+import com.epm.gestepm.modelapi.userold.dto.User;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -18,7 +17,7 @@ public class UserHoliday {
 	private Long id;
 
 	@ManyToOne
-	@JoinColumn(name = "USER_ID", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
 	@Column(name = "DATE", nullable = false)
