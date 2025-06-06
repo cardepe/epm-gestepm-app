@@ -20,6 +20,7 @@ public class BeanConfig {
 	public TilesConfigurer tilesConfigurer() {
 		TilesConfigurer tiles = new TilesConfigurer();
 		tiles.setDefinitions("/ui/tiles/tiles.xml");
+		tiles.setCheckRefresh(false);
 		return tiles;
 	}
 }
