@@ -68,13 +68,31 @@
 <script>
 
     let locale = '${locale}';
-    let userId = ${currentUser.id};
+    let returnBtn = $('#returnBtn');
 
     const endpoint = '/v1/users/${currentUser.id}';
 
     $(document).ready(function() {
-
+        setReturnButtonUrl();
     });
+
+    function setReturnButtonUrl() {
+        let lastPageUrl = '/users';
+
+        if (document.referrer) {
+            const lastPagePath = new URL(document.referrer).pathname;
+
+            if (/^\/users\/\d+(\/[a-z]+)?$/.test(lastPagePath)) {
+                lastPageUrl = sessionStorage.getItem('usersFilter');
+            } else {
+                const queryParams = document.referrer.split('?')[1];
+                lastPageUrl = lastPagePath + (queryParams ? '?' + queryParams : '');
+                sessionStorage.setItem('usersFilter', lastPageUrl);
+            }
+        }
+
+        returnBtn.attr('href', lastPageUrl);
+    }
 
 </script>
 

@@ -7,15 +7,11 @@ import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
 import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseUserValidateDTO;
 import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseValidateDTO;
 import com.epm.gestepm.modelapi.deprecated.expensesheet.dto.ExpenseSheet;
-import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetStatusEnumDto;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectMemberDTO;
-import com.epm.gestepm.modelapi.role.dto.Role;
-import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import com.epm.gestepm.modelapi.userold.dto.User;
 import com.epm.gestepm.modelapi.userold.dto.UserDTO;
-import com.epm.gestepm.modelapi.userold.dto.UserTableDTO;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -339,139 +335,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 	}
 
-	@Override
-	public List<UserTableDTO> findUsersDataTables(Integer state, List<Long> projectIds, PaginationCriteria pagination) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<UserTableDTO> cq = cb.createQuery(UserTableDTO.class);
-
-			/* #BASE_QUERY */
-
-			Root<User> usRoot = cq.from(User.class);
-			Join<User, Role> roRoot = usRoot.join("role", JoinType.INNER);
-			Join<User, SubRole> srRoot = usRoot.join("subRole", JoinType.INNER);
-
-			List<Predicate> predicates = new ArrayList<>();
-
-			cq.multiselect(usRoot.get("id"), usRoot.get("name"), usRoot.get("surnames"), roRoot.get("roleName"),
-					srRoot.get("rol"));
-			
-			if (state != null) {
-				predicates.add(cb.equal(usRoot.get("state"), state));
-			}
-
-			if (projectIds != null && !projectIds.isEmpty()) {
-
-				Join<User, Project> prRoot = usRoot.join("projects", JoinType.INNER);
-
-				predicates.add(prRoot.get("id").in(projectIds));
-			}
-
-			/* END #BASE_QUERY */
-
-			/* #WHERE_CLAUSE */
-			Predicate whereFilter = DataTableUtil.generateWhereCondition(pagination, cb, usRoot, roRoot, srRoot);
-
-			if (whereFilter != null) {
-				predicates.add(whereFilter);
-			}
-			/* END #WHERE_CLAUSE */
-
-			/* #ORDER_CLAUSE */
-			List<Order> orderList = DataTableUtil.generateOrderByCondition(pagination, cb, usRoot, roRoot, srRoot);
-
-			if (!orderList.isEmpty()) {
-				cq.orderBy(orderList);
-			}
-			/* END #ORDER_CLAUSE */
-
-			// Appending all Predicates
-			cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-
-			TypedQuery<UserTableDTO> criteriaQuery = entityManager.createQuery(cq);
-
-			/* #PAGE_NUMBER */
-			criteriaQuery.setFirstResult(pagination.getPageNumber());
-			/* END #PAGE_NUMBER */
-
-			/* #PAGE_SIZE */
-			criteriaQuery.setMaxResults(pagination.getPageSize());
-			/* END #PAGE_SIZE */
-
-			return criteriaQuery.getResultList();
-
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
-	}
-	
-	@Override
-	public Long findUsersCount(Integer state, List<Long> projectIds) {
-		
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-
-			Root<User> root = cq.from(User.class);
-
-			cq.select(cb.count(root));
-			
-			List<Predicate> predicates = new ArrayList<>();
-			
-			if (state != null) {
-				predicates.add(cb.equal(root.get("state"), state));
-			}
-
-			if (projectIds != null && !projectIds.isEmpty()) {
-
-				Join<User, Project> prRoot = root.join("projects", JoinType.INNER);
-
-				predicates.add(prRoot.get("id").in(projectIds));
-			}
-			
-			cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-
-			return entityManager.createQuery(cq).getSingleResult();
-
-		} catch (Exception e) {
-			return 0L;
-		}
-	}
-	
-	@Override
-	public UserTableDTO findUserDTOByUserId(Long userId, Integer state) {
-		
-		try {
-			
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<UserTableDTO> cq = cb.createQuery(UserTableDTO.class);
-			
-			Root<User> usRoot = cq.from(User.class);
-			Join<InterventionShare, Role> roRoot = usRoot.join("role", JoinType.INNER);
-			Join<InterventionShare, SubRole> srRoot = usRoot.join("subRole", JoinType.INNER);
-
-			cq.multiselect(usRoot.get("id"), usRoot.get("name"), usRoot.get("surnames"), roRoot.get("roleName"), srRoot.get("rol"));
-
-			List<Predicate> predicates = new ArrayList<>();
-			
-			predicates.add(cb.equal(usRoot.get("id"), userId));
-			
-			if (state != null) {
-				predicates.add(cb.equal(usRoot.get("state"), state));
-			}
-			
-			cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-			
-			return entityManager.createQuery(cq).getSingleResult();
-			
-		} catch (Exception e) {
-			return null;
-		}
-	}
-	
 	@Override
 	public List<ExpenseValidateDTO> findExpensesToValidateByUserId(Long userId) {
 		

@@ -7,11 +7,9 @@ import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseValidateDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectMemberDTO;
 import com.epm.gestepm.modelapi.userold.dto.User;
 import com.epm.gestepm.modelapi.userold.dto.UserDTO;
-import com.epm.gestepm.modelapi.userold.dto.UserTableDTO;
 import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
 import java.util.List;
@@ -22,18 +20,6 @@ public class UserServiceOldImpl implements UserServiceOld {
 
 	@Autowired
 	private UserRepository userRepository;
-
-	@Override
-	@Transactional
-	public User save(User user) {
-		return userRepository.save(user);
-	}
-
-	@Override
-	@Transactional
-	public void deleteUserById(Long id) {
-		userRepository.deleteById(id);
-	}
 
 	public User getUsuarioByEmailAndPassword(String email, String password) {
 		return userRepository.findUsuarioByEmailAndPassword(email, password);
@@ -91,18 +77,6 @@ public class UserServiceOldImpl implements UserServiceOld {
 
 	public List<UserDTO> getUserDTOsByRank(Long rankId) {
 		return userRepository.findUserDTOsByRank(rankId);
-	}
-
-	public List<UserTableDTO> getUsersDataTables(Integer state, List<Long> projectIds, PaginationCriteria pagination) {
-		return userRepository.findUsersDataTables(state, projectIds, pagination);
-	}
-
-	public Long getUsersCount(Integer state, List<Long> projectIds) {
-		return userRepository.findUsersCount(state, projectIds);
-	}
-
-	public UserTableDTO getUserDTOByUserId(Long userId, Integer state) {
-		return userRepository.findUserDTOByUserId(userId, state);
 	}
 
 	public List<ExpenseValidateDTO> getExpensesToValidateByUserId(Long userId) {

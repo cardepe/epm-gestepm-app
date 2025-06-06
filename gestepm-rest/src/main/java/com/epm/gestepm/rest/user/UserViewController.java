@@ -8,6 +8,8 @@ import com.epm.gestepm.masterdata.api.activitycenter.service.ActivityCenterServi
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
 import com.epm.gestepm.modelapi.manualsigningtype.service.ManualSigningTypeService;
+import com.epm.gestepm.modelapi.project.dto.ProjectDTO;
+import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.role.service.RoleService;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
@@ -45,6 +47,8 @@ public class UserViewController {
     private final ManualSigningTypeService manualSigningTypeService;
 
     private final MessageSource messageSource;
+
+    private final ProjectService projectService;
 
     private final RoleService roleService;
 
@@ -141,6 +145,9 @@ public class UserViewController {
 
         final UserDto currentUser = this.userService.findOrNotFound(new UserByIdFinderDto(id));
         model.addAttribute("currentUser", currentUser);
+
+        final List<ProjectDTO> notBelongProjects = this.projectService.getNotProjectDTOsByUserId(id.longValue());
+        model.addAttribute("notBelongProjects", notBelongProjects);
 
         model.addAttribute("tab", "projects");
 

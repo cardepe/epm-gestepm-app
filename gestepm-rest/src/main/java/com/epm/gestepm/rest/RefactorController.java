@@ -10,6 +10,8 @@ import com.epm.gestepm.modelapi.userholiday.dto.UserHolidayDTO;
 import com.epm.gestepm.modelapi.userholiday.service.UserHolidaysService;
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +21,11 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Locale;
 
-@Log4j
 @Data
 @RestController
 public class RefactorController {
+
+    private static final Log log = LogFactory.getLog(RefactorController.class);
 
     private final MessageSource messageSource;
 

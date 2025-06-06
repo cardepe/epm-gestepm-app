@@ -31,9 +31,11 @@ import com.epm.gestepm.modelapi.shares.displacement.dto.updater.DisplacementShar
 import com.epm.gestepm.modelapi.shares.displacement.service.DisplacementShareService;
 import com.epm.gestepm.modelapi.timecontrolold.dto.TimeControlTableDTO;
 import com.epm.gestepm.modelapi.timecontrolold.service.TimeControlOldService;
+import com.epm.gestepm.modelapi.user.dto.UserDto;
+import com.epm.gestepm.modelapi.user.dto.finder.UserByIdFinderDto;
+import com.epm.gestepm.modelapi.user.service.UserService;
 import com.epm.gestepm.modelapi.userold.dto.User;
 import com.epm.gestepm.modelapi.userold.dto.UserDTO;
-import com.epm.gestepm.modelapi.userold.dto.UserTableDTO;
 import com.epm.gestepm.modelapi.userold.exception.InvalidUserSessionException;
 import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
@@ -100,6 +102,9 @@ public class SigningController {
 
     @Autowired
     private TimeControlOldService timeControlOldService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private UserServiceOld userServiceOld;
@@ -170,13 +175,11 @@ public class SigningController {
                     return "unauthorized";
                 }
 
-                UserTableDTO userDTO = userServiceOld.getUserDTOByUserId(userId, null);
+                final UserDto userDto = this.userService.findOrNotFound(new UserByIdFinderDto(userId.intValue()));
 
-                if (userDTO != null) {
-                    model.addAttribute("userId", userDTO.getId());
-                    model.addAttribute("userName", userDTO.getName() + " " + userDTO.getSurnames());
-                    model.addAttribute("trashVisible", true);
-                }
+                model.addAttribute("userId", userDto.getId());
+                model.addAttribute("userName", userDto.getName() + " " + userDto.getSurnames());
+                model.addAttribute("trashVisible", true);
 
             } else {
 

@@ -6,14 +6,11 @@ import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseValidateDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectMemberDTO;
 import com.epm.gestepm.modelapi.userold.dto.User;
 import com.epm.gestepm.modelapi.userold.dto.UserDTO;
-import com.epm.gestepm.modelapi.userold.dto.UserTableDTO;
 
 import java.util.List;
 
 public interface UserServiceOld {
 	
-	User save(User user);
-	void deleteUserById(Long id);
 	User getUserById(Long id);
 	List<User> findBySigningIds(List<Long> ids);
 	List<User> findByState(Integer state);
@@ -28,10 +25,7 @@ public interface UserServiceOld {
 	List<ProjectMemberDTO> getProjectBossDTOsByProjectId(Long projectId, PaginationCriteria pagination);
 	Long getProjectBossesCountByProjectId(Long projectId);
 	List<UserDTO> getUserDTOsByRank(Long rankId);
-	List<UserTableDTO> getUsersDataTables(Integer state, List<Long> projectIds, PaginationCriteria pagination);
-	Long getUsersCount(Integer state, List<Long> projectIds);
-	UserTableDTO getUserDTOByUserId(Long userId, Integer state);
-	List<ExpenseValidateDTO> getExpensesToValidateByUserId(Long userId);
+		List<ExpenseValidateDTO> getExpensesToValidateByUserId(Long userId);
 	List<ExpenseUserValidateDTO> getExpensesToPay();
 
 	void updateHolidaysInNewYear();
