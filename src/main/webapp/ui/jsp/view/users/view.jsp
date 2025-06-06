@@ -2,9 +2,6 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<link rel="stylesheet"
-      href="${pageContext.request.contextPath}/webjars/bootstrap-select/1.13.17/css/bootstrap-select.min.css">
-
 <style>
     #filterForm {
         top: auto !important;
@@ -257,17 +254,6 @@
 </div>
 
 <script>
-
     let locale = '${locale}';
     let userId = ${user.id};
-
-    $(document).ready(function() {
-        initializeDataTables();
-        initializeSelects();
-        filterByParams();
-    });
-
 </script>
-
-<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap-select/1.13.17/js/bootstrap-select.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/ui/static/js/select2/select2-utils.js?v=<%= System.currentTimeMillis() %>"></script>
