@@ -5,7 +5,10 @@ import static com.epm.gestepm.lib.logging.aspect.LogExecutionAspectUtils.isVoid;
 import static com.epm.gestepm.lib.logging.constants.LogDataKeys.LOG_CODE_TRACE_METHOD_CACHE_INFO_IS_CACHED;
 import static com.epm.gestepm.lib.logging.constants.LogDataKeys.LOG_CODE_TRACE_METHOD_CACHE_INFO_IS_EVICT;
 import static com.epm.gestepm.lib.logging.constants.LogDataKeys.LOG_CODE_TRACE_OUTPUT;
+import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.*;
+
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import com.epm.gestepm.lib.logging.AppLogger;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
@@ -26,6 +29,8 @@ import org.springframework.stereotype.Component;
 @Order(100)
 @Component
 public class LogExecutionAspect {
+
+    private static final Set<String> INFO_LOG_LAYERS = Set.of(REST, VIEW, PROCESS_SERVICE);
 
     private final ApplicationContext applicationContext;
 
@@ -48,6 +53,8 @@ public class LogExecutionAspect {
 
         final boolean isCached = (boolean) cacheInfo.getOrDefault(LOG_CODE_TRACE_METHOD_CACHE_INFO_IS_CACHED, false);
         final boolean isEvict = (boolean) cacheInfo.getOrDefault(LOG_CODE_TRACE_METHOD_CACHE_INFO_IS_EVICT, false);
+
+        final boolean enableInfo = isInfoLogEnabledForLayer(parent.layerMarker());
 
         logInfoHandler
             .layer(parent.layerMarker())
@@ -74,10 +81,12 @@ public class LogExecutionAspect {
             logMsg = isCached ? "[[!] Might put in cache] - ".concat(logMsg) : logMsg;
             logMsg = isEvict ? "[[!] Might evict cache] - ".concat(logMsg) : logMsg;
 
-            logInfoHandler.flowIn()
-                .msg(logMsg)
-                .data(inputData)
-                .logAs(execution.level());
+            if (enableInfo) {
+                logInfoHandler.flowIn()
+                        .msg(logMsg)
+                        .data(inputData)
+                        .logAs(execution.level());
+            }
 
             logDebugHandler.data(inputData);
         }
@@ -99,11 +108,11 @@ public class LogExecutionAspect {
             logMsg = logMsg.isBlank() ? String.format("Error in %s", parent.layerMarker()) : logMsg;
 
             logInfoHandler.flowErr()
-                .msg(logMsg)
-                .execTime(executionTime)
-                .exceptionClass(exception.getClass().getCanonicalName())
-                .exceptionMsg(exception.getMessage())
-                .error();
+                    .msg(logMsg)
+                    .execTime(executionTime)
+                    .exceptionClass(exception.getClass().getCanonicalName())
+                    .exceptionMsg(exception.getMessage())
+                    .error();
 
             throw exception;
         }
@@ -122,11 +131,13 @@ public class LogExecutionAspect {
             logMsg = isCached ? "[[!] Might put in cache] - ".concat(logMsg) : logMsg;
             logMsg = isEvict ? "[[!] Might evict cache] - ".concat(logMsg) : logMsg;
 
-            logInfoHandler.flowOut()
-                .msg(logMsg)
-                .execTime(executionTime)
-                .data(LOG_CODE_TRACE_OUTPUT, shortOutputData)
-                .logAs(execution.level());
+            if (enableInfo) {
+                logInfoHandler.flowOut()
+                        .msg(logMsg)
+                        .execTime(executionTime)
+                        .data(LOG_CODE_TRACE_OUTPUT, shortOutputData)
+                        .logAs(execution.level());
+            }
 
             if (execution.debugOut() && logDebugHandler.isLevelActive(Level.DEBUG)) {
 
@@ -143,6 +154,10 @@ public class LogExecutionAspect {
         }
 
         return methodReturnValue;
+    }
+
+    private boolean isInfoLogEnabledForLayer(final String layerMarker) {
+        return INFO_LOG_LAYERS.contains(layerMarker.toLowerCase());
     }
 
 }

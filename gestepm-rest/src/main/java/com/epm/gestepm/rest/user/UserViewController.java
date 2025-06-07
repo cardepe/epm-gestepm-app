@@ -83,7 +83,10 @@ public class UserViewController {
     }
 
     @GetMapping("/users/{id}")
-    @LogExecution(operation = OP_VIEW)
+    @LogExecution(operation = OP_VIEW,
+            msgIn = "Loading user detail view",
+            msgOut = "Loading user detail view OK",
+            errorMsg = "Failed to load user detail view")
     public String viewUserDetailPage(@PathVariable final Integer id, final Locale locale, final Model model) {
 
         this.loadCommonModelView(locale, model);
