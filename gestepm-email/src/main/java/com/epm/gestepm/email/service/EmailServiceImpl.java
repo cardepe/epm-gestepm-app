@@ -24,13 +24,12 @@ import javax.mail.util.ByteArrayDataSource;
 import java.util.Base64;
 import java.util.Map;
 
-import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
-import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
+import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.*;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_PROCESS;
 
 @Data
 @Service
-@EnableExecutionLog(layerMarker = SERVICE)
+@EnableExecutionLog(layerMarker = PROCESS_SERVICE)
 public class EmailServiceImpl implements EmailService {
 
     @Value("${spring.mail.username}")

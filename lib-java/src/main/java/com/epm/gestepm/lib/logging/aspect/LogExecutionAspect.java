@@ -5,8 +5,7 @@ import static com.epm.gestepm.lib.logging.aspect.LogExecutionAspectUtils.isVoid;
 import static com.epm.gestepm.lib.logging.constants.LogDataKeys.LOG_CODE_TRACE_METHOD_CACHE_INFO_IS_CACHED;
 import static com.epm.gestepm.lib.logging.constants.LogDataKeys.LOG_CODE_TRACE_METHOD_CACHE_INFO_IS_EVICT;
 import static com.epm.gestepm.lib.logging.constants.LogDataKeys.LOG_CODE_TRACE_OUTPUT;
-import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.REST;
-import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
+import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.*;
 
 import java.util.Map;
 import java.util.Set;
@@ -31,7 +30,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LogExecutionAspect {
 
-    private static final Set<String> INFO_LOG_LAYERS = Set.of(REST, VIEW);
+    private static final Set<String> INFO_LOG_LAYERS = Set.of(REST, VIEW, PROCESS_SERVICE);
 
     private final ApplicationContext applicationContext;
 
