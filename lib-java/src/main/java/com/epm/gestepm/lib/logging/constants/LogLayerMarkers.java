@@ -12,6 +12,8 @@ public class LogLayerMarkers {
 
     public static final String SERVICE = "srvc";
 
+    public static final String PROCESS_SERVICE = "prcss_srvc";
+
     public static final String DAO = "dao";
 
     public static final String DATASOURCE = "dtsrc";
