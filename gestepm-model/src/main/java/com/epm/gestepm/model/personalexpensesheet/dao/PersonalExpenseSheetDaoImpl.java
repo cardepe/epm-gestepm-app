@@ -161,18 +161,18 @@ public class PersonalExpenseSheetDaoImpl implements PersonalExpenseSheetDao {
     }
 
     private void setOrder(final SQLOrderByType order, final String orderBy, final SQLQueryFetchMany<PersonalExpenseSheet> sqlQuery) {
-        final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("id")
+        final String orderByStatement = StringUtils.isNoneBlank(orderBy) && !orderBy.equals("createdAt")
                 ? this.getOrderColumn(orderBy)
-                : COL_PES_ID;
+                : COL_PES_CREATED_AT;
         final SQLOrderByType orderStatement = order != null
                 ? order
-                : SQLOrderByType.ASC;
+                : SQLOrderByType.DESC;
         sqlQuery.addOrderBy(orderByStatement, orderStatement);
     }
 
     private String getOrderColumn(final String orderBy) {
-        if ("createdAt".equals(orderBy)) {
-            return COL_PES_CREATED_AT;
+        if ("id".equals(orderBy)) {
+            return COL_PES_ID;
         } else if ("project.name".equals(orderBy)) {
             return COL_PES_PROJECT_ID;
         }
