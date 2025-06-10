@@ -175,12 +175,20 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
                 final byte[] compressedBytes = ImageUtils.compressImage(imageBytes, 0.5f);
                 final Image image = Image.getInstance(compressedBytes);
 
-                if (image.getWidth() > pageWidth || image.getHeight() > pageHeight) {
-                    image.scaleToFit(pageWidth, pageHeight);
+                final float marginLeft = 36;
+                final float marginRight = 36;
+                final float marginTop = 36;
+                final float marginBottom = 36;
+
+                final float usableWidth = pageWidth - marginLeft - marginRight;
+                final float usableHeight = pageHeight - marginTop - marginBottom;
+
+                if (image.getWidth() > usableWidth || image.getHeight() > usableHeight) {
+                    image.scaleToFit(usableWidth, usableHeight);
                 }
 
-                float x = (pageWidth - image.getScaledWidth()) / 2;
-                float y = (pageHeight - image.getScaledHeight()) / 2;
+                final float x = marginLeft + (usableWidth - image.getScaledWidth()) / 2;
+                final float y = marginBottom + (usableHeight - image.getScaledHeight()) / 2;
 
                 image.setAbsolutePosition(x, y);
 
