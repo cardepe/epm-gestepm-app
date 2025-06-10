@@ -5,7 +5,7 @@ import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectTableDTO;
-import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.util.List;

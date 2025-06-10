@@ -2,7 +2,7 @@ package com.epm.gestepm.modelapi.userholiday.service;
 
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.holiday.dto.YearCalendarDTO;
-import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHolidayDTO;
 

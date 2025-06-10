@@ -30,7 +30,7 @@ import com.epm.gestepm.modelapi.personalexpensesheet.exception.PersonalExpenseSh
 import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetService;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
-import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;

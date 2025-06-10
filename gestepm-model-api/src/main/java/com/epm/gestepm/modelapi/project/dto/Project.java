@@ -8,8 +8,8 @@ import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.deprecated.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
-import com.epm.gestepm.modelapi.userold.dto.User;
-import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.deprecated.workshare.WorkShare;
 import lombok.Data;
 
 import javax.persistence.*;

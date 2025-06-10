@@ -1,6 +1,6 @@
 package com.epm.gestepm.task;
 
-import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
+import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 

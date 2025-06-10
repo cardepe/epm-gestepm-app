@@ -10,8 +10,8 @@ import com.epm.gestepm.modelapi.deprecated.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetStatusEnumDto;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.project.dto.ProjectMemberDTO;
-import com.epm.gestepm.modelapi.userold.dto.User;
-import com.epm.gestepm.modelapi.userold.dto.UserDTO;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.UserDTO;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

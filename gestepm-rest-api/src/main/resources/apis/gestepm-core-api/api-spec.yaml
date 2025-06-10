@@ -1791,6 +1791,44 @@ paths:
       parameters: []
       tags:
         - work-share-v1
+  /v1/signing/export:
+    get:
+      summary: V1 - Export signings
+      tags:
+        - signing-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/SigningsExport'
+        '404':
+          description: user-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: export-signings-v1
+      description: export-signings-v1
+      parameters:
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: startDate
+          required: true
+          description: Start date to filter signings.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: endDate
+          required: true
+          description: End date to filter signings.
+        - schema:
+            type: integer
+          in: query
+          name: userId
+          description: User identificator.
+          required: true
+    parameters: []
   /v1/signings/teleworking:
     get:
       summary: V1 - List teleworking signings
@@ -3231,6 +3269,13 @@ components:
                 $ref: ../../base-api-spec.yaml#/components/schemas/Meta
               data:
                 $ref: '#/components/schemas/User'
+    SigningsExport:
+      description: Example response
+      content:
+        application/octet-stream:
+          schema:
+            type: string
+            format: binary
   requestBodies:
     CreateNoProgrammedShare:
       content:
@@ -4101,6 +4146,8 @@ tags:
     description: V1 - No Programmed Share
   - name: no-programmed-share-file-v1
     description: V1 - No Programmed Share File
+  - name: signing-v1
+    description: V1 - Signing
   - name: programmed-share-v1
     description: V1 - Programmed Share
   - name: programmed-share-break-v1

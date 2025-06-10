@@ -11,8 +11,8 @@ import com.epm.gestepm.modelapi.shares.construction.exception.ConstructionShareE
 import com.epm.gestepm.modelapi.shares.construction.exception.ConstructionShareNotEndedException;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareExportService;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareFileService;
-import com.epm.gestepm.modelapi.userold.dto.User;
-import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;

@@ -10,7 +10,7 @@ import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.signings.teleworking.dto.TeleworkingSigningDto;
 import com.epm.gestepm.modelapi.signings.teleworking.dto.finder.TeleworkingSigningByIdFinderDto;
 import com.epm.gestepm.modelapi.signings.teleworking.service.TeleworkingSigningService;
-import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;

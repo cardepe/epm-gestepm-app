@@ -11,8 +11,8 @@ import com.epm.gestepm.modelapi.shares.programmed.exception.ProgrammedShareExpor
 import com.epm.gestepm.modelapi.shares.programmed.exception.ProgrammedShareNotEndedException;
 import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareExportService;
 import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareFileService;
-import com.epm.gestepm.modelapi.userold.dto.User;
-import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;

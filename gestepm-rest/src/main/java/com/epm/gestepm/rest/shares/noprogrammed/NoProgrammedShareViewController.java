@@ -20,9 +20,9 @@ import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareSer
 import com.epm.gestepm.modelapi.user.dto.UserDto;
 import com.epm.gestepm.modelapi.user.dto.filter.UserFilterDto;
 import com.epm.gestepm.modelapi.user.service.UserService;
-import com.epm.gestepm.modelapi.userold.dto.User;
-import com.epm.gestepm.modelapi.userold.dto.UserDTO;
-import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.UserDTO;
+import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;

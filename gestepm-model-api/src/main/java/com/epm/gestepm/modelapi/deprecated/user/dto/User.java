@@ -1,4 +1,4 @@
-package com.epm.gestepm.modelapi.userold.dto;
+package com.epm.gestepm.modelapi.deprecated.user.dto;
 
 import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.deprecated.displacementshare.dto.DisplacementShare;
@@ -11,7 +11,7 @@ import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
-import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
+import com.epm.gestepm.modelapi.deprecated.workshare.WorkShare;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 

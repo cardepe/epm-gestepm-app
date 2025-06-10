@@ -4,7 +4,7 @@ import com.epm.gestepm.modelapi.common.config.ApplicationContextProvider;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.model.common.utils.classes.SingletonUtil;
 import com.epm.gestepm.modelapi.role.dto.Role;
-import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.AuthenticationManager;

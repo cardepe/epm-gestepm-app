@@ -2,7 +2,7 @@ package com.epm.gestepm.model.workshare.dao;
 
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpensesMonthDTO;
-import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
+import com.epm.gestepm.modelapi.deprecated.workshare.WorkShare;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

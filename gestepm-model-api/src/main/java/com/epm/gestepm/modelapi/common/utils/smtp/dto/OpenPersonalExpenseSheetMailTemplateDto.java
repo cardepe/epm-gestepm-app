@@ -2,7 +2,7 @@ package com.epm.gestepm.modelapi.common.utils.smtp.dto;
 
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetDto;
 import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;

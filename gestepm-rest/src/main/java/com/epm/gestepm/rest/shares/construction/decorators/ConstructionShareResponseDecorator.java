@@ -5,7 +5,7 @@ import com.epm.gestepm.lib.controller.decorator.BaseResponseDataDecorator;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
-import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
+import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
 import com.epm.gestepm.rest.shares.construction.request.ConstructionShareFindRestRequest;
 import com.epm.gestepm.restapi.openapi.model.ConstructionShare;
 import com.epm.gestepm.restapi.openapi.model.Project;
@@ -52,7 +52,7 @@ public class ConstructionShareResponseDecorator extends BaseResponseDataDecorato
             final User user = data.getUser();
             final Integer id = user.getId();
 
-            final com.epm.gestepm.modelapi.userold.dto.User userDto = this.userServiceOld.getUserById(Long.valueOf(id));
+            final com.epm.gestepm.modelapi.deprecated.user.dto.User userDto = this.userServiceOld.getUserById(Long.valueOf(id));
             final User response = new User().id(id).name(userDto.getFullName());
 
             data.setUser(response);

@@ -2,14 +2,14 @@ package com.epm.gestepm.controller;
 
 import com.epm.gestepm.modelapi.holiday.dto.YearCalendarDTO;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
-import com.epm.gestepm.modelapi.userold.dto.User;
-import com.epm.gestepm.modelapi.userold.dto.UserDTO;
-import com.epm.gestepm.modelapi.userold.exception.InvalidUserSessionException;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.UserDTO;
+import com.epm.gestepm.modelapi.deprecated.user.exception.InvalidUserSessionException;
 import com.epm.gestepm.model.holiday.service.mapper.HolidayMapper;
 import com.epm.gestepm.modelapi.holiday.dto.Holiday;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.role.dto.Role;
-import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
+import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
 import com.epm.gestepm.modelapi.holiday.service.HolidayService;
 import com.epm.gestepm.modelapi.project.service.ProjectService;

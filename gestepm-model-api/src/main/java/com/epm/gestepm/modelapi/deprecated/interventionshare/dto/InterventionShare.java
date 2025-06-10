@@ -5,7 +5,7 @@ import com.epm.gestepm.modelapi.deprecated.interventionsharefile.dto.Interventio
 import com.epm.gestepm.modelapi.deprecated.interventionsubshare.dto.InterventionSubShare;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
-import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import lombok.Data;
 
 import javax.persistence.*;

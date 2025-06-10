@@ -1,9 +1,9 @@
 package com.epm.gestepm.modelapi.common.utils;
 
 import com.epm.gestepm.modelapi.common.config.ApplicationContextProvider;
-import com.epm.gestepm.modelapi.userold.dto.User;
-import com.epm.gestepm.modelapi.userold.exception.InvalidUserSessionException;
-import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.exception.InvalidUserSessionException;
+import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.MessageSource;

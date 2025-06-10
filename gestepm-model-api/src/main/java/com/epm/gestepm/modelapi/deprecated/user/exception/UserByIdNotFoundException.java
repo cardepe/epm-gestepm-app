@@ -1,4 +1,4 @@
-package com.epm.gestepm.modelapi.userold.exception;
+package com.epm.gestepm.modelapi.deprecated.user.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

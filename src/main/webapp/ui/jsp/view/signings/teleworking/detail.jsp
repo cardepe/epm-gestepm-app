@@ -56,7 +56,7 @@
                     <div class="col-sm-12 col-md-4">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100"><spring:message code="start.date"/>
-                                <input type="datetime-local" name="startedAt" class="form-control mt-1" value="${teleworkingSigning.startedAt}" disabled />
+                                <input type="datetime-local" name="startedAt" class="form-control mt-1" value="${personalSigning.startedAt}" disabled />
                             </label>
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                     <div class="col-sm-12 col-md-4">
                         <div class="form-group mb-1">
                             <label class="col-form-label w-100"><spring:message code="end.date"/>
-                                <input type="datetime-local" name="closedAt" class="form-control mt-1" value="${teleworkingSigning.closedAt}" disabled />
+                                <input type="datetime-local" name="closedAt" class="form-control mt-1" value="${personalSigning.closedAt}" disabled />
                             </label>
                         </div>
                     </div>
@@ -78,7 +78,7 @@
                                     loading="lazy"
                                     allowfullscreen
                                     referrerpolicy="no-referrer-when-downgrade"
-                                    src="https://www.google.com/maps?q=${teleworkingSigning.startedLocation}&output=embed">
+                                    src="https://www.google.com/maps?q=${personalSigning.startedLocation}&output=embed">
                             </iframe>
                         </label>
                     </div>
@@ -89,7 +89,7 @@
                                     loading="lazy"
                                     allowfullscreen
                                     referrerpolicy="no-referrer-when-downgrade"
-                                    src="https://www.google.com/maps?q=${teleworkingSigning.closedLocation}&output=embed">
+                                    src="https://www.google.com/maps?q=${personalSigning.closedLocation}&output=embed">
                             </iframe>
                         </label>
                     </div>

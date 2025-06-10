@@ -7,7 +7,7 @@ import com.epm.gestepm.modelapi.deprecated.interventionprshare.dto.InterventionP
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigningResumeDTO;
-import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
+import com.epm.gestepm.modelapi.deprecated.workshare.WorkShare;
 
 import java.time.ZoneOffset;
 import java.util.*;

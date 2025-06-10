@@ -1,4 +1,4 @@
-package com.epm.gestepm.modelapi.userold.dto;
+package com.epm.gestepm.modelapi.deprecated.user.dto;
 
 public class UserDTO {
 

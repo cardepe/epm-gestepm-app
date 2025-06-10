@@ -5,7 +5,7 @@ import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigning;
 import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigningTableDTO;
 import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
-import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

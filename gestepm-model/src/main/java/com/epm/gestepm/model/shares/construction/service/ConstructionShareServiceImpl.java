@@ -33,7 +33,7 @@ import com.epm.gestepm.modelapi.shares.construction.dto.deleter.ConstructionShar
 import com.epm.gestepm.modelapi.shares.construction.dto.finder.ConstructionShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.updater.ConstructionShareUpdateDto;
 import com.epm.gestepm.modelapi.shares.construction.exception.ConstructionShareNotFoundException;
-import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;

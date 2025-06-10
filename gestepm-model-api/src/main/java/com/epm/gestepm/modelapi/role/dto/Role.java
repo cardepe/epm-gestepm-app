@@ -1,6 +1,6 @@
 package com.epm.gestepm.modelapi.role.dto;
 
-import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 

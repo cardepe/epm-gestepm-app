@@ -1,4 +1,4 @@
-package com.epm.gestepm.modelapi.timecontrolold.dto;
+package com.epm.gestepm.modelapi.deprecated.timecontrol.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package com.epm.gestepm.modelapi.deprecated.interventionprshare.dto;
 
 import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import lombok.Data;
 
 import javax.persistence.*;

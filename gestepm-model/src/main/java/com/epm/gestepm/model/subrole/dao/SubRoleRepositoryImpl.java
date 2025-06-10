@@ -17,7 +17,7 @@ import javax.persistence.criteria.Root;
 
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.role.dto.RoleTableDTO;
-import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import org.springframework.stereotype.Repository;
 
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;

@@ -3,7 +3,7 @@ package com.epm.gestepm.model.expensecorrective.service.mapper;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrectiveDTO;
 import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.userold.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 
 public class ExpenseCorrectiveMapper {
 

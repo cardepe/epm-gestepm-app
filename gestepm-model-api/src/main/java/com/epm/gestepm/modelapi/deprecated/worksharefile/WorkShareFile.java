@@ -1,6 +1,6 @@
-package com.epm.gestepm.modelapi.worksharefile.dto;
+package com.epm.gestepm.modelapi.deprecated.worksharefile;
 
-import com.epm.gestepm.modelapi.workshare.dto.WorkShare;
+import com.epm.gestepm.modelapi.deprecated.workshare.WorkShare;
 import lombok.Data;
 
 import javax.persistence.Column;

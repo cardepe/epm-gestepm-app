@@ -1,7 +1,6 @@
-package com.epm.gestepm.modelapi.timecontrolold.service;
+package com.epm.gestepm.modelapi.deprecated.timecontrol.service;
 
-import com.epm.gestepm.modelapi.timecontrolold.dto.TimeControlDetailTableDTO;
-import com.epm.gestepm.modelapi.timecontrolold.dto.TimeControlTableDTO;
+import com.epm.gestepm.modelapi.deprecated.timecontrol.dto.TimeControlTableDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
