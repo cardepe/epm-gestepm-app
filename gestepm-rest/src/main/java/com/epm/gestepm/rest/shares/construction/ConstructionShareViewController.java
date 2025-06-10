@@ -5,6 +5,7 @@ import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
+import com.epm.gestepm.modelapi.common.utils.datatables.SortOrder;
 import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.breaks.dto.ShareBreakDto;
@@ -17,8 +18,10 @@ import com.epm.gestepm.modelapi.shares.construction.dto.filter.ConstructionShare
 import com.epm.gestepm.modelapi.shares.construction.dto.finder.ConstructionShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareFileService;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareService;
+import com.epm.gestepm.modelapi.user.dto.UserDto;
+import com.epm.gestepm.modelapi.user.dto.filter.UserFilterDto;
+import com.epm.gestepm.modelapi.user.service.UserService;
 import com.epm.gestepm.modelapi.userold.dto.User;
-import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,7 +53,7 @@ public class ConstructionShareViewController {
 
     private final ShareBreakService shareBreakService;
 
-    private final UserServiceOld userServiceOld;
+    private final UserService userService;
 
     @ModelAttribute
     public User loadCommonModelView(final Locale locale, final Model model) {
@@ -69,9 +72,11 @@ public class ConstructionShareViewController {
                 .collect(Collectors.toList());
         model.addAttribute("projects", projects);
 
-        final List<User> users = this.userServiceOld.findByState(0).stream()
-                .sorted(Comparator.comparing(User::getFullName, String.CASE_INSENSITIVE_ORDER))
-                .collect(Collectors.toList());
+        final UserFilterDto filterDto = new UserFilterDto();
+        filterDto.setOrder(SortOrder.ASC.value());
+        filterDto.setOrderBy("fullName");
+
+        final List<UserDto> users = this.userService.list(filterDto);
         model.addAttribute("users", users);
 
         return "construction-share";

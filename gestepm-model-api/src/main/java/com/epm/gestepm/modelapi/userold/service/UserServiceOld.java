@@ -13,7 +13,6 @@ public interface UserServiceOld {
 	
 	User getUserById(Long id);
 	List<User> findBySigningIds(List<Long> ids);
-	List<User> findByState(Integer state);
 	User getUsuarioByEmailAndPassword(String email, String password);
 	List<UserDTO> getAllUserDTOs();
 	List<UserDTO> getUserDTOsByProjectId(Long projectId);

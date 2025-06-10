@@ -3,6 +3,7 @@ package com.epm.gestepm.rest.shares.noprogrammed;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
+import com.epm.gestepm.modelapi.common.utils.datatables.SortOrder;
 import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
 import com.epm.gestepm.modelapi.inspection.dto.ActionEnumDto;
@@ -16,9 +17,13 @@ import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
+import com.epm.gestepm.modelapi.user.dto.UserDto;
+import com.epm.gestepm.modelapi.user.dto.filter.UserFilterDto;
+import com.epm.gestepm.modelapi.user.service.UserService;
 import com.epm.gestepm.modelapi.userold.dto.User;
 import com.epm.gestepm.modelapi.userold.dto.UserDTO;
 import com.epm.gestepm.modelapi.userold.service.UserServiceOld;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,6 +45,7 @@ import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
 
 @Controller
+@RequiredArgsConstructor
 @EnableExecutionLog(layerMarker = VIEW)
 public class NoProgrammedShareViewController {
 
@@ -54,15 +60,9 @@ public class NoProgrammedShareViewController {
 
     private final ProjectService projectService;
 
-    private final UserServiceOld userServiceOld;
+    private final UserService userService;
 
-    public NoProgrammedShareViewController(FamilyService familyService, InspectionService inspectionService, NoProgrammedShareService noProgrammedShareService, ProjectService projectService, UserServiceOld userServiceOld) {
-        this.familyService = familyService;
-        this.inspectionService = inspectionService;
-        this.noProgrammedShareService = noProgrammedShareService;
-        this.projectService = projectService;
-        this.userServiceOld = userServiceOld;
-    }
+    private final UserServiceOld userServiceOld;
 
     @ModelAttribute
     public User loadCommonModelView(final Locale locale, final Model model) {
@@ -81,9 +81,11 @@ public class NoProgrammedShareViewController {
                 .collect(Collectors.toList());
         model.addAttribute("projects", projects);
 
-        final List<User> users = this.userServiceOld.findByState(0).stream()
-                .sorted(Comparator.comparing(User::getFullName, String.CASE_INSENSITIVE_ORDER))
-                .collect(Collectors.toList());
+        final UserFilterDto filterDto = new UserFilterDto();
+        filterDto.setOrder(SortOrder.ASC.value());
+        filterDto.setOrderBy("fullName");
+
+        final List<UserDto> users = this.userService.list(filterDto);
         model.addAttribute("users", users);
 
         return "no-programmed-share";

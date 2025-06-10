@@ -13,9 +13,6 @@ public interface UserRepository extends CrudRepository<User, Long>, UserReposito
 	@Query("SELECT u FROM User u WHERE u.signingId IN :ids")
 	List<User> findBySigningIds(@Param("ids") List<Long> ids);
 
-	@Query("SELECT u FROM User u WHERE u.state = :state")
-	List<User> findByState(@Param("state") Integer state);
-
 	User findBySigningId(Long signingId);
 
 	User findUsuarioByEmailAndPassword(String email, String password);
