@@ -1,6 +1,7 @@
 package com.epm.gestepm.modelapi.user.dto;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -52,4 +53,15 @@ public class UserDto implements Serializable {
     @NotNull
     private Integer lastYearHolidaysCount;
 
+    public String getFullName() {
+        final StringBuilder builder = new StringBuilder();
+
+        builder.append(this.name);
+
+        if (StringUtils.isNoneBlank(this.surnames)) {
+            builder.append(" ").append(this.surnames);
+        }
+
+        return builder.toString();
+    }
 }

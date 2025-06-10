@@ -34,11 +34,6 @@ public class UserServiceOldImpl implements UserServiceOld {
 		return userRepository.findBySigningIds(ids);
 	}
 
-	@Override
-	public List<User> findByState(Integer state) {
-		return userRepository.findByState(state);
-	}
-
 	public List<UserDTO> getAllUserDTOs() {
 		return userRepository.findAllUserDTOs();
 	}
