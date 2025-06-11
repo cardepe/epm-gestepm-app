@@ -39,7 +39,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			Join<User, Project> projects = root.join("projects");
 
 			cQuery.multiselect(root.get("id"), root.get("name"), root.get("surnames"))
-					.where(cb.and(cb.equal(projects.get("id"), projectId), cb.equal(root.get("state"), 0)));
+					.where(cb.and(cb.equal(projects.get("id"), projectId), cb.equal(root.get("state"), 1)));
 
 			return entityManager.createQuery(cQuery).getResultList();
 
@@ -63,7 +63,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			subQuery.select(subRoot.get("id")).where(cb.equal(subProjects.get("id"), projectId));
 
 			cQuery.multiselect(root.get("id"), root.get("name"), root.get("surnames"))
-					.where(cb.and(cb.not(cb.in(root.get("id")).value(subQuery)), cb.equal(root.get("state"), 0)));
+					.where(cb.and(cb.not(cb.in(root.get("id")).value(subQuery)), cb.equal(root.get("state"), 1)));
 			
 			cQuery.orderBy(cb.asc(cb.concat(cb.concat(root.get("name"), " "), root.get("surnames"))));
 
@@ -109,7 +109,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			subQuery.select(subRoot.get("id")).where(cb.equal(subProjects.get("id"), projectId));
 
 			cQuery.multiselect(root.get("id"), root.get("name"), root.get("surnames"))
-					.where(cb.and(cb.and(cb.not(cb.in(root.get("id")).value(subQuery)), cb.equal(root.get("role"), Constants.ROLE_PL_ID)), cb.equal(root.get("state"), 0)));
+					.where(cb.and(cb.and(cb.not(cb.in(root.get("id")).value(subQuery)), cb.equal(root.get("role"), Constants.ROLE_PL_ID)), cb.equal(root.get("state"), 1)));
 
 			cQuery.orderBy(cb.asc(cb.concat(cb.concat(root.get("name"), " "), root.get("surnames"))));
 			
@@ -324,7 +324,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			Root<User> root = cQuery.from(User.class);
 
 			cQuery.multiselect(root.get("id"), root.get("name"), root.get("surnames"), root.get("email"), root.get("role").get("id"),root.get("subRole").get("id"))
-				.where(cb.and(cb.equal(root.get("role"), rankId), cb.equal(root.get("state"), 0)));
+				.where(cb.and(cb.equal(root.get("role"), rankId), cb.equal(root.get("state"), 1)));
 
 			cQuery.orderBy(cb.asc(cb.concat(cb.concat(root.get("name"), " "), root.get("surnames"))));
 			
