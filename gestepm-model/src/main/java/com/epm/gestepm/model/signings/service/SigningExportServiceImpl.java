@@ -62,19 +62,21 @@ public class SigningExportServiceImpl implements SigningExportService {
             final ByteArrayOutputStream file = new ByteArrayOutputStream();
             final XSSFWorkbook workbook = new XSSFWorkbook();
 
-            final Sheet sheet = workbook.createSheet(messageSource.getMessage("signing.excel.sheet.1", new Object[] { }, locale));
+            final Sheet sheet = workbook.createSheet(messageSource.getMessage("signing.excel.sheet.1", new Object[]{}, locale));
 
             this.writeHeaderInfo(workbook, sheet, userDto, signingExport.getStartDate(), signingExport.getEndDate(), locale);
 
-            generateMonthsSigningsInfo(workbook, sheet, user, month, year, locale);
+            // generateMonthsSigningsInfo(workbook, sheet, user, month, year, locale);
 
-            setColumnsWidth(sheet);
+            // setColumnsWidth(sheet);
 
             workbook.write(file);
 
             return file.toByteArray();
-        } catch (IOException | DocumentException ex) {
-            throw new SigningExportException(signingExport.getStartDate(), signingExport.getEndDate(), signingExport.getUserId(), ex.getMessage());
+        } catch (Exception ex) {
+            return null;
+        // } catch (IOException | DocumentException ex) {
+            // throw new SigningExportException(signingExport.getStartDate(), signingExport.getEndDate(), signingExport.getUserId(), ex.getMessage());
         }
     }
 
