@@ -4,6 +4,9 @@ import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.modelapi.common.utils.ExcelUtils;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.shares.share.dto.ShareDto;
+import com.epm.gestepm.modelapi.shares.share.dto.filter.ShareFilterDto;
+import com.epm.gestepm.modelapi.shares.share.service.ShareService;
 import com.epm.gestepm.modelapi.signings.dto.SigningExportDto;
 import com.epm.gestepm.modelapi.signings.service.SigningExportService;
 import com.epm.gestepm.modelapi.user.dto.UserDto;
@@ -21,9 +24,15 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.temporal.WeekFields;
+import java.util.List;
 import java.util.Locale;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
@@ -37,6 +46,8 @@ public class SigningExportServiceImpl implements SigningExportService {
     private final LocaleProvider localeProvider;
 
     private final MessageSource messageSource;
+
+    private final ShareService shareService;
 
     private final UserService userService;
 
@@ -64,7 +75,7 @@ public class SigningExportServiceImpl implements SigningExportService {
 
             final Sheet sheet = workbook.createSheet(messageSource.getMessage("signing.excel.sheet.1", new Object[] { }, locale));
 
-            this.writeHeaderInfo(workbook, sheet, userDto, signingExport.getStartDate(), signingExport.getEndDate(), locale);
+            this.writeHeaderInfo(workbook, sheet, userDto, signingExport, locale);
 
             generateMonthsSigningsInfo(workbook, sheet, user, month, year, locale);
 
@@ -76,6 +87,16 @@ public class SigningExportServiceImpl implements SigningExportService {
         } catch (IOException | DocumentException ex) {
             throw new SigningExportException(signingExport.getStartDate(), signingExport.getEndDate(), signingExport.getUserId(), ex.getMessage());
         }
+    }
+
+    private List<ShareDto> loadSignings(final SigningExportDto signingExport) {
+
+        final ShareFilterDto shareFilterDto = new ShareFilterDto();
+        shareFilterDto.setStartDate(signingExport.getStartDate());
+        shareFilterDto.setEndDate(signingExport.getEndDate());
+        shareFilterDto.setUserIds(List.of(signingExport.getUserId()));
+
+        return this.shareService.list(shareFilterDto);
     }
 
     private void writeHeaderInfo(final XSSFWorkbook workbook, final Sheet sheet, final UserDto user, final LocalDateTime startDate, final LocalDateTime endDate, Locale locale) {
@@ -95,6 +116,32 @@ public class SigningExportServiceImpl implements SigningExportService {
 
         this.createCell(infoRow, 1, defaultStyle, this.messageSource.getMessage("signing.excel.user.name", new Object[] { user.getFullName() }, locale));
         this.createCell(infoRow, 4, defaultStyle, this.messageSource.getMessage("signing.excel.user.email", new Object[] { user.getEmail() }, locale));
+    }
+
+    private void writeContent(final SigningExportDto signingExport) {
+
+        final List<ShareDto> shares = this.loadSignings(signingExport);
+
+        Month currentMonth = signingExport.getStartDate().getMonth();
+        int weekOfMonth = 0;
+
+        final WeekFields weekFields = WeekFields.of(DayOfWeek.MONDAY, 1);
+
+        for (LocalDateTime date = signingExport.getStartDate(); !date.isAfter(signingExport.getEndDate()); date = date.plusDays(1)) {
+
+            final boolean isNewMonth = !date.getMonth().equals(currentMonth);
+            if (isNewMonth) {
+                currentMonth = date.getMonth();
+            }
+
+            final Integer currentWeekOfMonth = date.get(weekFields.weekOfMonth());
+            final boolean isNewWeek = !currentWeekOfMonth.equals(weekOfMonth);
+            if (isNewWeek) {
+                weekOfMonth = currentWeekOfMonth;
+            }
+
+            
+        }
     }
 
     private void createCell(final Row row, int columnIndex, final CellStyle style, final String value) {
