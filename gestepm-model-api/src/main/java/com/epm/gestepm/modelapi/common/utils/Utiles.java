@@ -85,30 +85,6 @@ public class Utiles {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(format));
 	}
 
-	/**
-	 * Transform Date to String (ISO).
-	 * @param date
-	 * @return
-	 */
-	public static String transformDateToString(Date date) {
-		TimeZone tz = TimeZone.getTimeZone("UTC");
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-		df.setTimeZone(tz);
-		return df.format(date);
-	}
-
-	/**
-	 * Get Date as String from timestamp
-	 * @param timestamp
-	 * @return
-	 */
-	public static String getDateFormatted(Timestamp timestamp) {
-		Date date = new Date();
-		date.setTime(timestamp.getTime());
-		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");  
-		return dateFormat.format(date);  
-	}
-
 	public static String getDateFormatted(final LocalDateTime offsetDateTime) {
 		return offsetDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 	}
@@ -205,12 +181,6 @@ public class Utiles {
 	public static byte[] base64ToByteArray(String base64) {
 		return Base64.getDecoder().decode(base64);
 	}
-	
-	public static String minutesToHoursAndMinutesString(int t) {
-		int hours = t / 60;
-		int minutes = t % 60;
-		return String.format("%02d:%02d", hours, minutes);
-	}
 
 	public static String secondsToHoursAndMinutesAndSecondsString(int t) {
 
@@ -269,16 +239,6 @@ public class Utiles {
 		cal.set(Calendar.MINUTE, 59);
 		cal.set(Calendar.SECOND, 59);
 		cal.set(Calendar.MILLISECOND, 999);
-	}
-	
-	public static String getExceptionDump(Exception ex) {
-	    StringBuilder result = new StringBuilder();
-
-	    for (Throwable cause = ex; cause != null; cause = cause.getCause()) {
-	    	result = new StringBuilder(); // Get only last Cause
-	        result.append(cause.getMessage());
-	    }
-	    return result.toString();
 	}
 
 	public static final int SECONDS_PER_MINUTE = 60;

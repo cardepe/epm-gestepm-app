@@ -28,4 +28,8 @@ public class TimeControl implements Serializable {
 
   private String detailUrl;
 
+  private Integer projectId;
+
+  private String projectName;
+
 }
