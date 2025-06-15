@@ -238,7 +238,7 @@
                 let totalWorkedMins = api
                     .column(7)
                     .data()
-                    .filter(value => value)
+                    .filter(value => value !== '-')
                     .reduce(function (a, b) {
                         return hoursToMinutes(a) + hoursToMinutes(b);
                     }, 0);
@@ -246,13 +246,15 @@
                 let totalRemainingMins = api
                     .column(8)
                     .data()
-                    .filter(value => value)
+                    .filter(value => value !== '-')
                     .reduce(function (a, b) {
                         return hoursToMinutes(a) + hoursToMinutes(b);
                     }, 0);
 
                 let totalHoursWorked = Math.floor(totalWorkedMins / 60);
                 let totalMinsWorked = totalWorkedMins % 60;
+
+                console.log(totalHoursWorked);
 
                 let totalRemainingMinsNegative = totalRemainingMins < 0;
 

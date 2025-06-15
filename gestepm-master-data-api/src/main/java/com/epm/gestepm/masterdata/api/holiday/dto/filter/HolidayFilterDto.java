@@ -20,9 +20,9 @@ public class HolidayFilterDto extends OrderableDto implements UsableAsCacheKey {
 
     private Integer month;
 
-    final List<Integer> countryIds;
+    private List<Integer> countryIds;
 
-    final List<Integer> activityCenterIds;
+    private List<Integer> activityCenterIds;
 
     @Override
     public String asCacheKey() {

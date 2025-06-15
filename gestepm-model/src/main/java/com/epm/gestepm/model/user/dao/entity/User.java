@@ -24,6 +24,9 @@ public class User implements Serializable {
     private String password;
 
     @NotNull
+    private Integer countryId;
+
+    @NotNull
     private Integer activityCenterId;
 
     @NotNull

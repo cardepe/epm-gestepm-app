@@ -1791,44 +1791,6 @@ paths:
       parameters: []
       tags:
         - work-share-v1
-  /v1/signing/export:
-    get:
-      summary: V1 - Export signings
-      tags:
-        - signing-v1
-      responses:
-        '200':
-          $ref: '#/components/responses/SigningsExport'
-        '404':
-          description: user-not-found
-          content:
-            application/json:
-              schema:
-                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
-      operationId: export-signings-v1
-      description: export-signings-v1
-      parameters:
-        - schema:
-            type: string
-            format: date-time
-          in: query
-          name: startDate
-          required: true
-          description: Start date to filter signings.
-        - schema:
-            type: string
-            format: date-time
-          in: query
-          name: endDate
-          required: true
-          description: End date to filter signings.
-        - schema:
-            type: integer
-          in: query
-          name: userId
-          description: User identificator.
-          required: true
-    parameters: []
   /v1/signings/teleworking:
     get:
       summary: V1 - List teleworking signings
@@ -1993,6 +1955,82 @@ paths:
           in: query
           name: types
           description: List of types to filter.
+      tags:
+        - time-control-v1
+    parameters: []
+  /v1/time-controls/export:
+    get:
+      summary: V1 - Export signings
+      responses:
+        '200':
+          $ref: '#/components/responses/TimeControlExport'
+        '404':
+          description: user-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: export-time-control-v1
+      description: export-time-control-v1
+      parameters:
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: startDate
+          required: true
+          description: Start date to filter signings.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: endDate
+          required: true
+          description: End date to filter signings.
+        - schema:
+            type: integer
+          in: query
+          name: userId
+          description: User identificator.
+          required: true
+      tags:
+        - time-control-v1
+    parameters: []
+  /v1/time-controls/export-woffu:
+    get:
+      summary: V1 - Woffu Export signings
+      responses:
+        '200':
+          $ref: '#/components/responses/TimeControlExport'
+        '404':
+          description: user-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: woffu-export-time-control-v1
+      description: woffu-export-time-control-v1
+      parameters:
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: startDate
+          required: true
+          description: Start date to filter signings.
+        - schema:
+            type: string
+            format: date-time
+          in: query
+          name: endDate
+          required: true
+          description: End date to filter signings.
+        - schema:
+            type: integer
+          in: query
+          name: userId
+          description: User identificator.
+          required: true
       tags:
         - time-control-v1
     parameters: []
@@ -3269,7 +3307,7 @@ components:
                 $ref: ../../base-api-spec.yaml#/components/schemas/Meta
               data:
                 $ref: '#/components/schemas/User'
-    SigningsExport:
+    TimeControlExport:
       description: Example response
       content:
         application/octet-stream:

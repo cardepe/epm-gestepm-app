@@ -29,12 +29,17 @@ public class UserHolidaysRepositoryImpl implements UserHolidaysRepositoryCustom 
 			CriteriaQuery<UserHoliday> cq = cb.createQuery(UserHoliday.class);
 			
 			Root<UserHoliday> root = cq.from(UserHoliday.class);
-			
-			cq.select(root).where(cb.and(
-					cb.equal(root.get("user"), userId),
-					cb.equal(cb.function("YEAR", Integer.class, root.get("date")), year)
-			));
-			
+
+			final List<Predicate> predicates = new ArrayList<>();
+			predicates.add(cb.equal(root.get("user"), userId));
+
+			if (year != null) {
+				predicates.add(cb.equal(cb.function("YEAR", Integer.class, root.get("date")), year));
+			}
+
+			cq.select(root);
+			cq.where(cb.and(predicates.toArray(new Predicate[0])));
+
 			return entityManager.createQuery(cq).getResultList();
 			
 		} catch (Exception e) {

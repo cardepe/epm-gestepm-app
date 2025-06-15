@@ -37,7 +37,7 @@ public class HolidayUpdate implements CollectableAttributes {
         map.put(ATTR_H_NAME, this.name);
         map.put(ATTR_H_DAY, this.day);
         map.put(ATTR_H_MONTH, this.month);
-        map.put(ATTR_H_C_ID, this.countryId);
+        map.put(ATTR_H_CO_ID, this.countryId);
         map.put(ATTR_H_AC_ID, this.activityCenterId);
 
         return map;

@@ -1,4 +1,4 @@
-package com.epm.gestepm.model.signings.service;
+package com.epm.gestepm.model.timecontrol.service;
 
 import com.epm.gestepm.lib.locale.LocaleProvider;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
@@ -6,12 +6,9 @@ import com.epm.gestepm.model.common.excel.ExcelStyles;
 import com.epm.gestepm.model.common.excel.ExcelUtils;
 import com.epm.gestepm.modelapi.common.utils.PixelUtils;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.shares.share.dto.ShareDto;
-import com.epm.gestepm.modelapi.shares.share.dto.filter.ShareFilterDto;
-import com.epm.gestepm.modelapi.shares.share.service.ShareService;
-import com.epm.gestepm.modelapi.signings.dto.SigningExportDto;
-import com.epm.gestepm.modelapi.signings.exception.SigningExportException;
-import com.epm.gestepm.modelapi.signings.service.SigningExportService;
+import com.epm.gestepm.modelapi.timecontrol.dto.TimeControlExportDto;
+import com.epm.gestepm.modelapi.timecontrol.exception.TimeControlExportException;
+import com.epm.gestepm.modelapi.timecontrol.service.TimeControlExportService;
 import com.epm.gestepm.modelapi.timecontrol.dto.TimeControlDto;
 import com.epm.gestepm.modelapi.timecontrol.dto.TimeControlTypeEnumDto;
 import com.epm.gestepm.modelapi.timecontrol.dto.filter.TimeControlFilterDto;
@@ -45,9 +42,9 @@ import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
 @Validated
 @Service("signingExportService")
 @EnableExecutionLog(layerMarker = SERVICE)
-public class SigningExportServiceImpl implements SigningExportService {
+public class TimeControlExportServiceImpl implements TimeControlExportService {
 
-    private static final Map<TimeControlTypeEnumDto, String> signingsLabels = Map.of(
+    private static final Map<TimeControlTypeEnumDto, String> timeControlLabels = Map.of(
             TimeControlTypeEnumDto.CONSTRUCTION_SHARES, "cs",
             TimeControlTypeEnumDto.DISPLACEMENT_SHARES, "ds",
             TimeControlTypeEnumDto.PROGRAMMED_SHARES, "ips",
@@ -67,16 +64,16 @@ public class SigningExportServiceImpl implements SigningExportService {
     private ExcelStyles.Styles styles;
 
     @Override
-    public String buildFileName(final SigningExportDto signingExportDto) {
+    public String buildFileName(final TimeControlExportDto timeControlExportDto) {
 
-        final UserDto user = this.userService.findOrNotFound(new UserByIdFinderDto(signingExportDto.getUserId()));
+        final UserDto user = this.userService.findOrNotFound(new UserByIdFinderDto(timeControlExportDto.getUserId()));
 
-        return "Signings_" + user.getFullName() + "_" + Utiles.getDateFormatted(signingExportDto.getStartDate()) + "_"
-                + Utiles.getDateFormatted(signingExportDto.getEndDate()) + ".xlsx";
+        return "Signings_" + user.getFullName() + "_" + Utiles.getDateFormatted(timeControlExportDto.getStartDate()) + "_"
+                + Utiles.getDateFormatted(timeControlExportDto.getEndDate()) + ".xlsx";
     }
 
     @Override
-    public byte[] generate(final SigningExportDto signingExport) {
+    public byte[] generate(final TimeControlExportDto signingExport) {
 
         try {
 
@@ -101,22 +98,22 @@ public class SigningExportServiceImpl implements SigningExportService {
 
             return file.toByteArray();
         } catch (IOException ex) {
-            throw new SigningExportException(signingExport.getStartDate(), signingExport.getEndDate(), signingExport.getUserId(), ex.getMessage());
+            throw new TimeControlExportException(signingExport.getStartDate(), signingExport.getEndDate(), signingExport.getUserId(), ex.getMessage());
         }
     }
 
-    private List<TimeControlDto> loadSignings(final SigningExportDto signingExport) {
+    private List<TimeControlDto> loadSignings(final TimeControlExportDto signingExport) {
 
         final TimeControlFilterDto filterDto = new TimeControlFilterDto();
         filterDto.setStartDate(signingExport.getStartDate());
         filterDto.setEndDate(signingExport.getEndDate());
         filterDto.setUserId(signingExport.getUserId());
-        filterDto.setTypes(signingsLabels.keySet());
+        filterDto.setTypes(timeControlLabels.keySet());
 
         return this.timeControlService.list(filterDto);
     }
 
-    private void writeHeaderInfo(final Sheet sheet, final UserDto user, final SigningExportDto signingExport, Locale locale) {
+    private void writeHeaderInfo(final Sheet sheet, final UserDto user, final TimeControlExportDto signingExport, Locale locale) {
         final int TITLE_ROW_INDEX = 1;
         final int INFO_ROW_INDEX = 3;
 
@@ -138,7 +135,7 @@ public class SigningExportServiceImpl implements SigningExportService {
         ExcelUtils.setCell(infoRow, 4, userEmailInfo, styles.descriptionStyle);
     }
 
-    private void writeContent(final Sheet sheet, final SigningExportDto signingExport) {
+    private void writeContent(final Sheet sheet, final TimeControlExportDto signingExport) {
 
         final List<TimeControlDto> signings = this.loadSignings(signingExport);
 
@@ -259,12 +256,8 @@ public class SigningExportServiceImpl implements SigningExportService {
         row.setHeightInPoints((short) 15);
 
         if (dateTime != null) {
-
             final String dayText = dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, locale) + ", " + dateTime.getDayOfMonth();
-
-            final Cell dayCell = row.createCell(1);
-            dayCell.setCellStyle(styles.dayStyle);
-            dayCell.setCellValue(dayText);
+            ExcelUtils.setCell(row, 1, dayText, styles.dayStyle);
         }
 
         if (signing == null) {
@@ -278,7 +271,7 @@ public class SigningExportServiceImpl implements SigningExportService {
         }
 
         final String projectName = signing.getProjectName();
-        final String type = this.messageSource.getMessage(signingsLabels.get(signing.getType()), null, locale);
+        final String type = this.messageSource.getMessage(timeControlLabels.get(signing.getType()), null, locale);
         final LocalDateTime start = signing.getStartDate();
         final LocalDateTime end = signing.getEndDate();
         final long durationSeconds = Duration.between(start, end).toSeconds();

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class TimeControlOldOldServiceImpl implements TimeControlOldService {
+public class TimeControlOldServiceImpl implements TimeControlOldService {
 	
 	@Autowired
 	private HolidayRepository holidayRepository;
@@ -91,7 +91,7 @@ public class TimeControlOldOldServiceImpl implements TimeControlOldService {
 
 			TimeControlDto userManualFullDay = isUserManualFullDay(todayUserManualSignings, journeyMillis);
 
-			if (Utiles.isWeekend(timeControlDate)) {
+			if (Utiles.isWeekend(timeControlDate.toLocalDate())) {
 				timeControl.setReason("1" + messageSource.getMessage("time.control.weekend", null, locale));
 			} else if (isHoliday(i, month, holidays)) {
 				timeControl.setReason("1" + messageSource.getMessage("time.control.holiday", null, locale));
@@ -194,14 +194,14 @@ public class TimeControlOldOldServiceImpl implements TimeControlOldService {
 					: null);
 			
 			if (timeControl.getReason().startsWith("2")) {
-				timeControl.setBreaks(Utiles.getStringDateWithMillis(breaks));
-				timeControl.setDifference(Utiles.getStringDateWithMillis(totalHours - journeyMillis));
+				timeControl.setBreaks(Utiles.formatDurationHHMM((int) breaks));
+				timeControl.setDifference(Utiles.formatDurationHHMM(((int) totalHours - (int) journeyMillis) / 1000));
 			} else {
 				timeControl.setBreaks("");
 				timeControl.setDifference("");
 			}
 			
-			timeControl.setTotalHours(Utiles.getStringDateWithMillis(totalHours));			
+			timeControl.setTotalHours(Utiles.formatDurationHHMM(((int) totalHours) / 1000));
 			
 			timeControlsMap.add(timeControl);
 
@@ -328,9 +328,9 @@ public class TimeControlOldOldServiceImpl implements TimeControlOldService {
 
 		timeControl.setStartHour(checkInDate != null ? LocalDateTime.from(checkInDate.toInstant().atOffset(ZoneOffset.UTC)) : null);
 		timeControl.setEndHour(checkOutDate != null ? LocalDateTime.from(checkOutDate.toInstant().atOffset(ZoneOffset.UTC)) : null);
-		timeControl.setBreaks(Utiles.getStringDateWithMillis(breaks));
-		timeControl.setDifference(Utiles.getStringDateWithMillis(totalHours - journeyMillis));
-		timeControl.setTotalHours(Utiles.getStringDateWithMillis(totalHours));
+		timeControl.setBreaks(Utiles.formatDurationHHMM((int) breaks));
+		timeControl.setDifference(Utiles.formatDurationHHMM((int) totalHours - (int) journeyMillis));
+		timeControl.setTotalHours(Utiles.formatDurationHHMM((int) totalHours));
 		
 		return timeControl;
 	}
@@ -340,7 +340,7 @@ public class TimeControlOldOldServiceImpl implements TimeControlOldService {
 	}
 	
 	private boolean isUserHoliday(LocalDateTime date, List<UserHoliday> userHolidays) {
-		return userHolidays.stream().anyMatch(h -> Utiles.convertToLocalDateTimeViaInstant(h.getDate()).isEqual(date));
+		return userHolidays.stream().anyMatch(h -> Utiles.convertToLocalDateViaInstant(h.getDate()).isEqual(date.toLocalDate()));
 	}
 
 	private TimeControlDto isUserManualFullDay(final List<TimeControlDto> userManualSignings, final Long journeyMillis) {

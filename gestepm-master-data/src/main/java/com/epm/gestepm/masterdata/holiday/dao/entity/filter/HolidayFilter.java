@@ -35,7 +35,7 @@ public class HolidayFilter extends Orderable implements CollectableAttributes {
         map.putLike(ATTR_H_NAME, this.name);
         map.put(ATTR_H_DAY, this.day);
         map.put(ATTR_H_MONTH, this.month);
-        map.putList(ATTR_H_C_IDS, this.countryIds);
+        map.putList(ATTR_H_CO_IDS, this.countryIds);
         map.putList(ATTR_H_AC_IDS, this.activityCenterIds);
 
         return map;
