@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 import static com.epm.gestepm.model.personalexpensesheet.dao.constants.PersonalExpenseSheetAttributes.*;
 import static com.epm.gestepm.model.timecontrol.dao.constants.TimeControlAttributes.*;
@@ -23,7 +24,7 @@ public class TimeControlFilter implements CollectableAttributes {
 
   private LocalDateTime endDate;
 
-  private List<TimeControlTypeEnumDto> types;
+  private Set<TimeControlTypeEnumDto> types;
 
   @Override
   public AttributeMap collectAttributes() {
@@ -33,7 +34,7 @@ public class TimeControlFilter implements CollectableAttributes {
     map.put(ATTR_TC_USER_ID, this.userId);
     map.putTimestamp(ATTR_TC_START_DATE, this.startDate);
     map.putTimestamp(ATTR_TC_END_DATE, this.endDate);
-    map.putEnumList(ATTR_TC_TYPES, this.types);
+    map.putEnumSet(ATTR_TC_TYPES, this.types);
 
     return map;
   }

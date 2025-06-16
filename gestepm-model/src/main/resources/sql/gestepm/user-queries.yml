@@ -8,6 +8,7 @@ sql:
       u.surnames,
       u.email,
       u.password,
+      ac.country_id,
       u.activity_center_id,
       ac.name AS activity_center_name,
       u.state,

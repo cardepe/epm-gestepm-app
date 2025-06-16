@@ -21,6 +21,8 @@ public class UserRowMapper extends CommonRowMapper implements RowMapper<User> {
 
     public static final String COL_U_PASSWORD = "password";
 
+    public static final String COL_U_CO_ID = "country_id";
+
     public static final String COL_U_ACTIVITY_CENTER_ID = "activity_center_id";
 
     public static final String COL_U_ACTIVITY_CENTER_NAME = "activity_center_name";
@@ -56,6 +58,7 @@ public class UserRowMapper extends CommonRowMapper implements RowMapper<User> {
         user.setSurnames(rs.getString(COL_U_SURNAMES));
         user.setEmail(rs.getString(COL_U_EMAIL));
         user.setPassword(rs.getString(COL_U_PASSWORD));
+        user.setCountryId(rs.getInt(COL_U_CO_ID));
         user.setActivityCenterId(rs.getInt(COL_U_ACTIVITY_CENTER_ID));
         user.setState(rs.getInt(COL_U_STATE));
         user.setSigningId(rs.getInt(COL_U_SIGNING_ID));

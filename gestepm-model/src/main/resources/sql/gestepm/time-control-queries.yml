@@ -5,34 +5,44 @@ sql:
     SELECT *
     FROM (
       SELECT
-        construction_share_id AS id,
-        user_id,
-        created_at AS start_date,
-        closed_at AS end_date,
+        cs.construction_share_id AS id,
+        cs.user_id,
+        cs.created_at AS start_date,
+        cs.closed_at AS end_date,
         null AS description,
-        CONCAT('/shares/construction/', construction_share_id) AS detail_url,
-        'CONSTRUCTION_SHARES' AS type
-      FROM ${sch-gestepm}.construction_share
+        CONCAT('/shares/construction/', cs.construction_share_id) AS detail_url,
+        'CONSTRUCTION_SHARES' AS type,
+        cs.project_id,
+        pr.name AS project_name
+      FROM ${sch-gestepm}.construction_share cs
+      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = cs.project_id
       UNION
       SELECT
-        displacement_share_id,
-        user_id,
-        start_date,
-        end_date,
+        ds.displacement_share_id,
+        ds.user_id,
+        ds.start_date,
+        ds.end_date,
         null AS description,
-        CONCAT('/shares/displacement/', displacement_share_id) AS detail_url,
-        'DISPLACEMENT_SHARES' AS type
-      FROM ${sch-gestepm}.displacement_share
+        CONCAT('/shares/displacement/', ds.displacement_share_id) AS detail_url,
+        'DISPLACEMENT_SHARES' AS type,
+        ds.project_id,
+        pr.name AS project_name
+      FROM ${sch-gestepm}.displacement_share ds
+      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = ds.project_id
       UNION
       SELECT
-        inspection_id AS id,
-        first_technical AS user_id,
-        start_date,
-        end_date,
+        i.inspection_id AS id,
+        i.first_technical AS user_id,
+        i.start_date,
+        i.end_date,
         null AS description,
-        CONCAT('/shares/no-programmed/', no_programmed_share_id, '/inspections/', inspection_id) AS detail_url,
-        'INSPECTIONS' AS type
-      FROM ${sch-gestepm}.inspection
+        CONCAT('/shares/no-programmed/', i.no_programmed_share_id, '/inspections/', i.inspection_id) AS detail_url,
+        'INSPECTIONS' AS type,
+        nps.project_id,
+        pr.name AS project_name
+      FROM ${sch-gestepm}.inspection i
+      LEFT JOIN ${sch-gestepm}.no_programmed_share nps ON i.no_programmed_share_id = nps.no_programmed_share_id
+      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = nps.project_id
       UNION
       SELECT
         ums.id,
@@ -41,7 +51,9 @@ sql:
         end_date,
         mst.NAME AS description,
         '' AS detail_url,
-        'MANUAL_SIGNINGS' AS type
+        'MANUAL_SIGNINGS' AS type,
+        null AS project_id,
+        null AS project_name
       FROM ${sch-gestepm}.user_manual_signings ums
       LEFT JOIN ${sch-gestepm}.manual_signing_type mst on ums.MANUAL_SIGNING_TYPE_ID = mst.ID
       UNION
@@ -52,38 +64,49 @@ sql:
         end_date,
         null AS description,
         '' AS detail_url,
-        'PERSONAL_SIGNINGS' AS type
+        'PERSONAL_SIGNINGS' AS type,
+        null AS project_id,
+        null AS project_name
       FROM ${sch-gestepm}.personal_signings
       UNION
       SELECT
-        programmed_share_id AS id,
-        user_id,
-        start_date,
-        end_date,
+        ps.programmed_share_id AS id,
+        ps.user_id,
+        ps.start_date,
+        ps.end_date,
         null AS description,
-        CONCAT('/shares/programmed/', programmed_share_id) AS detail_url,
-        'PROGRAMMED_SHARES' AS type
-      FROM ${sch-gestepm}.programmed_share
+        CONCAT('/shares/programmed/', ps.programmed_share_id) AS detail_url,
+        'PROGRAMMED_SHARES' AS type,
+        ps.project_id,
+        pr.name AS project_name
+      FROM ${sch-gestepm}.programmed_share ps
+      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = ps.project_id
       UNION
-        SELECT
-        teleworking_signing_id AS id,
-        user_id,
-        started_at AS start_date,
-        closed_at AS end_date,
+      SELECT
+        ts.teleworking_signing_id AS id,
+        ts.user_id,
+        ts.started_at AS start_date,
+        ts.closed_at AS end_date,
         null AS description,
-        CONCAT('/signings/teleworking/', teleworking_signing_id) AS detail_url,
-        'TELEWORKING_SIGNING' AS type
-      FROM ${sch-gestepm}.teleworking_signing
+        CONCAT('/signings/teleworking/', ts.teleworking_signing_id) AS detail_url,
+        'TELEWORKING_SIGNING' AS type,
+        ts.project_id,
+        pr.name AS project_name
+      FROM ${sch-gestepm}.teleworking_signing ts
+      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = ts.project_id
       UNION
-        SELECT
-        work_share_id AS id,
-        user_id,
-        start_date,
-        end_date,
+      SELECT
+        ws.work_share_id AS id,
+        ws.user_id,
+        ws.start_date,
+        ws.end_date,
         null AS description,
-        CONCAT('/shares/work/', work_share_id) AS detail_url,
-        'WORK_SHARES' AS type
-      FROM ${sch-gestepm}.work_share
+        CONCAT('/shares/work/', ws.work_share_id) AS detail_url,
+        'WORK_SHARES' AS type,
+        ws.project_id,
+        pr.name AS project_name
+      FROM ${sch-gestepm}.work_share ws
+      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = ws.project_id
     ) AS sublist
     
     #whereToken #filter

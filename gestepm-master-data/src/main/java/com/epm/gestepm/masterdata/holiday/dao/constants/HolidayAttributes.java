@@ -12,9 +12,9 @@ public abstract class HolidayAttributes {
 
   public static final String ATTR_H_MONTH = "attr_h_month";
 
-  public static final String ATTR_H_C_ID = "attr_h_c_id";
+  public static final String ATTR_H_CO_ID = "attr_h_co_id";
 
-  public static final String ATTR_H_C_IDS = "attr_h_c_ids";
+  public static final String ATTR_H_CO_IDS = "attr_h_co_ids";
 
   public static final String ATTR_H_AC_ID = "attr_h_ac_id";
 

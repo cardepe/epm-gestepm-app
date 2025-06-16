@@ -15,8 +15,9 @@ public class ShareDto implements Serializable {
     @NotNull
     private Integer userId;
 
-    @NotNull
     private Integer projectId;
+
+    private String projectName;
 
     @NotNull
     private LocalDateTime startDate;
@@ -24,9 +25,8 @@ public class ShareDto implements Serializable {
     private LocalDateTime endDate;
 
     @NotNull
-    private String type;
+    private ShareTypeEnumDto type;
 
-    @NotNull
     private String detailUrl;
 
 }

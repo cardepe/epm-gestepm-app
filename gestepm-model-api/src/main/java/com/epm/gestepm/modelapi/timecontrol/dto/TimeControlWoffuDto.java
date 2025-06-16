@@ -1,24 +1,15 @@
 package com.epm.gestepm.modelapi.timecontrol.dto;
 
-import lombok.Data;
-
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
-@Data
-public class TimeControlDto implements Serializable {
+public class TimeControlWoffuDto {
 
     @NotNull
     private Integer id;
 
     @NotNull
-    private Integer userId;
-
-    @NotNull
     private TimeControlTypeEnumDto type;
-
-    private String description;
 
     @NotNull
     private LocalDateTime startDate;
@@ -26,10 +17,5 @@ public class TimeControlDto implements Serializable {
     @NotNull
     private LocalDateTime endDate;
 
-    private String detailUrl;
-
-    private Integer projectId;
-
-    private String projectName;
-
+    private String reason;
 }

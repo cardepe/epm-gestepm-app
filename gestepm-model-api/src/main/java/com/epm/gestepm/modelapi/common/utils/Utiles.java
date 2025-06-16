@@ -13,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -68,13 +67,13 @@ public class Utiles {
 		}
 	}
 
-	public static LocalDateTime convertToLocalDateTimeViaInstant(Date dateToConvert) {
+	public static LocalDate convertToLocalDateViaInstant(Date dateToConvert) {
 		
 		if (dateToConvert == null) {
 			return null;
 		}
 		
-		return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+		return dateToConvert.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 	}
 
 	public static String transform(final LocalDateTime offsetDateTime, final String format) {
@@ -85,36 +84,12 @@ public class Utiles {
 		return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern(format));
 	}
 
-	/**
-	 * Transform Date to String (ISO).
-	 * @param date
-	 * @return
-	 */
-	public static String transformDateToString(Date date) {
-		TimeZone tz = TimeZone.getTimeZone("UTC");
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-		df.setTimeZone(tz);
-		return df.format(date);
-	}
-
-	/**
-	 * Get Date as String from timestamp
-	 * @param timestamp
-	 * @return
-	 */
-	public static String getDateFormatted(Timestamp timestamp) {
-		Date date = new Date();
-		date.setTime(timestamp.getTime());
-		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");  
-		return dateFormat.format(date);  
-	}
-
 	public static String getDateFormatted(final LocalDateTime offsetDateTime) {
 		return offsetDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy"));
 	}
 
-	public static String getDateFormatted(final LocalDateTime offsetDateTime, String pattern) {
-		return offsetDateTime.format(DateTimeFormatter.ofPattern(pattern));
+	public static String getDateFormatted(final LocalDateTime offsetDateTime, final String pattern) {
+		return offsetDateTime != null ? offsetDateTime.format(DateTimeFormatter.ofPattern(pattern)) : null;
 	}
 
 	/**
@@ -135,36 +110,6 @@ public class Utiles {
 	public static String getDateFormatted(Date date) {
 		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");  
 		return dateFormat.format(date);  
-	}
-
-	/**
-	 * Get Time as String from Date
-	 * @param date
-	 * @return
-	 */
-	public static String getTimeFormatted(Date date) {
-		DateFormat dateFormat = new SimpleDateFormat("HH:mm");  
-		return dateFormat.format(date);  
-	}
-	
-	public static int hourTimeToMinutes(String hourTime) {
-
-		if (hourTime == null || hourTime.isEmpty()) {
-			return 0;
-		}
-
-		boolean isNegative = hourTime.startsWith("-");
-
-		if (isNegative) {
-			hourTime = hourTime.substring(1);
-		}
-
-		int hours = parseInt(hourTime.split(":")[0]);
-		int minutes = parseInt(hourTime.split(":")[1]);
-		
-		int totalMinutes = (hours * 60) + minutes;
-
-		return isNegative ? totalMinutes * -1 : totalMinutes;
 	}
 
 	public static String getDateAsText(int month, int year, Locale locale, MessageSource messageSource) {
@@ -205,12 +150,6 @@ public class Utiles {
 	public static byte[] base64ToByteArray(String base64) {
 		return Base64.getDecoder().decode(base64);
 	}
-	
-	public static String minutesToHoursAndMinutesString(int t) {
-		int hours = t / 60;
-		int minutes = t % 60;
-		return String.format("%02d:%02d", hours, minutes);
-	}
 
 	public static String secondsToHoursAndMinutesAndSecondsString(int t) {
 
@@ -227,59 +166,30 @@ public class Utiles {
 		return yearMonthObject.lengthOfMonth();
 	}
 	
-	public static boolean isWeekend(final LocalDateTime localDateTime) {
-		final DayOfWeek day = localDateTime.getDayOfWeek();
+	public static boolean isWeekend(final LocalDate localDate) {
+		final DayOfWeek day = localDate.getDayOfWeek();
 		return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
 	}
 
 	public static boolean isSameDay(final LocalDateTime dt1, final LocalDateTime dt2) {
 		return dt1.toLocalDate().equals(dt2.toLocalDate());
 	}
-	
-	public static String getStringDateWithMillis(long millis) {
-		if (millis < 0) {
-			millis = Math.abs(millis);
-			return String.format("-%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis), TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1));
-		} else {
-			return String.format("%02d:%02d", TimeUnit.MILLISECONDS.toHours(millis), TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1));
+
+	public static String formatDurationHHMM(int seconds) {
+		if (seconds == 0) {
+			return null;
 		}
+
+		final boolean isNegative = seconds < 0;
+		seconds = Math.abs(seconds);
+
+		final long hours = TimeUnit.SECONDS.toHours(seconds);
+		final long minutes = TimeUnit.SECONDS.toMinutes(seconds) % 60;
+
+		final String formatted = String.format("%02d:%02d", hours, minutes);
+		return isNegative ? "-" + formatted : formatted;
 	}
 
-	public static Date getStartDayDate(Calendar cal) {
-
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-
-		return cal.getTime();
-	}
-
-	public static void setStartDay(Calendar cal) {
-
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-	}
-
-	public static void setEndDay(Calendar cal) {
-
-		cal.set(Calendar.HOUR_OF_DAY, 23);
-		cal.set(Calendar.MINUTE, 59);
-		cal.set(Calendar.SECOND, 59);
-		cal.set(Calendar.MILLISECOND, 999);
-	}
-	
-	public static String getExceptionDump(Exception ex) {
-	    StringBuilder result = new StringBuilder();
-
-	    for (Throwable cause = ex; cause != null; cause = cause.getCause()) {
-	    	result = new StringBuilder(); // Get only last Cause
-	        result.append(cause.getMessage());
-	    }
-	    return result.toString();
-	}
 
 	public static final int SECONDS_PER_MINUTE = 60;
 	public static final int MINUTES_PER_HOUR = 60;
