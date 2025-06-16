@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 
 @Data
@@ -18,7 +19,7 @@ public class TimeControlFilterDto implements UsableAsCacheKey {
 
     private LocalDateTime endDate;
 
-    private List<TimeControlTypeEnumDto> types;
+    private Set<TimeControlTypeEnumDto> types;
 
     @Override
     public String asCacheKey() {

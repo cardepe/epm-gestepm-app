@@ -1,7 +1,10 @@
 package com.epm.gestepm.model.shares.share.dao.mappers;
 
 import com.epm.gestepm.lib.jdbc.impl.rowmapper.CommonRowMapper;
+import com.epm.gestepm.model.inspection.dao.entity.ActionEnum;
 import com.epm.gestepm.model.shares.share.dao.entity.Share;
+import com.epm.gestepm.model.shares.share.dao.entity.ShareTypeEnum;
+import com.epm.gestepm.model.timecontrol.dao.entity.TimeControlTypeEnum;
 import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.ResultSet;
@@ -35,11 +38,12 @@ public class ShareRowMapper extends CommonRowMapper implements RowMapper<Share> 
         final Share share = new Share();
         share.setId(rs.getInt(COL_S_ID));
         share.setUserId(rs.getInt(COL_S_U_ID));
-        share.setProjectId(rs.getInt(COL_S_P_ID));
+        share.setProjectId(nullableInt(rs, COL_S_P_ID));
+        share.setProjectName(nullableString(rs, COL_S_P_NAME));
         share.setStartDate(rs.getTimestamp(COL_S_START_DATE).toLocalDateTime());
         share.setEndDate(nullableLocalDateTime(rs, COL_S_END_DATE));
-        share.setType(rs.getString(COL_S_TYPE));
-        share.setDetailUrl(rs.getString(COL_S_DETAIL_URL));
+        share.setType(ShareTypeEnum.valueOf(rs.getString(COL_S_TYPE)));
+        share.setDetailUrl(nullableString(rs, COL_S_DETAIL_URL));
 
         return share;
     }

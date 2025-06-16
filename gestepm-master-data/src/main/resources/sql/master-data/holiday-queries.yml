@@ -42,7 +42,7 @@ sql:
       :attr_h_name,
       :attr_h_day,
       :attr_h_month,
-      :attr_h_c_id,
+      :attr_h_co_id,
       :attr_h_ac_id
     )
 
@@ -54,7 +54,7 @@ sql:
       name = :attr_h_name,
       day = :attr_h_day,
       month = :attr_h_month,
-      country_id = :attr_h_c_id,
+      country_id = :attr_h_co_id,
       activity_center_id = :attr_h_ac_id
     WHERE
       holiday_id = :attr_h_id
@@ -67,9 +67,11 @@ sql:
 
     -- [AND
       -- ${sql.predicate-for-h-ids}
-      -- ${sql.predicate-for-h-ac-id}
       -- ${sql.predicate-for-h-name}
-      -- ${sql.predicate-for-h-type}
+      -- ${sql.predicate-for-h-day}
+      -- ${sql.predicate-for-h-month}
+      -- ${sql.predicate-for-h-co-ids}
+      -- ${sql.predicate-for-h-ac-ids}
     -- AND]
 
   filter-h-by-id: |
@@ -86,6 +88,10 @@ sql:
 
     h.holiday_id IN (:attr_h_ids)
 
+  predicate-for-h-name: |
+
+    LOWER(h.name) LIKE LOWER(:attr_h_name)
+
   predicate-for-h-day: |
 
     h.day = :attr_h_day
@@ -94,10 +100,10 @@ sql:
 
     h.month = :attr_h_month
 
-  predicate-for-h-c-id: |
+  predicate-for-h-co-ids: |
 
-    h.country_id IN (:attr_h_c_ids)
+    h.country_id IN (:attr_h_co_ids)
 
-  predicate-for-h-ac-id: |
+  predicate-for-h-ac-ids: |
 
     h.activity_center_id IN (:attr_h_ac_ids)

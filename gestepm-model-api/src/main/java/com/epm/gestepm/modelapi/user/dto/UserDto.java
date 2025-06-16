@@ -27,6 +27,9 @@ public class UserDto implements Serializable {
     private String password;
 
     @NotNull
+    private Integer countryId;
+
+    @NotNull
     private Integer activityCenterId;
 
     @NotNull

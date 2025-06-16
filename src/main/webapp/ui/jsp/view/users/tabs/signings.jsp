@@ -133,7 +133,7 @@
 </div>
 
 <div id="exportModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <form id="exportForm" method="GET" action="/signing/personal/${currentUser.id}/excel">
+    <form id="exportForm">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -146,30 +146,20 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col">
-                            <select class="form-control input" style="width: 100%" name="month" required>
-                                <option disabled selected="selected">
-                                    <spring:message code="time.control.month.placeholder" />
-                                </option>
-                                <c:forEach items="${months}" var="month">
-                                    <option value="${month.key}">
-                                        <spring:message code="${month.value}" />
-                                    </option>
-                                </c:forEach>
-                            </select>
+                            <div class="form-group mb-1">
+                                <label class="col-form-label w-100"><spring:message code="start.date"/>
+                                    <input name="startDate" type="datetime-local" class="form-control mt-1" />
+                                </label>
+                            </div>
                         </div>
                     </div>
                     <div class="row mt-2">
                         <div class="col">
-                            <select class="form-control input" style="width: 100%" name="year" required>
-                                <option disabled selected="selected">
-                                    <spring:message code="time.control.year.placeholder" />
-                                </option>
-                                <c:forEach items="${years}" var="year">
-                                    <option value="${year}">
-                                        <spring:message code="${year}" />
-                                    </option>
-                                </c:forEach>
-                            </select>
+                            <div class="form-group mb-1">
+                                <label class="col-form-label w-100"><spring:message code="end.date"/>
+                                    <input name="endDate" type="datetime-local" class="form-control mt-1" />
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -179,8 +169,8 @@
                             <button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
                         </div>
                         <div class="float-right">
-                            <button type="button" class="btn btn-sm btn-success" onclick="exportWoffu()"><spring:message code="export.woffu" /></button>
-                            <button type="submit" class="btn btn-sm btn-success" onclick="exportSignings()"><spring:message code="export" /></button>
+                            <button type="button" class="btn btn-sm btn-success" onclick="exportTimeControl(true)"><spring:message code="export.woffu" /></button>
+                            <button type="button" class="btn btn-sm btn-success" onclick="exportTimeControl()"><spring:message code="export" /></button>
                         </div>
                     </div>
                 </div>
@@ -354,25 +344,23 @@
         }
     }
 
-    function exportSignings() {
-        $('#exportModal').modal('hide');
-    }
-
-    function exportWoffu() {
+    function exportTimeControl(isWoffu) {
         const form = document.querySelector('#exportForm');
+        const editFormJQ = $('#exportForm');
 
-        const month = form.querySelector('[name="month"]').value;
-        const year = form.querySelector('[name="year"]').value;
+        if (!isValidForm('#exportForm')) {
+            editFormJQ.addClass('was-validated');
+        } else {
+            editFormJQ.removeClass('was-validated');
 
-        let queryParams = '';
+            const startDate = form.querySelector('[name="startDate"]').value;
+            const endDate = form.querySelector('[name="endDate"]').value;
+            const queryParams = '?startDate=' + startDate + '&endDate=' + endDate + '&userId=' + ${currentUser.id};
 
-        if (month || year) {
-            queryParams = '?' + (month ? 'month=' + month : '') + (year ? (month ? '&' : '') + 'year=' + year : '');
+            window.open('/v1/time-controls/export' + (isWoffu ? '-woffu' : '') + queryParams, '_blank').focus();
+
+            editFormJQ.modal('hide');
         }
-
-        window.open('/signing/personal/${currentUser.id}/woffu/excel' + queryParams, '_blank').focus();
-
-        $('#exportModal').modal('hide');
     }
 
 </script>

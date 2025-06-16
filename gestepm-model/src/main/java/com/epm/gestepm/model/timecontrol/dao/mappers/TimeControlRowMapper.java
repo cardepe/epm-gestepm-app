@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static com.epm.gestepm.lib.jdbc.utils.ResultSetMappingUtils.nullableInt;
 import static com.epm.gestepm.lib.jdbc.utils.ResultSetMappingUtils.nullableString;
 
 public class TimeControlRowMapper extends CommonRowMapper implements RowMapper<TimeControl> {
@@ -26,6 +27,10 @@ public class TimeControlRowMapper extends CommonRowMapper implements RowMapper<T
 
     public static final String COL_TC_DETAIL_URL = "detail_url";
 
+    public static final String COL_TC_PROJECT_ID = "project_id";
+
+    public static final String COL_TC_PROJECT_NAME = "project_name";
+
     @Override
     public TimeControl mapRow(ResultSet resultSet, int i) throws SQLException {
 
@@ -38,6 +43,8 @@ public class TimeControlRowMapper extends CommonRowMapper implements RowMapper<T
         timeControl.setDescription(resultSet.getString(COL_TC_DESCRIPTION));
         timeControl.setType(TimeControlTypeEnum.valueOf(resultSet.getString(COL_TC_TYPE)));
         timeControl.setDetailUrl(nullableString(resultSet, COL_TC_DETAIL_URL));
+        timeControl.setProjectId(nullableInt(resultSet, COL_TC_PROJECT_ID));
+        timeControl.setProjectName(nullableString(resultSet, COL_TC_PROJECT_NAME));
 
         return timeControl;
     }

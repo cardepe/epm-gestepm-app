@@ -1,4 +1,4 @@
-package com.epm.gestepm.modelapi.signings.dto;
+package com.epm.gestepm.modelapi.timecontrol.dto;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
-public class SigningExportDto {
+public class TimeControlExportDto {
 
     @NotNull
     private LocalDateTime startDate;
