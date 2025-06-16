@@ -130,7 +130,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			Root<Project> prRoot = cQuery.from(Project.class);
 			Join<User, Project> usRoot = prRoot.join("responsables", JoinType.INNER);
 
-			cQuery.multiselect(usRoot.get("id"), usRoot.get("name"), usRoot.get("surnames")).where(cb.equal(usRoot.get("state"), 0));
+			cQuery.multiselect(usRoot.get("id"), usRoot.get("name"), usRoot.get("surnames")).where(cb.equal(usRoot.get("state"), 1));
 			cQuery.distinct(true);
 			cQuery.orderBy(cb.asc(cb.concat(usRoot.get("name"), usRoot.get("surnames"))));
 
@@ -152,7 +152,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			Join<User, Project> usRoot = prRoot.join("users", JoinType.INNER);
 
 			cq.multiselect(usRoot.get("id"), cb.concat(cb.concat(usRoot.get("name"), " "), usRoot.get("surnames")))
-					.where(cb.and(cb.equal(prRoot.get("id"), projectId), cb.equal(usRoot.get("state"), 0)));
+					.where(cb.and(cb.equal(prRoot.get("id"), projectId), cb.equal(usRoot.get("state"), 1)));
 
 			return entityManager.createQuery(cq).getResultList();
 
@@ -196,7 +196,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			}
 			/* END #ORDER_CLAUSE */
 
-			Predicate predicateUser = cb.and(cb.equal(prRoot.get("id"), projectId), cb.equal(usRoot.get("state"), 0));
+			Predicate predicateUser = cb.and(cb.equal(prRoot.get("id"), projectId), cb.equal(usRoot.get("state"), 1));
 			predicates.add(predicateUser);
 
 			// Appending all Predicates
@@ -253,7 +253,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			}
 			/* END #ORDER_CLAUSE */
 
-			Predicate predicateUser = cb.and(cb.equal(prRoot.get("id"), projectId), cb.equal(usRoot.get("state"), 0));
+			Predicate predicateUser = cb.and(cb.equal(prRoot.get("id"), projectId), cb.equal(usRoot.get("state"), 1));
 			predicates.add(predicateUser);
 
 			// Appending all Predicates
@@ -286,7 +286,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			Root<Project> root = cq.from(Project.class);
 			Join<User, Project> usRoot = root.join("users");
 
-			cq.select(cb.count(usRoot)).where(cb.and(cb.equal(root.get("id"), projectId), cb.equal(usRoot.get("state"), 0)));
+			cq.select(cb.count(usRoot)).where(cb.and(cb.equal(root.get("id"), projectId), cb.equal(usRoot.get("state"), 1)));
 
 			return entityManager.createQuery(cq).getSingleResult();
 
@@ -305,7 +305,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			Root<Project> root = cq.from(Project.class);
 			Join<User, Project> usRoot = root.join("bossUsers");
 
-			cq.select(cb.count(usRoot)).where(cb.and(cb.equal(root.get("id"), projectId), cb.equal(usRoot.get("state"), 0)));
+			cq.select(cb.count(usRoot)).where(cb.and(cb.equal(root.get("id"), projectId), cb.equal(usRoot.get("state"), 1)));
 
 			return entityManager.createQuery(cq).getSingleResult();
 
@@ -350,7 +350,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			List<Predicate> predicates = new ArrayList<>();
 			predicates.add(cb.equal(usRoot.get("id"), userId));
 			predicates.add(cb.equal(expenseSheetsRoot.get("status"), PersonalExpenseSheetStatusEnum.PENDING));
-			predicates.add(cb.equal(usRoot.get("state"), 0));
+			predicates.add(cb.equal(usRoot.get("state"), 1));
 			
 			/* Subquery ES count */
 			
@@ -398,7 +398,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			
 			List<Predicate> subPredicates = new ArrayList<>();
 			subPredicates.add(cb.equal(subEsRoot.get("user"), usRoot.get("id")));
-			subPredicates.add(cb.equal(usRoot.get("state"), 0));
+			subPredicates.add(cb.equal(usRoot.get("state"), 1));
 			subPredicates.add(cb.equal(subEsRoot.get("status"), PersonalExpenseSheetStatusEnumDto.APPROVED));
 			
 			subquery.select(cb.count(subEsRoot.get("id")));
