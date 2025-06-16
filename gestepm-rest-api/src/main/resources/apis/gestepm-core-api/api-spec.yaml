@@ -1996,44 +1996,6 @@ paths:
       tags:
         - time-control-v1
     parameters: []
-  /v1/time-controls/export-woffu:
-    get:
-      summary: V1 - Woffu Export signings
-      responses:
-        '200':
-          $ref: '#/components/responses/TimeControlExport'
-        '404':
-          description: user-not-found
-          content:
-            application/json:
-              schema:
-                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
-      operationId: woffu-export-time-control-v1
-      description: woffu-export-time-control-v1
-      parameters:
-        - schema:
-            type: string
-            format: date-time
-          in: query
-          name: startDate
-          required: true
-          description: Start date to filter signings.
-        - schema:
-            type: string
-            format: date-time
-          in: query
-          name: endDate
-          required: true
-          description: End date to filter signings.
-        - schema:
-            type: integer
-          in: query
-          name: userId
-          description: User identificator.
-          required: true
-      tags:
-        - time-control-v1
-    parameters: []
   /v1/users:
     get:
       summary: V1 - List users

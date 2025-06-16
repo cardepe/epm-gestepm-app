@@ -45,6 +45,7 @@ import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
 
+@Deprecated
 @RequiredArgsConstructor
 @Validated
 @Service("signingWoffuExportService")
