@@ -169,7 +169,6 @@
                             <button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
                         </div>
                         <div class="float-right">
-                            <button type="button" class="btn btn-sm btn-success" onclick="exportTimeControl(true)"><spring:message code="export.woffu" /></button>
                             <button type="button" class="btn btn-sm btn-success" onclick="exportTimeControl()"><spring:message code="export" /></button>
                         </div>
                     </div>
@@ -344,7 +343,7 @@
         }
     }
 
-    function exportTimeControl(isWoffu) {
+    function exportTimeControl() {
         const form = document.querySelector('#exportForm');
         const editFormJQ = $('#exportForm');
 
@@ -357,7 +356,7 @@
             const endDate = form.querySelector('[name="endDate"]').value;
             const queryParams = '?startDate=' + startDate + '&endDate=' + endDate + '&userId=' + ${currentUser.id};
 
-            window.open('/v1/time-controls/export' + (isWoffu ? '-woffu' : '') + queryParams, '_blank').focus();
+            window.open('/v1/time-controls/export' + queryParams, '_blank').focus();
 
             editFormJQ.modal('hide');
         }
