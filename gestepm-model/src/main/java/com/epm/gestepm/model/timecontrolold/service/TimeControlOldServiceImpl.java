@@ -328,9 +328,9 @@ public class TimeControlOldServiceImpl implements TimeControlOldService {
 
 		timeControl.setStartHour(checkInDate != null ? LocalDateTime.from(checkInDate.toInstant().atOffset(ZoneOffset.UTC)) : null);
 		timeControl.setEndHour(checkOutDate != null ? LocalDateTime.from(checkOutDate.toInstant().atOffset(ZoneOffset.UTC)) : null);
-		timeControl.setBreaks(Utiles.formatDurationHHMM((int) breaks));
-		timeControl.setDifference(Utiles.formatDurationHHMM((int) totalHours - (int) journeyMillis));
-		timeControl.setTotalHours(Utiles.formatDurationHHMM((int) totalHours));
+		timeControl.setBreaks(Utiles.formatDurationHHMM(((int) breaks) / 1000));
+		timeControl.setDifference(Utiles.formatDurationHHMM(((int) totalHours - (int) journeyMillis) / 1000));
+		timeControl.setTotalHours(Utiles.formatDurationHHMM(((int) totalHours) / 1000));
 		
 		return timeControl;
 	}

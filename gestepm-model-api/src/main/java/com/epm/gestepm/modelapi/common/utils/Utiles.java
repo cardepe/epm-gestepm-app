@@ -13,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -111,25 +110,6 @@ public class Utiles {
 	public static String getDateFormatted(Date date) {
 		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");  
 		return dateFormat.format(date);  
-	}
-
-	/**
-	 * Get Time as String from Date
-	 * @param date
-	 * @return
-	 */
-	public static String getTimeFormatted(Date date) {
-		DateFormat dateFormat = new SimpleDateFormat("HH:mm");  
-		return dateFormat.format(date);  
-	}
-	
-	public static int hourTimeToMinutes(final Integer seconds) {
-
-		final int absSeconds = Math.abs(seconds);
-		final int hours = absSeconds / 3600;
-		final int minutes = (absSeconds % 3600) / 60;
-		
-		return (hours * 60) + minutes;
 	}
 
 	public static String getDateAsText(int month, int year, Locale locale, MessageSource messageSource) {
