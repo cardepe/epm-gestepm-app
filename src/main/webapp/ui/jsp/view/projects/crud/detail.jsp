@@ -290,7 +290,7 @@
 
                                         <div class="col-md-6">
                                             <label for="activityCenterInfoInput" class="col-form-label"><spring:message
-                                                    code="displacements.table.activity.center"/></label>
+                                                    code="activity.center"/></label>
 
                                             <select id="activityCenterInfoInput" name="activityCenter"
                                                     class="form-control" required disabled>
