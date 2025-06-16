@@ -109,10 +109,10 @@
             "name": "Ausencia"
         },
         "teleworking": {
-            "name": "Teletrabajo",
+            "name": "Oficina / Teletrabajo",
             "startDate": "Fecha de inicio: {0}",
             "update": {
-                "success": "Se ha actualizado el fichaje de teletrabajo con éxito."
+                "success": "Se ha actualizado el fichaje de oficina / teletrabajo con éxito."
             }
         },
         "personal": {
