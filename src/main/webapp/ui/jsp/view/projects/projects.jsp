@@ -206,7 +206,7 @@
 						
 						<div class="col-sm-12 col-md-6">
 							<label for="activityCenter" class="col-form-label"><spring:message
-									code="displacements.table.activity.center" /></label> <select
+									code="activity.center" /></label> <select
 								id="activityCenter" name="activityCenter" class="form-control"
 								required>
 								<option disabled value="" selected="selected">
