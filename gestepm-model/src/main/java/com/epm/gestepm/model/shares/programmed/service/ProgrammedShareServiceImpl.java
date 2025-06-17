@@ -19,9 +19,9 @@ import com.epm.gestepm.model.shares.programmed.dao.entity.finder.ProgrammedShare
 import com.epm.gestepm.model.shares.programmed.dao.entity.updater.ProgrammedShareUpdate;
 import com.epm.gestepm.model.shares.programmed.service.mapper.*;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
-import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectByIdNotFoundException;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.programmed.dto.ProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.programmed.dto.creator.ProgrammedShareCreateDto;
 import com.epm.gestepm.modelapi.shares.programmed.dto.deleter.ProgrammedShareDeleteDto;

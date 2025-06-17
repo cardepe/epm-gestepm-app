@@ -4,7 +4,7 @@ import com.epm.gestepm.lib.controller.RestRequest;
 import com.epm.gestepm.lib.controller.decorator.BaseResponseDataDecorator;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
-import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
 import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
 import com.epm.gestepm.rest.shares.programmed.request.ProgrammedShareFindRestRequest;
 import com.epm.gestepm.restapi.openapi.model.ProgrammedShare;
@@ -63,7 +63,7 @@ public class ProgrammedShareResponseDecorator extends BaseResponseDataDecorator<
             final Project project = data.getProject();
             final Integer id = project.getId();
 
-            final com.epm.gestepm.modelapi.project.dto.Project projectDto = this.projectService.getProjectById(Long.valueOf(id));
+            final com.epm.gestepm.modelapi.deprecated.project.dto.Project projectDto = this.projectService.getProjectById(Long.valueOf(id));
             final Project response = new Project().id(id).name(projectDto.getName());
 
             data.setProject(response);

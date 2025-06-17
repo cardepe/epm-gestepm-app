@@ -3,7 +3,7 @@ package com.epm.gestepm.model.userold.dao;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseUserValidateDTO;
 import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseValidateDTO;
-import com.epm.gestepm.modelapi.project.dto.ProjectMemberDTO;
+import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectMemberDTO;
 import com.epm.gestepm.modelapi.deprecated.user.dto.UserDTO;
 
 import java.util.List;

@@ -1,0 +1,164 @@
+sql:
+
+  qry-list-of-pr: |
+
+    SELECT
+      pr.project_id,
+      pr.name,
+      pr.station,
+      pr.objective_cost,
+      pr.start_date,
+      pr.end_date,
+      pr.activity_center_id,
+      ac.name AS activity_center_name,
+      pr.forum_id,
+      pr.teleworking,
+      pr.state,
+      GROUP_CONCAT(prr.user_id) AS responsables_ids
+    FROM ${sch-gestepm}.project pr
+    LEFT JOIN ${sch-gestepm}.activity_center ac ON ac.activity_center_id = pr.activity_center_id
+    LEFT JOIN ${sch-gestepm}.project_responsable prr ON prr.project_id = pr.project_id
+
+    #whereToken #filter
+    GROUP BY pr.project_id
+    #orderByToken
+
+  qry-page-of-pr: |
+
+    ${sql.qry-list-of-pr}
+    ${sql.paginated-query}
+
+  qry-count-of-pr: |
+
+    SELECT COUNT(DISTINCT project_id) AS "count"
+    FROM (
+      SELECT pr.project_id
+      FROM ${sch-gestepm}.project pr
+      #whereToken #filter
+    ) final
+
+  qry-create-pr: |
+
+    INSERT INTO ${sch-gestepm}.project (
+      name,
+      surnames,
+      email,
+      password,
+      forum_password,
+      activity_center_id,
+      state,
+      signing_id,
+      role_id,
+      level_id,
+      working_hours,
+      current_year_holidays_count,
+      last_year_holidays_count
+    )
+    VALUES (
+      :attr_pr_name,
+      :attr_pr_surnames,
+      :attr_pr_email,
+      :attr_pr_password,
+      :attr_pr_forum_password,
+      :attr_pr_activity_center_id,
+      :attr_pr_state,
+      :attr_pr_signing_id,
+      :attr_pr_role_id,
+      :attr_pr_level_id,
+      :attr_pr_working_hours,
+      :attr_pr_current_year_holidays_count,
+      0
+    )
+
+  qry-update-pr: |
+
+    UPDATE
+      ${sch-gestepm}.project
+    SET
+      name = :attr_pr_name,
+      surnames = :attr_pr_surnames,
+      email = :attr_pr_email,
+      password = :attr_pr_password,
+      activity_center_id = :attr_pr_activity_center_id,
+      state = :attr_pr_state,
+      signing_id = :attr_pr_signing_id,
+      forum_username = :attr_pr_forum_username,
+      forum_password = :attr_pr_forum_password,
+      role_id = :attr_pr_role_id,
+      level_id = :attr_pr_level_id,
+      working_hours = :attr_pr_working_hours,
+      current_year_holidays_count = :attr_pr_current_year_holidays_count,
+      last_year_holidays_count = :attr_pr_last_year_holidays_count
+    WHERE
+      user_id = :attr_pr_id
+
+  qry-delete-pr: |
+
+    DELETE FROM ${sch-gestepm}.project WHERE project_id = :attr_pr_id
+    
+  filter-pr-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-pr-ids}
+      -- ${sql.predicate-for-pr-name-contains}
+      -- ${sql.predicate-for-pr-email}
+      -- ${sql.predicate-for-pr-password}
+      -- ${sql.predicate-for-pr-activity-center-ids}
+      -- ${sql.predicate-for-pr-state}
+      -- ${sql.predicate-for-pr-signing-id}
+      -- ${sql.predicate-for-pr-role-ids}
+      -- ${sql.predicate-for-pr-level-ids}
+    -- AND]
+
+  filter-pr-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-pr-id}
+    -- AND]
+
+  filter-pr-by-email-and-password: |
+    
+    -- [AND
+      -- ${sql.predicate-for-pr-email}
+      -- ${sql.predicate-for-pr-password}
+    -- AND]
+
+  predicate-for-pr-id: |
+
+    pr.user_id = :attr_pr_id
+
+  predicate-for-pr-ids: |
+
+    pr.user_id IN (:attr_pr_ids)
+
+  predicate-for-pr-name-contains: |
+
+    LOWER(CONCAT(pr.name, ' ', pr.surnames)) LIKE LOWER(:attr_pr_name_contains)
+
+  predicate-for-pr-email: |
+
+    pr.email = :attr_pr_email
+
+  predicate-for-pr-password: |
+
+    pr.password = :attr_pr_password
+
+  predicate-for-pr-activity-center-ids: |
+
+    pr.activity_center_id IN (:attr_pr_activity_center_ids)
+
+  predicate-for-pr-state: |
+
+    pr.state = :attr_pr_state
+
+  predicate-for-pr-signing-id: |
+
+    pr.signing_id = :attr_pr_signing_id
+
+  predicate-for-pr-role-ids: |
+
+    pr.role_id IN (:attr_pr_role_ids)
+
+  predicate-for-pr-level-ids: |
+
+    pr.level_id IN (:attr_pr_level_ids)

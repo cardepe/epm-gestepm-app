@@ -8,8 +8,8 @@ import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetDto
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetStatusEnumDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.filter.PersonalExpenseSheetFilterDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetService;
-import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
-import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectListDTO;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

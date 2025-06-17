@@ -21,9 +21,9 @@ import com.epm.gestepm.model.shares.construction.dao.entity.finder.ConstructionS
 import com.epm.gestepm.model.shares.construction.dao.entity.updater.ConstructionShareUpdate;
 import com.epm.gestepm.model.shares.construction.service.mapper.*;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
-import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectByIdNotFoundException;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.filter.ConstructionShareFilterDto;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareExportService;

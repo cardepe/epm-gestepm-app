@@ -1,9 +1,9 @@
 package com.epm.gestepm.model.shares.noprogrammed.checker;
 
-import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
-import com.epm.gestepm.modelapi.project.exception.ProjectIsNotStationException;
-import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectByIdNotFoundException;
+import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectIsNotStationException;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareStateEnumDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.creator.NoProgrammedShareCreateDto;

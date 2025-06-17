@@ -1,7 +1,7 @@
 package com.epm.gestepm.modelapi.deprecated.workshare;
 
 import com.epm.gestepm.modelapi.deprecated.worksharefile.WorkShareFile;
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import lombok.Data;
 

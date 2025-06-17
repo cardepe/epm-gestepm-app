@@ -1,6 +1,6 @@
 package com.epm.gestepm.modelapi.customer.dto;
 
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

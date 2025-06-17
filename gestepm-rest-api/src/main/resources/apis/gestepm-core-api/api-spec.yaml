@@ -1207,6 +1207,93 @@ paths:
       operationId: export-inspection-materials-v1
       description: export-inspection-materials-v1
       parameters: []
+  /v1/projects:
+    get:
+      summary: V1 - List projects
+      responses:
+        '200':
+          $ref: '#/components/responses/ProjectList'
+      operationId: list-projects-v1
+      description: list-projects-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by project identificator.
+      tags:
+        - project-v1
+    post:
+      summary: V1 - Create project
+      operationId: create-project-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/Project'
+      tags:
+        - project-v1
+      description: create-project-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateProject'
+    parameters: []
+  '/v1/projects/{projectId}':
+    parameters:
+      - $ref: '#/components/parameters/Project-Id'
+    get:
+      summary: V1 - Find project
+      tags:
+        - project-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/Project'
+        '404':
+          description: project-not-found
+      operationId: find-project-by-id-v1
+      description: find-project-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+    put:
+      summary: V1 - Update project
+      operationId: update-project-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/Project'
+        '404':
+          description: project-not-found
+      tags:
+        - project-v1
+      description: update-project-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateProject'
+    delete:
+      summary: V1 - Delete project
+      operationId: delete-project-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: project-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - project-v1
+      description: delete-project-v1
   /v1/shares/programmed:
     get:
       summary: V1 - List programmed shares
@@ -1575,6 +1662,25 @@ paths:
         - work-share-v1
       requestBody:
         $ref: '#/components/requestBodies/CreateWorkShare'
+  '/v1/shares/work/{shareId}/export':
+    parameters:
+      - $ref: '#/components/parameters/Share-Id'
+    get:
+      summary: V1 - Export work share
+      responses:
+        '200':
+          $ref: '#/components/responses/WorkShareExport'
+        '404':
+          description: work-share-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: export-work-share-v1
+      description: export-work-share-v1
+      parameters: []
+      tags:
+        - work-share-v1
   '/v1/shares/work/{shareId}':
     parameters:
       - $ref: '#/components/parameters/Share-Id'
@@ -1772,25 +1878,6 @@ paths:
       tags:
         - work-share-file-v1
       description: delete-work-share-file-v1
-  '/v1/shares/work/{shareId}/export':
-    parameters:
-      - $ref: '#/components/parameters/Share-Id'
-    get:
-      summary: V1 - Export work share
-      responses:
-        '200':
-          $ref: '#/components/responses/WorkShareExport'
-        '404':
-          description: work-share-not-found
-          content:
-            application/json:
-              schema:
-                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
-      operationId: export-work-share-v1
-      description: export-work-share-v1
-      parameters: []
-      tags:
-        - work-share-v1
   /v1/signings/teleworking:
     get:
       summary: V1 - List teleworking signings
@@ -2483,6 +2570,48 @@ components:
           type: string
           x-stoplight:
             id: ll4sov9aexq0v
+        isStation:
+          type: boolean
+          x-stoplight:
+            id: 0p30i71dxed4x
+        objectiveCost:
+          type: number
+          x-stoplight:
+            id: uti97ajby18br
+        startDate:
+          type: string
+          x-stoplight:
+            id: d0ej6bz003y22
+          format: date
+        endDate:
+          type: string
+          x-stoplight:
+            id: uzeirrd29qxt9
+          format: date
+        activityCenter:
+          $ref: ../gestepm-master-data-api/api-spec.yaml#/components/schemas/ActivityCenter
+        forumId:
+          type: integer
+          x-stoplight:
+            id: dvu6fkl5xwqpw
+        isTeleworking:
+          type: boolean
+          x-stoplight:
+            id: cozr2yj31g5c0
+        state:
+          type: integer
+          x-stoplight:
+            id: tromrcn4vvmwc
+      required:
+        - id
+        - name
+        - isStation
+        - objectiveCost
+        - startDate
+        - endDate
+        - activityCenter
+        - isTeleworking
+        - state
     ShareFile:
       title: ShareFile
       x-stoplight:
@@ -3276,6 +3405,22 @@ components:
           schema:
             type: string
             format: binary
+    Project:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            properties:
+              id:
+                type: string
+    ProjectList:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            properties:
+              id:
+                type: string
   requestBodies:
     CreateNoProgrammedShare:
       content:
@@ -4066,6 +4211,125 @@ components:
                 type: integer
                 x-stoplight:
                   id: 62h2alswvyo76
+    CreateProject:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                x-stoplight:
+                  id: lrh64vywrmh5a
+              isStation:
+                type: boolean
+                x-stoplight:
+                  id: 7qxwkrwkxhkpq
+              objectiveCost:
+                type: number
+                x-stoplight:
+                  id: 4x2eqds7gtlp6
+              startDate:
+                type: string
+                x-stoplight:
+                  id: j7190r4vub7il
+                format: date
+              endDate:
+                type: string
+                x-stoplight:
+                  id: igufzp9as1y2y
+                format: date
+              activityCenterId:
+                type: integer
+                x-stoplight:
+                  id: kbdow3b2dq57r
+              forumId:
+                type: integer
+                x-stoplight:
+                  id: ssf3q76pxj0bb
+              isTeleworking:
+                type: boolean
+                x-stoplight:
+                  id: vqip0f994os7e
+              responsibleIds:
+                type: array
+                x-stoplight:
+                  id: 7fe8yopp661dm
+                items:
+                  x-stoplight:
+                    id: 07vel087tmqjz
+                  type: integer
+            required:
+              - name
+              - isStation
+              - objectiveCost
+              - startDate
+              - endDate
+              - activityCenterId
+              - isTeleworking
+              - responsibleIds
+    UpdateProject:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                x-stoplight:
+                  id: lzx6r53rkdv5d
+              isStation:
+                type: boolean
+                x-stoplight:
+                  id: iik38j966ouj7
+              objectiveCost:
+                type: number
+                x-stoplight:
+                  id: uhczt44utnjla
+              startDate:
+                type: string
+                x-stoplight:
+                  id: 4nw3s89in1ykk
+                format: date
+              endDate:
+                type: string
+                x-stoplight:
+                  id: cftc06vktuh3v
+                format: date
+              activityCenterId:
+                type: integer
+                x-stoplight:
+                  id: 7kbkres4eizeb
+              forumId:
+                type: integer
+                x-stoplight:
+                  id: 2eci6oizbft3u
+              isTeleworking:
+                type: boolean
+                x-stoplight:
+                  id: dzzcze9vuzppl
+              state:
+                type: integer
+                x-stoplight:
+                  id: 8meg9aztp0suz
+              responsibleIds:
+                type: array
+                x-stoplight:
+                  id: mjc0agmpxayo7
+                items:
+                  x-stoplight:
+                    id: qbmlacaq1yf3d
+                  type: integer
+            required:
+              - name
+              - isStation
+              - objectiveCost
+              - startDate
+              - endDate
+              - activityCenterId
+              - isTeleworking
+              - state
+              - responsibleIds
   parameters:
     Share-Id:
       name: shareId
@@ -4123,6 +4387,13 @@ components:
       schema:
         type: integer
       description: User identificator.
+    Project-Id:
+      name: projectId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Project identificator.
 tags:
   - name: personal-expense-sheet-v1
     description: V1 - Personal Expense Sheets
@@ -4154,6 +4425,8 @@ tags:
     description: V1 - Programmed Share Break
   - name: programmed-share-file-v1
     description: V1 - Programmed Share File
+  - name: project-v1
+    description: V1 - Project
   - name: share-v1
     description: V1 - Share
   - name: teleworking-signing-v1

@@ -28,8 +28,8 @@ import com.epm.gestepm.modelapi.personalexpensesheet.dto.updater.PersonalExpense
 import com.epm.gestepm.modelapi.personalexpensesheet.exception.PersonalExpenseSheetForbiddenException;
 import com.epm.gestepm.modelapi.personalexpensesheet.exception.PersonalExpenseSheetNotFoundException;
 import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetService;
-import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
