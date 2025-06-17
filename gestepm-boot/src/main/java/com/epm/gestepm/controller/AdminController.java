@@ -1,12 +1,12 @@
 package com.epm.gestepm.controller;
 
-import com.epm.gestepm.model.activitycenter.service.ActivityCenterServiceImpl;
+import com.epm.gestepm.model.deprecated.activitycenter.service.ActivityCenterServiceImpl;
 import com.epm.gestepm.model.country.service.CountryServiceOldImpl;
 import com.epm.gestepm.model.family.service.FamilyServiceImpl;
 import com.epm.gestepm.model.family.service.mapper.FamilyMapper;
-import com.epm.gestepm.model.holiday.service.HolidayServiceImpl;
-import com.epm.gestepm.model.holiday.service.mapper.HolidayMapper;
-import com.epm.gestepm.model.projectold.service.ProjectServiceImpl;
+import com.epm.gestepm.model.deprecated.holiday.service.HolidayServiceImpl;
+import com.epm.gestepm.model.deprecated.holiday.service.mapper.HolidayMapper;
+import com.epm.gestepm.model.deprecated.project.service.ProjectServiceImpl;
 import com.epm.gestepm.model.subfamily.service.SubFamilyServiceImpl;
 import com.epm.gestepm.model.subfamily.service.mapper.MapSFToSubFamilyDto;
 import com.epm.gestepm.model.subrole.service.SubRoleServiceImpl;

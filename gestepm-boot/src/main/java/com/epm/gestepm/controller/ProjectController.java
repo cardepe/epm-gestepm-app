@@ -4,7 +4,7 @@ import com.epm.gestepm.forum.model.api.dto.ForumDTO;
 import com.epm.gestepm.forum.model.api.service.UserForumService;
 import com.epm.gestepm.model.family.service.mapper.FamilyMapper;
 import com.epm.gestepm.model.materialrequired.service.mapper.MaterialRequiredMapper;
-import com.epm.gestepm.model.projectold.service.mapper.ProjectMapper;
+import com.epm.gestepm.model.deprecated.project.service.mapper.ProjectMapper;
 import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.deprecated.activitycenter.service.ActivityCenterService;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;

@@ -5,7 +5,7 @@ import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.deprecated.user.dto.UserDTO;
 import com.epm.gestepm.modelapi.deprecated.user.exception.InvalidUserSessionException;
-import com.epm.gestepm.model.holiday.service.mapper.HolidayMapper;
+import com.epm.gestepm.model.deprecated.holiday.service.mapper.HolidayMapper;
 import com.epm.gestepm.modelapi.holiday.dto.Holiday;
 import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.role.dto.Role;
