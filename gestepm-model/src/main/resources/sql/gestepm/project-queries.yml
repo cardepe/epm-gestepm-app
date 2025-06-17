@@ -41,33 +41,25 @@ sql:
 
     INSERT INTO ${sch-gestepm}.project (
       name,
-      surnames,
-      email,
-      password,
-      forum_password,
+      station,
+      objective_cost,
+      start_date,
+      end_date,
       activity_center_id,
-      state,
-      signing_id,
-      role_id,
-      level_id,
-      working_hours,
-      current_year_holidays_count,
-      last_year_holidays_count
+      forum_id,
+      teleworking,
+      state
     )
     VALUES (
       :attr_pr_name,
-      :attr_pr_surnames,
-      :attr_pr_email,
-      :attr_pr_password,
-      :attr_pr_forum_password,
+      :attr_pr_is_station,
+      :attr_pr_objective_cost,
+      :attr_pr_start_date,
+      :attr_pr_end_date,
       :attr_pr_activity_center_id,
-      :attr_pr_state,
-      :attr_pr_signing_id,
-      :attr_pr_role_id,
-      :attr_pr_level_id,
-      :attr_pr_working_hours,
-      :attr_pr_current_year_holidays_count,
-      0
+      :attr_pr_forum_id,
+      :attr_pr_is_teleworking,
+      1
     )
 
   qry-update-pr: |
@@ -76,21 +68,16 @@ sql:
       ${sch-gestepm}.project
     SET
       name = :attr_pr_name,
-      surnames = :attr_pr_surnames,
-      email = :attr_pr_email,
-      password = :attr_pr_password,
+      station = :attr_pr_is_station,
+      objective_cost = :attr_pr_objective_cost,
+      start_date = :attr_pr_start_date,
+      end_date = :attr_pr_end_date,
       activity_center_id = :attr_pr_activity_center_id,
+      forum_id = :attr_pr_forum_id,
+      teleworking = :attr_pr_is_teleworking,
       state = :attr_pr_state,
-      signing_id = :attr_pr_signing_id,
-      forum_username = :attr_pr_forum_username,
-      forum_password = :attr_pr_forum_password,
-      role_id = :attr_pr_role_id,
-      level_id = :attr_pr_level_id,
-      working_hours = :attr_pr_working_hours,
-      current_year_holidays_count = :attr_pr_current_year_holidays_count,
-      last_year_holidays_count = :attr_pr_last_year_holidays_count
     WHERE
-      user_id = :attr_pr_id
+      project_id = :attr_pr_id
 
   qry-delete-pr: |
 
@@ -101,26 +88,16 @@ sql:
     -- [AND
       -- ${sql.predicate-for-pr-ids}
       -- ${sql.predicate-for-pr-name-contains}
-      -- ${sql.predicate-for-pr-email}
-      -- ${sql.predicate-for-pr-password}
+      -- ${sql.predicate-for-pr-is-station}
       -- ${sql.predicate-for-pr-activity-center-ids}
+      -- ${sql.predicate-for-pr-is-teleworking}
       -- ${sql.predicate-for-pr-state}
-      -- ${sql.predicate-for-pr-signing-id}
-      -- ${sql.predicate-for-pr-role-ids}
-      -- ${sql.predicate-for-pr-level-ids}
     -- AND]
 
   filter-pr-by-id: |
 
     -- [AND
       -- ${sql.predicate-for-pr-id}
-    -- AND]
-
-  filter-pr-by-email-and-password: |
-    
-    -- [AND
-      -- ${sql.predicate-for-pr-email}
-      -- ${sql.predicate-for-pr-password}
     -- AND]
 
   predicate-for-pr-id: |
@@ -133,32 +110,20 @@ sql:
 
   predicate-for-pr-name-contains: |
 
-    LOWER(CONCAT(pr.name, ' ', pr.surnames)) LIKE LOWER(:attr_pr_name_contains)
+    LOWER(pr.name) LIKE LOWER(:attr_pr_name_contains)
 
-  predicate-for-pr-email: |
+  predicate-for-is-station: |
 
-    pr.email = :attr_pr_email
-
-  predicate-for-pr-password: |
-
-    pr.password = :attr_pr_password
+    pr.station = :attr_pr_is_station
 
   predicate-for-pr-activity-center-ids: |
 
     pr.activity_center_id IN (:attr_pr_activity_center_ids)
 
+  predicate-for-pr-is-teleworking: |
+
+    pr.teleworking = :attr_pr_is_teleworking
+
   predicate-for-pr-state: |
 
     pr.state = :attr_pr_state
-
-  predicate-for-pr-signing-id: |
-
-    pr.signing_id = :attr_pr_signing_id
-
-  predicate-for-pr-role-ids: |
-
-    pr.role_id IN (:attr_pr_role_ids)
-
-  predicate-for-pr-level-ids: |
-
-    pr.level_id IN (:attr_pr_level_ids)
