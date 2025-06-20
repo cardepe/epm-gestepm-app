@@ -12,6 +12,8 @@ import com.epm.gestepm.model.project.dao.entity.filter.ProjectFilter;
 import com.epm.gestepm.model.project.dao.entity.finder.ProjectByIdFinder;
 import com.epm.gestepm.model.project.dao.entity.updater.ProjectUpdate;
 import com.epm.gestepm.model.project.service.mapper.*;
+import com.epm.gestepm.modelapi.common.utils.classes.Constants;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.project.dto.ProjectDto;
 import com.epm.gestepm.modelapi.project.dto.creator.ProjectCreateDto;
 import com.epm.gestepm.modelapi.project.dto.deleter.ProjectDeleteDto;
@@ -21,6 +23,8 @@ import com.epm.gestepm.modelapi.project.dto.updater.ProjectUpdateDto;
 import com.epm.gestepm.modelapi.project.exception.ProjectNotFoundException;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -52,6 +56,7 @@ public class ProjectServiceImpl implements ProjectService {
             errorMsg = "Failed to list projects")
     public List<ProjectDto> list(ProjectFilterDto filterDto) {
         final ProjectFilter filter = getMapper(MapPRToProjectFilter.class).from(filterDto);
+        this.checkUserRoleAndUpdateFilter(filter);
 
         final List<Project> list = this.projectDao.list(filter);
 
@@ -65,8 +70,8 @@ public class ProjectServiceImpl implements ProjectService {
             msgOut = "Listing projects OK",
             errorMsg = "Failed to list projects")
     public Page<ProjectDto> list(ProjectFilterDto filterDto, Long offset, Long limit) {
-
         final ProjectFilter filter = getMapper(MapPRToProjectFilter.class).from(filterDto);
+        this.checkUserRoleAndUpdateFilter(filter);
 
         final Page<Project> page = this.projectDao.list(filter, offset, limit);
 
@@ -154,5 +159,19 @@ public class ProjectServiceImpl implements ProjectService {
         final ProjectDelete delete = getMapper(MapPRToProjectDelete.class).from(deleteDto);
 
         this.projectDao.delete(delete);
+    }
+
+    private User getCurrentUser() {
+        // TODO: to change
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (User) authentication.getDetails();
+    }
+
+    private void checkUserRoleAndUpdateFilter(final ProjectFilter filter) {
+        final User currentUser = this.getCurrentUser();
+
+        if (!currentUser.getRole().getId().equals(Constants.ROLE_ADMIN_ID) && !currentUser.getRole().getId().equals(Constants.ROLE_TECHNICAL_SUPERVISOR_ID)) {
+            filter.setProjectLeaderIds(List.of(currentUser.getId().intValue()));
+        }
     }
 }

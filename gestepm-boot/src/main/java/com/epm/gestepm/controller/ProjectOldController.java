@@ -25,7 +25,7 @@ import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequiredDTO;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequiredTableDTO;
 import com.epm.gestepm.modelapi.materialrequired.service.MaterialRequiredService;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.deprecated.user.dto.UserDTO;
@@ -54,12 +54,9 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/projects")
-public class ProjectController {
+public class ProjectOldController {
 
-	private static final Log log = LogFactory.getLog(ProjectController.class);
-
-	@Value("${gestepm.first-year}")
-	private int firstYear;
+	private static final Log log = LogFactory.getLog(ProjectOldController.class);
 
 	@Autowired
 	private ActivityCenterService activityCenterServiceOld;
@@ -77,7 +74,7 @@ public class ProjectController {
 	private MaterialRequiredService materialRequiredService;
 	
 	@Autowired
-	private ProjectService projectService;
+	private ProjectOldService projectOldService;
 
 	@Autowired
 	private UserServiceOld userServiceOld;
@@ -85,115 +82,6 @@ public class ProjectController {
 	@Autowired
 	private UserForumService userForumService;
 
-	@GetMapping
-	public String getMyProjects(Locale locale, Model model, HttpServletRequest request) {
-
-		try {
-
-			// Loading constants
-			ModelUtil.loadConstants(locale, model, request);
-
-			// Recover user
-			User user = Utiles.getUsuario();
-			
-			// Log info
-			log.info("El usuario " + user.getId() + " ha accedido a la vista de Proyectos");
-
-			// Recover Team Leaders
-			List<UserDTO> teamLeaders = userServiceOld.getUserDTOsByRank(Constants.ROLE_PL_ID);
-			
-			// Recover All Responsables
-			List<UserDTO> responsables = userServiceOld.getAllProjectResponsables();
-			
-			// Recover Activity Centers
-			List<ActivityCenter> activityCenters = activityCenterServiceOld.findAll();
-			
-			// Order by name
-			activityCenters.sort(Comparator.comparing(ActivityCenter::getName));
-			
-			// PHPBB Forums
-			List<ForumDTO> forumDTOs = userForumService.getAllForumsToDTO();
-			
-			// Recover Project Stations
-			List<ProjectListDTO> projectListDTO = null;
-			
-			if (user.getRole().getId() == Constants.ROLE_ADMIN_ID || user.getRole().getId() == Constants.ROLE_TECHNICAL_SUPERVISOR_ID) {
-				projectListDTO = projectService.getAllProjectsDTOs();
-			} else {
-				projectListDTO = projectService.getBossProjectsDTOByUserId(user.getId());
-			}
-
-			int actualYear = Calendar.getInstance().get(Calendar.YEAR);
-			int[] yearsDropdown = new int[(actualYear - firstYear) + 1];
-
-			for (int i = firstYear; i <= actualYear; i++) {
-				yearsDropdown[actualYear - i] = i;
-			}
-
-			// Load Action Buttons for DataTable
-			model.addAttribute("teamLeaders", teamLeaders);
-			model.addAttribute("activityCenters", activityCenters);
-			model.addAttribute("forumDTOs", forumDTOs);
-			model.addAttribute("projectListDTO", projectListDTO);
-			model.addAttribute("responsables", responsables);
-			model.addAttribute("years", yearsDropdown);
-			model.addAttribute("tableActionButtons", ModelUtil.getTableActionButtons());
-
-			// Loading view
-			return "projects";
-
-		} catch (InvalidUserSessionException e) {
-			log.error(e);
-			return "redirect:/login";
-		}
-	}
-
-	@ResponseBody
-	@GetMapping("/dt")
-	public DataTableResults<ProjectTableDTO> projectsDataTable(@RequestParam(required = false) Long projectId, @RequestParam(required = false) Long responsibleId, @RequestParam(required = false) Integer station, HttpServletRequest request) {
-
-		try {
-
-			// Recover user
-			User user = Utiles.getUsuario();
-
-			DataTableRequest<Project> dataTableInRQ = new DataTableRequest<>(request);
-			PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
-
-			List<ProjectTableDTO> projects = null;
-			Long totalRecords = null;
-			
-			Object[] params = new Object[3];
-			params[0] = projectId;
-			params[1] = responsibleId;
-			params[2] = station;
-
-			if (user.getRole().getRoleName().equals(Constants.ROLE_ADMIN) || user.getRole().getRoleName().equals(Constants.ROLE_TECHNICAL_SUPERVISOR)) {
-				projects = projectService.getAllProjectsDataTables(pagination, params);
-				totalRecords = projectService.getAllProjectsCount(params);
-			} else {
-				projects = projectService.getProjectsByUserBossDataTables(user.getId(), pagination, params);
-				totalRecords = projectService.getProjectsCountByUserBoss(user.getId(), params);
-			}
-
-			DataTableResults<ProjectTableDTO> dataTableResult = new DataTableResults<>();
-			dataTableResult.setDraw(dataTableInRQ.getDraw());
-			dataTableResult.setData(projects);
-			dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
-			dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
-
-			if (projects != null && !projects.isEmpty() && !dataTableInRQ.getPaginationRequest().isFilterByEmpty()) {
-				dataTableResult.setRecordsFiltered(Integer.toString(projects.size()));
-			}
-
-			return dataTableResult;
-
-		} catch (InvalidUserSessionException e) {
-			log.error(e);
-			return null;
-		}
-	}
-	
 	@GetMapping("/view")
 	public String getViewProjects(Locale locale, Model model, HttpServletRequest request) {
 
@@ -212,7 +100,7 @@ public class ProjectController {
 			List<UserDTO> responsables = userServiceOld.getAllProjectResponsables();
 
 			// Recover Project Stations
-			List<ProjectListDTO> projectListDTO = projectService.getAllProjectsDTOs();
+			List<ProjectListDTO> projectListDTO = projectOldService.getAllProjectsDTOs();
 
 			// Load Action Buttons for DataTable
 			model.addAttribute("tableActionButtons", ModelUtil.getViewActionButton());
@@ -248,8 +136,8 @@ public class ProjectController {
 			params[1] = responsableId;
 			params[2] = station;
 
-			projects = projectService.getAllProjectsDataTables(pagination, params);
-			totalRecords = projectService.getAllProjectsCount(params);
+			projects = projectOldService.getAllProjectsDataTables(pagination, params);
+			totalRecords = projectOldService.getAllProjectsCount(params);
 
 			DataTableResults<ProjectTableDTO> dataTableResult = new DataTableResults<>();
 			dataTableResult.setDraw(dataTableInRQ.getDraw());
@@ -308,11 +196,11 @@ public class ProjectController {
 				return new ResponseEntity<>(messageSource.getMessage("project.create.error", new Object[] {}, locale), HttpStatus.NOT_FOUND);
 			}
 
-			project = projectService.save(project);
+			project = projectOldService.save(project);
 
 			// Creamos las relaciones ManyToMany
 			for (User responsable : responsables) {
-				projectService.createUserBoss(project.getId(), responsable.getId());
+				projectOldService.createUserBoss(project.getId(), responsable.getId());
 			}
 
 			log.info("Proyecto " + projectDTO.getProjectName() + " creado con éxito por parte del usuario " + user.getId());
@@ -337,7 +225,7 @@ public class ProjectController {
 			log.info("Preparando la funcion para duplicar el proyecto " + projectCopyDTO.getProjectId());
 			
 			// Get selected project
-			Project projectCopy = projectService.getProjectById(projectCopyDTO.getProjectId());
+			Project projectCopy = projectOldService.getProjectById(projectCopyDTO.getProjectId());
 			
 			if (projectCopy == null) {
 				log.error("Proyecto no encontrado");
@@ -349,7 +237,7 @@ public class ProjectController {
 			Project project = ProjectMapper.copyProject(projectCopy);
 			
 			// Save project in DB
-			project = projectService.save(project);
+			project = projectOldService.save(project);
 			
 			// Copy customer
 			if (project.getCustomer() != null) {
@@ -367,7 +255,7 @@ public class ProjectController {
 			if (!projectCopy.getUsers().isEmpty()) {
 				
 				for (User member : projectCopy.getUsers()) {
-					projectService.createMember(project.getId(), member.getId());
+					projectOldService.createMember(project.getId(), member.getId());
 				}
 			}
 			
@@ -377,7 +265,7 @@ public class ProjectController {
 				for (User teamLeader : projectCopy.getBossUsers()) {
 
 					if (teamLeader.getState() == 0) {
-						projectService.createUserBoss(project.getId(), teamLeader.getId());
+						projectOldService.createUserBoss(project.getId(), teamLeader.getId());
 					}
 				}
 			}
@@ -423,7 +311,7 @@ public class ProjectController {
 			// Recover user
 			User user = Utiles.getUsuario();
 						
-			projectService.delete(id);
+			projectOldService.delete(id);
 
 			log.info("Proyecto " + id + " eliminado con éxito por parte del usuario " + user.getId());
 
@@ -438,7 +326,7 @@ public class ProjectController {
 		}
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/{id}/test")
 	public String projectDetail(@PathVariable Long id, Locale locale, Model model, HttpServletRequest request) {
 
 		try {
@@ -458,9 +346,9 @@ public class ProjectController {
 
 			// Load project
 			if (role.getId() == Constants.ROLE_ADMIN_ID || role.getId() == Constants.ROLE_TECHNICAL_SUPERVISOR_ID) {
-				project = projectService.getProjectById(id);
+				project = projectOldService.getProjectById(id);
 			} else {
-				project = projectService.getProjectByIdAndBossId(id, user.getId());
+				project = projectOldService.getProjectByIdAndBossId(id, user.getId());
 			}
 
 			if (project == null) {
@@ -493,7 +381,7 @@ public class ProjectController {
 			activityCenters.sort(Comparator.comparing(ActivityCenter::getName));
 			
 			// Recover Project Stations
-			List<ProjectListDTO> stations = projectService.getStationDTOs();
+			List<ProjectListDTO> stations = projectOldService.getStationDTOs();
 			
 			// Load no families selected
 			List<FamilyDTO> notFamilies = familyService.getClonableFamilyDTOs(locale);
@@ -531,48 +419,6 @@ public class ProjectController {
 	}
 
 	@ResponseBody
-	@PostMapping("/{id}/update")
-	public ResponseEntity<String> updateProject(@PathVariable Long id, @ModelAttribute ProjectDTO projectDto,
-			Locale locale) {
-
-		try {
-
-			// Recover user
-			User user = Utiles.getUsuario();
-			
-			// Get responsables
-			List<User> responsables = new ArrayList<>();
-			
-			for (Long responsableId : projectDto.getResponsables()) {
-				
-				User responsable = userServiceOld.getUserById(responsableId);
-				
-				if (responsable != null) {
-					responsables.add(responsable);
-				}
-			}
-
-			ActivityCenter activityCenter = activityCenterServiceOld.getById(projectDto.getActivityCenter());
-
-			Project project = ProjectMapper.mapDTOToProject(projectDto, responsables, activityCenter);
-			project.setId(id);
-
-			projectService.save(project);
-
-			log.info("Proyecto " + id + " actualizado con éxito por parte del usuario " + user.getId());
-
-			// Return data
-			return new ResponseEntity<>(messageSource.getMessage("project.update.success", new Object[] {}, locale),
-					HttpStatus.OK);
-
-		} catch (Exception e) {
-			log.error(e);
-			return new ResponseEntity<>(messageSource.getMessage("project.update.error", new Object[] {}, locale),
-					HttpStatus.NOT_FOUND);
-		}
-	}
-	
-	@ResponseBody
 	@PostMapping("/{id}/customer/update")
 	public ResponseEntity<String> updateProjectCustomer(@PathVariable Long id, @ModelAttribute CustomerDTO customerDto, Locale locale) {
 
@@ -595,7 +441,7 @@ public class ProjectController {
 				if (customer == null) {
 	
 					// Recover project
-					Project project = projectService.getProjectById(id);
+					Project project = projectOldService.getProjectById(id);
 					
 					customer = new Customer();
 					customer.setProject(project);
@@ -723,7 +569,7 @@ public class ProjectController {
 
 			for (Long member : memberId) {
 				
-				projectService.createMember(id, member);
+				projectOldService.createMember(id, member);
 				
 				log.info("Usuario " + member + " añadido al proyecto " + id);
 			}
@@ -742,7 +588,7 @@ public class ProjectController {
 		
 		try {
 
-			projectService.deleteMember(id, memberId);
+			projectOldService.deleteMember(id, memberId);
 			
 			log.info("Usuario " + memberId + " eliminado del proyecto " + id);	
 			
@@ -766,12 +612,12 @@ public class ProjectController {
 			for (Long boss : bossId) {
 				
 				try {
-					projectService.createMember(id, boss);
+					projectOldService.createMember(id, boss);
 				} catch (DataIntegrityViolationException e) {
 					log.info("El usuario " + boss + " ya es miembro del proyecto " + id);
 				}
 				
-				projectService.createUserBoss(id, boss);
+				projectOldService.createUserBoss(id, boss);
 	
 				log.info("Jefe de proyecto " + boss + " añadido al proyecto " + id + " por parte del usuario " + user.getId());
 
@@ -797,8 +643,8 @@ public class ProjectController {
 			// Recover user
 			User user = Utiles.getUsuario();
 
-			projectService.deleteMember(id, bossId);
-			projectService.deleteUserBoss(id, bossId);
+			projectOldService.deleteMember(id, bossId);
+			projectOldService.deleteUserBoss(id, bossId);
 
 			log.info("Jefe de proyecto " + bossId + " eliminado del proyecto " + id + " por parte del usuario " + user.getId());
 
@@ -831,11 +677,11 @@ public class ProjectController {
 			}
 
 			// Recover project
-			Project project = projectService.getProjectById(id);
+			Project project = projectOldService.getProjectById(id);
 
 			ByteArrayOutputStream archivo = new ByteArrayOutputStream();
 
-			workbook = projectService.generateProjectExcel(id, user.getId(), project, year, locale);
+			workbook = projectOldService.generateProjectExcel(id, user.getId(), project, year, locale);
 			workbook.write(archivo);
 
 			byte[] excelContent = archivo.toByteArray();
@@ -866,7 +712,7 @@ public class ProjectController {
 			// Recover user
 			User user = Utiles.getUsuario();
 			
-			Project project = projectService.getProjectById(id);
+			Project project = projectOldService.getProjectById(id);
 			if (project == null) {
 				throw new Exception("Proyecto " + id + " no encontrado");
 			}
@@ -949,7 +795,7 @@ public class ProjectController {
 			// Recover user
 			User user = Utiles.getUsuario();
 			
-			Project project = projectService.getProjectById(id);
+			Project project = projectOldService.getProjectById(id);
 			if (project == null) {
 				throw new Exception("Proyecto " + id + " no encontrado");
 			}
@@ -1014,7 +860,7 @@ public class ProjectController {
 			// Recover user
 			User user = Utiles.getUsuario();
 			
-			Project project = projectService.getProjectById(id);
+			Project project = projectOldService.getProjectById(id);
 			if (project == null) {
 				throw new Exception("Proyecto " + id + " no encontrado en la creacion de un Material Obligatorio");
 			}
@@ -1091,17 +937,17 @@ public class ProjectController {
 		return materialRequiredService.getMaterialsRequiredByProjectId(id);
 	}
 
-	@ResponseBody
+	/*@ResponseBody
 	@GetMapping("/{id}/members")
 	public List<UserDTO> getProjectMembers(@PathVariable Long id) {
 		return userServiceOld.getUserDTOsByProjectId(id);
-	}
+	}*/
 	
 	@ResponseBody
 	@GetMapping("/{id}/responsables/html")
 	public String getProjectResponsablesHtml(@PathVariable Long id, Locale locale, Model model, HttpServletRequest request) {
 
-		Project project = projectService.getProjectById(id);
+		Project project = projectOldService.getProjectById(id);
 		
 		if (project == null) {
 			return "";

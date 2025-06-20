@@ -21,7 +21,7 @@ import com.epm.gestepm.model.shares.work.service.mapper.*;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectByIdNotFoundException;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.shares.work.dto.WorkShareDto;
 import com.epm.gestepm.modelapi.shares.work.dto.creator.WorkShareCreateDto;
 import com.epm.gestepm.modelapi.shares.work.dto.deleter.WorkShareDeleteDto;
@@ -69,7 +69,7 @@ public class WorkShareServiceImpl implements WorkShareService {
 
     private final MessageSource messageSource;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
 
     private final ShareDateChecker shareDateChecker;
 
@@ -210,7 +210,7 @@ public class WorkShareServiceImpl implements WorkShareService {
         final User user = Utiles.getCurrentUser();
 
         final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(workShare.getProjectId());
-        final Project project = Optional.ofNullable(this.projectService.getProjectById(workShare.getProjectId().longValue()))
+        final Project project = Optional.ofNullable(this.projectOldService.getProjectById(workShare.getProjectId().longValue()))
                 .orElseThrow(projectNotFound);
 
         final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));

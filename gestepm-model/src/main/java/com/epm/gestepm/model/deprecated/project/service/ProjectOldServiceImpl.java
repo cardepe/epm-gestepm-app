@@ -16,7 +16,7 @@ import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectDTO;
 import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectTableDTO;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import org.apache.poi.ss.usermodel.*;
@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
-public class ProjectServiceImpl implements ProjectService {
+public class ProjectOldServiceImpl implements ProjectOldService {
 
 	@Value("${gestepm.displacements.project-ids}")
 	private List<Long> displacementProjectIds;
@@ -70,11 +70,6 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public Project getProjectById(Long projectId) {
 		return projectRepository.findById(projectId).orElse(null);
-	}
-
-	@Override
-	public List<Project> getAllProjects() {
-		return (List<Project>) projectRepository.findAll();
 	}
 
 	@Override
@@ -123,11 +118,6 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	
 	@Override
-	public List<ProjectListDTO> getBossProjectsDTOByUserId(Long userId) {
-		return projectRepository.findBossProjectsDTOByUserId(userId);
-	}
-	
-	@Override
 	public List<ProjectListDTO> getStationDTOs() {
 		return projectRepository.findStationDTOs();
 	}
@@ -143,11 +133,6 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	
 	@Override
-	public List<ProjectTableDTO> getProjectsByUserBossDataTables(Long userId, PaginationCriteria pagination, Object[] params) {
-		return projectRepository.findProjectsByUserBossDataTables(userId, pagination, params);
-	}
-	
-	@Override
 	public List<ProjectTableDTO> getAllProjectsDataTables(PaginationCriteria pagination, Object[] params) {
 		return projectRepository.findAllProjectsDataTables(pagination, params);
 	}
@@ -155,11 +140,6 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public Long getProjectsCountByUserMember(Long userId, Object[] params) {
 		return projectRepository.findProjectsCountByUserMember(userId, params);
-	}
-	
-	@Override
-	public Long getProjectsCountByUserBoss(Long userId, Object[] params) {
-		return projectRepository.findProjectsCountByUserBoss(userId, params);
 	}
 	
 	@Override
@@ -1014,17 +994,5 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		
 		return names;
-	}
-
-	private List<ExpensesMonthDTO> joinExpensesDTOList(List<ExpensesMonthDTO> firstList, List<ExpensesMonthDTO> secondList) {
-
-		for (ExpensesMonthDTO e : secondList) {
-
-			final ExpensesMonthDTO ee = firstList.stream().filter(l -> Objects.equals(l.getUserId(), e.getUserId())).collect(Collectors.toList()).get(0);
-
-			ee.sum(e);
-		}
-
-		return firstList;
 	}
 }

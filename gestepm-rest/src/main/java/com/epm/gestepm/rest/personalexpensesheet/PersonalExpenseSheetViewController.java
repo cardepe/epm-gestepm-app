@@ -9,7 +9,7 @@ import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetSta
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.filter.PersonalExpenseSheetFilterDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetService;
 import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectListDTO;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,11 +36,11 @@ public class PersonalExpenseSheetViewController {
 
     private final PersonalExpenseSheetService personalExpenseSheetService;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
 
-    public PersonalExpenseSheetViewController(PersonalExpenseSheetService personalExpenseSheetService, ProjectService projectService) {
+    public PersonalExpenseSheetViewController(PersonalExpenseSheetService personalExpenseSheetService, ProjectOldService projectOldService) {
         this.personalExpenseSheetService = personalExpenseSheetService;
-        this.projectService = projectService;
+        this.projectOldService = projectOldService;
     }
 
     @ModelAttribute
@@ -98,8 +98,8 @@ public class PersonalExpenseSheetViewController {
     private void loadProjects(final User user, final Model model) {
 
         final List<ProjectListDTO> projects = user.getRole().getId() == Constants.ROLE_ADMIN_ID || user.getRole().getId() == Constants.ROLE_TECHNICAL_SUPERVISOR_ID
-                ? this.projectService.getAllProjectsDTOs()
-                : this.projectService.getProjectsByUser(user);
+                ? this.projectOldService.getAllProjectsDTOs()
+                : this.projectOldService.getProjectsByUser(user);
 
         model.addAttribute("projects", projects);
     }

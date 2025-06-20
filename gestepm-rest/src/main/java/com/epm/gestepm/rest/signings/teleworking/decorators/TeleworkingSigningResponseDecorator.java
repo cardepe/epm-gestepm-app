@@ -4,7 +4,7 @@ import com.epm.gestepm.lib.controller.RestRequest;
 import com.epm.gestepm.lib.controller.decorator.BaseResponseDataDecorator;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
 import com.epm.gestepm.rest.signings.teleworking.request.TeleworkingSigningFindRestRequest;
 import com.epm.gestepm.restapi.openapi.model.Project;
@@ -26,12 +26,12 @@ public class TeleworkingSigningResponseDecorator extends BaseResponseDataDecorat
     
     private final UserServiceOld userServiceOld;
     
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
     
-    public TeleworkingSigningResponseDecorator(ApplicationContext applicationContext, UserServiceOld userServiceOld, ProjectService projectService) {  // , PersonalExpenseService personalExpenseService) {
+    public TeleworkingSigningResponseDecorator(ApplicationContext applicationContext, UserServiceOld userServiceOld, ProjectOldService projectOldService) {  // , PersonalExpenseService personalExpenseService) {
         super(applicationContext);
         this.userServiceOld = userServiceOld;
-        this.projectService = projectService;
+        this.projectOldService = projectOldService;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class TeleworkingSigningResponseDecorator extends BaseResponseDataDecorat
             final Project project = data.getProject();
             final Integer id = project.getId();
 
-            final com.epm.gestepm.modelapi.deprecated.project.dto.Project projectDto = this.projectService.getProjectById(Long.valueOf(id));
+            final com.epm.gestepm.modelapi.deprecated.project.dto.Project projectDto = this.projectOldService.getProjectById(Long.valueOf(id));
             final Project response = new Project().id(id).name(projectDto.getName());
 
             data.setProject(response);

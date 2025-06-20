@@ -30,7 +30,7 @@ import com.epm.gestepm.modelapi.inspection.service.InspectionExportService;
 import com.epm.gestepm.modelapi.inspection.service.InspectionService;
 import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectByIdNotFoundException;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareStateEnumDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
@@ -82,7 +82,7 @@ public class InspectionServiceImpl implements InspectionService {
 
     private final NoProgrammedShareService noProgrammedShareService;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
 
     private final TopicService topicService;
 
@@ -279,7 +279,7 @@ public class InspectionServiceImpl implements InspectionService {
                 .findOrNotFound(new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
 
         final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(noProgrammedShare.getProjectId());
-        final Project project = Optional.ofNullable(this.projectService.getProjectById(noProgrammedShare.getProjectId().longValue()))
+        final Project project = Optional.ofNullable(this.projectOldService.getProjectById(noProgrammedShare.getProjectId().longValue()))
                 .orElseThrow(projectNotFound);
 
         final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));

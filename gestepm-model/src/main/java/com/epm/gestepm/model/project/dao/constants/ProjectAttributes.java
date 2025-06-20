@@ -28,4 +28,8 @@ public class ProjectAttributes {
 
     public static final String ATTR_PR_STATE = "attr_pr_state";
 
+    public static final String ATTR_PR_RESPONSIBLE_IDS = "attr_pr_responsible_ids";
+
+    public static final String ATTR_PR_PROJECT_LEADER_IDS = "attr_pr_project_leader_ids";
+
 }

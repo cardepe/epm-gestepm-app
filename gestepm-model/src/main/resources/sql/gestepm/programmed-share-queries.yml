@@ -7,7 +7,7 @@ sql:
       ps.user_id,
       CONCAT(us.name, us.surnames) AS username,
       ps.project_id,
-      p.name AS project_name,
+      pr.name AS project_name,
       ps.second_technical_id,
       CONCAT(st.name, st.surnames) AS second_technical_name,
       ps.observations,
@@ -21,7 +21,7 @@ sql:
       ps.closed_by,
       GROUP_CONCAT(psf.programmed_share_file_id) AS programmed_share_file_ids
     FROM ${sch-gestepm}.programmed_share ps
-    LEFT JOIN ${sch-gestepm}.projects p ON p.id = ps.project_id
+    LEFT JOIN ${sch-gestepm}.project pr ON pr.project_id = ps.project_id
     LEFT JOIN ${sch-gestepm}.user us ON ps.user_id = us.user_id
     LEFT JOIN ${sch-gestepm}.user st ON ps.second_technical_id = st.user_id
     LEFT JOIN ${sch-gestepm}.programmed_share_file psf ON ps.programmed_share_id = psf.programmed_share_id

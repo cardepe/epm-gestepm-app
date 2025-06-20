@@ -7,7 +7,7 @@ import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.common.utils.datatables.SortOrder;
 import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectListDTO;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.shares.breaks.dto.ShareBreakDto;
 import com.epm.gestepm.modelapi.shares.breaks.dto.filter.ShareBreakFilterDto;
 import com.epm.gestepm.modelapi.shares.breaks.service.ShareBreakService;
@@ -49,7 +49,7 @@ public class WorkShareViewController {
 
     private final WorkShareFileService workShareFileService;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
 
     private final ShareBreakService shareBreakService;
 
@@ -67,7 +67,7 @@ public class WorkShareViewController {
 
         this.loadCommonModelView(locale, model);
 
-        final List<ProjectListDTO> projects = this.projectService.getTeleworkingProjects(false).stream()
+        final List<ProjectListDTO> projects = this.projectOldService.getTeleworkingProjects(false).stream()
                 .sorted(Comparator.comparing(ProjectListDTO::getName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
         model.addAttribute("projects", projects);
@@ -91,7 +91,7 @@ public class WorkShareViewController {
         final WorkShareDto workShare = this.workShareService.findOrNotFound(new WorkShareByIdFinderDto(id));
         model.addAttribute("workShare", workShare);
 
-        final List<ProjectListDTO> projects = this.projectService.getTeleworkingProjects(false).stream()
+        final List<ProjectListDTO> projects = this.projectOldService.getTeleworkingProjects(false).stream()
                 .sorted(Comparator.comparing(ProjectListDTO::getName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
         model.addAttribute("projects", projects);

@@ -28,17 +28,23 @@ public class ProjectFilter extends Orderable implements CollectableAttributes {
 
     private Integer state;
 
+    private List<Integer> responsibleIds;
+
+    private List<Integer> projectLeaderIds;
+
     @Override
     public AttributeMap collectAttributes() {
 
         final AttributeMap map = new AttributeMap();
 
         map.putList(ATTR_PR_IDS, this.ids);
-        map.put(ATTR_PR_NAME_CONTAINS, this.nameContains);
+        map.putLike(ATTR_PR_NAME_CONTAINS, this.nameContains);
         map.putBooleanAsInt(ATTR_PR_IS_STATION, this.isStation);
         map.put(ATTR_PR_ACTIVITY_CENTER_IDS, this.activityCenterIds);
         map.putBooleanAsInt(ATTR_PR_IS_TELEWORKING, this.isTeleworking);
-        map.put(ATTR_PR_STATE, this.state);
+        map.put(ATTR_PR_STATE, this.getState());
+        map.putList(ATTR_PR_RESPONSIBLE_IDS, this.responsibleIds);
+        map.putList(ATTR_PR_PROJECT_LEADER_IDS, this.projectLeaderIds);
 
         return map;
     }

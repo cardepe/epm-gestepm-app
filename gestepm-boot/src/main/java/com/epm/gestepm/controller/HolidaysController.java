@@ -12,7 +12,7 @@ import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
 import com.epm.gestepm.modelapi.holiday.service.HolidayService;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.userholiday.service.UserHolidaysService;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
@@ -53,7 +53,7 @@ public class HolidaysController {
 	private MessageSource messageSource;
 
 	@Autowired
-	private ProjectService projectService;
+	private ProjectOldService projectOldService;
 
 	@Autowired
 	private SMTPService smtpService;
@@ -279,9 +279,9 @@ public class HolidaysController {
 			final List<ProjectListDTO> projects;
 
 			if (user.getRole().getId() == Constants.ROLE_ADMIN_ID || user.getRole().getId() == Constants.ROLE_TECHNICAL_SUPERVISOR_ID) {
-				projects = projectService.getAllProjectsDTOs();
+				projects = projectOldService.getAllProjectsDTOs();
 			} else {
-				projects = projectService.getProjectsByUser(user);
+				projects = projectOldService.getProjectsByUser(user);
 			}
 
 			List<UserDTO> usersDTO;
@@ -325,7 +325,7 @@ public class HolidaysController {
 
 		} else if (projectId != null) {
 
-			final Project project = this.projectService.getProjectById(projectId);
+			final Project project = this.projectOldService.getProjectById(projectId);
 
 			final List<User> projectUsers = project.getUsers();
 

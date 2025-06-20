@@ -5,7 +5,7 @@ import com.epm.gestepm.lib.controller.decorator.BaseResponseDataDecorator;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareFileByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareFileService;
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
@@ -43,17 +43,17 @@ public class NoProgrammedShareResponseDecorator extends BaseResponseDataDecorato
 
     private final NoProgrammedShareFileService noProgrammedShareFileService;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
 
     private final SubFamilyService subFamilyService;
 
     private final UserServiceOld userServiceOld;
 
-    public NoProgrammedShareResponseDecorator(ApplicationContext applicationContext, FamilyService familyService, NoProgrammedShareFileService noProgrammedShareFileService, ProjectService projectService, SubFamilyService subFamilyService, UserServiceOld userServiceOld) {
+    public NoProgrammedShareResponseDecorator(ApplicationContext applicationContext, FamilyService familyService, NoProgrammedShareFileService noProgrammedShareFileService, ProjectOldService projectOldService, SubFamilyService subFamilyService, UserServiceOld userServiceOld) {
         super(applicationContext);
         this.familyService = familyService;
         this.noProgrammedShareFileService = noProgrammedShareFileService;
-        this.projectService = projectService;
+        this.projectOldService = projectOldService;
         this.subFamilyService = subFamilyService;
         this.userServiceOld = userServiceOld;
     }
@@ -87,7 +87,7 @@ public class NoProgrammedShareResponseDecorator extends BaseResponseDataDecorato
             final Project project = data.getProject();
             final Integer id = project.getId();
 
-            final com.epm.gestepm.modelapi.deprecated.project.dto.Project projectDto = this.projectService.getProjectById(Long.valueOf(id));
+            final com.epm.gestepm.modelapi.deprecated.project.dto.Project projectDto = this.projectOldService.getProjectById(Long.valueOf(id));
             final Project response = new Project().id(id).name(projectDto.getName());
 
             data.setProject(response);

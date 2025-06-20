@@ -17,7 +17,7 @@ import com.epm.gestepm.modelapi.inspection.service.InspectionFileService;
 import com.epm.gestepm.modelapi.inspection.service.InspectionMaterialsExportException;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
 import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
@@ -69,7 +69,7 @@ public class InspectionExportServiceImpl implements InspectionExportService {
 
     private final NoProgrammedShareService noProgrammedShareService;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
     
     private final SubFamilyService subFamilyService;
     
@@ -84,7 +84,7 @@ public class InspectionExportServiceImpl implements InspectionExportService {
 
             final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(
                     new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
-            final Project project = this.projectService.getProjectById(noProgrammedShare.getProjectId().longValue());
+            final Project project = this.projectOldService.getProjectById(noProgrammedShare.getProjectId().longValue());
             final User firstTechnical = this.userServiceOld.getUserById(inspection.getFirstTechnicalId().longValue());
 
             final String language = localeProvider.getLocale().orElse("es");
@@ -168,7 +168,7 @@ public class InspectionExportServiceImpl implements InspectionExportService {
 
             final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(
                     new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
-            final Project project = this.projectService.getProjectById(noProgrammedShare.getProjectId().longValue());
+            final Project project = this.projectOldService.getProjectById(noProgrammedShare.getProjectId().longValue());
 
             final String language = localeProvider.getLocale().orElse("es");
             final PdfReader pdfTemplate = new PdfReader(String.format(MATERIALS_TEMPLATE_PATH, language));

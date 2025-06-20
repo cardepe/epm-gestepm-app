@@ -6,7 +6,7 @@ import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectListDTO;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.signings.teleworking.dto.TeleworkingSigningDto;
 import com.epm.gestepm.modelapi.signings.teleworking.dto.finder.TeleworkingSigningByIdFinderDto;
 import com.epm.gestepm.modelapi.signings.teleworking.service.TeleworkingSigningService;
@@ -33,11 +33,11 @@ public class TeleworkingSigningViewController {
 
     private final TeleworkingSigningService teleworkingSigningService;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
 
-    public TeleworkingSigningViewController(TeleworkingSigningService teleworkingSigningService, ProjectService projectService) {
+    public TeleworkingSigningViewController(TeleworkingSigningService teleworkingSigningService, ProjectOldService projectOldService) {
         this.teleworkingSigningService = teleworkingSigningService;
-        this.projectService = projectService;
+        this.projectOldService = projectOldService;
     }
 
     @ModelAttribute
@@ -67,7 +67,7 @@ public class TeleworkingSigningViewController {
         final TeleworkingSigningDto teleworkingSigning = this.teleworkingSigningService.findOrNotFound(new TeleworkingSigningByIdFinderDto(id));
         model.addAttribute("teleworkingSigning", teleworkingSigning);
 
-        final Project project = this.projectService.getProjectById(teleworkingSigning.getProjectId().longValue());
+        final Project project = this.projectOldService.getProjectById(teleworkingSigning.getProjectId().longValue());
         model.addAttribute("projectName", project.getName());
 
         this.loadPermissions(user, project.getId().intValue(), model);
@@ -76,7 +76,7 @@ public class TeleworkingSigningViewController {
     }
 
     private void loadProjects(final Model model) {
-        final List<ProjectListDTO> projects = this.projectService.getTeleworkingProjects(true);
+        final List<ProjectListDTO> projects = this.projectOldService.getTeleworkingProjects(true);
         model.addAttribute("projects", projects);
     }
 

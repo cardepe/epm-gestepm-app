@@ -9,7 +9,7 @@ import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
 import com.epm.gestepm.modelapi.manualsigningtype.service.ManualSigningTypeService;
 import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectDTO;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.role.service.RoleService;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
@@ -48,7 +48,7 @@ public class UserViewController {
 
     private final MessageSource messageSource;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
 
     private final RoleService roleService;
 
@@ -76,6 +76,7 @@ public class UserViewController {
         this.loadCommonModelView(locale, model);
         this.loadCommonSelects(model);
 
+        model.addAttribute("importPath", "users");
         model.addAttribute("loadingPath", "users");
         model.addAttribute("type", "view");
 
@@ -152,7 +153,7 @@ public class UserViewController {
         final UserDto currentUser = this.userService.findOrNotFound(new UserByIdFinderDto(id));
         model.addAttribute("currentUser", currentUser);
 
-        final List<ProjectDTO> notBelongProjects = this.projectService.getNotProjectDTOsByUserId(id.longValue());
+        final List<ProjectDTO> notBelongProjects = this.projectOldService.getNotProjectDTOsByUserId(id.longValue());
         model.addAttribute("notBelongProjects", notBelongProjects);
 
         model.addAttribute("tab", "projects");

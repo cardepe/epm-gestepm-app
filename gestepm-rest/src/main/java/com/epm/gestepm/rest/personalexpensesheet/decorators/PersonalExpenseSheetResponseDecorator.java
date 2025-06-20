@@ -4,7 +4,7 @@ import com.epm.gestepm.lib.controller.RestRequest;
 import com.epm.gestepm.lib.controller.decorator.BaseResponseDataDecorator;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.rest.personalexpensesheet.request.PersonalExpenseSheetFindRestRequest;
 import com.epm.gestepm.restapi.openapi.model.PersonalExpenseSheet;
 import com.epm.gestepm.restapi.openapi.model.Project;
@@ -24,12 +24,12 @@ public class PersonalExpenseSheetResponseDecorator extends BaseResponseDataDecor
 
     // private final PersonalExpenseService personalExpenseService;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
     
-    public PersonalExpenseSheetResponseDecorator(ApplicationContext applicationContext, ProjectService projectService) {  // , PersonalExpenseService personalExpenseService) {
+    public PersonalExpenseSheetResponseDecorator(ApplicationContext applicationContext, ProjectOldService projectOldService) {  // , PersonalExpenseService personalExpenseService) {
         super(applicationContext);
         // this.personalExpenseService = personalExpenseService;
-        this.projectService = projectService;
+        this.projectOldService = projectOldService;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class PersonalExpenseSheetResponseDecorator extends BaseResponseDataDecor
             final Project project = data.getProject();
             final Integer id = project.getId();
 
-            final com.epm.gestepm.modelapi.deprecated.project.dto.Project projectDto = this.projectService.getProjectById(Long.valueOf(id));
+            final com.epm.gestepm.modelapi.deprecated.project.dto.Project projectDto = this.projectOldService.getProjectById(Long.valueOf(id));
             final Project response = new Project().id(id).name(projectDto.getName());
 
             data.setProject(response);

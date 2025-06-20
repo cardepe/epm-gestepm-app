@@ -13,7 +13,9 @@ import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.model.project.dao.entity.Project;
 import com.epm.gestepm.model.project.dao.entity.creator.ProjectCreate;
+import com.epm.gestepm.model.project.dao.entity.creator.ProjectResponsibleCreate;
 import com.epm.gestepm.model.project.dao.entity.deleter.ProjectDelete;
+import com.epm.gestepm.model.project.dao.entity.deleter.ProjectResponsibleDelete;
 import com.epm.gestepm.model.project.dao.entity.filter.ProjectFilter;
 import com.epm.gestepm.model.project.dao.entity.finder.ProjectByIdFinder;
 import com.epm.gestepm.model.project.dao.entity.updater.ProjectUpdate;
@@ -22,21 +24,24 @@ import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DAO;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
 import static com.epm.gestepm.model.project.dao.constants.ProjectQueries.*;
-import static com.epm.gestepm.model.project.dao.constants.UserQueries.*;
+import static com.epm.gestepm.model.project.dao.constants.ProjectResponsibleQueries.QRY_CREATE_PRR;
 import static com.epm.gestepm.model.project.dao.mappers.ProjectRowMapper.*;
-import static com.epm.gestepm.model.project.dao.mappers.UserRowMapper.*;
 
 @AllArgsConstructor
 @Component("projectDao")
 @EnableExecutionLog(layerMarker = DAO)
 public class ProjectDaoImpl implements ProjectDao {
+
+    private final ProjectResponsibleDao projectResponsibleDao;
 
     private final SQLDatasource sqlDatasource;
 
@@ -99,6 +104,7 @@ public class ProjectDaoImpl implements ProjectDao {
     }
 
     @Override
+    @Transactional
     @LogExecution(operation = OP_CREATE,
             debugOut = true,
             msgIn = "Persisting new project",
@@ -117,10 +123,13 @@ public class ProjectDaoImpl implements ProjectDao {
 
         this.sqlDatasource.insert(sqlInsert);
 
+        this.updateResponsible(finder.getId(), create.getResponsibleIds());
+
         return this.find(finder).orElse(null);
     }
 
     @Override
+    @Transactional
     @LogExecution(operation = OP_UPDATE,
             debugOut = true,
             msgIn = "Persisting update for project",
@@ -139,6 +148,8 @@ public class ProjectDaoImpl implements ProjectDao {
                 .withParams(params);
 
         this.sqlDatasource.execute(sqlQuery);
+
+        this.updateResponsible(finder.getId(), update.getResponsibleIds());
 
         return this.find(finder).orElse(null);
     }
@@ -178,6 +189,15 @@ public class ProjectDaoImpl implements ProjectDao {
         } else if ("endDate".equals(orderBy)) {
             return COL_PR_END_DATE;
         }
-        return List.of(orderBy);
+        return orderBy;
+    }
+
+    private void updateResponsible( final Integer projectId, final Set<Integer> responsibleIds) {
+
+        this.projectResponsibleDao.delete(new ProjectResponsibleDelete(projectId));
+
+        responsibleIds.forEach(responsibleId -> this.projectResponsibleDao.create(
+                new ProjectResponsibleCreate(projectId, responsibleId)
+        ));
     }
 }

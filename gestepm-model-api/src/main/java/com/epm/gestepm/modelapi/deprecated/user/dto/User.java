@@ -94,7 +94,7 @@ public class User {
 	private List<Project> projects;
 	
 	@ManyToMany
-	@JoinTable(name = "project_bosses", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "PROJECT_ID"))
+	@JoinTable(name = "project_leader", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "project_id"))
 	private Set<Project> bossProjects;
 
 	@OneToMany(mappedBy = "user")

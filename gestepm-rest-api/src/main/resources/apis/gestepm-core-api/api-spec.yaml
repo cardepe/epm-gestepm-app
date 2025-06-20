@@ -1230,6 +1230,40 @@ paths:
           in: query
           name: ids
           description: Filter by project identificator.
+        - schema:
+            type: string
+          in: query
+          name: nameContains
+          description: Filter by name contains.
+        - schema:
+            type: boolean
+          in: query
+          name: isStation
+          description: Filter by is station.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: activityCenterIds
+          description: Filter by activity center ids.
+        - schema:
+            type: boolean
+          in: query
+          name: isTeleworking
+          description: Filter by is teleworking.
+        - schema:
+            type: integer
+          in: query
+          name: state
+          description: Filter by project state.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: responsibleIds
+          description: Filter by responsible ids.
       tags:
         - project-v1
     post:
@@ -1294,6 +1328,53 @@ paths:
       tags:
         - project-v1
       description: delete-project-v1
+  '/v1/projects/{projectId}/leaders':
+    parameters:
+      - $ref: '#/components/parameters/Project-Id'
+    post:
+      summary: V1 - Create project leader
+      operationId: create-project-leader-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: project-not-found | leader-already-exist
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - project-leader-v1
+      description: create-project-leader-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateProjectLeader'
+  '/v1/projects/{projectId}/leaders/{userId}':
+    parameters:
+      - $ref: '#/components/parameters/Project-Id'
+      - $ref: '#/components/parameters/User-Id'
+    delete:
+      summary: V1 - Delete project leader
+      operationId: delete-project-leader-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: project-not-found | leader-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - project-leader-v1
+      description: delete-project-leader-v1
   /v1/shares/programmed:
     get:
       summary: V1 - List programmed shares
@@ -2154,6 +2235,11 @@ paths:
           in: query
           name: levelIds
           description: Filter by level id.
+        - schema:
+            type: integer
+          in: query
+          name: leadingProjectId
+          description: Filter by leading project id.
       tags:
         - user-v1
     post:
@@ -2602,6 +2688,14 @@ components:
           type: integer
           x-stoplight:
             id: tromrcn4vvmwc
+        responsibleIds:
+          type: array
+          x-stoplight:
+            id: thgh3qi3x9aoc
+          items:
+            x-stoplight:
+              id: 4xueok7tlo9ru
+            type: integer
       required:
         - id
         - name
@@ -2612,6 +2706,7 @@ components:
         - activityCenter
         - isTeleworking
         - state
+        - responsibleIds
     ShareFile:
       title: ShareFile
       x-stoplight:
@@ -3410,17 +3505,25 @@ components:
       content:
         application/json:
           schema:
+            type: object
             properties:
-              id:
-                type: string
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                $ref: '#/components/schemas/Project'
     ProjectList:
       description: Example response
       content:
         application/json:
           schema:
+            type: object
             properties:
-              id:
-                type: string
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
   requestBodies:
     CreateNoProgrammedShare:
       content:
@@ -4330,6 +4433,16 @@ components:
               - isTeleworking
               - state
               - responsibleIds
+    CreateProjectLeader:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userId:
+                type: integer
+                x-stoplight:
+                  id: er62r87yojwi2
   parameters:
     Share-Id:
       name: shareId
@@ -4427,6 +4540,8 @@ tags:
     description: V1 - Programmed Share File
   - name: project-v1
     description: V1 - Project
+  - name: project-leader-v1
+    description: V1 - Project Leader
   - name: share-v1
     description: V1 - Share
   - name: teleworking-signing-v1

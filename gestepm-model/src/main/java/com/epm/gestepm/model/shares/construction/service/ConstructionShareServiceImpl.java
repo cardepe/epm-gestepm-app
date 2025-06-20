@@ -23,7 +23,7 @@ import com.epm.gestepm.model.shares.construction.service.mapper.*;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectByIdNotFoundException;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.filter.ConstructionShareFilterDto;
 import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareExportService;
@@ -72,7 +72,7 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
 
     private final MessageSource messageSource;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
 
     private final ShareDateChecker shareDateChecker;
 
@@ -213,7 +213,7 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
         final User user = Utiles.getCurrentUser();
 
         final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(constructionShare.getProjectId());
-        final Project project = Optional.ofNullable(this.projectService.getProjectById(constructionShare.getProjectId().longValue()))
+        final Project project = Optional.ofNullable(this.projectOldService.getProjectById(constructionShare.getProjectId().longValue()))
                 .orElseThrow(projectNotFound);
 
         final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));

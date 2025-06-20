@@ -457,14 +457,14 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
     @Override
     public void createUserBoss(Long projectId, Long userId) {
 
-        Query query = entityManager.createNativeQuery("INSERT INTO project_bosses VALUES (" + projectId + ", " + userId + ")");
+        Query query = entityManager.createNativeQuery("INSERT INTO project_leader VALUES (" + projectId + ", " + userId + ")");
         query.executeUpdate();
     }
 
     @Override
     public void deleteUserBoss(Long projectId, Long userId) {
 
-        Query query = entityManager.createNativeQuery("DELETE FROM project_bosses WHERE user_id = " + userId + " AND project_id = " + projectId);
+        Query query = entityManager.createNativeQuery("DELETE FROM project_leader WHERE user_id = " + userId + " AND project_id = " + projectId);
         query.executeUpdate();
     }
 

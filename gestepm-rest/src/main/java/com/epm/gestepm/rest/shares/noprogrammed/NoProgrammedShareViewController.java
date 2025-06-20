@@ -13,7 +13,7 @@ import com.epm.gestepm.modelapi.inspection.service.InspectionService;
 import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectByIdNotFoundException;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
@@ -58,7 +58,7 @@ public class NoProgrammedShareViewController {
 
     private final NoProgrammedShareService noProgrammedShareService;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
 
     private final UserService userService;
 
@@ -76,7 +76,7 @@ public class NoProgrammedShareViewController {
 
         this.loadCommonModelView(locale, model);
 
-        final List<ProjectListDTO> projects = this.projectService.getTeleworkingProjects(false).stream()
+        final List<ProjectListDTO> projects = this.projectOldService.getTeleworkingProjects(false).stream()
                 .sorted(Comparator.comparing(ProjectListDTO::getName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
         model.addAttribute("projects", projects);
@@ -100,7 +100,7 @@ public class NoProgrammedShareViewController {
         final NoProgrammedShareDto share = this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(id));
 
         final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(share.getProjectId());
-        final Project project = Optional.ofNullable(this.projectService.getProjectById(share.getProjectId().longValue()))
+        final Project project = Optional.ofNullable(this.projectOldService.getProjectById(share.getProjectId().longValue()))
                 .orElseThrow(projectNotFound);
 
         final InspectionFilterDto filterDto = new InspectionFilterDto();

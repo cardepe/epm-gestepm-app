@@ -24,7 +24,7 @@ public class WorkShare {
 	private User user;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "project_id", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "project_id", nullable = false)
 	private Project project;
 	
 	@Column(name = "start_date", nullable = false)

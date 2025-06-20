@@ -2,7 +2,7 @@ package com.epm.gestepm.controller;
 
 import com.epm.gestepm.model.expensecorrective.service.ExpenseCorrectiveServiceImpl;
 import com.epm.gestepm.model.expensecorrective.service.mapper.ExpenseCorrectiveMapper;
-import com.epm.gestepm.model.deprecated.project.service.ProjectServiceImpl;
+import com.epm.gestepm.model.deprecated.project.service.ProjectOldServiceImpl;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
@@ -41,7 +41,7 @@ public class ExpensesController {
 	private ExpenseCorrectiveServiceImpl expenseCorrectiveService;
 
 	@Autowired
-	private ProjectServiceImpl projectService;
+	private ProjectOldServiceImpl projectService;
 	
 	@Autowired
 	private SMTPService smtpService;

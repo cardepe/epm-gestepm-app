@@ -21,7 +21,7 @@ import com.epm.gestepm.model.shares.programmed.service.mapper.*;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectByIdNotFoundException;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.shares.programmed.dto.ProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.programmed.dto.creator.ProgrammedShareCreateDto;
 import com.epm.gestepm.modelapi.shares.programmed.dto.deleter.ProgrammedShareDeleteDto;
@@ -69,7 +69,7 @@ public class ProgrammedShareServiceImpl implements ProgrammedShareService {
 
     private final MessageSource messageSource;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
 
     private final ShareDateChecker shareDateChecker;
 
@@ -210,7 +210,7 @@ public class ProgrammedShareServiceImpl implements ProgrammedShareService {
         final User user = Utiles.getCurrentUser();
 
         final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(programmedShare.getProjectId());
-        final Project project = Optional.ofNullable(this.projectService.getProjectById(programmedShare.getProjectId().longValue()))
+        final Project project = Optional.ofNullable(this.projectOldService.getProjectById(programmedShare.getProjectId().longValue()))
                 .orElseThrow(projectNotFound);
 
         final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));

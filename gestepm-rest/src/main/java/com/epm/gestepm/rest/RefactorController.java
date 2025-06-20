@@ -4,7 +4,7 @@ import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectTableDTO;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHolidayDTO;
 import com.epm.gestepm.modelapi.userholiday.service.UserHolidaysService;
@@ -28,7 +28,7 @@ public class RefactorController {
 
     private final MessageSource messageSource;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
 
     private final UserHolidaysService userHolidaysService;
 
@@ -72,9 +72,9 @@ public class RefactorController {
             DataTableRequest<UserHoliday> dataTableInRQ = new DataTableRequest<>(request);
             PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
 
-            List<ProjectTableDTO> userProjects = projectService.getProjectsByUserMemberDataTables(id, pagination, null);
+            List<ProjectTableDTO> userProjects = projectOldService.getProjectsByUserMemberDataTables(id, pagination, null);
 
-            Long totalRecords = projectService.getProjectsCountByUserMember(id, null);
+            Long totalRecords = projectOldService.getProjectsCountByUserMember(id, null);
 
             DataTableResults<ProjectTableDTO> dataTableResult = new DataTableResults<>();
             dataTableResult.setDraw(dataTableInRQ.getDraw());
@@ -102,7 +102,7 @@ public class RefactorController {
 
             for (Long project : projectId) {
 
-                projectService.createMember(project, id);
+                projectOldService.createMember(project, id);
 
                 log.info("Usuario " + id + " añadido al proyecto " + project);
             }
@@ -121,7 +121,7 @@ public class RefactorController {
 
         try {
 
-            projectService.deleteMember(projectId, id);
+            projectOldService.deleteMember(projectId, id);
 
             log.info("Usuario " + id + " eliminado del proyecto " + projectId);
 

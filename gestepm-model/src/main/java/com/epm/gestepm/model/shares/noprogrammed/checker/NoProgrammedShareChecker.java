@@ -3,7 +3,7 @@ package com.epm.gestepm.model.shares.noprogrammed.checker;
 import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectByIdNotFoundException;
 import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectIsNotStationException;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareStateEnumDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.creator.NoProgrammedShareCreateDto;
@@ -27,7 +27,7 @@ public class NoProgrammedShareChecker {
 
     private static final Integer STATION_ACTIVE = 1;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
 
     private final UserServiceOld userServiceOld;
 
@@ -60,7 +60,7 @@ public class NoProgrammedShareChecker {
     }
 
     private void validateProject(final Integer projectId) {
-        final Project project = Optional.ofNullable(projectService.getProjectById(projectId.longValue()))
+        final Project project = Optional.ofNullable(projectOldService.getProjectById(projectId.longValue()))
                 .orElseThrow(() -> new ProjectByIdNotFoundException(projectId));
 
         if (project.getStation() != STATION_ACTIVE) {

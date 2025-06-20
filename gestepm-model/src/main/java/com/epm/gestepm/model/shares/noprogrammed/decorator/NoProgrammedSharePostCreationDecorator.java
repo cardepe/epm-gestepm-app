@@ -16,7 +16,7 @@ import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
 import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectByIdNotFoundException;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
@@ -53,7 +53,7 @@ public class NoProgrammedSharePostCreationDecorator {
 
     private final NoProgrammedShareDao noProgrammedShareDao;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
 
     private final SMTPService smtpService;
 
@@ -68,7 +68,7 @@ public class NoProgrammedSharePostCreationDecorator {
     private final LocaleProvider localeProvider;
 
     public void createForumEntryAndUpdate(final NoProgrammedShareDto noProgrammedShare, final Set<NoProgrammedShareFileCreate> files) {
-        final Project project = this.projectService.getProjectById(Long.valueOf(noProgrammedShare.getProjectId()));
+        final Project project = this.projectOldService.getProjectById(Long.valueOf(noProgrammedShare.getProjectId()));
         final Long forumId = project.getForumId();
         final String forumTitle = this.getForumTitle(noProgrammedShare);
         final String ip = request.getLocalAddr();
@@ -148,7 +148,7 @@ public class NoProgrammedSharePostCreationDecorator {
         final User user = Utiles.getCurrentUser();
 
         final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(noProgrammedShare.getProjectId());
-        final Project project = Optional.ofNullable(this.projectService.getProjectById(noProgrammedShare.getProjectId().longValue()))
+        final Project project = Optional.ofNullable(this.projectOldService.getProjectById(noProgrammedShare.getProjectId().longValue()))
                 .orElseThrow(projectNotFound);
 
         final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));

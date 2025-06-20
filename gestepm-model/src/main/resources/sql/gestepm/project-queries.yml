@@ -14,10 +14,11 @@ sql:
       pr.forum_id,
       pr.teleworking,
       pr.state,
-      GROUP_CONCAT(prr.user_id) AS responsables_ids
+      GROUP_CONCAT(prr.user_id) AS responsible_ids
     FROM ${sch-gestepm}.project pr
     LEFT JOIN ${sch-gestepm}.activity_center ac ON ac.activity_center_id = pr.activity_center_id
-    LEFT JOIN ${sch-gestepm}.project_responsable prr ON prr.project_id = pr.project_id
+    LEFT JOIN ${sch-gestepm}.project_responsible prr ON prr.project_id = pr.project_id
+    LEFT JOIN ${sch-gestepm}.project_leader prl ON prl.project_id = pr.project_id
 
     #whereToken #filter
     GROUP BY pr.project_id
@@ -34,6 +35,8 @@ sql:
     FROM (
       SELECT pr.project_id
       FROM ${sch-gestepm}.project pr
+      LEFT JOIN ${sch-gestepm}.project_responsible prr ON prr.project_id = pr.project_id
+      LEFT JOIN ${sch-gestepm}.project_leader prl ON prl.project_id = pr.project_id
       #whereToken #filter
     ) final
 
@@ -75,7 +78,7 @@ sql:
       activity_center_id = :attr_pr_activity_center_id,
       forum_id = :attr_pr_forum_id,
       teleworking = :attr_pr_is_teleworking,
-      state = :attr_pr_state,
+      state = :attr_pr_state
     WHERE
       project_id = :attr_pr_id
 
@@ -92,6 +95,8 @@ sql:
       -- ${sql.predicate-for-pr-activity-center-ids}
       -- ${sql.predicate-for-pr-is-teleworking}
       -- ${sql.predicate-for-pr-state}
+      -- ${sql.predicate-for-pr-responsible-ids}
+      -- ${sql.predicate-for-pr-project-leader-ids}
     -- AND]
 
   filter-pr-by-id: |
@@ -102,17 +107,17 @@ sql:
 
   predicate-for-pr-id: |
 
-    pr.user_id = :attr_pr_id
+    pr.project_id = :attr_pr_id
 
   predicate-for-pr-ids: |
 
-    pr.user_id IN (:attr_pr_ids)
+    pr.project_id IN (:attr_pr_ids)
 
   predicate-for-pr-name-contains: |
 
     LOWER(pr.name) LIKE LOWER(:attr_pr_name_contains)
 
-  predicate-for-is-station: |
+  predicate-for-pr-is-station: |
 
     pr.station = :attr_pr_is_station
 
@@ -127,3 +132,11 @@ sql:
   predicate-for-pr-state: |
 
     pr.state = :attr_pr_state
+
+  predicate-for-pr-responsible-ids: |
+    
+    prr.user_id IN (:attr_pr_responsible_ids)
+
+  predicate-for-pr-project-leader-ids: |
+    
+    prl.user_id IN (:attr_pr_project_leader_ids)

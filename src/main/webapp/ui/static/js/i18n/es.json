@@ -102,7 +102,17 @@
         }
     },
     "projects": {
-        "empty": "Debes seleccionar un proyecto."
+        "empty": "Debes seleccionar un proyecto.",
+        "delete" : {
+            "alert": "¿Está seguro que quiere borrar el proyecto {0}?",
+            "success": "Proyecto {0} eliminado con éxito."
+        }
+    },
+    "projectLeaders": {
+        "delete" : {
+            "alert": "¿Está seguro que quiere borrar el jefe proyecto {0}?",
+            "success": "Jefe de proyecto {0} eliminado con éxito."
+        }
     },
     "signings": {
         "manual": {

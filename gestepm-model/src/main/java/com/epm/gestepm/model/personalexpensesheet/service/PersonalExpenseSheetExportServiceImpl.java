@@ -14,7 +14,7 @@ import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetDto
 import com.epm.gestepm.modelapi.personalexpensesheet.exception.PersonalExpenseSheetExportException;
 import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetExportService;
 import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
 import com.itextpdf.text.DocumentException;
@@ -55,16 +55,16 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
 
     private final PersonalExpenseFileService personalExpenseFileService;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
 
     private final UserServiceOld userServiceOld;
 
-    public PersonalExpenseSheetExportServiceImpl(LocaleProvider localeProvider, MessageSource messageSource, PersonalExpenseService personalExpenseService, PersonalExpenseFileService personalExpenseFileService, ProjectService projectService, UserServiceOld userServiceOld) {
+    public PersonalExpenseSheetExportServiceImpl(LocaleProvider localeProvider, MessageSource messageSource, PersonalExpenseService personalExpenseService, PersonalExpenseFileService personalExpenseFileService, ProjectOldService projectOldService, UserServiceOld userServiceOld) {
         this.localeProvider = localeProvider;
         this.messageSource = messageSource;
         this.personalExpenseService = personalExpenseService;
         this.personalExpenseFileService = personalExpenseFileService;
-        this.projectService = projectService;
+        this.projectOldService = projectOldService;
         this.userServiceOld = userServiceOld;
     }
 
@@ -72,7 +72,7 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
     public byte[] generate(PersonalExpenseSheetDto personalExpenseSheet) {
         try {
             final User user = this.userServiceOld.getUserById(personalExpenseSheet.getCreatedBy().longValue());
-            final Project project = this.projectService.getProjectById(personalExpenseSheet.getProjectId().longValue());
+            final Project project = this.projectOldService.getProjectById(personalExpenseSheet.getProjectId().longValue());
 
             final String language = localeProvider.getLocale().orElse("es");
             final Locale locale = new Locale(language);

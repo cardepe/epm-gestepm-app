@@ -30,7 +30,7 @@ public class Customer {
     private String secondaryEmail;
 	
 	@OneToOne
-	@JoinColumn(name = "PROJECT_ID", referencedColumnName = "id")
+	@JoinColumn(name = "PROJECT_ID")
 	private Project project;
 
 	public Long getId() {

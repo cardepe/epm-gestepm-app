@@ -36,7 +36,7 @@ public class Project {
 	private List<Project> projects;
 	
 	@ManyToMany
-	@JoinTable(name = "project_responsable", joinColumns = @JoinColumn(name = "project_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+	@JoinTable(name = "project_responsible", joinColumns = @JoinColumn(name = "project_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private List<User> responsables;
 	
 	@Column(name = "objective_cost", nullable = false)

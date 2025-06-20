@@ -6,7 +6,7 @@ import com.epm.gestepm.model.family.service.FamilyServiceImpl;
 import com.epm.gestepm.model.family.service.mapper.FamilyMapper;
 import com.epm.gestepm.model.deprecated.holiday.service.HolidayServiceImpl;
 import com.epm.gestepm.model.deprecated.holiday.service.mapper.HolidayMapper;
-import com.epm.gestepm.model.deprecated.project.service.ProjectServiceImpl;
+import com.epm.gestepm.model.deprecated.project.service.ProjectOldServiceImpl;
 import com.epm.gestepm.model.subfamily.service.SubFamilyServiceImpl;
 import com.epm.gestepm.model.subfamily.service.mapper.MapSFToSubFamilyDto;
 import com.epm.gestepm.model.subrole.service.SubRoleServiceImpl;
@@ -69,7 +69,7 @@ public class AdminController {
 	private MessageSource messageSource;
 	
 	@Autowired
-	private ProjectServiceImpl projectService;
+	private ProjectOldServiceImpl projectService;
 	
 	@Autowired
 	private SubFamilyServiceImpl subFamilyService;
