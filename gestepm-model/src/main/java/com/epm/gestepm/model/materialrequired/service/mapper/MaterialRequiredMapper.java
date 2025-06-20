@@ -2,7 +2,7 @@ package com.epm.gestepm.model.materialrequired.service.mapper;
 
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
 import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequiredDTO;
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 
 public class MaterialRequiredMapper {
 

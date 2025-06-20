@@ -23,7 +23,7 @@ sql:
 
   qry-count-of-d: |
 
-    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    SELECT COUNT(DISTINCT displacement_id) AS "count"
     FROM (
       SELECT d.displacement_id
       FROM ${sch-gestepm}.displacement d

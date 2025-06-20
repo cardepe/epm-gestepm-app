@@ -22,7 +22,7 @@ import com.epm.gestepm.modelapi.family.dto.FamilyTableDTO;
 import org.springframework.stereotype.Repository;
 
 import com.epm.gestepm.modelapi.family.dto.Family;
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
 
 @Repository

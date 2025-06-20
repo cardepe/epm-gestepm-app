@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="/webjars/bootstrap/4.4.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="/webjars/font-awesome/5.12.0/css/all.min.css">
 
-        <jsp:include page="../loading/header/${loadingPath}.jsp" />
+        <jsp:include page="../loading/header/${importPath}.jsp" />
 
         <link rel="stylesheet" href="/ui/static/css/elaadmin.css?v=<%= System.currentTimeMillis() %>">
         <link rel="stylesheet" href="/ui/static/css/style.css?v=<%= System.currentTimeMillis() %>">
@@ -45,7 +45,7 @@
         <script type="text/javascript" src="/webjars/momentjs/2.24.0/min/moment.min.js"></script>
         <script type="text/javascript" src="/webjars/momentjs/2.24.0/min/moment-with-locales.min.js"></script>
 
-        <jsp:include page="../loading/footer/${loadingPath}.jsp" />
+        <jsp:include page="../loading/footer/${importPath}.jsp" />
 
         <script type="text/javascript" src="/ui/static/js/elaadmin.js?v=<%= System.currentTimeMillis() %>"></script>
         <script type="text/javascript" src="/ui/static/js/script.js?v=<%= System.currentTimeMillis() %>"></script>

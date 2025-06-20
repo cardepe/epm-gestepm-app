@@ -6,7 +6,7 @@ import java.util.List;
 import com.epm.gestepm.modelapi.common.config.ApplicationContextProvider;
 import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
-import com.epm.gestepm.modelapi.project.dto.ProjectFamilyDTO;
+import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectFamilyDTO;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyOldDTO;
 import com.epm.gestepm.modelapi.subrole.service.SubRoleService;
 import com.epm.gestepm.modelapi.family.dto.Family;

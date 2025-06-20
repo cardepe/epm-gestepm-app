@@ -7,7 +7,7 @@ import com.epm.gestepm.modelapi.deprecated.interventionprshare.dto.InterventionP
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
 import com.epm.gestepm.modelapi.deprecated.interventionsubshare.dto.InterventionSubShare;
 import com.epm.gestepm.modelapi.personalsigning.dto.PersonalSigning;
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
@@ -94,7 +94,7 @@ public class User {
 	private List<Project> projects;
 	
 	@ManyToMany
-	@JoinTable(name = "project_bosses", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "PROJECT_ID"))
+	@JoinTable(name = "project_leader", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "project_id"))
 	private Set<Project> bossProjects;
 
 	@OneToMany(mappedBy = "user")

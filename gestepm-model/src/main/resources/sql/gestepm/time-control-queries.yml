@@ -15,7 +15,7 @@ sql:
         cs.project_id,
         pr.name AS project_name
       FROM ${sch-gestepm}.construction_share cs
-      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = cs.project_id
+      LEFT JOIN ${sch-gestepm}.project pr ON pr.project_id = cs.project_id
       UNION
       SELECT
         ds.displacement_share_id,
@@ -28,7 +28,7 @@ sql:
         ds.project_id,
         pr.name AS project_name
       FROM ${sch-gestepm}.displacement_share ds
-      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = ds.project_id
+      LEFT JOIN ${sch-gestepm}.project pr ON pr.project_id = ds.project_id
       UNION
       SELECT
         i.inspection_id AS id,
@@ -42,7 +42,7 @@ sql:
         pr.name AS project_name
       FROM ${sch-gestepm}.inspection i
       LEFT JOIN ${sch-gestepm}.no_programmed_share nps ON i.no_programmed_share_id = nps.no_programmed_share_id
-      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = nps.project_id
+      LEFT JOIN ${sch-gestepm}.project pr ON pr.project_id = nps.project_id
       UNION
       SELECT
         ums.id,
@@ -80,7 +80,7 @@ sql:
         ps.project_id,
         pr.name AS project_name
       FROM ${sch-gestepm}.programmed_share ps
-      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = ps.project_id
+      LEFT JOIN ${sch-gestepm}.project pr ON pr.project_id = ps.project_id
       UNION
       SELECT
         ts.teleworking_signing_id AS id,
@@ -93,7 +93,7 @@ sql:
         ts.project_id,
         pr.name AS project_name
       FROM ${sch-gestepm}.teleworking_signing ts
-      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = ts.project_id
+      LEFT JOIN ${sch-gestepm}.project pr ON pr.project_id = ts.project_id
       UNION
       SELECT
         ws.work_share_id AS id,
@@ -106,7 +106,7 @@ sql:
         ws.project_id,
         pr.name AS project_name
       FROM ${sch-gestepm}.work_share ws
-      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = ws.project_id
+      LEFT JOIN ${sch-gestepm}.project pr ON pr.project_id = ws.project_id
     ) AS sublist
     
     #whereToken #filter

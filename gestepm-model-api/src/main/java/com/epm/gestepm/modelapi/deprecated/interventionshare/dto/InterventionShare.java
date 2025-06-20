@@ -3,7 +3,7 @@ package com.epm.gestepm.modelapi.deprecated.interventionshare.dto;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.deprecated.interventionsharefile.dto.InterventionShareFile;
 import com.epm.gestepm.modelapi.deprecated.interventionsubshare.dto.InterventionSubShare;
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import lombok.Data;

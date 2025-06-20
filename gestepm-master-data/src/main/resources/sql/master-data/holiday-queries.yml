@@ -22,7 +22,7 @@ sql:
 
   qry-count-of-h: |
 
-    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    SELECT COUNT(DISTINCT holiday_id) AS "count"
     FROM (
       SELECT h.holiday_id
       FROM ${sch-gestepm}.holiday h

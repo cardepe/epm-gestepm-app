@@ -1,8 +1,8 @@
 package com.epm.gestepm.model.userholiday.service;
 
-import com.epm.gestepm.model.holiday.service.mapper.HolidayMapper;
+import com.epm.gestepm.model.deprecated.holiday.service.mapper.HolidayMapper;
 import com.epm.gestepm.model.userholiday.dao.UserHolidaysRepository;
-import com.epm.gestepm.model.userold.dao.UserRepository;
+import com.epm.gestepm.model.deprecated.user.dao.UserRepository;
 import com.epm.gestepm.modelapi.holiday.dto.YearCalendarDTO;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;

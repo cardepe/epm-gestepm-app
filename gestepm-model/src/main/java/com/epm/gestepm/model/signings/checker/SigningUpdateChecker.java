@@ -1,7 +1,7 @@
 package com.epm.gestepm.model.signings.checker;
 
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.signings.exception.SigningForbiddenException;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;

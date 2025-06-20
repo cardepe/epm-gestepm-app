@@ -1,6 +1,6 @@
 package com.epm.gestepm.modelapi.deprecated.displacementshare.dto;
 
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import lombok.Data;
 
@@ -22,7 +22,7 @@ public class DisplacementShare {
 	private User user;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "project_id", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "project_id", nullable = false)
 	private Project project;
 	
 	@Column(name = "start_date", nullable = false)

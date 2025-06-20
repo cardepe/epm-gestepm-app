@@ -28,8 +28,8 @@ import com.epm.gestepm.modelapi.personalexpensesheet.dto.updater.PersonalExpense
 import com.epm.gestepm.modelapi.personalexpensesheet.exception.PersonalExpenseSheetForbiddenException;
 import com.epm.gestepm.modelapi.personalexpensesheet.exception.PersonalExpenseSheetNotFoundException;
 import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetService;
-import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -60,7 +60,7 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
 
     private final PersonalExpenseSheetDao personalExpenseSheetDao;
 
-    private final ProjectService projectService;
+    private final ProjectOldService projectOldService;
 
     private final SMTPService smtpService;
 
@@ -200,7 +200,7 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
     }
 
     private void sendMail(final PersonalExpenseSheetDto personalExpenseSheet) {
-        final Project project = this.projectService.getProjectById(personalExpenseSheet.getProjectId().longValue());
+        final Project project = this.projectOldService.getProjectById(personalExpenseSheet.getProjectId().longValue());
         final List<User> usersToNotify = this.determineUsersToNotify(personalExpenseSheet, project);
 
         final OpenPersonalExpenseSheetMailTemplateDto template = this.buildMailTemplate(personalExpenseSheet, project);

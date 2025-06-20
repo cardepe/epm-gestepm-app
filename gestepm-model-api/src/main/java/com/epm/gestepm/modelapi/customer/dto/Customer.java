@@ -1,6 +1,6 @@
 package com.epm.gestepm.modelapi.customer.dto;
 
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,7 +30,7 @@ public class Customer {
     private String secondaryEmail;
 	
 	@OneToOne
-	@JoinColumn(name = "PROJECT_ID", referencedColumnName = "id")
+	@JoinColumn(name = "PROJECT_ID")
 	private Project project;
 
 	public Long getId() {

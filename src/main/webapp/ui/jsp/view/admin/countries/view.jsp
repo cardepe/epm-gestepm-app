@@ -167,6 +167,7 @@
 
 		customDataTable = new CustomDataTable(columns, endpoint, null, actions);
 		dTable = createDataTable('#dTable', customDataTable, locale);
+		customDataTable.setCurrentTable(dTable);
 	});
 
 </script>

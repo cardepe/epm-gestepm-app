@@ -1,12 +1,12 @@
 package com.epm.gestepm.controller;
 
-import com.epm.gestepm.model.activitycenter.service.ActivityCenterServiceImpl;
+import com.epm.gestepm.model.deprecated.activitycenter.service.ActivityCenterServiceImpl;
 import com.epm.gestepm.model.country.service.CountryServiceOldImpl;
 import com.epm.gestepm.model.family.service.FamilyServiceImpl;
 import com.epm.gestepm.model.family.service.mapper.FamilyMapper;
-import com.epm.gestepm.model.holiday.service.HolidayServiceImpl;
-import com.epm.gestepm.model.holiday.service.mapper.HolidayMapper;
-import com.epm.gestepm.model.project.service.ProjectServiceImpl;
+import com.epm.gestepm.model.deprecated.holiday.service.HolidayServiceImpl;
+import com.epm.gestepm.model.deprecated.holiday.service.mapper.HolidayMapper;
+import com.epm.gestepm.model.deprecated.project.service.ProjectOldServiceImpl;
 import com.epm.gestepm.model.subfamily.service.SubFamilyServiceImpl;
 import com.epm.gestepm.model.subfamily.service.mapper.MapSFToSubFamilyDto;
 import com.epm.gestepm.model.subrole.service.SubRoleServiceImpl;
@@ -23,7 +23,7 @@ import com.epm.gestepm.modelapi.family.dto.FamilyTableDTO;
 import com.epm.gestepm.modelapi.holiday.dto.Holiday;
 import com.epm.gestepm.modelapi.holiday.dto.HolidayDTO;
 import com.epm.gestepm.modelapi.holiday.dto.HolidayTableDTO;
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyDto;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyOldDTO;
@@ -69,7 +69,7 @@ public class AdminController {
 	private MessageSource messageSource;
 	
 	@Autowired
-	private ProjectServiceImpl projectService;
+	private ProjectOldServiceImpl projectService;
 	
 	@Autowired
 	private SubFamilyServiceImpl subFamilyService;

@@ -4,7 +4,7 @@ import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenPersonalExpenseSheetMailTemplateDto;
 import com.epm.gestepm.modelapi.expensecorrective.dto.ExpenseCorrective;
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.userholiday.dto.UserHoliday;
 import com.epm.gestepm.modelapi.usermanualsigning.dto.UserManualSigning;
