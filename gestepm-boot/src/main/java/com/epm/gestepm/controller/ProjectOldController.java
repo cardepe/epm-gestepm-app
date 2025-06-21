@@ -13,9 +13,9 @@ import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.customer.dto.Customer;
-import com.epm.gestepm.modelapi.customer.dto.CustomerDTO;
-import com.epm.gestepm.modelapi.customer.service.CustomerService;
+import com.epm.gestepm.modelapi.deprecated.customer.dto.Customer;
+import com.epm.gestepm.modelapi.deprecated.customer.dto.CustomerDTO;
+import com.epm.gestepm.modelapi.deprecated.customer.service.CustomerService;
 import com.epm.gestepm.modelapi.deprecated.project.dto.*;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
@@ -36,7 +36,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -463,30 +462,6 @@ public class ProjectOldController {
 			log.error(e);
 			return new ResponseEntity<>(messageSource.getMessage("project.customer.update.error", new Object[] {}, locale), HttpStatus.NOT_FOUND);
 		}
-	}
-
-	@ResponseBody
-	@GetMapping("/{id}/bosses/dt")
-	public DataTableResults<ProjectMemberDTO> projectBossesDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
-
-		DataTableRequest<Project> dataTableInRQ = new DataTableRequest<>(request);
-		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
-
-		List<ProjectMemberDTO> bosses = userServiceOld.getProjectBossDTOsByProjectId(id, pagination);
-
-		Long totalRecords = userServiceOld.getProjectBossesCountByProjectId(id);
-
-		DataTableResults<ProjectMemberDTO> dataTableResult = new DataTableResults<>();
-		dataTableResult.setDraw(dataTableInRQ.getDraw());
-		dataTableResult.setData(bosses);
-		dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
-		dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
-
-		if (bosses != null && !bosses.isEmpty() && !dataTableInRQ.getPaginationRequest().isFilterByEmpty()) {
-			dataTableResult.setRecordsFiltered(Integer.toString(bosses.size()));
-		}
-
-		return dataTableResult;
 	}
 
 	@ResponseBody

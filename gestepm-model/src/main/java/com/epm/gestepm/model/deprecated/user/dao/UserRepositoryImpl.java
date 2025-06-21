@@ -218,63 +218,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			return Collections.emptyList();
 		}
 	}
-	
-	public List<ProjectMemberDTO> findProjectBossDTOsByProjectId(Long projectId, PaginationCriteria pagination) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<ProjectMemberDTO> cq = cb.createQuery(ProjectMemberDTO.class);
-
-			/* #BASE_QUERY */
-
-			Root<Project> prRoot = cq.from(Project.class);
-			Join<User, Project> usRoot = prRoot.join("bossUsers", JoinType.INNER);
-
-			List<Predicate> predicates = new ArrayList<>();
-
-			cq.multiselect( usRoot.get("id"), cb.concat(cb.concat(usRoot.get("name"), " "), usRoot.get("surnames")), null);
-
-			/* END #BASE_QUERY */
-
-			/* #WHERE_CLAUSE */
-			Predicate whereFilter = DataTableUtil.generateWhereCondition(pagination, cb, usRoot, prRoot);
-
-			if (whereFilter != null) {
-				predicates.add(whereFilter);
-			}
-			/* END #WHERE_CLAUSE */
-
-			/* #ORDER_CLAUSE */
-			List<Order> orderList = DataTableUtil.generateOrderByCondition(pagination, cb, usRoot, prRoot);
-
-			if (!orderList.isEmpty()) {
-				cq.orderBy(orderList);
-			}
-			/* END #ORDER_CLAUSE */
-
-			Predicate predicateUser = cb.and(cb.equal(prRoot.get("id"), projectId), cb.equal(usRoot.get("state"), 1));
-			predicates.add(predicateUser);
-
-			// Appending all Predicates
-			cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-
-			TypedQuery<ProjectMemberDTO> criteriaQuery = entityManager.createQuery(cq);
-
-			/* #PAGE_NUMBER */
-			criteriaQuery.setFirstResult(pagination.getPageNumber());
-			/* END #PAGE_NUMBER */
-
-			/* #PAGE_SIZE */
-			criteriaQuery.setMaxResults(pagination.getPageSize());
-			/* END #PAGE_SIZE */
-
-			return criteriaQuery.getResultList();
-
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
-	}
 
 	public Long findProjectMembersCountByProjectId(Long projectId) {
 

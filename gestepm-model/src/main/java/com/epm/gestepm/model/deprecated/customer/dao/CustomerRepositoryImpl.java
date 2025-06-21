@@ -1,4 +1,4 @@
-package com.epm.gestepm.model.customer.dao;
+package com.epm.gestepm.model.deprecated.customer.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;

@@ -15,9 +15,7 @@ public interface UserRepositoryCustom {
 	List<UserDTO> findNotBossDTOsByProjectId(Long projectId);
 	List<UserDTO> findAllProjectResponsables();
 	List<ProjectMemberDTO> findProjectMemberDTOsByProjectId(Long projectId, PaginationCriteria pagination);
-	List<ProjectMemberDTO> findProjectBossDTOsByProjectId(Long projectId, PaginationCriteria pagination);
 	Long findProjectMembersCountByProjectId(Long projectId);
-	Long findProjectBossesCountByProjectId(Long projectId);
 	List<UserDTO> findUserDTOsByRank(Long rankId);
 	List<ExpenseValidateDTO> findExpensesToValidateByUserId(Long userId);
 	List<ExpenseUserValidateDTO> findExpensesToPay();

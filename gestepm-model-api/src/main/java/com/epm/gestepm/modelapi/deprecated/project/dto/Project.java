@@ -1,7 +1,7 @@
 package com.epm.gestepm.modelapi.deprecated.project.dto;
 
 import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
-import com.epm.gestepm.modelapi.customer.dto.Customer;
+import com.epm.gestepm.modelapi.deprecated.customer.dto.Customer;
 import com.epm.gestepm.modelapi.deprecated.displacementshare.dto.DisplacementShare;
 import com.epm.gestepm.modelapi.deprecated.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.family.dto.Family;

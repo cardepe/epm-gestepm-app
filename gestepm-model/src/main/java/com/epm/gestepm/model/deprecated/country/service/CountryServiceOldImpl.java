@@ -1,6 +1,6 @@
-package com.epm.gestepm.model.country.service;
+package com.epm.gestepm.model.deprecated.country.service;
 
-import com.epm.gestepm.model.country.dao.CountryRepository;
+import com.epm.gestepm.model.deprecated.country.dao.CountryRepository;
 import com.epm.gestepm.modelapi.deprecated.country.dto.Country;
 import com.epm.gestepm.modelapi.deprecated.country.service.CountryServiceOld;
 import org.springframework.stereotype.Service;

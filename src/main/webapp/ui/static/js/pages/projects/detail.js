@@ -89,3 +89,31 @@ function edit() {
             .finally(() => hideLoading());
     }
 }
+
+function editCustomer() {
+
+    const editFromJQ = $('#customerForm');
+
+    if (!isValidForm('#customerForm')) {
+        editFromJQ.addClass('was-validated');
+    } else {
+
+        showLoading();
+        editFromJQ.removeClass('was-validated');
+
+        const form = document.querySelector('#customerForm');
+
+        const name = form.querySelector('[name="name"]').value;
+        const mainEmail = form.querySelector('[name="mainEmail"]').value;
+        const secondaryEmail = form.querySelector('[name="secondaryEmail"]').value;
+
+        axios.post(endpoint + '/customer', {
+            name: name,
+            mainEmail: mainEmail,
+            secondaryEmail: secondaryEmail
+        }).then(() => {
+            location.reload();
+        }).catch(error => showNotify(error.response.data.detail, 'danger'))
+            .finally(() => hideLoading());
+    }
+}

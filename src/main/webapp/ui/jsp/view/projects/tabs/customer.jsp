@@ -14,15 +14,15 @@
         <div class="col-sm-12 col-md-4">
             <div class="form-group">
                 <label class="col-form-label w-100"><spring:message code="project.detail.customer.email.1"/>
-                    <input type="text" name="mainEmail" class="form-control" value="${customer.mainEmail}" required/>
+                    <input type="email" name="mainEmail" class="form-control" value="${customer.mainEmail}" required/>
                 </label>
             </div>
         </div>
 
         <div class="col-sm-12 col-md-4">
             <div class="form-group">
-                <label class="col-form-label w-100"><spring:message code="project.detail.customer.email.1"/>
-                    <input type="text" name="secondaryEmail" class="form-control" value="${customer.secondaryEmail}" />
+                <label class="col-form-label w-100"><spring:message code="project.detail.customer.email.2"/>
+                    <input type="email" name="secondaryEmail" class="form-control" value="${customer.secondaryEmail}" />
                 </label>
             </div>
         </div>

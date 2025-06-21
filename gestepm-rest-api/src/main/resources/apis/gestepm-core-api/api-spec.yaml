@@ -1328,6 +1328,41 @@ paths:
       tags:
         - project-v1
       description: delete-project-v1
+  '/v1/projects/{projectId}/customer':
+    parameters:
+      - $ref: '#/components/parameters/Project-Id'
+    get:
+      summary: V1 - Find project customer
+      tags:
+        - project-customer-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/Customer'
+        '404':
+          description: project-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: find-customer-by-project-id-v1
+      description: find-customer-by-project-id-v1
+    post:
+      summary: V1 - Create project customer
+      operationId: create-project-customer-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/Customer'
+        '404':
+          description: project-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - project-customer-v1
+      description: create-project-customer-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateCustomer'
   '/v1/projects/{projectId}/leaders':
     parameters:
       - $ref: '#/components/parameters/Project-Id'
@@ -3156,6 +3191,35 @@ components:
         - startDate
         - createdAt
         - createdBy
+    Customer:
+      title: Customer
+      x-stoplight:
+        id: r149zjmuc1183
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          x-stoplight:
+            id: jz6lb45c58f3u
+        mainEmail:
+          type: string
+          x-stoplight:
+            id: vdes6l89seqzy
+          format: email
+        secondaryEmail:
+          type: string
+          x-stoplight:
+            id: nm1203pdpa3d1
+          format: email
+        project:
+          $ref: '#/components/schemas/Project'
+      required:
+        - id
+        - name
+        - mainEmail
+        - project
   securitySchemes:
     bearerAuth:
       type: http
@@ -3524,6 +3588,17 @@ components:
                 type: array
                 items:
                   $ref: '#/components/schemas/Project'
+    Customer:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                $ref: '#/components/schemas/Customer'
   requestBodies:
     CreateNoProgrammedShare:
       content:
@@ -4443,6 +4518,29 @@ components:
                 type: integer
                 x-stoplight:
                   id: er62r87yojwi2
+    CreateCustomer:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                x-stoplight:
+                  id: j3972vi9deftu
+              mainEmail:
+                type: string
+                x-stoplight:
+                  id: cc4dks9xed5d3
+                format: email
+              secondaryEmail:
+                type: string
+                x-stoplight:
+                  id: mjrrdjt7843d7
+                format: email
+            required:
+              - name
+              - mainEmail
   parameters:
     Share-Id:
       name: shareId
@@ -4540,6 +4638,8 @@ tags:
     description: V1 - Programmed Share File
   - name: project-v1
     description: V1 - Project
+  - name: project-customer-v1
+    description: V1 - Project Customer
   - name: project-leader-v1
     description: V1 - Project Leader
   - name: share-v1

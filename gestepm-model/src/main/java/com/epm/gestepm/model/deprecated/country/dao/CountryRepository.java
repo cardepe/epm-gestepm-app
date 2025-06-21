@@ -1,4 +1,4 @@
-package com.epm.gestepm.model.country.dao;
+package com.epm.gestepm.model.deprecated.country.dao;
 
 import org.springframework.data.repository.CrudRepository;
 

@@ -62,14 +62,6 @@ public class UserServiceOldImpl implements UserServiceOld {
 		return userRepository.findProjectMembersCountByProjectId(projectId);
 	}
 
-	public List<ProjectMemberDTO> getProjectBossDTOsByProjectId(Long projectId, PaginationCriteria pagination) {
-		return userRepository.findProjectBossDTOsByProjectId(projectId, pagination);
-	}
-
-	public Long getProjectBossesCountByProjectId(Long projectId) {
-		return userRepository.findProjectBossesCountByProjectId(projectId);
-	}
-
 	public List<UserDTO> getUserDTOsByRank(Long rankId) {
 		return userRepository.findUserDTOsByRank(rankId);
 	}

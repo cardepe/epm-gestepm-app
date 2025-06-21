@@ -1,7 +1,7 @@
 package com.epm.gestepm.controller;
 
 import com.epm.gestepm.model.deprecated.activitycenter.service.ActivityCenterServiceImpl;
-import com.epm.gestepm.model.country.service.CountryServiceOldImpl;
+import com.epm.gestepm.model.deprecated.country.service.CountryServiceOldImpl;
 import com.epm.gestepm.model.family.service.FamilyServiceImpl;
 import com.epm.gestepm.model.family.service.mapper.FamilyMapper;
 import com.epm.gestepm.model.deprecated.holiday.service.HolidayServiceImpl;

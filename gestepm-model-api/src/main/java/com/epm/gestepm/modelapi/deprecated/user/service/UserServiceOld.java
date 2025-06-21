@@ -21,8 +21,6 @@ public interface UserServiceOld {
 	List<ProjectMemberDTO> getProjectMemberDTOsByProjectId(Long projectId, PaginationCriteria pagination);
 	Long getProjectMembersCountByProjectId(Long projectId);
 	List<UserDTO> getNotBossDTOsByProjectId(Long projectId);
-	List<ProjectMemberDTO> getProjectBossDTOsByProjectId(Long projectId, PaginationCriteria pagination);
-	Long getProjectBossesCountByProjectId(Long projectId);
 	List<UserDTO> getUserDTOsByRank(Long rankId);
 		List<ExpenseValidateDTO> getExpensesToValidateByUserId(Long userId);
 	List<ExpenseUserValidateDTO> getExpensesToPay();

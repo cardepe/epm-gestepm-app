@@ -1,0 +1,53 @@
+sql:
+
+  qry-list-of-cu: |
+
+    SELECT
+      cu.customer_id,
+      cu.name,
+      cu.main_email,
+      cu.secondary_email,
+      cu.project_id
+    FROM ${sch-gestepm}.customer cu
+
+    #whereToken #filter
+    #orderByToken
+
+  qry-create-cu: |
+
+    INSERT INTO ${sch-gestepm}.customer (
+      name,
+      main_email,
+      secondary_email,
+      project_id
+    )
+    VALUES (
+      :attr_cu_name,
+      :attr_cu_main_email,
+      :attr_cu_secondary_email,
+      :attr_cu_p_id
+    )
+    ON DUPLICATE KEY UPDATE
+      name = VALUES(name),
+      main_email = VALUES(main_email),
+      secondary_email = VALUES(secondary_email)
+
+  filter-cu-by-id: |
+    
+    -- [AND
+      -- ${sql.predicate-for-cu-id}
+    -- AND]
+
+  filter-cu-by-p-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-cu-p-id}
+    -- AND]
+
+  predicate-for-cu-id: |
+
+    cu.customer_id = :attr_cu_id
+
+  predicate-for-cu-p-id: |
+
+    cu.project_id = :attr_cu_p_id

@@ -5,6 +5,9 @@ import com.epm.gestepm.forum.model.api.service.UserForumService;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
+import com.epm.gestepm.modelapi.customer.dto.CustomerDto;
+import com.epm.gestepm.modelapi.customer.dto.finder.CustomerByProjectIdFinderDto;
+import com.epm.gestepm.modelapi.customer.service.CustomerService;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.project.dto.ProjectDto;
 import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
@@ -31,6 +34,8 @@ import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
 @AllArgsConstructor
 @EnableExecutionLog(layerMarker = VIEW)
 public class ProjectViewController {
+
+    private final CustomerService customerService;
 
     private final ProjectService projectService;
 
@@ -74,6 +79,9 @@ public class ProjectViewController {
 
         final List<ForumDTO> forums = this.userForumService.getAllForumsToDTO();
         model.addAttribute("forums", forums);
+
+        final CustomerDto customer = this.customerService.findOrNotFound(new CustomerByProjectIdFinderDto(id));
+        model.addAttribute("customer", customer);
 
         model.addAttribute("importPath", "project-detail");
         model.addAttribute("loadingPath", "projects");

@@ -1,4 +1,4 @@
-package com.epm.gestepm.modelapi.customer.dto;
+package com.epm.gestepm.modelapi.deprecated.customer.dto;
 
 public class CustomerDTO {
 
