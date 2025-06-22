@@ -108,6 +108,12 @@
             "success": "Proyecto {0} eliminado con éxito."
         }
     },
+    "projectMembers": {
+        "delete" : {
+            "alert": "¿Está seguro que quiere borrar el miembro del proyecto {0}?",
+            "success": "Miembro del proyecto {0} eliminado con éxito."
+        }
+    },
     "projectLeaders": {
         "delete" : {
             "alert": "¿Está seguro que quiere borrar el jefe proyecto {0}?",

@@ -1410,6 +1410,53 @@ paths:
       tags:
         - project-leader-v1
       description: delete-project-leader-v1
+  '/v1/projects/{projectId}/members':
+    parameters:
+      - $ref: '#/components/parameters/Project-Id'
+    post:
+      summary: V1 - Create project member
+      operationId: create-project-member-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: project-not-found | member-already-exist
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - project-member-v1
+      description: create-project-member-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateProjectMember'
+  '/v1/projects/{projectId}/members/{userId}':
+    parameters:
+      - $ref: '#/components/parameters/Project-Id'
+      - $ref: '#/components/parameters/User-Id'
+    delete:
+      summary: V1 - Delete project member
+      operationId: delete-project-member-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: project-not-found | member-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - project-member-v1
+      description: delete-project-member-v1
   /v1/shares/programmed:
     get:
       summary: V1 - List programmed shares
@@ -2275,6 +2322,11 @@ paths:
           in: query
           name: leadingProjectId
           description: Filter by leading project id.
+        - schema:
+            type: integer
+          in: query
+          name: memberProjectId
+          description: Filter by member project id.
       tags:
         - user-v1
     post:
@@ -4508,6 +4560,16 @@ components:
               - isTeleworking
               - state
               - responsibleIds
+    CreateProjectMember:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              userId:
+                type: integer
+                x-stoplight:
+                  id: j3k27bm3t89gr
     CreateProjectLeader:
       content:
         application/json:
@@ -4640,6 +4702,8 @@ tags:
     description: V1 - Project
   - name: project-customer-v1
     description: V1 - Project Customer
+  - name: project-member-v1
+    description: V1 - Project Member
   - name: project-leader-v1
     description: V1 - Project Leader
   - name: share-v1

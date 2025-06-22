@@ -443,14 +443,14 @@ public class ProjectRepositoryImpl implements ProjectRepositoryCustom {
     @Override
     public void createMember(Long projectId, Long userId) {
 
-        Query query = entityManager.createNativeQuery("INSERT INTO users_projects VALUES (" + userId + ", " + projectId + ")");
+        Query query = entityManager.createNativeQuery("INSERT INTO project_member VALUES (" + userId + ", " + projectId + ")");
         query.executeUpdate();
     }
 
     @Override
     public void deleteMember(Long projectId, Long userId) {
 
-        Query query = entityManager.createNativeQuery("DELETE FROM users_projects WHERE user_id = " + userId + " AND project_id = " + projectId);
+        Query query = entityManager.createNativeQuery("DELETE FROM project_member WHERE user_id = " + userId + " AND project_id = " + projectId);
         query.executeUpdate();
     }
 

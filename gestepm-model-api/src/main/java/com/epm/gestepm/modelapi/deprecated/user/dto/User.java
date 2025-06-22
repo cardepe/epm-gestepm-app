@@ -90,7 +90,7 @@ public class User {
 	private List<PersonalSigning> personalSignings;
 	
 	@ManyToMany
-	@JoinTable(name = "users_projects", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "PROJECT_ID"))
+	@JoinTable(name = "project_member", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "PROJECT_ID"))
 	private List<Project> projects;
 	
 	@ManyToMany

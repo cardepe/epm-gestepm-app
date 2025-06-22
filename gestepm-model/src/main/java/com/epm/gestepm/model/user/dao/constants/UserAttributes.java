@@ -44,4 +44,6 @@ public class UserAttributes {
 
     public static final String ATTR_U_LEADING_PROJECT_ID = "attr_u_leading_project_id";
 
+    public static final String ATTR_U_MEMBER_PROJECT_ID = "attr_u_member_project_id";
+
 }

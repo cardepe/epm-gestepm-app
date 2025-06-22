@@ -35,4 +35,6 @@ public class UserListRestRequest extends RestRequest {
 
     private Integer leadingProjectId;
 
+    private Integer memberProjectId;
+
 }

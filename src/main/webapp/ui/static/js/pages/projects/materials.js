@@ -1,28 +1,25 @@
-const usersEndpoint = '/v1/users';
-
 $(document).ready(function() {
     initializeDataTables();
     initializeSelects();
 });
 
 function initializeDataTables() {
-    let columns = ['id', 'fullName', 'id']
-    let endpoint = '/v1/users';
-    let actions = [ { action: 'view', url: '/users/{id}', permission: 'read_project' }, { action: 'delete', permission: 'edit_project' }]
-    let expand = []
-    let filters = [{'leadingProjectId': currentProject.id}]
-    let columnDefs = []
+    let columns = ['id', 'fullName', 'level.name', 'id']
+    let endpoint = endpoint + '/materials';
+    let actions = [ { action: 'edit', permission: 'read_project' }, { action: 'delete', permission: 'edit_project' }]
 
-    let expensesDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, columnDefs);
-    dTable = createDataTable('#dTable', expensesDataTable, locale);
-    expensesDataTable.setCurrentTable(dTable);
+    let dataTable = new CustomDataTable(columns, endpoint, null, actions);
+    dTable = createDataTable('#dTable', dataTable, locale);
+    dataTable.setCurrentTable(dTable);
 }
 
 function initializeSelects() {
+    const getCustomName = user => `${user.name} ${user.surnames}`;
+
     // # CreateForm
     const createForm = document.querySelector('#createForm');
 
-    createBasicSelect2($(createForm.querySelector('[name="required"]')), 'createForm');
+    createSelect2($(createForm.querySelector('[name="userId"]')), usersEndpoint, null, null, getCustomName, 'createForm');
 }
 
 function create() {
@@ -41,7 +38,7 @@ function create() {
 
         const userId = form.querySelector('[name="userId"]').value;
 
-        axios.post(endpoint + '/leaders', {
+        axios.post(endpoint + '/materials', {
             userId: userId
         }).then(() => {
             dTable.ajax.reload(function () {
@@ -53,15 +50,15 @@ function create() {
 }
 
 function remove(id) {
-    if (confirm(messages.projectLeaders.delete.alert.replace('{0}', id))) {
+    if (confirm(messages.projectMembers.delete.alert.replace('{0}', id))) {
 
         showLoading();
 
-        axios.delete(endpoint + '/leaders/' + id).then(() => {
+        axios.delete(endpoint + '/members/' + id).then(() => {
             dTable.ajax.reload(function () {
                 dTable.page(dTable.page()).draw(false);
             }, false);
-            showNotify(messages.projectLeaders.delete.success.replace('{0}', id));
+            showNotify(messages.projectMembers.delete.success.replace('{0}', id));
         }).catch(error => showNotify(error.response.data.detail, 'danger'))
             .finally(() => hideLoading());
     }

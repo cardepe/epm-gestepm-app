@@ -27,6 +27,7 @@ sql:
     LEFT JOIN ${sch-gestepm}.roles ro ON ro.id = u.role_id
     LEFT JOIN ${sch-gestepm}.sub_roles le ON le.id = u.level_id
     LEFT JOIN ${sch-gestepm}.project_leader prl ON prl.user_id = u.user_id
+    LEFT JOIN ${sch-gestepm}.project_member prm ON prm.user_id = u.user_id
 
     #whereToken #filter
     GROUP BY u.user_id
@@ -47,6 +48,7 @@ sql:
       LEFT JOIN ${sch-gestepm}.roles ro ON ro.id = u.role_id
       LEFT JOIN ${sch-gestepm}.sub_roles le ON le.id = u.level_id
       LEFT JOIN ${sch-gestepm}.project_leader prl ON prl.user_id = u.user_id
+      LEFT JOIN ${sch-gestepm}.project_member prm ON prm.user_id = u.user_id
       #whereToken #filter
     ) final
 
@@ -122,6 +124,7 @@ sql:
       -- ${sql.predicate-for-u-role-ids}
       -- ${sql.predicate-for-u-level-ids}
       -- ${sql.predicate-for-u-leading-project-id}
+      -- ${sql.predicate-for-u-member-project-id}
     -- AND]
 
   filter-u-by-id: |
@@ -180,3 +183,7 @@ sql:
   predicate-for-u-leading-project-id: |
     
     prl.project_id = :attr_u_leading_project_id
+
+  predicate-for-u-member-project-id: |
+    
+    prm.project_id = :attr_u_member_project_id

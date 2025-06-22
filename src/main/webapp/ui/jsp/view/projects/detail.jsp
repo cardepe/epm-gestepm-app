@@ -13,7 +13,7 @@
     final String currentProject = mapper.writeValueAsString(request.getAttribute("currentProject"));
 %>
 
-<c:set var="projectTabs" value="${fn:split('expenses,signings,leaders,members,required-materials,families', ',')}" />
+<c:set var="projectTabs" value="${fn:split('expenses,signings,leaders,members,materials,families', ',')}" />
 
 <div class="breadcrumbs">
     <div class="breadcrumbs-inner">
@@ -57,7 +57,7 @@
                         <spring:message code="${tab}" />
                     </div>
                 </div>
-                <c:if test="${tab == 'leaders'}">
+                <c:if test="${tab == 'leaders' || tab == 'members' || tab == 'materials'}">
                     <div class="col text-right">
                         <button type="button" class="btn btn-standard btn-sm mr-1" data-toggle="modal" data-target="#createModal"><spring:message code="add" /></button>
                     </div>
