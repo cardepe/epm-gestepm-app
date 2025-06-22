@@ -1410,6 +1410,124 @@ paths:
       tags:
         - project-leader-v1
       description: delete-project-leader-v1
+  '/v1/projects/{projectId}/materials':
+    parameters:
+      - $ref: '#/components/parameters/Project-Id'
+    post:
+      summary: V1 - Create project material
+      operationId: create-project-material-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ProjectMaterial'
+        '404':
+          description: project-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - project-material-v1
+      description: create-project-material-v1
+      requestBody:
+        $ref: '#/components/requestBodies/CreateProjectMaterial'
+    get:
+      summary: V1 - Find project material
+      tags:
+        - project-material-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ProjectMaterialList'
+        '404':
+          description: project-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: list-project-materials-v1
+      description: list-project-materials-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-offset
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-pagination-limit
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order
+        - $ref: ../../base-api-spec.yaml#/components/parameters/filter-order-by
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: ids
+          description: Filter by project material identificator.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: projectIds
+          description: Filter by project ids.
+        - schema:
+            type: string
+          in: query
+          name: nameContains
+          description: Filter by name contains.
+        - schema:
+            type: boolean
+          in: query
+          name: required
+          description: Filter by project material required.
+  '/v1/projects/{projectId}/materials/{materialId}':
+    parameters:
+      - $ref: '#/components/parameters/Project-Id'
+      - $ref: '#/components/parameters/Material-Id'
+    get:
+      summary: V1 - Find project material
+      tags:
+        - project-material-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ProjectMaterial'
+        '404':
+          description: project-not-found | project-material-not-found
+      operationId: find-project-material-by-id-v1
+      description: find-project-material-by-id-v1
+      parameters:
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-meta
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-links
+        - $ref: ../../base-api-spec.yaml#/components/parameters/api-opt-expand
+    put:
+      summary: V1 - Update project material
+      operationId: update-project-material-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/ProjectMaterial'
+        '404':
+          description: project-not-found | project-material-not-found
+      description: update-project-material-v1
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateProjectMaterial'
+      tags:
+        - project-material-v1
+    delete:
+      summary: V1 - Delete project material
+      operationId: delete-project-material-v1
+      responses:
+        '200':
+          description: '**OK**'
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResSuccess
+        '404':
+          description: project-not-found | material-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      tags:
+        - project-material-v1
+      description: delete-project-material-v1
   '/v1/projects/{projectId}/members':
     parameters:
       - $ref: '#/components/parameters/Project-Id'
@@ -3272,6 +3390,34 @@ components:
         - name
         - mainEmail
         - project
+    ProjectMaterial:
+      title: ProjectMaterial
+      x-stoplight:
+        id: lhjmr1z4qgnd3
+      type: object
+      properties:
+        id:
+          type: integer
+        project:
+          $ref: '#/components/schemas/Project'
+        nameEs:
+          type: string
+          x-stoplight:
+            id: kkkw48b6k78jm
+        nameFr:
+          type: string
+          x-stoplight:
+            id: naxe1exctw9wz
+        required:
+          type: boolean
+          x-stoplight:
+            id: pjzwzixclj19j
+      required:
+        - id
+        - project
+        - nameEs
+        - nameFr
+        - required
   securitySchemes:
     bearerAuth:
       type: http
@@ -3651,6 +3797,30 @@ components:
                 $ref: ../../base-api-spec.yaml#/components/schemas/Meta
               data:
                 $ref: '#/components/schemas/Customer'
+    ProjectMaterial:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                $ref: '#/components/schemas/ProjectMaterial'
+    ProjectMaterialList:
+      description: Example response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              metadata:
+                $ref: ../../base-api-spec.yaml#/components/schemas/Meta
+              data:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectMaterial'
   requestBodies:
     CreateNoProgrammedShare:
       content:
@@ -4603,6 +4773,50 @@ components:
             required:
               - name
               - mainEmail
+    CreateProjectMaterial:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              nameEs:
+                type: string
+                x-stoplight:
+                  id: yblix6vp1hg07
+              nameFr:
+                type: string
+                x-stoplight:
+                  id: n3ixiykrslv99
+              required:
+                type: boolean
+                x-stoplight:
+                  id: d9tbucgnrq307
+            required:
+              - nameEs
+              - nameFr
+              - required
+    UpdateProjectMaterial:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              nameEs:
+                type: string
+                x-stoplight:
+                  id: guj0njun0h64v
+              nameFr:
+                type: string
+                x-stoplight:
+                  id: 2ji9z75qp6emt
+              required:
+                type: boolean
+                x-stoplight:
+                  id: q4v4jawbs4vct
+            required:
+              - nameEs
+              - nameFr
+              - required
   parameters:
     Share-Id:
       name: shareId
@@ -4667,6 +4881,13 @@ components:
       schema:
         type: integer
       description: Project identificator.
+    Material-Id:
+      name: materialId
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Project material identificator.
 tags:
   - name: personal-expense-sheet-v1
     description: V1 - Personal Expense Sheets
@@ -4702,6 +4923,8 @@ tags:
     description: V1 - Project
   - name: project-customer-v1
     description: V1 - Project Customer
+  - name: project-material-v1
+    description: V1 - Project Material
   - name: project-member-v1
     description: V1 - Project Member
   - name: project-leader-v1

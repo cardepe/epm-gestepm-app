@@ -15,12 +15,10 @@ public interface ProjectOldService {
 	
 	Project getProjectById(Long id);
 	List<Project> findDisplacementProjects();
-	Project getProjectByIdAndBossId(Long id, Long bossId);
 	Project save(Project project);
 	void delete(Long id);
 	List<ProjectListDTO> getAllProjectsDTOs();
 	List<ProjectListDTO> getProjectsByUser(User user);
-	List<ProjectListDTO> getStationDTOs();
 	List<ProjectListDTO> getTeleworkingProjects(boolean isTeleworking);
 	List<ProjectTableDTO> getAllProjectsDataTables(PaginationCriteria pagination, Object[] params);
 	List<ProjectTableDTO> getProjectsByUserMemberDataTables(Long userId, PaginationCriteria pagination, Object[] params);
@@ -30,6 +28,5 @@ public interface ProjectOldService {
 	void createMember(Long projectId, Long userId);
 	void deleteMember(Long projectId, Long userId);
 	void createUserBoss(Long projectId, Long userId);
-	void deleteUserBoss(Long projectId, Long userId);
 	XSSFWorkbook generateProjectExcel(Long projectId, Long userId, Project project, Integer year, Locale locale);
 }

@@ -4,22 +4,35 @@ $(document).ready(function() {
 });
 
 function initializeDataTables() {
-    let columns = ['id', 'fullName', 'level.name', 'id']
-    let endpoint = endpoint + '/materials';
+    let columns = ['nameEs', 'nameFr', 'required', 'id']
+    let endpoint = '/v1/projects/' + currentProject.id + '/materials';
     let actions = [ { action: 'edit', permission: 'read_project' }, { action: 'delete', permission: 'edit_project' }]
+    let expand = []
+    let filters = [{'projectIds': currentProject.id}];
+    let columnsDef = [
+        {
+            targets: 2,
+            render: function (data) {
+                return data ? messages.commons.yes : messages.commons.no ;
+            }
+        }
+    ]
 
-    let dataTable = new CustomDataTable(columns, endpoint, null, actions);
+    let dataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, columnsDef);
     dTable = createDataTable('#dTable', dataTable, locale);
     dataTable.setCurrentTable(dTable);
 }
 
 function initializeSelects() {
-    const getCustomName = user => `${user.name} ${user.surnames}`;
-
     // # CreateForm
     const createForm = document.querySelector('#createForm');
 
-    createSelect2($(createForm.querySelector('[name="userId"]')), usersEndpoint, null, null, getCustomName, 'createForm');
+    createBasicSelect2($(createForm.querySelector('[name="required"]')), 'createForm');
+
+    // # EditForm
+    const editForm = document.querySelector('#editForm');
+
+    createBasicSelect2($(editForm.querySelector('[name="required"]')), 'editForm');
 }
 
 function create() {
@@ -36,10 +49,14 @@ function create() {
 
         const form = document.querySelector('#createForm');
 
-        const userId = form.querySelector('[name="userId"]').value;
+        const nameEs = form.querySelector('[name="nameEs"]').value;
+        const nameFr = form.querySelector('[name="nameFr"]').value;
+        const required = form.querySelector('[name="required"]').value;
 
         axios.post(endpoint + '/materials', {
-            userId: userId
+            nameEs: nameEs,
+            nameFr: nameFr,
+            required: required
         }).then(() => {
             dTable.ajax.reload(function () {
                 dTable.page(dTable.page()).draw(false);
@@ -49,16 +66,58 @@ function create() {
     }
 }
 
-function remove(id) {
-    if (confirm(messages.projectMembers.delete.alert.replace('{0}', id))) {
+function edit(id) {
+
+    const editModal = $('#editModal');
+    const saveBtn = $('#saveBtn');
+    const editElement = document.getElementById('editModal');
+    const editForm = editElement.querySelector('#editForm');
+
+    axios.get(endpoint + '/materials/' + id).then((response) => {
+        const projectMaterial = response.data.data;
+
+        editForm.querySelector('[name="nameEs"]').value = projectMaterial.nameEs;
+        editForm.querySelector('[name="nameFr"]').value = projectMaterial.nameFr;
+        $(editForm.querySelector('[name="required"]')).val(projectMaterial.required ? 'true' : 'false').trigger('change');
+
+        editElement.setAttribute('data-id', id);
+        editModal.modal('show');
+    });
+
+    saveBtn.click(function() {
 
         showLoading();
 
-        axios.delete(endpoint + '/members/' + id).then(() => {
+        const nameEs = editForm.querySelector('[name="nameEs"]').value;
+        const nameFr = editForm.querySelector('[name="nameFr"]').value;
+        const required = editForm.querySelector('[name="required"]').value;
+
+        axios.put(endpoint + '/materials/' + id, {
+            nameEs: nameEs,
+            nameFr: nameFr,
+            required: required
+        }).then(() => {
             dTable.ajax.reload(function () {
                 dTable.page(dTable.page()).draw(false);
             }, false);
-            showNotify(messages.projectMembers.delete.success.replace('{0}', id));
+        }).catch(error => showNotify(error.response.data.detail, 'danger'))
+            .finally(() => {
+                hideLoading();
+                editModal.modal('hide');
+            });
+    });
+}
+
+function remove(id) {
+    if (confirm(messages.projectMaterials.delete.alert.replace('{0}', id))) {
+
+        showLoading();
+
+        axios.delete(endpoint + '/materials/' + id).then(() => {
+            dTable.ajax.reload(function () {
+                dTable.page(dTable.page()).draw(false);
+            }, false);
+            showNotify(messages.projectMaterials.delete.success.replace('{0}', id));
         }).catch(error => showNotify(error.response.data.detail, 'danger'))
             .finally(() => hideLoading());
     }

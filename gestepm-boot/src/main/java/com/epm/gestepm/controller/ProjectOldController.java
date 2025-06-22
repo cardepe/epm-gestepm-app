@@ -1,44 +1,29 @@
 package com.epm.gestepm.controller;
 
-import com.epm.gestepm.forum.model.api.dto.ForumDTO;
-import com.epm.gestepm.forum.model.api.service.UserForumService;
 import com.epm.gestepm.model.family.service.mapper.FamilyMapper;
-import com.epm.gestepm.model.materialrequired.service.mapper.MaterialRequiredMapper;
 import com.epm.gestepm.model.deprecated.project.service.mapper.ProjectMapper;
-import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
-import com.epm.gestepm.modelapi.deprecated.activitycenter.service.ActivityCenterService;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.deprecated.customer.dto.Customer;
-import com.epm.gestepm.modelapi.deprecated.customer.dto.CustomerDTO;
 import com.epm.gestepm.modelapi.deprecated.customer.service.CustomerService;
 import com.epm.gestepm.modelapi.deprecated.project.dto.*;
 import com.epm.gestepm.modelapi.family.dto.Family;
-import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
 import com.epm.gestepm.modelapi.family.dto.FamilyTableDTO;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
-import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
-import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequiredDTO;
-import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequiredTableDTO;
-import com.epm.gestepm.modelapi.materialrequired.service.MaterialRequiredService;
 import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
-import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.deprecated.user.dto.UserDTO;
 import com.epm.gestepm.modelapi.deprecated.user.exception.InvalidUserSessionException;
 import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,16 +34,12 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/projects")
 public class ProjectOldController {
 
 	private static final Log log = LogFactory.getLog(ProjectOldController.class);
-
-	@Autowired
-	private ActivityCenterService activityCenterServiceOld;
 	
 	@Autowired
 	private CustomerService customerService;
@@ -70,16 +51,10 @@ public class ProjectOldController {
 	private FamilyService familyService;
 	
 	@Autowired
-	private MaterialRequiredService materialRequiredService;
-	
-	@Autowired
 	private ProjectOldService projectOldService;
 
 	@Autowired
 	private UserServiceOld userServiceOld;
-	
-	@Autowired
-	private UserForumService userForumService;
 
 	@GetMapping("/view")
 	public String getViewProjects(Locale locale, Model model, HttpServletRequest request) {
@@ -156,65 +131,6 @@ public class ProjectOldController {
 		}
 	}
 
-	@ResponseBody
-	@PostMapping("/create")
-	public ResponseEntity<String> createProject(@ModelAttribute ProjectDTO projectDTO, Locale locale) {
-
-		try {
-
-			// Recover user
-			User user = Utiles.getUsuario();
-			
-			// Get responsables
-			List<User> responsables = new ArrayList<>();
-			
-			for (Long responsableId : projectDTO.getResponsables()) {
-				
-				User responsable = userServiceOld.getUserById(responsableId);
-				
-				if (responsable != null) {
-					responsables.add(responsable);
-				}
-			}
-			
-			if (responsables.isEmpty()) {
-				log.error("No se ha añadido ningun responsable al proyecto " + projectDTO.getId());
-				return new ResponseEntity<>(messageSource.getMessage("project.create.error", new Object[] {}, locale), HttpStatus.NOT_FOUND);
-			}
-			
-			ActivityCenter activityCenter = activityCenterServiceOld.getById(projectDTO.getActivityCenter());
-			if (activityCenter == null) {
-				log.error("Centro de actividad " + projectDTO.getActivityCenter() + " no encontrado");
-				return new ResponseEntity<>(messageSource.getMessage("project.create.error", new Object[] {}, locale),
-						HttpStatus.NOT_FOUND);
-			}
-
-			Project project = ProjectMapper.mapDTOToProject(projectDTO, responsables, activityCenter);
-			if (project == null) {
-				log.error("Proyecto " + projectDTO.getProjectName() + " no mappeado");
-				return new ResponseEntity<>(messageSource.getMessage("project.create.error", new Object[] {}, locale), HttpStatus.NOT_FOUND);
-			}
-
-			project = projectOldService.save(project);
-
-			// Creamos las relaciones ManyToMany
-			for (User responsable : responsables) {
-				projectOldService.createUserBoss(project.getId(), responsable.getId());
-			}
-
-			log.info("Proyecto " + projectDTO.getProjectName() + " creado con éxito por parte del usuario " + user.getId());
-
-			// Return data
-			return new ResponseEntity<>(messageSource.getMessage("project.create.success", new Object[] {}, locale),
-					HttpStatus.OK);
-
-		} catch (Exception e) {
-			log.error(e);
-			return new ResponseEntity<>(messageSource.getMessage("project.create.error", new Object[] {}, locale),
-					HttpStatus.NOT_FOUND);
-		}
-	}
-	
 	@ResponseBody
 	@PostMapping("/copy")
 	public ResponseEntity<String> copyProject(@ModelAttribute ProjectCopyDTO projectCopyDTO, Locale locale) {
@@ -302,169 +218,6 @@ public class ProjectOldController {
 	}
 
 	@ResponseBody
-	@DeleteMapping("/delete/{id}")
-	public ResponseEntity<String> deleteProject(@PathVariable Long id, Locale locale) {
-
-		try {
-
-			// Recover user
-			User user = Utiles.getUsuario();
-						
-			projectOldService.delete(id);
-
-			log.info("Proyecto " + id + " eliminado con éxito por parte del usuario " + user.getId());
-
-			// Return data
-			return new ResponseEntity<>(messageSource.getMessage("project.delete.success", new Object[] {}, locale),
-					HttpStatus.OK);
-
-		} catch (Exception e) {
-			log.error(e);
-			return new ResponseEntity<>(messageSource.getMessage("project.delete.error", new Object[] {}, locale),
-					HttpStatus.NOT_FOUND);
-		}
-	}
-
-	@GetMapping("/{id}/test")
-	public String projectDetail(@PathVariable Long id, Locale locale, Model model, HttpServletRequest request) {
-
-		try {
-			
-			// Init project
-			Project project = null;
-
-			// Loading constants
-			ModelUtil.loadConstants(locale, model, request);
-
-			// Recover user
-			User user = Utiles.getUsuario();
-			Role role = user.getRole();
-			
-			// Log info
-			log.info("El usuario " + user.getId() + " está accediendo al detalle del proyecto " + id);
-
-			// Load project
-			if (role.getId() == Constants.ROLE_ADMIN_ID || role.getId() == Constants.ROLE_TECHNICAL_SUPERVISOR_ID) {
-				project = projectOldService.getProjectById(id);
-			} else {
-				project = projectOldService.getProjectByIdAndBossId(id, user.getId());
-			}
-
-			if (project == null) {
-				log.info("El usuario " + user.getId() + " no tiene autorización para ver el projecto " + id);
-				return "redirect:/unauthorized";
-			}
-
-			// Load all Users
-			List<UserDTO> userDTOs = userServiceOld.getAllUserDTOs();
-			
-			// Load no project members
-			List<UserDTO> notMembers = userServiceOld.getNotUserDTOsByProjectId(id);
-						
-			// Load no team leaders
-			List<UserDTO> notBosses = userServiceOld.getNotBossDTOsByProjectId(id);
-
-			// Recover Team Leaders
-			List<UserDTO> teamLeaders = userServiceOld.getUserDTOsByRank(Constants.ROLE_PL_ID);
-			
-			// PHPBB Forums
-			List<ForumDTO> forumDTOs = userForumService.getAllForumsToDTO();
-			
-			// Recover Customer info
-			Customer customer = customerService.getByProjectId(id);
-			
-			// Recover Activity Centers
-			List<ActivityCenter> activityCenters = activityCenterServiceOld.findAll();
-			
-			// Order by name
-			activityCenters.sort(Comparator.comparing(ActivityCenter::getName));
-			
-			// Recover Project Stations
-			List<ProjectListDTO> stations = projectOldService.getStationDTOs();
-			
-			// Load no families selected
-			List<FamilyDTO> notFamilies = familyService.getClonableFamilyDTOs(locale);
-			
-			// Get Responsables
-			List<Long> responsablesIds = project.getResponsables().stream().map(User::getId).collect(Collectors.toList());
-
-			// Add project to model
-			model.addAttribute("projectId", id);
-			model.addAttribute("userDTOs", userDTOs);
-			model.addAttribute("project", project);
-			model.addAttribute("notMembers", notMembers);
-			model.addAttribute("notBosses", notBosses);
-			model.addAttribute("teamLeaders", teamLeaders);
-			model.addAttribute("forumDTOs", forumDTOs);
-			model.addAttribute("customer", customer);
-			model.addAttribute("stations", stations);
-			model.addAttribute("activityCenters", activityCenters);
-			model.addAttribute("notFamilies", notFamilies);
-			model.addAttribute("responsablesIds", responsablesIds);
-			
-			// Load Action Buttons for DataTable
-			model.addAttribute("tableActionButtons", ModelUtil.getTableActionButtonsOnlyTrash());
-			model.addAttribute("tableModifyButtons", ModelUtil.getTableModifyActionButtons());
-			model.addAttribute("tableExpenseActionButtons", ModelUtil.getTableExpenseActionButtons());
-			model.addAttribute("tableEquipmentActionButtons", ModelUtil.getTableModifyActionButtons());			
-
-			// Loading view
-			return "project-detail";
-
-		} catch (InvalidUserSessionException e) {
-			log.error(e);
-			return "redirect:/login";
-		}
-	}
-
-	@ResponseBody
-	@PostMapping("/{id}/customer/update")
-	public ResponseEntity<String> updateProjectCustomer(@PathVariable Long id, @ModelAttribute CustomerDTO customerDto, Locale locale) {
-
-		try {
-
-			// Recover user
-			User user = Utiles.getUsuario();
-			
-			// Recover customer
-			Customer customer = customerService.getByProjectId(id);
-						
-			if (StringUtils.isBlank(customerDto.getCustomerName())) {
-				
-				if (customer != null) {
-					customerService.delete(customer.getId());
-				}
-				
-			} else {
-				
-				if (customer == null) {
-	
-					// Recover project
-					Project project = projectOldService.getProjectById(id);
-					
-					customer = new Customer();
-					customer.setProject(project);
-				}
-				
-				customer.setName(customerDto.getCustomerName());
-				customer.setMainEmail(customerDto.getMainEmail());
-				customer.setSecondaryEmail(customerDto.getSecondaryEmail());
-				
-				customerService.save(customer);
-			}
-			
-			log.info("Cliente actualizado con éxito para el proyecto " + id + " por parte del usuario " + user.getId());
-
-			// Return data
-			return new ResponseEntity<>(messageSource.getMessage("project.customer.update.success", new Object[] {}, locale), HttpStatus.OK);
-
-		} catch (Exception e) {
-			log.error(e);
-			return new ResponseEntity<>(messageSource.getMessage("project.customer.update.error", new Object[] {}, locale), HttpStatus.NOT_FOUND);
-		}
-	}
-
-	@ResponseBody
 	@GetMapping("/{id}/families/dt")
 	public DataTableResults<FamilyTableDTO> projectFamiliesDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
 
@@ -486,152 +239,6 @@ public class ProjectOldController {
 		}
 
 		return dataTableResult;
-	}
-	
-	@ResponseBody
-	@GetMapping("/{id}/materials-required/dt")
-	public DataTableResults<MaterialRequiredTableDTO> projectMaterialsRequiredDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
-
-		DataTableRequest<Project> dataTableInRQ = new DataTableRequest<>(request);
-		PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
-
-		List<MaterialRequiredTableDTO> materialsRequired = materialRequiredService.getMaterialsRequiredDataTablesByProjectId(id, pagination);
-
-		Long totalRecords = materialRequiredService.getMaterialsRequiredCountByProjectId(id);
-
-		DataTableResults<MaterialRequiredTableDTO> dataTableResult = new DataTableResults<>();
-		dataTableResult.setDraw(dataTableInRQ.getDraw());
-		dataTableResult.setData(materialsRequired);
-		dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
-		dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
-
-		if (materialsRequired != null && !materialsRequired.isEmpty() && !dataTableInRQ.getPaginationRequest().isFilterByEmpty()) {
-			dataTableResult.setRecordsFiltered(Integer.toString(materialsRequired.size()));
-		}
-
-		return dataTableResult;
-	}
-
-	@ResponseBody
-	@GetMapping("/{id}/members/dt")
-	public DataTableResults<ProjectMemberDTO> projectMembersDataTable(@PathVariable Long id, HttpServletRequest request, Locale locale) {
-		
-		DataTableRequest<Project> dataTableInRQ = new DataTableRequest<>(request);
-	    PaginationCriteria pagination = dataTableInRQ.getPaginationRequest();
-
-	    List<ProjectMemberDTO> members = userServiceOld.getProjectMemberDTOsByProjectId(id, pagination);
-	    
-	    Long totalRecords = userServiceOld.getProjectMembersCountByProjectId(id);
-
-	    DataTableResults<ProjectMemberDTO> dataTableResult = new DataTableResults<>();
-	    dataTableResult.setDraw(dataTableInRQ.getDraw());
-	    dataTableResult.setData(members);
-	    dataTableResult.setRecordsTotal(String.valueOf(totalRecords));
-	    dataTableResult.setRecordsFiltered(Long.toString(totalRecords));
-
-		if (members != null && !members.isEmpty() && !dataTableInRQ.getPaginationRequest().isFilterByEmpty()) {
-			dataTableResult.setRecordsFiltered(Integer.toString(members.size()));
-		}
-
-	    return dataTableResult;
-	}
-	
-	@ResponseBody
-	@PostMapping("/{id}/members/create")
-	public ResponseEntity<String> createProjectMember(@RequestParam Long[] memberId, @PathVariable Long id, Locale locale) {
-		
-		try {
-
-			for (Long member : memberId) {
-				
-				projectOldService.createMember(id, member);
-				
-				log.info("Usuario " + member + " añadido al proyecto " + id);
-			}
-			
-			// Return data
-			return new ResponseEntity<>(messageSource.getMessage("project.detail.members.success", new Object[] { }, locale), HttpStatus.OK);
-		
-		} catch (Exception e) {
-			return new ResponseEntity<>(messageSource.getMessage("project.detail.members.member.error", new Object[] { }, locale), HttpStatus.NOT_FOUND);
-		}
-	}
-	
-	@ResponseBody
-	@DeleteMapping("/{id}/members/delete/{memberId}")
-	public ResponseEntity<String> deleteProjectMember(@PathVariable Long memberId, @PathVariable Long id, Locale locale) {
-		
-		try {
-
-			projectOldService.deleteMember(id, memberId);
-			
-			log.info("Usuario " + memberId + " eliminado del proyecto " + id);	
-			
-			// Return data
-			return new ResponseEntity<>(messageSource.getMessage("project.detail.members.delete", new Object[] { }, locale), HttpStatus.OK);
-		
-		} catch (Exception e) {
-			return new ResponseEntity<>(messageSource.getMessage("project.detail.members.member.derror", new Object[] { }, locale), HttpStatus.NOT_FOUND);
-		}
-	}
-	
-	@ResponseBody
-	@PostMapping("/{id}/bosses/create")
-	public ResponseEntity<String> createProjectBoss(@RequestParam Long[] bossId, @PathVariable Long id, Locale locale) {
-
-		try {
-
-			// Recover user
-			User user = Utiles.getUsuario();
-			
-			for (Long boss : bossId) {
-				
-				try {
-					projectOldService.createMember(id, boss);
-				} catch (DataIntegrityViolationException e) {
-					log.info("El usuario " + boss + " ya es miembro del proyecto " + id);
-				}
-				
-				projectOldService.createUserBoss(id, boss);
-	
-				log.info("Jefe de proyecto " + boss + " añadido al proyecto " + id + " por parte del usuario " + user.getId());
-
-			}
-			
-			// Return data
-			return new ResponseEntity<>(
-					messageSource.getMessage("project.detail.bosses.success", new Object[] {}, locale), HttpStatus.OK);
-
-		} catch (Exception e) {
-			return new ResponseEntity<>(
-					messageSource.getMessage("project.detail.bosses.member.error", new Object[] {}, locale),
-					HttpStatus.NOT_FOUND);
-		}
-	}
-
-	@ResponseBody
-	@DeleteMapping("/{id}/bosses/delete/{bossId}")
-	public ResponseEntity<String> deleteProjectBoss(@PathVariable Long bossId, @PathVariable Long id, Locale locale) {
-
-		try {
-
-			// Recover user
-			User user = Utiles.getUsuario();
-
-			projectOldService.deleteMember(id, bossId);
-			projectOldService.deleteUserBoss(id, bossId);
-
-			log.info("Jefe de proyecto " + bossId + " eliminado del proyecto " + id + " por parte del usuario " + user.getId());
-
-			// Return data
-			return new ResponseEntity<>(
-					messageSource.getMessage("project.detail.bosses.delete", new Object[] {}, locale), HttpStatus.OK);
-
-		} catch (Exception e) {
-			return new ResponseEntity<>(
-					messageSource.getMessage("project.detail.bosses.boss.derror", new Object[] {}, locale),
-					HttpStatus.NOT_FOUND);
-		}
 	}
 
 	@GetMapping("/{id}/excel")
@@ -825,98 +432,6 @@ public class ProjectOldController {
 
 		return null;
 	}
-	
-	@ResponseBody
-	@PostMapping("/{id}/materials-required/create")
-	public ResponseEntity<String> createMaterialRequired(@ModelAttribute MaterialRequiredDTO materialRequiredDTO, @PathVariable Long id, Locale locale) {
-
-		try {
-
-			// Recover user
-			User user = Utiles.getUsuario();
-			
-			Project project = projectOldService.getProjectById(id);
-			if (project == null) {
-				throw new Exception("Proyecto " + id + " no encontrado en la creacion de un Material Obligatorio");
-			}
-			
-			MaterialRequired materialRequired = MaterialRequiredMapper.mapNewDTOToEntity(materialRequiredDTO, project);
-			materialRequired = materialRequiredService.save(materialRequired);
-
-			log.info("Material Obligatorio " + materialRequired.getId() + " añadido al proyecto " + id + " por parte del usuario " + user.getId());
-			
-			// Return data
-			return new ResponseEntity<>(messageSource.getMessage("project.detail.materials.required.success", new Object[] {}, locale), HttpStatus.OK);
-
-		} catch (Exception e) {
-			log.error(e);
-			return new ResponseEntity<>(messageSource.getMessage("project.detail.materials.required.error", new Object[] {}, locale), HttpStatus.NOT_FOUND);
-		}
-	}
-	
-	@ResponseBody
-	@PostMapping("/{id}/materials-required/edit/{materialRequiredId}")
-	public ResponseEntity<String> editMaterialRequired(@ModelAttribute MaterialRequiredDTO materialRequiredDTO, @PathVariable Long id, @PathVariable Long materialRequiredId, Locale locale) {
-
-		try {
-
-			// Recover user
-			User user = Utiles.getUsuario();
-			
-			MaterialRequired materialRequired = materialRequiredService.getById(materialRequiredId);
-			materialRequired.setNameES(materialRequiredDTO.getNameES());
-			materialRequired.setNameFR(materialRequiredDTO.getNameFR());
-			materialRequired.setRequired(materialRequiredDTO.getRequired());
-
-			materialRequired = materialRequiredService.save(materialRequired);
-
-			log.info("Material Obligatorio " + materialRequired.getId() + " añadido al proyecto " + id + " por parte del usuario " + user.getId());
-			
-			// Return data
-			return new ResponseEntity<>(messageSource.getMessage("project.detail.materials.required.success", new Object[] {}, locale), HttpStatus.OK);
-
-		} catch (Exception e) {
-			log.error(e);
-			return new ResponseEntity<>(messageSource.getMessage("project.detail.materials.required.error", new Object[] {}, locale), HttpStatus.NOT_FOUND);
-		}
-	}
-	
-	@ResponseBody
-	@DeleteMapping("/{id}/materials-required/delete/{materialRequiredId}")
-	public ResponseEntity<String> deleteMaterialRequired(@PathVariable Long materialRequiredId, @PathVariable Long id, Locale locale) {
-
-		try {
-
-			// Recover user
-			User user = Utiles.getUsuario();
-
-			materialRequiredService.delete(materialRequiredId);
-
-			log.info("Material Obligatorio " + materialRequiredId + " eliminado del proyecto " + id + " por parte del usuario " + user.getId());
-
-			// Return data
-			return new ResponseEntity<>(
-					messageSource.getMessage("project.detail.materials.required.delete", new Object[] {}, locale), HttpStatus.OK);
-
-		} catch (Exception e) {
-			return new ResponseEntity<>(
-					messageSource.getMessage("project.detail.materials.required.derror", new Object[] {}, locale),
-					HttpStatus.NOT_FOUND);
-		}
-	}
-	
-	@ResponseBody
-	@GetMapping("/{id}/materials-required")
-	public List<MaterialRequiredDTO> getMaterialRequiredByProject(@PathVariable Long id) {
-		
-		return materialRequiredService.getMaterialsRequiredByProjectId(id);
-	}
-
-	/*@ResponseBody
-	@GetMapping("/{id}/members")
-	public List<UserDTO> getProjectMembers(@PathVariable Long id) {
-		return userServiceOld.getUserDTOsByProjectId(id);
-	}*/
 	
 	@ResponseBody
 	@GetMapping("/{id}/responsables/html")

@@ -7,7 +7,7 @@ import com.epm.gestepm.modelapi.deprecated.expensesheet.dto.ExpenseSheet;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.deprecated.interventionprshare.dto.InterventionPrShare;
 import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionShare;
-import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
+import com.epm.gestepm.modelapi.deprecated.materialrequired.dto.MaterialRequired;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.deprecated.workshare.WorkShare;
 import lombok.Data;

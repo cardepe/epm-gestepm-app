@@ -5,6 +5,5 @@ import com.epm.gestepm.modelapi.deprecated.customer.dto.Customer;
 public interface CustomerService {
 
 	Customer save(Customer customer);
-	void delete(Long customerId);
-	Customer getByProjectId(Long projectId);
+
 }

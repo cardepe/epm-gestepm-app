@@ -33,7 +33,6 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -83,11 +82,6 @@ public class ProjectOldServiceImpl implements ProjectOldService {
 	}
 	
 	@Override
-	public Project getProjectByIdAndBossId(Long projectId, Long bossId) {
-		return projectRepository.findByIdAndBossId(projectId, bossId);
-	}
-	
-	@Override
 	public Project save(Project project) {
 		return projectRepository.save(project);
 	}
@@ -115,11 +109,6 @@ public class ProjectOldServiceImpl implements ProjectOldService {
 						project.getStation(),
 						project.getCustomer() != null ? project.getCustomer().getMainEmail() : null))
 				.collect(Collectors.toList());
-	}
-	
-	@Override
-	public List<ProjectListDTO> getStationDTOs() {
-		return projectRepository.findStationDTOs();
 	}
 
 	@Override
@@ -169,13 +158,7 @@ public class ProjectOldServiceImpl implements ProjectOldService {
 	public void createUserBoss(Long projectId, Long userId) {
 		projectRepository.createUserBoss(projectId, userId);
 	}
-	
-	@Override
-	@Transactional
-	public void deleteUserBoss(Long projectId, Long userId) {
-		projectRepository.deleteUserBoss(projectId, userId);
-	}
-	
+
 	@Override
 	public XSSFWorkbook generateProjectExcel(Long projectId, Long userId, Project project, Integer year, Locale locale) {
 
@@ -995,4 +978,5 @@ public class ProjectOldServiceImpl implements ProjectOldService {
 		
 		return names;
 	}
+
 }

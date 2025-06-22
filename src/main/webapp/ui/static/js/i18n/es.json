@@ -108,6 +108,12 @@
             "success": "Proyecto {0} eliminado con éxito."
         }
     },
+    "projectMaterials": {
+        "delete" : {
+            "alert": "¿Está seguro que quiere borrar del proyecto el material {0}?",
+            "success": "Material {0} eliminado con éxito del proyecto."
+        }
+    },
     "projectMembers": {
         "delete" : {
             "alert": "¿Está seguro que quiere borrar el miembro del proyecto {0}?",

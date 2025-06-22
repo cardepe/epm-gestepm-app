@@ -15,7 +15,7 @@ import com.epm.gestepm.modelapi.inspection.exception.InspectionNotEndedException
 import com.epm.gestepm.modelapi.inspection.service.InspectionExportService;
 import com.epm.gestepm.modelapi.inspection.service.InspectionFileService;
 import com.epm.gestepm.modelapi.inspection.service.InspectionMaterialsExportException;
-import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
+import com.epm.gestepm.modelapi.deprecated.materialrequired.dto.MaterialRequired;
 import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
