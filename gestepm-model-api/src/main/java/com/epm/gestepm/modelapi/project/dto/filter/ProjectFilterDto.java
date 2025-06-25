@@ -26,6 +26,8 @@ public class ProjectFilterDto extends OrderableDto implements UsableAsCacheKey {
 
   private List<Integer> responsibleIds;
 
+  private List<Integer> memberIds;
+
   @Override
   public String asCacheKey() {
 
@@ -38,6 +40,7 @@ public class ProjectFilterDto extends OrderableDto implements UsableAsCacheKey {
     cacheKeyBuilder.addElement("isTeleworking", this.isTeleworking);
     cacheKeyBuilder.addElement("state", this.state);
     cacheKeyBuilder.addElement("responsibleIds", this.responsibleIds);
+    cacheKeyBuilder.addElement("memberIds", this.memberIds);
     cacheKeyBuilder.addElement("orderable", super.toString());
 
     return cacheKeyBuilder.toString();

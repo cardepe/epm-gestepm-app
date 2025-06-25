@@ -1,3 +1,4 @@
+const viewUrl = '/projects'
 const activityCenterEndpoint = '/v1/activity-centers'
 const usersEndpoint = '/v1/users';
 
@@ -116,4 +117,13 @@ function editCustomer() {
         }).catch(error => showNotify(error.response.data.detail, 'danger'))
             .finally(() => hideLoading());
     }
+}
+
+function duplicate() {
+    axios.post(endpoint + '/duplicate').then((response) => {
+        console.log(response);
+        const project = response.data.data;
+        window.location.replace(viewUrl + '/' + project.id);
+    }).catch(error => showNotify(error.response.data.detail, 'danger'))
+        .finally(() => hideLoading());
 }

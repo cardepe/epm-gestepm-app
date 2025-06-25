@@ -13,6 +13,7 @@
             <tr>
                 <th><spring:message code="id" /></th>
                 <th><spring:message code="name" /></th>
+                <th><spring:message code="activity.center" /></th>
                 <th><spring:message code="start.date" /></th>
                 <th><spring:message code="end.date" /></th>
                 <th><spring:message code="actions" /></th>
@@ -35,13 +36,11 @@
                 <form id="createForm">
                     <div class="row">
                         <div class="col">
-                            <select id="projectDropdown" class="form-control input selectpicker" data-style="userSelectPicker" data-live-search="true" multiple style="width: 100%" name="projectId">
-                                <c:forEach items="${notBelongProjects}" var="notBelongProject">
-                                    <option value="${notBelongProject.id}">
-                                        <spring:message code="${notBelongProject.projectName}" />
-                                    </option>
-                                </c:forEach>
-                            </select>
+                            <div class="form-group">
+                                <label class="col-form-label w-100 bootstrap-select"><spring:message code="project"/>
+                                    <select class="form-control select2" data-control="select2" name="projectId" required></select>
+                                </label>
+                            </div>
                         </div>
                     </div>
                 </form>
@@ -60,67 +59,49 @@
     </div>
 </div>
 
+<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap-select/1.13.17/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/ui/static/js/plugins/signature_pad/signature_pad.umd.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/ui/static/js/select2/select2-utils.js?v=<%= System.currentTimeMillis() %>"></script>
+
+
 <script>
+
+    const projectsView = '/projects'
+    const projectsEndpoint = '/v1/projects';
 
     $(document).ready(function() {
         initializeDataTables();
+        initializeSelects();
     });
 
     function initializeDataTables() {
-        dTable = $('#dTable').DataTable({
-            "lengthChange": false,
-            "searching": false,
-            "responsive": true,
-            "processing": true,
-            "serverSide": true,
-            "pageLength": 7,
-            "ajax": "/users/${currentUser.id}/projects/dt",
-            "rowId": "pr_id",
-            "language": {
-                "url": "/ui/static/lang/datatables/${locale}.json"
+        let columns = ['id', 'name', 'activityCenter.name', 'startDate', 'endDate', 'id']
+        let actions = [
+            {
+                action: 'view',
+                url: projectsView + '/{id}',
+                permission: 'read_projects'
             },
-            "order": [[0, "desc"]],
-            "columns": [
-                { "data": "pr_id" },
-                { "data": "pr_name" },
-                { "data": "pr_startDate" },
-                { "data": "pr_endDate" },
-                { "data": null }
-            ],
-            "columnDefs": [
-                { "className": "text-center", "targets": "_all" },
-                {
-                    "render": function(data) {
-                        return moment(data).format('DD/MM/YYYY');
-                    },
-                    "targets": [2, 3]
-                },
-                { "defaultContent": "<em class=\"far fa-trash-alt\"></em>", "orderable": false, "targets": -1 }
-            ],
-            "dom": "<'top'i>rt<'bottom'p><'clear'>",
-            "drawCallback": function() {
-                parseProjectActionButtons();
+            {
+                action: 'delete',
+                permission: 'edit_projects'
             }
-        });
+        ]
+        let expand = ['activityCenter']
+        let filters = [{ 'memberIds': ${currentUser.id} }];
+        let columnsDef = []
+
+        customDataTable = new CustomDataTable(columns, projectsEndpoint, null, actions, expand, filters, columnsDef);
+        dTable = createDataTable('#dTable', customDataTable, locale);
+        customDataTable.setCurrentTable(dTable);
     }
 
-    function parseProjectActionButtons() {
+    function initializeSelects() {
 
-        let tableRows = $('#dTable tbody tr');
+        // # CreateForm
+        const createForm = document.querySelector('#createForm');
 
-        tableRows.each(function() {
-
-            let projectId = $(this).attr('id');
-            let lastColumn = $(this).children().last();
-            let emList = lastColumn.children();
-
-            emList.each(function(index) {
-
-                if (index === 0) {
-                    $(this).attr('onclick', 'deleteProject(' + projectId + ')');
-                }
-            });
-        });
+        createSelect2($(createForm.querySelector('[name="projectId"]')), projectsEndpoint, null, null, null, 'createForm');
     }
 
     function addUserToProject() {
@@ -134,20 +115,25 @@
             showLoading();
             createFromJQ.removeClass('was-validated');
 
-            axios.post('/users/${currentUser.id}/projects/create', createFromJQ.serialize())
-                .then(() => dTable.ajax.reload())
+            const form = document.querySelector('#createForm');
+
+            const projectId = form.querySelector('[name="projectId"]').value;
+
+            axios.post('/v1/projects/' + projectId + '/members', {
+                userId: ${currentUser.id}
+            }).then(() => dTable.ajax.reload())
                 .catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => { hideLoading(); createModal.modal('hide'); });
         }
     }
 
-    function deleteProject(projectId) {
+    function remove(projectId) {
         const ok = confirm("${jspUtil.parseTagToText('project.delete.alert')}");
 
         if (ok) {
             showLoading();
 
-            axios.delete('/users/${currentUser.id}/projects/delete/' + projectId, { })
+            axios.delete('/v1/projects/' + projectId + '/members/${currentUser.id}', { })
                 .then(() => dTable.ajax.reload())
                 .catch(error => showNotify(error.response.data.detail, 'danger'))
                 .finally(() => hideLoading());

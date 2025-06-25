@@ -19,10 +19,12 @@ function initializeDataTables() {
 }
 
 function initializeSelects() {
+    const getCustomName = user => `${user.name} ${user.surnames}`;
+
     // # CreateForm
     const createForm = document.querySelector('#createForm');
 
-    createBasicSelect2($(createForm.querySelector('[name="required"]')), 'createForm');
+    createSelect2($(createForm.querySelector('[name="userId"]')), usersEndpoint, null, null, getCustomName, 'createForm');
 }
 
 function create() {

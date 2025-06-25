@@ -10,6 +10,9 @@ import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
 import com.epm.gestepm.modelapi.manualsigningtype.service.ManualSigningTypeService;
 import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectDTO;
 import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.filter.ProjectFilterDto;
+import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.role.service.RoleService;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
@@ -19,6 +22,7 @@ import com.epm.gestepm.modelapi.user.dto.finder.UserByIdFinderDto;
 import com.epm.gestepm.modelapi.user.service.UserService;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,7 +40,7 @@ import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
 
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EnableExecutionLog(layerMarker = VIEW)
 public class UserViewController {
 
@@ -48,7 +52,7 @@ public class UserViewController {
 
     private final MessageSource messageSource;
 
-    private final ProjectOldService projectOldService;
+    private final ProjectService projectService;
 
     private final RoleService roleService;
 
@@ -152,9 +156,6 @@ public class UserViewController {
 
         final UserDto currentUser = this.userService.findOrNotFound(new UserByIdFinderDto(id));
         model.addAttribute("currentUser", currentUser);
-
-        final List<ProjectDTO> notBelongProjects = this.projectOldService.getNotProjectDTOsByUserId(id.longValue());
-        model.addAttribute("notBelongProjects", notBelongProjects);
 
         model.addAttribute("tab", "projects");
 

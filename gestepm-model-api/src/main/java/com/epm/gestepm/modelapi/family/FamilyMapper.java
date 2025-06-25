@@ -1,12 +1,12 @@
-package com.epm.gestepm.model.family.service.mapper;
+package com.epm.gestepm.modelapi.family;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.epm.gestepm.modelapi.common.config.ApplicationContextProvider;
+import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectFamilyDTO;
 import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
-import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectFamilyDTO;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyOldDTO;
 import com.epm.gestepm.modelapi.subrole.service.SubRoleService;
 import com.epm.gestepm.modelapi.family.dto.Family;
@@ -67,9 +67,9 @@ public class  FamilyMapper {
 		
 		return subFamily;
 	}
-	
+
 	public static Family mapProjectFamilyDTOToFamily(ProjectFamilyDTO projectFamilyDTO, FamilyService familyService) {
-		
+
 		Family family = new Family();
 		family.setNameES(projectFamilyDTO.getNameES());
 		family.setNameFR(projectFamilyDTO.getNameFR());
@@ -78,7 +78,7 @@ public class  FamilyMapper {
 		family.setModel(projectFamilyDTO.getModel());
 		family.setEnrollment(projectFamilyDTO.getEnrollment());
 		family.setCommon(3);
-		
+
 		return family;
 	}
 	

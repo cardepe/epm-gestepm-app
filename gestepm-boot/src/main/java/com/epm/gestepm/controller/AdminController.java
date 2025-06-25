@@ -3,7 +3,7 @@ package com.epm.gestepm.controller;
 import com.epm.gestepm.model.deprecated.activitycenter.service.ActivityCenterServiceImpl;
 import com.epm.gestepm.model.deprecated.country.service.CountryServiceOldImpl;
 import com.epm.gestepm.model.family.service.FamilyServiceImpl;
-import com.epm.gestepm.model.family.service.mapper.FamilyMapper;
+import com.epm.gestepm.modelapi.family.FamilyMapper;
 import com.epm.gestepm.model.deprecated.holiday.service.HolidayServiceImpl;
 import com.epm.gestepm.model.deprecated.holiday.service.mapper.HolidayMapper;
 import com.epm.gestepm.model.deprecated.project.service.ProjectOldServiceImpl;
@@ -449,39 +449,5 @@ public class AdminController {
 		final List<SubFamilyDto> response = getMapper(MapSFToSubFamilyDto.class).from(subFamilies, locale);
 
 		return new ResponseEntity<>(response, HttpStatus.OK);
-	}
-	
-	@ResponseBody
-	@GetMapping("/families/project/{id}")
-	public ResponseEntity<String> loadFamiliesFromProject(@PathVariable Long id, Locale locale) {
-	
-		Project project = projectService.getProjectById(id);
-		
-		if (project == null || project.getActivityCenter() == null) {
-			return null;
-		}
-		
-		List<Family> families = project.getFamilies();
-		String callbackText = "";
-		
-		for (Family f : families) {
-			callbackText += "<option value=\"" + f.getId() + "\">" + ("es".equals(locale.getLanguage()) ? f.getNameES() : f.getNameFR()) + "</option>";
-		}
-
-		// Return data
-		return new ResponseEntity<>(callbackText, HttpStatus.OK);
-	}
-	
-	@ResponseBody
-	@GetMapping("/families/{id}/info")
-	public ResponseEntity<?> loadFamilyInfo(@PathVariable Long id, Locale locale) {
-	
-		Family family = familyService.getById(id);
-		
-		if (family == null) {
-			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-		}
-
-		return new ResponseEntity<>(FamilyMapper.mapToDTO(family), HttpStatus.OK);
 	}
 }

@@ -6,16 +6,24 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.masterdata.api.activitycenter.dto.finder.ActivityCenterByIdFinderDto;
 import com.epm.gestepm.masterdata.api.activitycenter.service.ActivityCenterService;
+import com.epm.gestepm.modelapi.inspection.dto.InspectionFileDto;
+import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFileFilterDto;
 import com.epm.gestepm.modelapi.role.service.RoleService;
 import com.epm.gestepm.modelapi.subrole.service.SubRoleService;
+import com.epm.gestepm.modelapi.user.dto.UserDto;
+import com.epm.gestepm.modelapi.user.dto.filter.UserFilterDto;
+import com.epm.gestepm.modelapi.user.service.UserService;
 import com.epm.gestepm.rest.activitycenter.mappers.MapACToActivityCenterResponse;
+import com.epm.gestepm.rest.inspection.mappers.MapIFToFileResponse;
 import com.epm.gestepm.rest.project.request.ProjectFindRestRequest;
-import com.epm.gestepm.restapi.openapi.model.ActivityCenter;
-import com.epm.gestepm.restapi.openapi.model.Level;
-import com.epm.gestepm.restapi.openapi.model.Role;
-import com.epm.gestepm.restapi.openapi.model.Project;
+import com.epm.gestepm.rest.user.mappers.MapUToUserResponse;
+import com.epm.gestepm.restapi.openapi.model.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DELEGATOR;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_PROCESS;
@@ -27,11 +35,16 @@ public class ProjectResponseDecorator extends BaseResponseDataDecorator<Project>
 
     public static final String PR_AC_EXPAND = "activityCenter";
 
+    public static final String PR_RESPONSIBLE_EXPAND = "responsible";
+
     private final ActivityCenterService activityCenterService;
 
-    public ProjectResponseDecorator(ApplicationContext applicationContext, ActivityCenterService activityCenterService) {
+    private final UserService userService;
+
+    public ProjectResponseDecorator(ApplicationContext applicationContext, ActivityCenterService activityCenterService, UserService userService) {
         super(applicationContext);
         this.activityCenterService = activityCenterService;
+        this.userService = userService;
     }
 
     @Override
@@ -56,6 +69,17 @@ public class ProjectResponseDecorator extends BaseResponseDataDecorator<Project>
             final ActivityCenter response = getMapper(MapACToActivityCenterResponse.class).from(dto);
 
             data.setActivityCenter(response);
+        }
+
+        if (request.hasExpand(PR_RESPONSIBLE_EXPAND) && CollectionUtils.isNotEmpty(data.getResponsible())) {
+            final List<Integer> responsibleIds = data.getResponsible().stream().map(User::getId).collect(Collectors.toList());
+
+            final UserFilterDto filterDto = new UserFilterDto();
+            filterDto.setIds(responsibleIds);
+
+            final List<UserDto> responsible = this.userService.list(filterDto);
+
+            data.setResponsible(getMapper(MapUToUserResponse.class).from(responsible));
         }
     }
 }

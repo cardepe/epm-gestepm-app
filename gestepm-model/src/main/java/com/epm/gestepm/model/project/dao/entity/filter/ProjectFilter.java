@@ -30,6 +30,8 @@ public class ProjectFilter extends Orderable implements CollectableAttributes {
 
     private List<Integer> responsibleIds;
 
+    private List<Integer> memberIds;
+
     private List<Integer> projectLeaderIds;
 
     @Override
@@ -44,6 +46,7 @@ public class ProjectFilter extends Orderable implements CollectableAttributes {
         map.putBooleanAsInt(ATTR_PR_IS_TELEWORKING, this.isTeleworking);
         map.put(ATTR_PR_STATE, this.getState());
         map.putList(ATTR_PR_RESPONSIBLE_IDS, this.responsibleIds);
+        map.putList(ATTR_PR_MEMBER_IDS, this.memberIds);
         map.putList(ATTR_PR_PROJECT_LEADER_IDS, this.projectLeaderIds);
 
         return map;

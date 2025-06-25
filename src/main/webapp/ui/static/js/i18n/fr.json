@@ -43,6 +43,12 @@
         "publictransport": "Transport public",
         "vehicle": "Véhicule"
     },
+    "families": {
+        "delete" : {
+            "alert": "Êtes-vous sûr de vouloir supprimer la famille {0} du projet?",
+            "success": "La famille {0} a été retirée du projet avec succès."
+        }
+    },
     "inspections": {
         "name": "Révision",
         "title": "Révision numéro {0}",

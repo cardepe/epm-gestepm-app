@@ -143,8 +143,8 @@
         <put-attribute name="body" value="/ui/jsp/view/projects/detail.jsp" />
     </definition>
     
-    <definition name="project-view" extends="fullFrameLayout">
-        <put-attribute name="body" value="/ui/jsp/view/projects/view-check.jsp" />
+    <definition name="projects-view" extends="mainFrameLayout">
+        <put-attribute name="body" value="/ui/jsp/view/projects/projects-view.jsp" />
     </definition>
 
     <!-- Users -->

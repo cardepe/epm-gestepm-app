@@ -8,6 +8,9 @@ import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.common.utils.datatables.SortOrder;
 import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.filter.ProjectFilterDto;
+import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.breaks.dto.ShareBreakDto;
 import com.epm.gestepm.modelapi.shares.breaks.dto.filter.ShareBreakFilterDto;
 import com.epm.gestepm.modelapi.shares.breaks.service.ShareBreakService;
@@ -23,6 +26,7 @@ import com.epm.gestepm.modelapi.user.dto.filter.UserFilterDto;
 import com.epm.gestepm.modelapi.user.service.UserService;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,7 +45,7 @@ import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
 
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EnableExecutionLog(layerMarker = VIEW)
 public class ProgrammedShareViewController {
 
@@ -49,7 +53,7 @@ public class ProgrammedShareViewController {
 
     private final ProgrammedShareFileService programmedShareFileService;
 
-    private final ProjectOldService projectOldService;
+    private final ProjectService projectService;
 
     private final ShareBreakService shareBreakService;
 
@@ -67,9 +71,10 @@ public class ProgrammedShareViewController {
 
         this.loadCommonModelView(locale, model);
 
-        final List<ProjectListDTO> projects = this.projectOldService.getTeleworkingProjects(false).stream()
-                .sorted(Comparator.comparing(ProjectListDTO::getName, String.CASE_INSENSITIVE_ORDER))
-                .collect(Collectors.toList());
+        final ProjectFilterDto projectFilterDto = new ProjectFilterDto();
+        projectFilterDto.setIsTeleworking(false);
+
+        final List<ProjectDto> projects = this.projectService.list(projectFilterDto);
         model.addAttribute("projects", projects);
 
         final UserFilterDto filterDto = new UserFilterDto();
@@ -91,9 +96,10 @@ public class ProgrammedShareViewController {
         final ProgrammedShareDto programmedShare = this.programmedShareService.findOrNotFound(new ProgrammedShareByIdFinderDto(id));
         model.addAttribute("programmedShare", programmedShare);
 
-        final List<ProjectListDTO> projects = this.projectOldService.getTeleworkingProjects(false).stream()
-                .sorted(Comparator.comparing(ProjectListDTO::getName, String.CASE_INSENSITIVE_ORDER))
-                .collect(Collectors.toList());
+        final ProjectFilterDto projectFilterDto = new ProjectFilterDto();
+        projectFilterDto.setIsTeleworking(false);
+
+        final List<ProjectDto> projects = this.projectService.list(projectFilterDto);
         model.addAttribute("projects", projects);
 
         final UserFilterDto userFilterDto = new UserFilterDto();

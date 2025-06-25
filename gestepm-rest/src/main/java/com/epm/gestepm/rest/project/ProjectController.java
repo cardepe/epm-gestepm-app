@@ -14,6 +14,7 @@ import com.epm.gestepm.modelapi.project.dto.deleter.ProjectDeleteDto;
 import com.epm.gestepm.modelapi.project.dto.filter.ProjectFilterDto;
 import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
 import com.epm.gestepm.modelapi.project.dto.updater.ProjectUpdateDto;
+import com.epm.gestepm.modelapi.project.service.ProjectDelegator;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.rest.common.CommonProviders;
 import com.epm.gestepm.rest.common.MetadataMapper;
@@ -28,14 +29,10 @@ import com.epm.gestepm.rest.project.response.ResponsesForProject;
 import com.epm.gestepm.rest.project.response.ResponsesForProjectList;
 import com.epm.gestepm.restapi.openapi.api.ProjectV1Api;
 import com.epm.gestepm.restapi.openapi.model.*;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
@@ -50,16 +47,18 @@ import static org.mapstruct.factory.Mappers.getMapper;
 public class ProjectController extends BaseController implements ProjectV1Api,
         ResponsesForProject, ResponsesForProjectList {
 
+    private final ProjectDelegator projectDelegator;
+
     private final ProjectService projectService;
 
     public ProjectController(final CommonProviders commonProviders, final ApplicationContext appCtx,
-                             final AppLocaleService appLocaleService, final ResponseSuccessfulHelper successHelper,
+                             final AppLocaleService appLocaleService, final ResponseSuccessfulHelper successHelper, ProjectDelegator projectDelegator,
                              final ProjectService projectService) {
 
         super(commonProviders.localeProvider(), commonProviders.executionRequestProvider(),
                 commonProviders.executionTimeProvider(), commonProviders.restContextProvider(), appCtx, appLocaleService,
                 successHelper);
-
+        this.projectDelegator = projectDelegator;
         this.projectService = projectService;
     }
 
@@ -67,9 +66,10 @@ public class ProjectController extends BaseController implements ProjectV1Api,
     @RequirePermits(value = PRMT_READ_PR, action = "Get project list")
     @LogExecution(operation = OP_READ)
     public ResponseEntity<ListProjectsV1200Response> listProjectsV1(final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit, final String order, final String orderBy,
-                                                              final List<Integer> ids, final String nameContains, final Boolean isStation, final List<Integer> activityCenterIds, final Boolean isTeleworking, final Integer state, final List<Integer> responsibleIds) {
+                                                              final List<Integer> ids, final String nameContains, final Boolean isStation, final List<Integer> activityCenterIds, final Boolean isTeleworking,
+                                                                    final Integer state, final List<Integer> responsibleIds, final List<Integer> memberIds) {
 
-        final ProjectListRestRequest req = new ProjectListRestRequest(ids, nameContains, isStation, activityCenterIds, isTeleworking, state, responsibleIds);
+        final ProjectListRestRequest req = new ProjectListRestRequest(ids, nameContains, isStation, activityCenterIds, isTeleworking, state, responsibleIds, memberIds);
 
         this.setCommon(req, meta, links, expand);
         this.setDefaults(req);
@@ -157,6 +157,23 @@ public class ProjectController extends BaseController implements ProjectV1Api,
         this.projectService.delete(deleteDto);
 
         return this.success(getMapper(ResSuccessMapper.class)::from);
+    }
+
+    @Override
+    @RequirePermits(value = PRMT_EDIT_PR, action = "Duplicate project")
+    @LogExecution(operation = OP_DELETE)
+    public ResponseEntity<CreateProjectV1200Response> duplicateProjectByIdV1(final Integer projectId) {
+
+        final ProjectDto projectDto = this.projectDelegator.duplicate(new ProjectByIdFinderDto(projectId));
+
+        final APIMetadata metadata = this.getDefaultMetadata();
+        final Project data = getMapper(MapPRToProjectResponse.class).from(projectDto);
+
+        final CreateProjectV1200Response response = new CreateProjectV1200Response();
+        response.setMetadata(getMapper(MetadataMapper.class).from(metadata));
+        response.setData(data);
+
+        return ResponseEntity.ok(response);
     }
 }
 

@@ -28,4 +28,6 @@ public class ProjectListRestRequest extends RestRequest {
 
     private List<Integer> responsibleIds;
 
+    private List<Integer> memberIds;
+
 }

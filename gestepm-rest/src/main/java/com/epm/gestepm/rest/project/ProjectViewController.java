@@ -5,10 +5,16 @@ import com.epm.gestepm.forum.model.api.service.UserForumService;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
+import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.customer.dto.CustomerDto;
 import com.epm.gestepm.modelapi.customer.dto.finder.CustomerByProjectIdFinderDto;
 import com.epm.gestepm.modelapi.customer.service.CustomerService;
+import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.dto.UserDTO;
+import com.epm.gestepm.modelapi.deprecated.user.exception.InvalidUserSessionException;
+import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
+import com.epm.gestepm.modelapi.family.service.FamilyService;
 import com.epm.gestepm.modelapi.project.dto.ProjectDto;
 import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
@@ -16,6 +22,8 @@ import com.epm.gestepm.modelapi.user.dto.UserDto;
 import com.epm.gestepm.modelapi.user.dto.finder.UserByIdFinderDto;
 import com.epm.gestepm.modelapi.user.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,17 +33,24 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Year;
 import java.util.*;
+import java.util.stream.IntStream;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
 
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EnableExecutionLog(layerMarker = VIEW)
 public class ProjectViewController {
 
+    @Value("${gestepm.first-year}")
+    private int firstYear;
+
     private final CustomerService customerService;
+
+    private final FamilyService familyService;
 
     private final ProjectService projectService;
 
@@ -82,6 +97,12 @@ public class ProjectViewController {
 
         final CustomerDto customer = this.customerService.findOrNotFound(new CustomerByProjectIdFinderDto(id));
         model.addAttribute("customer", customer);
+
+        final int actualYear = Year.now().getValue();
+        final int[] years = IntStream.rangeClosed(firstYear, actualYear)
+                .map(i -> actualYear - (i - firstYear))
+                .toArray();
+        model.addAttribute("years", years);
 
         model.addAttribute("importPath", "project-detail");
         model.addAttribute("loadingPath", "projects");
@@ -188,11 +209,27 @@ public class ProjectViewController {
         final ProjectDto currentProject = this.projectService.findOrNotFound(new ProjectByIdFinderDto(id));
         model.addAttribute("currentProject", currentProject);
 
+        final List<FamilyDTO> notFamilies = this.familyService.getClonableFamilyDTOs(locale);
+        model.addAttribute("notFamilies", notFamilies);
+
         model.addAttribute("importPath", "project-families");
-        model.addAttribute("loadingPath", "families");
-        model.addAttribute("type", "detail");
+        model.addAttribute("loadingPath", "projects");
+        model.addAttribute("type", "families");
         model.addAttribute("tab", "families");
 
         return "project-detail";
+    }
+
+    @GetMapping("/projects-view")
+    @LogExecution(operation = OP_VIEW)
+    public String viewProjectsViewPage(final Locale locale, final Model model) {
+
+        this.loadCommonModelView(locale, model);
+
+        model.addAttribute("importPath", "projects-view");
+        model.addAttribute("loadingPath", "projects");
+        model.addAttribute("type", "projects-view");
+
+        return "projects-view";
     }
 }

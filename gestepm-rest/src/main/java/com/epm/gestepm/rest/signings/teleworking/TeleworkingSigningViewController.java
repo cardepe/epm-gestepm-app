@@ -5,12 +5,15 @@ import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
-import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectListDTO;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.filter.ProjectFilterDto;
+import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
+import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.signings.teleworking.dto.TeleworkingSigningDto;
 import com.epm.gestepm.modelapi.signings.teleworking.dto.finder.TeleworkingSigningByIdFinderDto;
 import com.epm.gestepm.modelapi.signings.teleworking.service.TeleworkingSigningService;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,17 +31,13 @@ import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
 
 @Controller
+@RequiredArgsConstructor
 @EnableExecutionLog(layerMarker = VIEW)
 public class TeleworkingSigningViewController {
 
     private final TeleworkingSigningService teleworkingSigningService;
 
-    private final ProjectOldService projectOldService;
-
-    public TeleworkingSigningViewController(TeleworkingSigningService teleworkingSigningService, ProjectOldService projectOldService) {
-        this.teleworkingSigningService = teleworkingSigningService;
-        this.projectOldService = projectOldService;
-    }
+    private final ProjectService projectService;
 
     @ModelAttribute
     public User loadCommonModelView(final Locale locale, final Model model) {
@@ -67,7 +66,7 @@ public class TeleworkingSigningViewController {
         final TeleworkingSigningDto teleworkingSigning = this.teleworkingSigningService.findOrNotFound(new TeleworkingSigningByIdFinderDto(id));
         model.addAttribute("teleworkingSigning", teleworkingSigning);
 
-        final Project project = this.projectOldService.getProjectById(teleworkingSigning.getProjectId().longValue());
+        final ProjectDto project = this.projectService.findOrNotFound(new ProjectByIdFinderDto(teleworkingSigning.getProjectId()));
         model.addAttribute("projectName", project.getName());
 
         this.loadPermissions(user, project.getId().intValue(), model);
@@ -76,7 +75,10 @@ public class TeleworkingSigningViewController {
     }
 
     private void loadProjects(final Model model) {
-        final List<ProjectListDTO> projects = this.projectOldService.getTeleworkingProjects(true);
+        final ProjectFilterDto projectFilterDto = new ProjectFilterDto();
+        projectFilterDto.setIsTeleworking(true);
+
+        final List<ProjectDto> projects = this.projectService.list(projectFilterDto);
         model.addAttribute("projects", projects);
     }
 

@@ -109,7 +109,59 @@
 
     <div class="row mt-2 actionable">
         <div class="col text-right">
+            <button type="button" class="btn btn-outline-warning btn-sm text-warning" onclick="duplicate()">
+                <spring:message code="duplicate"/>
+            </button>
+            <button type="button" class="btn btn-warning btn-sm text-white" data-toggle="modal" data-target="#exportModal">
+                <spring:message code="export"/>
+            </button>
             <button type="button" class="btn btn-standard btn-sm movile-full" onclick="edit()"><spring:message code="save"/></button>
         </div>
     </div>
 </form>
+
+<div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form type="GET" action="/v1/projects/${currentProject.id}/export" target="_blank">
+                <div class="modal-header">
+                    <div class="modal-title">
+                        <h5 id="modalTitle">
+                            <spring:message code="export" />
+                        </h5>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label class="col-form-label w-100"><spring:message code="year" />
+                                    <select name="year" class="form-control form-control-sm">
+                                        <option disabled value="" selected="selected">
+                                            <spring:message code="time.control.year.placeholder" />
+                                        </option>
+                                        <c:forEach items="${years}" var="year">
+                                            <option value="${year}">
+                                                <spring:message code="${year}" />
+                                            </option>
+                                        </c:forEach>
+                                    </select>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="w-100">
+                        <div class="float-left">
+                            <button type="button" class="btn btn-sm" data-dismiss="modal"><spring:message code="close" /></button>
+                        </div>
+                        <div class="float-right">
+                            <button type="submit" class="btn btn-sm btn-success"><spring:message code="export" /></button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

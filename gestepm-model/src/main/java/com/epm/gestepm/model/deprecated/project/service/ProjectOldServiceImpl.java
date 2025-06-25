@@ -4,33 +4,27 @@ import com.epm.gestepm.model.deprecated.displacementshare.dao.DisplacementShareR
 import com.epm.gestepm.model.deprecated.expensesheet.dao.ExpenseSheetRepository;
 import com.epm.gestepm.model.deprecated.interventionprshare.dao.InterventionPrShareRepository;
 import com.epm.gestepm.model.deprecated.project.dao.ProjectRepository;
-import com.epm.gestepm.model.subrole.dao.SubRoleRepository;
 import com.epm.gestepm.model.deprecated.user.dao.UserRepository;
 import com.epm.gestepm.model.deprecated.workshare.dao.WorkShareRepository;
+import com.epm.gestepm.model.subrole.dao.SubRoleRepository;
 import com.epm.gestepm.modelapi.common.utils.ExcelUtils;
 import com.epm.gestepm.modelapi.common.utils.PixelUtils;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpensesMonthDTO;
 import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
-import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectDTO;
 import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectListDTO;
-import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectTableDTO;
 import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
-import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.subrole.dto.SubRole;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.decimal4j.util.DoubleRounder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -38,9 +32,6 @@ import java.util.stream.Stream;
 
 @Service
 public class ProjectOldServiceImpl implements ProjectOldService {
-
-	@Value("${gestepm.displacements.project-ids}")
-	private List<Long> displacementProjectIds;
 
 	@Autowired
 	private DisplacementShareRepository displacementShareRepository;
@@ -70,26 +61,6 @@ public class ProjectOldServiceImpl implements ProjectOldService {
 	public Project getProjectById(Long projectId) {
 		return projectRepository.findById(projectId).orElse(null);
 	}
-
-	@Override
-	public List<Project> findDisplacementProjects() {
-		// FIXME
-		final List<Project> displacementProjects = new ArrayList<>();
-		this.displacementProjectIds.forEach(id -> {
-			displacementProjects.add(this.getProjectById(id));
-		});
-		return displacementProjects;
-	}
-	
-	@Override
-	public Project save(Project project) {
-		return projectRepository.save(project);
-	}
-	
-	@Override
-	public void delete(Long id) {
-		projectRepository.deleteById(id);
-	}
 	
 	@Override
 	public List<ProjectListDTO> getAllProjectsDTOs() {
@@ -109,54 +80,6 @@ public class ProjectOldServiceImpl implements ProjectOldService {
 						project.getStation(),
 						project.getCustomer() != null ? project.getCustomer().getMainEmail() : null))
 				.collect(Collectors.toList());
-	}
-
-	@Override
-	public List<ProjectListDTO> getTeleworkingProjects(boolean isTeleworking) {
-		return this.projectRepository.findByTeleworking(isTeleworking);
-	}
-
-	@Override
-	public List<ProjectTableDTO> getProjectsByUserMemberDataTables(Long userId, PaginationCriteria pagination, Object[] params) {
-		return projectRepository.findProjectsByUserMemberDataTables(userId, pagination, params);
-	}
-	
-	@Override
-	public List<ProjectTableDTO> getAllProjectsDataTables(PaginationCriteria pagination, Object[] params) {
-		return projectRepository.findAllProjectsDataTables(pagination, params);
-	}
-	
-	@Override
-	public Long getProjectsCountByUserMember(Long userId, Object[] params) {
-		return projectRepository.findProjectsCountByUserMember(userId, params);
-	}
-	
-	@Override
-	public List<ProjectDTO> getNotProjectDTOsByUserId(Long userId) {
-		return projectRepository.findNotProjectDTOsByUserId(userId);
-	}
-	
-	@Override
-	public Long getAllProjectsCount(Object[] params) {
-		return projectRepository.findAllProjectsCount(params);
-	}
-	
-	@Override
-	@Transactional
-	public void createMember(Long projectId, Long userId) {
-		projectRepository.createMember(projectId, userId);
-	}
-	
-	@Override
-	@Transactional
-	public void deleteMember(Long projectId, Long userId) {
-		projectRepository.deleteMember(projectId, userId);
-	}
-	
-	@Override
-	@Transactional
-	public void createUserBoss(Long projectId, Long userId) {
-		projectRepository.createUserBoss(projectId, userId);
 	}
 
 	@Override

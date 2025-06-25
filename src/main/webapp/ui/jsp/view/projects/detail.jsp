@@ -57,11 +57,23 @@
                         <spring:message code="${tab}" />
                     </div>
                 </div>
-                <c:if test="${tab == 'leaders' || tab == 'members' || tab == 'materials'}">
-                    <div class="col text-right">
-                        <button type="button" class="btn btn-standard btn-sm mr-1" data-toggle="modal" data-target="#createModal"><spring:message code="add" /></button>
-                    </div>
+
+                <div class="col text-right">
+                <c:if test="${tab == 'families'}">
+                    <button id="uploadBtn" class="btn btn-warning btn-sm text-white">
+                        <em class="fas fa-file-upload"></em> <spring:message code="project.detail.equipments.import.excel"/>
+                    </button>
+                    <input id="fileInput" type="file" class="d-none" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+
+                    <a href="/projects/${currentProject.id}/families/export" target="_blank" class="btn btn-warning btn-sm text-white">
+                        <em class="fas fa-file-download"></em> <spring:message code="project.detail.equipments.export.excel"/>
+                    </a>
                 </c:if>
+
+                <c:if test="${tab == 'leaders' || tab == 'members' || tab == 'materials' || tab == 'families'}">
+                    <button type="button" class="btn btn-standard btn-sm mr-1" data-toggle="modal" data-target="#createModal"><spring:message code="add" /></button>
+                </c:if>
+                </div>
             </div>
 
             <jsp:include page="tabs/${tab}.jsp" />

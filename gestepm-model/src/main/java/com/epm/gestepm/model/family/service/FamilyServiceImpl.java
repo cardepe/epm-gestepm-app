@@ -31,7 +31,6 @@ import com.epm.gestepm.modelapi.common.utils.ExcelUtils;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 
 @Service
-@Transactional
 public class FamilyServiceImpl implements FamilyService {
 
 	private static final Log log = LogFactory.getLog(FamilyServiceImpl.class);
@@ -59,13 +58,20 @@ public class FamilyServiceImpl implements FamilyService {
 	public List<Family> findAll() {
 		return (List<Family>) familyRepository.findAll();
 	}
-	
+
 	@Override
+	public List<Family> findByProjectId(Long projectId) {
+		return familyRepository.findByProjectId(projectId);
+	}
+
+	@Override
+	@Transactional
 	public Family save(Family family) {
 		return familyRepository.save(family);
 	}
 	
 	@Override
+	@Transactional
 	public Family create(Family family) {
 		
 		// Copy new sub families
@@ -88,6 +94,7 @@ public class FamilyServiceImpl implements FamilyService {
 	}
 	
 	@Override
+	@Transactional
 	public Family update(Family family, Family currentFamily) {
 		
 		// Copy new sub families

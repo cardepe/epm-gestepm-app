@@ -4,8 +4,11 @@ import com.epm.gestepm.lib.controller.RestRequest;
 import com.epm.gestepm.lib.controller.decorator.BaseResponseDataDecorator;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
 import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
+import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.rest.project.mappers.MapPRToProjectResponse;
 import com.epm.gestepm.rest.projectmaterial.request.ProjectMaterialFindRestRequest;
 import com.epm.gestepm.restapi.openapi.model.Project;
 import com.epm.gestepm.restapi.openapi.model.ProjectMaterial;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.DELEGATOR;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_PROCESS;
+import static org.mapstruct.factory.Mappers.getMapper;
 
 @Component("projectMaterialResponseDecorator")
 @EnableExecutionLog(layerMarker = DELEGATOR)
@@ -21,11 +25,11 @@ public class ProjectMaterialResponseDecorator extends BaseResponseDataDecorator<
 
     public static final String PRMAT_P_EXPAND = "project";
     
-    private final ProjectOldService projectOldService;
+    private final ProjectService projectService;
     
-    public ProjectMaterialResponseDecorator(ApplicationContext applicationContext, UserServiceOld userServiceOld, ProjectOldService projectOldService) {  // , PersonalExpenseService personalExpenseService) {
+    public ProjectMaterialResponseDecorator(ApplicationContext applicationContext, UserServiceOld userServiceOld, ProjectService projectService) {  // , PersonalExpenseService personalExpenseService) {
         super(applicationContext);
-        this.projectOldService = projectOldService;
+        this.projectService = projectService;
     }
 
     @Override
@@ -46,8 +50,8 @@ public class ProjectMaterialResponseDecorator extends BaseResponseDataDecorator<
             final Project project = data.getProject();
             final Integer id = project.getId();
 
-            final com.epm.gestepm.modelapi.deprecated.project.dto.Project projectDto = this.projectOldService.getProjectById(Long.valueOf(id));
-            final Project response = new Project().id(id).name(projectDto.getName());
+            final ProjectDto projectDto = this.projectService.findOrNotFound(new ProjectByIdFinderDto(id));
+            final Project response = getMapper(MapPRToProjectResponse.class).from(projectDto);
 
             data.setProject(response);
         }

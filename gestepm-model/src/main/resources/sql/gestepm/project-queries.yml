@@ -18,6 +18,7 @@ sql:
     FROM ${sch-gestepm}.project pr
     LEFT JOIN ${sch-gestepm}.activity_center ac ON ac.activity_center_id = pr.activity_center_id
     LEFT JOIN ${sch-gestepm}.project_responsible prr ON prr.project_id = pr.project_id
+    LEFT JOIN ${sch-gestepm}.project_member prm ON prm.project_id = pr.project_id
     LEFT JOIN ${sch-gestepm}.project_leader prl ON prl.project_id = pr.project_id
 
     #whereToken #filter
@@ -35,7 +36,9 @@ sql:
     FROM (
       SELECT pr.project_id
       FROM ${sch-gestepm}.project pr
+      LEFT JOIN ${sch-gestepm}.activity_center ac ON ac.activity_center_id = pr.activity_center_id
       LEFT JOIN ${sch-gestepm}.project_responsible prr ON prr.project_id = pr.project_id
+      LEFT JOIN ${sch-gestepm}.project_member prm ON prm.project_id = pr.project_id
       LEFT JOIN ${sch-gestepm}.project_leader prl ON prl.project_id = pr.project_id
       #whereToken #filter
     ) final
@@ -96,6 +99,7 @@ sql:
       -- ${sql.predicate-for-pr-is-teleworking}
       -- ${sql.predicate-for-pr-state}
       -- ${sql.predicate-for-pr-responsible-ids}
+      -- ${sql.predicate-for-pr-member-ids}
       -- ${sql.predicate-for-pr-project-leader-ids}
     -- AND]
 
@@ -136,6 +140,10 @@ sql:
   predicate-for-pr-responsible-ids: |
     
     prr.user_id IN (:attr_pr_responsible_ids)
+
+  predicate-for-pr-member-ids: |
+    
+    prm.user_id IN (:attr_pr_member_ids)
 
   predicate-for-pr-project-leader-ids: |
     

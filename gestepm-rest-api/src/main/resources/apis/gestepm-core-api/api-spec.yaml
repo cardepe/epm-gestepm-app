@@ -1264,6 +1264,13 @@ paths:
           in: query
           name: responsibleIds
           description: Filter by responsible ids.
+        - schema:
+            type: array
+            items:
+              type: integer
+          in: query
+          name: memberIds
+          description: Filter by member ids.
       tags:
         - project-v1
     post:
@@ -1290,6 +1297,10 @@ paths:
           $ref: '#/components/responses/Project'
         '404':
           description: project-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
       operationId: find-project-by-id-v1
       description: find-project-by-id-v1
       parameters:
@@ -1328,6 +1339,25 @@ paths:
       tags:
         - project-v1
       description: delete-project-v1
+  '/v1/projects/{projectId}/duplicate':
+    parameters:
+      - $ref: '#/components/parameters/Project-Id'
+    post:
+      summary: V1 - Duplicate project
+      tags:
+        - project-v1
+      responses:
+        '200':
+          $ref: '#/components/responses/Project'
+        '404':
+          description: project-not-found
+          content:
+            application/json:
+              schema:
+                $ref: ../../base-api-spec.yaml#/components/schemas/ResError
+      operationId: duplicate-project-by-id-v1
+      description: duplicate-project-by-id-v1
+      parameters: []
   '/v1/projects/{projectId}/customer':
     parameters:
       - $ref: '#/components/parameters/Project-Id'
@@ -2893,14 +2923,12 @@ components:
           type: integer
           x-stoplight:
             id: tromrcn4vvmwc
-        responsibleIds:
-          type: array
+        responsible:
           x-stoplight:
             id: thgh3qi3x9aoc
+          type: array
           items:
-            x-stoplight:
-              id: 4xueok7tlo9ru
-            type: integer
+            $ref: '#/components/schemas/User'
       required:
         - id
         - name
@@ -2911,7 +2939,7 @@ components:
         - activityCenter
         - isTeleworking
         - state
-        - responsibleIds
+        - responsible
     ShareFile:
       title: ShareFile
       x-stoplight:

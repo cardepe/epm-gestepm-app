@@ -17,6 +17,7 @@ public interface FamilyService {
 	Family getById(Long id);
 	Family getFamilyByName(String name);
 	List<Family> findAll();
+	List<Family> findByProjectId(Long projectId);
 	Family save(Family family);
 	Family create(Family family);
 	Family update(Family family, Family currentFamily);

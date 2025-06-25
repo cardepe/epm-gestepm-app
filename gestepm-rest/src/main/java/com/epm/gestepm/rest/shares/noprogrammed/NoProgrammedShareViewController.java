@@ -10,10 +10,10 @@ import com.epm.gestepm.modelapi.inspection.dto.ActionEnumDto;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.filter.InspectionFilterDto;
 import com.epm.gestepm.modelapi.inspection.service.InspectionService;
-import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
-import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectListDTO;
-import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectByIdNotFoundException;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.filter.ProjectFilterDto;
+import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
+import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
@@ -34,12 +34,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
@@ -58,7 +54,7 @@ public class NoProgrammedShareViewController {
 
     private final NoProgrammedShareService noProgrammedShareService;
 
-    private final ProjectOldService projectOldService;
+    private final ProjectService projectService;
 
     private final UserService userService;
 
@@ -76,9 +72,10 @@ public class NoProgrammedShareViewController {
 
         this.loadCommonModelView(locale, model);
 
-        final List<ProjectListDTO> projects = this.projectOldService.getTeleworkingProjects(false).stream()
-                .sorted(Comparator.comparing(ProjectListDTO::getName, String.CASE_INSENSITIVE_ORDER))
-                .collect(Collectors.toList());
+        final ProjectFilterDto projectFilterDto = new ProjectFilterDto();
+        projectFilterDto.setIsTeleworking(false);
+
+        final List<ProjectDto> projects = this.projectService.list(projectFilterDto);
         model.addAttribute("projects", projects);
 
         final UserFilterDto filterDto = new UserFilterDto();
@@ -98,10 +95,7 @@ public class NoProgrammedShareViewController {
         this.loadCommonModelView(locale, model);
 
         final NoProgrammedShareDto share = this.noProgrammedShareService.findOrNotFound(new NoProgrammedShareByIdFinderDto(id));
-
-        final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(share.getProjectId());
-        final Project project = Optional.ofNullable(this.projectOldService.getProjectById(share.getProjectId().longValue()))
-                .orElseThrow(projectNotFound);
+        final ProjectDto project = this.projectService.findOrNotFound(new ProjectByIdFinderDto(share.getProjectId()));
 
         final InspectionFilterDto filterDto = new InspectionFilterDto();
         filterDto.setShareId(id);

@@ -5,11 +5,14 @@ import com.epm.gestepm.lib.controller.decorator.BaseResponseDataDecorator;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
+import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareFileByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareFileService;
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
 import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
+import com.epm.gestepm.rest.project.mappers.MapPRToProjectResponse;
 import com.epm.gestepm.rest.shares.noprogrammed.mappers.MapNPSFToFileResponse;
 import com.epm.gestepm.rest.shares.noprogrammed.request.NoProgrammedShareFindRestRequest;
 import com.epm.gestepm.restapi.openapi.model.*;
@@ -43,17 +46,17 @@ public class NoProgrammedShareResponseDecorator extends BaseResponseDataDecorato
 
     private final NoProgrammedShareFileService noProgrammedShareFileService;
 
-    private final ProjectOldService projectOldService;
+    private final ProjectService projectService;
 
     private final SubFamilyService subFamilyService;
 
     private final UserServiceOld userServiceOld;
 
-    public NoProgrammedShareResponseDecorator(ApplicationContext applicationContext, FamilyService familyService, NoProgrammedShareFileService noProgrammedShareFileService, ProjectOldService projectOldService, SubFamilyService subFamilyService, UserServiceOld userServiceOld) {
+    public NoProgrammedShareResponseDecorator(ApplicationContext applicationContext, FamilyService familyService, NoProgrammedShareFileService noProgrammedShareFileService, ProjectService projectService, SubFamilyService subFamilyService, UserServiceOld userServiceOld) {
         super(applicationContext);
         this.familyService = familyService;
         this.noProgrammedShareFileService = noProgrammedShareFileService;
-        this.projectOldService = projectOldService;
+        this.projectService = projectService;
         this.subFamilyService = subFamilyService;
         this.userServiceOld = userServiceOld;
     }
@@ -87,8 +90,8 @@ public class NoProgrammedShareResponseDecorator extends BaseResponseDataDecorato
             final Project project = data.getProject();
             final Integer id = project.getId();
 
-            final com.epm.gestepm.modelapi.deprecated.project.dto.Project projectDto = this.projectOldService.getProjectById(Long.valueOf(id));
-            final Project response = new Project().id(id).name(projectDto.getName());
+            final ProjectDto projectDto = this.projectService.findOrNotFound(new ProjectByIdFinderDto(id));
+            final Project response = getMapper(MapPRToProjectResponse.class).from(projectDto);
 
             data.setProject(response);
         }
