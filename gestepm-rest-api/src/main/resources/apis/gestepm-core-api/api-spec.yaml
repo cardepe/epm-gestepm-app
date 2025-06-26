@@ -4639,6 +4639,10 @@ components:
                 type: integer
                 x-stoplight:
                   id: 62h2alswvyo76
+              state:
+                type: integer
+                x-stoplight:
+                  id: 6manpi7j4nctq
     CreateProject:
       content:
         application/json:
