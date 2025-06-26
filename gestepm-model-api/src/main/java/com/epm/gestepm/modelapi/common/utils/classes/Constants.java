@@ -20,6 +20,8 @@ public final class Constants {
 	public static final long ROLE_ADMINISTRATION_ID = 7;
 	public static final long ROLE_ADMIN_ID = 8;
 
+	public static final Integer ROLE_PROJECT_LEADER_ID = 4;
+
 	public static final String ROLE_CUSTOMER = "ROLE_CLIENTE";
 	public static final String ROLE_OFFICE = "ROLE_OFICINA";
 	public static final String ROLE_OPERATOR = "ROLE_OPERARIO";

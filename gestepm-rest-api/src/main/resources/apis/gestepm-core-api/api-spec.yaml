@@ -1271,6 +1271,11 @@ paths:
           in: query
           name: memberIds
           description: Filter by member ids.
+        - schema:
+            type: boolean
+          in: query
+          name: role
+          description: Filter by user role id.
       tags:
         - project-v1
     post:

@@ -23,7 +23,7 @@ function initializeDataTables() {
         }
     ]
     let expand = ['activityCenter']
-    let filters = [];
+    let filters = [{ 'role': true }]
     let columnsDef = []
 
     customDataTable = new CustomDataTable(columns, endpoint, null, actions, expand, filters, columnsDef);
@@ -87,6 +87,8 @@ function filterByParams() {
     if (responsibleIds) { filters.push({ 'responsibleIds': responsibleIds }); }
     if (state) { filters.push({ 'state': state }); }
     if (pageNumber) { filters.push({ 'pageNumber': pageNumber }); }
+
+    filters.push({ 'role': true}); // TODO: a revisar
 
     customDataTable.setFilters(filters);
 }

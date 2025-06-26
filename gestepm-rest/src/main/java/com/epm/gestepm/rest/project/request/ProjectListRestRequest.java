@@ -30,4 +30,6 @@ public class ProjectListRestRequest extends RestRequest {
 
     private List<Integer> memberIds;
 
+    private Boolean role;
+
 }

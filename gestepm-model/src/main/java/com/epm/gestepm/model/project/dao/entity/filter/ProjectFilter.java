@@ -9,8 +9,6 @@ import lombok.EqualsAndHashCode;
 import java.util.List;
 
 import static com.epm.gestepm.model.project.dao.constants.ProjectAttributes.*;
-import static com.epm.gestepm.model.project.dao.constants.ProjectAttributes.ATTR_PR_IS_TELEWORKING;
-import static com.epm.gestepm.model.user.dao.constants.UserAttributes.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -33,6 +31,8 @@ public class ProjectFilter extends Orderable implements CollectableAttributes {
     private List<Integer> memberIds;
 
     private List<Integer> projectLeaderIds;
+
+    private Boolean role;
 
     @Override
     public AttributeMap collectAttributes() {

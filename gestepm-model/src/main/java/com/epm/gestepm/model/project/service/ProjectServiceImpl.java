@@ -23,6 +23,7 @@ import com.epm.gestepm.modelapi.project.dto.updater.ProjectUpdateDto;
 import com.epm.gestepm.modelapi.project.exception.ProjectNotFoundException;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -57,7 +58,9 @@ public class ProjectServiceImpl implements ProjectService {
     public List<ProjectDto> list(ProjectFilterDto filterDto) {
         final ProjectFilter filter = getMapper(MapPRToProjectFilter.class).from(filterDto);
 
-        // this.checkUserRoleAndUpdateFilter(filter);
+        if (BooleanUtils.isTrue(filter.getRole())) {
+            this.checkUserRoleAndUpdateFilter(filter);
+        }
 
         final List<Project> list = this.projectDao.list(filter);
 
@@ -73,7 +76,9 @@ public class ProjectServiceImpl implements ProjectService {
     public Page<ProjectDto> list(ProjectFilterDto filterDto, Long offset, Long limit) {
         final ProjectFilter filter = getMapper(MapPRToProjectFilter.class).from(filterDto);
 
-        // this.checkUserRoleAndUpdateFilter(filter);
+        if (BooleanUtils.isTrue(filter.getRole())) {
+            this.checkUserRoleAndUpdateFilter(filter);
+        }
 
         final Page<Project> page = this.projectDao.list(filter, offset, limit);
 
@@ -172,7 +177,7 @@ public class ProjectServiceImpl implements ProjectService {
     private void checkUserRoleAndUpdateFilter(final ProjectFilter filter) {
         final User currentUser = this.getCurrentUser();
 
-        if (!currentUser.getRole().getId().equals(Constants.ROLE_ADMIN_ID) && !currentUser.getRole().getId().equals(Constants.ROLE_TECHNICAL_SUPERVISOR_ID)) {
+        if (Constants.ROLE_PL_ID == currentUser.getRole().getId()) {
             filter.setProjectLeaderIds(List.of(currentUser.getId().intValue()));
         }
     }
