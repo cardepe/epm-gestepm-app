@@ -6,10 +6,13 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareFileByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareFileService;
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
 import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
+import com.epm.gestepm.rest.project.mappers.MapPRToProjectResponse;
 import com.epm.gestepm.rest.shares.noprogrammed.mappers.MapNPSFToFileResponse;
 import com.epm.gestepm.rest.shares.noprogrammed.request.NoProgrammedShareFindRestRequest;
 import com.epm.gestepm.restapi.openapi.model.*;
@@ -87,8 +90,8 @@ public class NoProgrammedShareResponseDecorator extends BaseResponseDataDecorato
             final Project project = data.getProject();
             final Integer id = project.getId();
 
-            final com.epm.gestepm.modelapi.project.dto.Project projectDto = this.projectService.getProjectById(Long.valueOf(id));
-            final Project response = new Project().id(id).name(projectDto.getName());
+            final ProjectDto projectDto = this.projectService.findOrNotFound(new ProjectByIdFinderDto(id));
+            final Project response = getMapper(MapPRToProjectResponse.class).from(projectDto);
 
             data.setProject(response);
         }

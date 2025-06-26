@@ -12,28 +12,30 @@ import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.model.shares.common.checker.ShareDateChecker;
 import com.epm.gestepm.model.shares.construction.dao.ConstructionShareDao;
 import com.epm.gestepm.model.shares.construction.dao.entity.ConstructionShare;
-import com.epm.gestepm.model.shares.construction.dao.entity.filter.ConstructionShareFilter;
-import com.epm.gestepm.model.shares.construction.service.mapper.MapCSToConstructionShareDto;
-import com.epm.gestepm.model.shares.construction.service.mapper.MapCSToConstructionShareFilter;
 import com.epm.gestepm.model.shares.construction.dao.entity.creator.ConstructionShareCreate;
 import com.epm.gestepm.model.shares.construction.dao.entity.deleter.ConstructionShareDelete;
+import com.epm.gestepm.model.shares.construction.dao.entity.filter.ConstructionShareFilter;
 import com.epm.gestepm.model.shares.construction.dao.entity.finder.ConstructionShareByIdFinder;
 import com.epm.gestepm.model.shares.construction.dao.entity.updater.ConstructionShareUpdate;
 import com.epm.gestepm.model.shares.construction.service.mapper.*;
+import com.epm.gestepm.model.user.utils.UserUtils;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
+import com.epm.gestepm.modelapi.customer.dto.CustomerDto;
+import com.epm.gestepm.modelapi.customer.dto.finder.CustomerByProjectIdFinderDto;
+import com.epm.gestepm.modelapi.customer.service.CustomerService;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.construction.dto.ConstructionShareDto;
-import com.epm.gestepm.modelapi.shares.construction.dto.filter.ConstructionShareFilterDto;
-import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareExportService;
-import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareService;
 import com.epm.gestepm.modelapi.shares.construction.dto.creator.ConstructionShareCreateDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.deleter.ConstructionShareDeleteDto;
+import com.epm.gestepm.modelapi.shares.construction.dto.filter.ConstructionShareFilterDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.finder.ConstructionShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.construction.dto.updater.ConstructionShareUpdateDto;
 import com.epm.gestepm.modelapi.shares.construction.exception.ConstructionShareNotFoundException;
-import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareExportService;
+import com.epm.gestepm.modelapi.shares.construction.service.ConstructionShareService;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -45,11 +47,9 @@ import org.springframework.validation.annotation.Validated;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
-import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_DELETE;
 import static com.epm.gestepm.modelapi.shares.construction.security.ConstructionSharePermission.PRMT_EDIT_CS;
 import static com.epm.gestepm.modelapi.shares.construction.security.ConstructionSharePermission.PRMT_READ_CS;
 import static org.mapstruct.factory.Mappers.getMapper;
@@ -66,6 +66,8 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
 
     private final ConstructionShareExportService constructionShareExportService;
 
+    private final CustomerService customerService;
+
     private final EmailService emailService;
 
     private final LocaleProvider localeProvider;
@@ -75,6 +77,8 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
     private final ProjectService projectService;
 
     private final ShareDateChecker shareDateChecker;
+
+    private final UserUtils userUtils;
 
     @Override
     @RequirePermits(value = PRMT_READ_CS, action = "List construction shares")
@@ -212,9 +216,7 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
 
         final User user = Utiles.getCurrentUser();
 
-        final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(constructionShare.getProjectId());
-        final Project project = Optional.ofNullable(this.projectService.getProjectById(constructionShare.getProjectId().longValue()))
-                .orElseThrow(projectNotFound);
+        final ProjectDto project = this.projectService.findOrNotFound(new ProjectByIdFinderDto(constructionShare.getProjectId()));
 
         final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));
         final String fileName = this.messageSource.getMessage("shares.construction.pdf.name", new Object[]{
@@ -233,11 +235,15 @@ public class ConstructionShareServiceImpl implements ConstructionShareService {
 
         final Set<String> emails = new HashSet<>();
         emails.add(user.getEmail());
-        emails.addAll(project.getResponsables().stream().map(User::getEmail).collect(Collectors.toSet()));
 
-        if (BooleanUtils.isTrue(notify) && project.getCustomer() != null) {
-            final String mainEmail = project.getCustomer().getMainEmail();
-            final String secondaryEmail = project.getCustomer().getSecondaryEmail();
+        final Set<String> responsibleEmails = this.userUtils.getResponsibleEmails(project);
+        emails.addAll(responsibleEmails);
+
+        final Optional<CustomerDto> customer = this.customerService.find(new CustomerByProjectIdFinderDto(project.getId()));
+
+        if (BooleanUtils.isTrue(notify) && customer.isPresent()) {
+            final String mainEmail = customer.get().getMainEmail();
+            final String secondaryEmail = customer.get().getSecondaryEmail();
 
             if (StringUtils.isNoneBlank(mainEmail)) {
                 emails.add(mainEmail);

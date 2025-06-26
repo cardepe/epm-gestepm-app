@@ -262,9 +262,13 @@ function printActions(data, actions, id) {
         }
 
         if (a.action === 'view') { // FIXME: && a.permission && authentication.permissions.includes(a.permission)) {
-            buttonHtml += '<a href="' + currentUrl.replace('{id}', id) + '" class="menu-link">' +
-                '<em class="far fa-eye"></em>' +
-                '</a>';
+            if (a.url ) {
+                buttonHtml += '<a href="' + currentUrl.replace('{id}', id) + '" class="menu-link">' +
+                    '<em class="far fa-eye"></em>' +
+                    '</a>';
+            } else {
+                buttonHtml += '<em class="fas fa-eye" onclick="view(' + id + ')"></em>';
+            }
         }
 
         if (a.action === 'validate') {

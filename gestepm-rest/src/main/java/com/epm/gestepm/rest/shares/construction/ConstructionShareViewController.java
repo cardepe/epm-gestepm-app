@@ -6,7 +6,8 @@ import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.common.utils.datatables.SortOrder;
-import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.filter.ProjectFilterDto;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.breaks.dto.ShareBreakDto;
 import com.epm.gestepm.modelapi.shares.breaks.dto.filter.ShareBreakFilterDto;
@@ -67,9 +68,10 @@ public class ConstructionShareViewController {
 
         this.loadCommonModelView(locale, model);
 
-        final List<ProjectListDTO> projects = this.projectService.getTeleworkingProjects(false).stream()
-                .sorted(Comparator.comparing(ProjectListDTO::getName, String.CASE_INSENSITIVE_ORDER))
-                .collect(Collectors.toList());
+        final ProjectFilterDto projectFilterDto = new ProjectFilterDto();
+        projectFilterDto.setIsTeleworking(false);
+
+        final List<ProjectDto> projects = this.projectService.list(projectFilterDto);
         model.addAttribute("projects", projects);
 
         final UserFilterDto filterDto = new UserFilterDto();
@@ -91,9 +93,10 @@ public class ConstructionShareViewController {
         final ConstructionShareDto constructionShare = this.constructionShareService.findOrNotFound(new ConstructionShareByIdFinderDto(id));
         model.addAttribute("constructionShare", constructionShare);
 
-        final List<ProjectListDTO> projects = this.projectService.getTeleworkingProjects(false).stream()
-                .sorted(Comparator.comparing(ProjectListDTO::getName, String.CASE_INSENSITIVE_ORDER))
-                .collect(Collectors.toList());
+        final ProjectFilterDto projectFilterDto = new ProjectFilterDto();
+        projectFilterDto.setIsTeleworking(false);
+
+        final List<ProjectDto> projects = this.projectService.list(projectFilterDto);
         model.addAttribute("projects", projects);
 
         boolean canUpdate = Constants.ROLE_ADMIN.equals(user.getRole().getRoleName());

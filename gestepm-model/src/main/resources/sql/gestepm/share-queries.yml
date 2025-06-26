@@ -15,7 +15,7 @@ sql:
         CONCAT('/shares/construction/', cs.construction_share_id) AS detail_url,
         'CONSTRUCTION_SHARES' AS type
       FROM ${sch-gestepm}.construction_share cs
-      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = cs.project_id
+      LEFT JOIN ${sch-gestepm}.project pr ON pr.project_id = cs.project_id
       LEFT JOIN ${sch-gestepm}.user us ON cs.user_id = us.user_id
       UNION
       SELECT
@@ -29,7 +29,7 @@ sql:
         CONCAT('/shares/displacement/', ds.displacement_share_id) AS detail_url,
         'DISPLACEMENT_SHARES' AS type
       FROM ${sch-gestepm}.displacement_share ds
-      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = ds.project_id
+      LEFT JOIN ${sch-gestepm}.project pr ON pr.project_id = ds.project_id
       LEFT JOIN ${sch-gestepm}.user us ON ds.user_id = us.user_id
       UNION
       SELECT
@@ -44,7 +44,7 @@ sql:
         'INSPECTIONS' AS type
       FROM ${sch-gestepm}.inspection ins
       LEFT JOIN ${sch-gestepm}.no_programmed_share nps ON ins.no_programmed_share_id = nps.no_programmed_share_id
-      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = nps.project_id
+      LEFT JOIN ${sch-gestepm}.project pr ON pr.project_id = nps.project_id
       LEFT JOIN ${sch-gestepm}.user us ON ins.first_technical = us.user_id
       UNION
       SELECT
@@ -58,7 +58,7 @@ sql:
         CONCAT('/shares/programmed/', ps.programmed_share_id) AS detail_url,
         'PROGRAMMED_SHARES' AS type
       FROM ${sch-gestepm}.programmed_share ps
-      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = ps.project_id
+      LEFT JOIN ${sch-gestepm}.project pr ON pr.project_id = ps.project_id
       LEFT JOIN ${sch-gestepm}.user us ON ps.user_id = us.user_id
       UNION
       SELECT
@@ -72,7 +72,7 @@ sql:
         CONCAT('/shares/work/', ws.work_share_id) AS detail_url,
         'WORK_SHARES' AS type
       FROM ${sch-gestepm}.work_share ws
-      LEFT JOIN ${sch-gestepm}.projects pr ON pr.id = ws.project_id
+      LEFT JOIN ${sch-gestepm}.project pr ON pr.project_id = ws.project_id
       LEFT JOIN ${sch-gestepm}.user us ON ws.user_id = us.user_id
     ) AS sublist
     

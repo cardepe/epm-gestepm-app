@@ -35,6 +35,10 @@ public class UserFilter extends Orderable implements CollectableAttributes {
 
     private List<Integer> levelIds;
 
+    private Integer leadingProjectId;
+
+    private Integer memberProjectId;
+
     @Override
     public AttributeMap collectAttributes() {
 
@@ -49,6 +53,8 @@ public class UserFilter extends Orderable implements CollectableAttributes {
         map.putList(ATTR_U_SIGNING_ID, this.signingIds);
         map.putList(ATTR_U_ROLE_IDS, this.roleIds);
         map.putList(ATTR_U_LEVEL_IDS, this.levelIds);
+        map.put(ATTR_U_LEADING_PROJECT_ID, this.leadingProjectId);
+        map.put(ATTR_U_MEMBER_PROJECT_ID, this.memberProjectId);
 
         return map;
     }

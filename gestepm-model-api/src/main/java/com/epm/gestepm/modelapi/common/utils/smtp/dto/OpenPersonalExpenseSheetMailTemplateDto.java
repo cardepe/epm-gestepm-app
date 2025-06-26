@@ -1,8 +1,8 @@
 package com.epm.gestepm.modelapi.common.utils.smtp.dto;
 
-import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetDto;
-import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetDto;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -24,7 +24,7 @@ public class OpenPersonalExpenseSheetMailTemplateDto {
     private User user;
 
     @NotNull
-    private Project project;
+    private ProjectDto project;
 
     @NotNull
     private String template;

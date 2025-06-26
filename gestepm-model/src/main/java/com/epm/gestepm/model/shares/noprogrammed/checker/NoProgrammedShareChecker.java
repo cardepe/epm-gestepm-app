@@ -1,17 +1,17 @@
 package com.epm.gestepm.model.shares.noprogrammed.checker;
 
-import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
 import com.epm.gestepm.modelapi.project.exception.ProjectIsNotStationException;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.user.exception.UserNotFoundException;
+import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareStateEnumDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.creator.NoProgrammedShareCreateDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.NoProgrammedShareUpdateDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareForbiddenException;
-import com.epm.gestepm.modelapi.deprecated.user.dto.User;
-import com.epm.gestepm.modelapi.deprecated.user.exception.UserByIdNotFoundException;
-import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,8 +24,6 @@ import static com.epm.gestepm.modelapi.common.utils.classes.Constants.ROLE_PL_ID
 @Component
 @AllArgsConstructor
 public class NoProgrammedShareChecker {
-
-    private static final Integer STATION_ACTIVE = 1;
 
     private final ProjectService projectService;
 
@@ -42,7 +40,7 @@ public class NoProgrammedShareChecker {
     private void checker(final Integer userId, final Integer projectId, final NoProgrammedShareCreateDto createDto, final NoProgrammedShareUpdateDto updateDto) {
         final boolean closeShare = updateDto != null && NoProgrammedShareStateEnumDto.CLOSED.equals(updateDto.getState());
 
-        final Supplier<RuntimeException> userNotFound = () -> new UserByIdNotFoundException(userId);
+        final Supplier<RuntimeException> userNotFound = () -> new UserNotFoundException(userId);
         final User user = Optional.ofNullable(this.userServiceOld.getUserById(userId.longValue()))
                 .orElseThrow(userNotFound);
 
@@ -60,11 +58,10 @@ public class NoProgrammedShareChecker {
     }
 
     private void validateProject(final Integer projectId) {
-        final Project project = Optional.ofNullable(projectService.getProjectById(projectId.longValue()))
-                .orElseThrow(() -> new ProjectByIdNotFoundException(projectId));
+        final ProjectDto project = this.projectService.findOrNotFound(new ProjectByIdFinderDto(projectId));
 
-        if (project.getStation() != STATION_ACTIVE) {
-            throw new ProjectIsNotStationException(project.getId().intValue());
+        if (!project.getIsStation()) {
+            throw new ProjectIsNotStationException(projectId);
         }
     }
 }

@@ -1,0 +1,16 @@
+sql:
+
+  qry-create-prl: |
+    
+    INSERT INTO ${sch-gestepm}.project_leader (
+      project_id,
+      user_id
+    )
+    VALUES (
+      :attr_pr_id,
+      :attr_u_id
+    )
+
+  qry-delete-prl: |
+    
+    DELETE FROM ${sch-gestepm}.project_leader WHERE project_id = :attr_pr_id AND user_id = :attr_u_id

@@ -1,6 +1,6 @@
 package com.epm.gestepm.modelapi.deprecated.interventionprshare.dto;
 
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import lombok.Data;
 
@@ -23,7 +23,7 @@ public class InterventionPrShare {
 	private User user;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PROJECT_ID", referencedColumnName = "ID", nullable = false)
+	@JoinColumn(name = "project_id", nullable = false)
 	private Project project;
 	
 	@Column(name = "START_DATE", nullable = false)

@@ -1,0 +1,150 @@
+sql:
+
+  qry-list-of-pr: |
+
+    SELECT
+      pr.project_id,
+      pr.name,
+      pr.station,
+      pr.objective_cost,
+      pr.start_date,
+      pr.end_date,
+      pr.activity_center_id,
+      ac.name AS activity_center_name,
+      pr.forum_id,
+      pr.teleworking,
+      pr.state,
+      GROUP_CONCAT(prr.user_id) AS responsible_ids
+    FROM ${sch-gestepm}.project pr
+    LEFT JOIN ${sch-gestepm}.activity_center ac ON ac.activity_center_id = pr.activity_center_id
+    LEFT JOIN ${sch-gestepm}.project_responsible prr ON prr.project_id = pr.project_id
+    LEFT JOIN ${sch-gestepm}.project_member prm ON prm.project_id = pr.project_id
+    LEFT JOIN ${sch-gestepm}.project_leader prl ON prl.project_id = pr.project_id
+
+    #whereToken #filter
+    GROUP BY pr.project_id
+    #orderByToken
+
+  qry-page-of-pr: |
+
+    ${sql.qry-list-of-pr}
+    ${sql.paginated-query}
+
+  qry-count-of-pr: |
+
+    SELECT COUNT(DISTINCT project_id) AS "count"
+    FROM (
+      SELECT pr.project_id
+      FROM ${sch-gestepm}.project pr
+      LEFT JOIN ${sch-gestepm}.activity_center ac ON ac.activity_center_id = pr.activity_center_id
+      LEFT JOIN ${sch-gestepm}.project_responsible prr ON prr.project_id = pr.project_id
+      LEFT JOIN ${sch-gestepm}.project_member prm ON prm.project_id = pr.project_id
+      LEFT JOIN ${sch-gestepm}.project_leader prl ON prl.project_id = pr.project_id
+      #whereToken #filter
+    ) final
+
+  qry-create-pr: |
+
+    INSERT INTO ${sch-gestepm}.project (
+      name,
+      station,
+      objective_cost,
+      start_date,
+      end_date,
+      activity_center_id,
+      forum_id,
+      teleworking,
+      state
+    )
+    VALUES (
+      :attr_pr_name,
+      :attr_pr_is_station,
+      :attr_pr_objective_cost,
+      :attr_pr_start_date,
+      :attr_pr_end_date,
+      :attr_pr_activity_center_id,
+      :attr_pr_forum_id,
+      :attr_pr_is_teleworking,
+      1
+    )
+
+  qry-update-pr: |
+
+    UPDATE
+      ${sch-gestepm}.project
+    SET
+      name = :attr_pr_name,
+      station = :attr_pr_is_station,
+      objective_cost = :attr_pr_objective_cost,
+      start_date = :attr_pr_start_date,
+      end_date = :attr_pr_end_date,
+      activity_center_id = :attr_pr_activity_center_id,
+      forum_id = :attr_pr_forum_id,
+      teleworking = :attr_pr_is_teleworking,
+      state = :attr_pr_state
+    WHERE
+      project_id = :attr_pr_id
+
+  qry-delete-pr: |
+
+    DELETE FROM ${sch-gestepm}.project WHERE project_id = :attr_pr_id
+    
+  filter-pr-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-pr-ids}
+      -- ${sql.predicate-for-pr-name-contains}
+      -- ${sql.predicate-for-pr-is-station}
+      -- ${sql.predicate-for-pr-activity-center-ids}
+      -- ${sql.predicate-for-pr-is-teleworking}
+      -- ${sql.predicate-for-pr-state}
+      -- ${sql.predicate-for-pr-responsible-ids}
+      -- ${sql.predicate-for-pr-member-ids}
+      -- ${sql.predicate-for-pr-project-leader-ids}
+    -- AND]
+
+  filter-pr-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-pr-id}
+    -- AND]
+
+  predicate-for-pr-id: |
+
+    pr.project_id = :attr_pr_id
+
+  predicate-for-pr-ids: |
+
+    pr.project_id IN (:attr_pr_ids)
+
+  predicate-for-pr-name-contains: |
+
+    LOWER(pr.name) LIKE LOWER(:attr_pr_name_contains)
+
+  predicate-for-pr-is-station: |
+
+    pr.station = :attr_pr_is_station
+
+  predicate-for-pr-activity-center-ids: |
+
+    pr.activity_center_id IN (:attr_pr_activity_center_ids)
+
+  predicate-for-pr-is-teleworking: |
+
+    pr.teleworking = :attr_pr_is_teleworking
+
+  predicate-for-pr-state: |
+
+    pr.state = :attr_pr_state
+
+  predicate-for-pr-responsible-ids: |
+    
+    prr.user_id IN (:attr_pr_responsible_ids)
+
+  predicate-for-pr-member-ids: |
+    
+    prm.user_id IN (:attr_pr_member_ids)
+
+  predicate-for-pr-project-leader-ids: |
+    
+    prl.user_id IN (:attr_pr_project_leader_ids)

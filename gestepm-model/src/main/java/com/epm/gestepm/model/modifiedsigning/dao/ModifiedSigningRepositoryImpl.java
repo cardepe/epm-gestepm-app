@@ -3,7 +3,7 @@ package com.epm.gestepm.model.modifiedsigning.dao;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigning;
 import com.epm.gestepm.modelapi.modifiedsigning.dto.ModifiedSigningTableDTO;
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import org.springframework.stereotype.Repository;

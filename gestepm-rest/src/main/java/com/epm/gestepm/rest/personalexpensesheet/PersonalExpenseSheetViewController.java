@@ -8,9 +8,11 @@ import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetDto
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetStatusEnumDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.filter.PersonalExpenseSheetFilterDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetService;
-import com.epm.gestepm.modelapi.project.dto.ProjectListDTO;
-import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.filter.ProjectFilterDto;
+import com.epm.gestepm.modelapi.project.service.ProjectService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,17 +33,13 @@ import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
 
 @Controller
+@RequiredArgsConstructor
 @EnableExecutionLog(layerMarker = VIEW)
 public class PersonalExpenseSheetViewController {
 
     private final PersonalExpenseSheetService personalExpenseSheetService;
 
     private final ProjectService projectService;
-
-    public PersonalExpenseSheetViewController(PersonalExpenseSheetService personalExpenseSheetService, ProjectService projectService) {
-        this.personalExpenseSheetService = personalExpenseSheetService;
-        this.projectService = projectService;
-    }
 
     @ModelAttribute
     public User loadCommonModelView(final Locale locale, final Model model) {
@@ -97,10 +95,14 @@ public class PersonalExpenseSheetViewController {
 
     private void loadProjects(final User user, final Model model) {
 
-        final List<ProjectListDTO> projects = user.getRole().getId() == Constants.ROLE_ADMIN_ID || user.getRole().getId() == Constants.ROLE_TECHNICAL_SUPERVISOR_ID
-                ? this.projectService.getAllProjectsDTOs()
-                : this.projectService.getProjectsByUser(user);
+        final ProjectFilterDto filterDto = new ProjectFilterDto();
 
+        if (user.getRole().getId() != Constants.ROLE_ADMIN_ID && user.getRole().getId() != Constants.ROLE_TECHNICAL_SUPERVISOR_ID) {
+            filterDto.setResponsibleIds(List.of(user.getId().intValue()));
+            filterDto.setMemberIds(List.of(user.getId().intValue()));
+        }
+
+        final List<ProjectDto> projects = this.projectService.list(filterDto);
         model.addAttribute("projects", projects);
     }
 }

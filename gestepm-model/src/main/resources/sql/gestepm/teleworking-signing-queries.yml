@@ -12,7 +12,7 @@ sql:
       ts.closed_at,
       ts.closed_location
     FROM ${sch-gestepm}.teleworking_signing ts
-    LEFT JOIN ${sch-gestepm}.projects pr ON ts.project_id = pr.id
+    LEFT JOIN ${sch-gestepm}.project pr ON ts.project_id = pr.project_id
 
     #whereToken #filter
     GROUP BY ts.teleworking_signing_id

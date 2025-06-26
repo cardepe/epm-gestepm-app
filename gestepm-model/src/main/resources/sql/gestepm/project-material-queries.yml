@@ -1,0 +1,94 @@
+sql:
+
+  qry-list-of-prmat: |
+
+    SELECT
+      prmat.project_material_id,
+      prmat.project_id,
+      prmat.name_es,
+      prmat.name_fr,
+      prmat.required
+    FROM ${sch-gestepm}.project_material prmat
+
+    #whereToken #filter
+    #orderByToken
+
+  qry-page-of-prmat: |
+
+    ${sql.qry-list-of-prmat}
+    ${sql.paginated-query}
+
+  qry-count-of-prmat: |
+
+    SELECT COUNT(DISTINCT project_material_id) AS "count"
+    FROM (
+      SELECT prmat.project_material_id
+      FROM ${sch-gestepm}.project_material prmat      
+      #whereToken #filter
+    ) final
+
+  qry-create-prmat: |
+
+    INSERT INTO ${sch-gestepm}.project_material (
+      project_id,
+      name_es,
+      name_fr,
+      required
+    )
+    VALUES (
+      :attr_prmat_project_id,
+      :attr_prmat_name_es,
+      :attr_prmat_name_fr,
+      :attr_prmat_required
+    )
+
+  qry-update-prmat: |
+
+    UPDATE
+      ${sch-gestepm}.project_material
+    SET
+      name_es = :attr_prmat_name_es,
+      name_fr = :attr_prmat_name_fr,
+      required = :attr_prmat_required
+    WHERE
+      project_material_id = :attr_prmat_id
+
+  qry-delete-prmat: |
+
+    DELETE FROM ${sch-gestepm}.project_material WHERE project_material_id = :attr_prmat_id
+
+  filter-prmat-by-params: |
+
+    -- [AND
+      -- ${sql.predicate-for-prmat-ids}
+      -- ${sql.predicate-for-prmat-p-ids}
+      -- ${sql.predicate-for-prmat-name-contains}
+      -- ${sql.predicate-for-prmat-required}
+    -- AND]
+
+  filter-prmat-by-id: |
+
+    -- [AND
+      -- ${sql.predicate-for-prmat-id}
+    -- AND]
+
+  predicate-for-prmat-id: |
+
+    prmat.project_material_id = :attr_prmat_id
+
+  predicate-for-prmat-ids: |
+
+    prmat.project_material_id IN (:attr_prmat_ids)
+
+  predicate-for-prmat-p-ids: |
+
+    prmat.project_id IN (:attr_prmat_project_ids)
+
+  predicate-for-prmat-name-contains: |
+    
+    (LOWER(prmat.name_es) LIKE LOWER(:attr_pr_name_contains)) OR (LOWER(prmat.name_fr) LIKE LOWER(:attr_pr_name_contains))
+
+  predicate-for-prmat-required: |
+    
+    prmat.required = :attr_prmat_required
+
