@@ -56,7 +56,8 @@ public class ProjectServiceImpl implements ProjectService {
             errorMsg = "Failed to list projects")
     public List<ProjectDto> list(ProjectFilterDto filterDto) {
         final ProjectFilter filter = getMapper(MapPRToProjectFilter.class).from(filterDto);
-        this.checkUserRoleAndUpdateFilter(filter);
+
+        // this.checkUserRoleAndUpdateFilter(filter);
 
         final List<Project> list = this.projectDao.list(filter);
 
@@ -71,7 +72,8 @@ public class ProjectServiceImpl implements ProjectService {
             errorMsg = "Failed to list projects")
     public Page<ProjectDto> list(ProjectFilterDto filterDto, Long offset, Long limit) {
         final ProjectFilter filter = getMapper(MapPRToProjectFilter.class).from(filterDto);
-        this.checkUserRoleAndUpdateFilter(filter);
+
+        // this.checkUserRoleAndUpdateFilter(filter);
 
         final Page<Project> page = this.projectDao.list(filter, offset, limit);
 
