@@ -77,7 +77,7 @@ public class ProjectOldServiceImpl implements ProjectOldService {
 				.map(project -> new ProjectListDTO(
 						project.getId(),
 						project.getName(),
-						project.getStation(),
+						null,
 						project.getCustomer() != null ? project.getCustomer().getMainEmail() : null))
 				.collect(Collectors.toList());
 	}

@@ -10,6 +10,7 @@ import com.epm.gestepm.modelapi.deprecated.interventionshare.dto.InterventionSha
 import com.epm.gestepm.modelapi.deprecated.materialrequired.dto.MaterialRequired;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.deprecated.workshare.WorkShare;
+import com.epm.gestepm.modelapi.project.dto.ProjectTypeDto;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -29,11 +30,8 @@ public class Project {
 	@Column(name = "name", nullable = false, precision = 64)
 	private String name;
 	
-	@Column(name = "station", nullable = false)
-    private int station;
-	
-	@OneToMany(mappedBy = "station")
-	private List<Project> projects;
+	@Column(name = "type", nullable = false)
+    private ProjectTypeDto type;
 	
 	@ManyToMany
 	@JoinTable(name = "project_responsible", joinColumns = @JoinColumn(name = "project_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
@@ -54,9 +52,6 @@ public class Project {
 	
 	@Column(name = "forum_id")
 	private Long forumId;
-
-	@Column(name = "teleworking")
-	private boolean teleworking;
 
 	@OneToMany(mappedBy = "project")
 	private List<InterventionShare> interventionShares;

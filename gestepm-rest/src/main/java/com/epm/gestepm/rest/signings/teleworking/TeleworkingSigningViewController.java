@@ -77,7 +77,7 @@ public class TeleworkingSigningViewController {
 
     private void loadProjects(final Model model) {
         final ProjectFilterDto projectFilterDto = new ProjectFilterDto();
-        projectFilterDto.setTypes(List.of(TELEWORKING));
+        projectFilterDto.setTypes(List.of(OFFICE, TELEWORKING));
 
         final List<ProjectDto> projects = this.projectService.list(projectFilterDto);
         model.addAttribute("projects", projects);

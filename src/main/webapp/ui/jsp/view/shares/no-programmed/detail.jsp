@@ -256,7 +256,7 @@
         const editForm = document.querySelector('#editForm');
         const shareId = getShareId();
 
-        await getShare(shareId);
+        share = await getShare(shareId);
         await getPermissions();
 
         const familyElement = editForm.querySelector('[name="familyId"]');
@@ -276,14 +276,13 @@
     }
 
     async function getShare(id) {
-        await axios.get('/v1/shares/no-programmed/' + id, {
+        const response = await axios.get('/v1/shares/no-programmed/' + id, {
             params: {
                 _expand: 'family,subFamily,user,project,files',
                 locale: locale
             }
-        }).then((response) => {
-            share = response.data.data;
-        }).catch(error => showNotify(error.response.data.detail, 'danger'));
+        });
+        return response.data.data;
     }
 
     function edit(id) {
