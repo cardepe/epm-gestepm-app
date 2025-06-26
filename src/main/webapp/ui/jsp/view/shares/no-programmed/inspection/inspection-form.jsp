@@ -254,7 +254,7 @@
             const equipmentHours = editForm.querySelector('[name="equipmentHours"]');
             const notify = editForm.querySelector('[name="clientNotif"]');
 
-            const materials = dTable.rows().data().toArray().map(row => ({ ...row, id: row.id < 0 ? null : row.id}));
+            const materials = materialsDataTable.rows().data().toArray().map(row => ({ ...row, id: row.id < 0 ? null : row.id}));
             const materialsFile = await parseMaterialsFile(editForm);
             const files = await parseFiles(editForm);
 
@@ -357,7 +357,7 @@
         ]
 
         customDataTable = new CustomDataTable(columns, null, inspection.materials, actions, null,  null, columnDefs);
-        dTable = createSimpleDataTable('#materialsTable', customDataTable, locale);
+        materialsDataTable = createSimpleDataTable('#materialsTable', customDataTable, locale);
     }
 
     function showFiles(files, inputName, filesId) {

@@ -86,13 +86,13 @@
 
     function addMaterial() {
         let tool = getFormData(materialForm);
-        tool['id'] = --lastMaterialId;
+        tool['id'] = ++lastMaterialId;
 
         materialsModified = true;
-        dTable.row.add(tool).draw();
+        materialsDataTable.row.add(tool).draw();
         materialModal.modal('hide');
 
-        if (dTable.data().count() >= 5) {
+        if (materialsDataTable.data().count() >= 5) {
             materialBtn.prop("disabled", true);
         }
     }
@@ -102,14 +102,14 @@
         tool['id'] = $('#rowId').val();
 
         materialsModified = true;
-        dTable.row('#' + tool.rowId).data(tool).draw();
+        materialsDataTable.row('#' + tool.rowId).data(tool).draw();
         materialModal.modal('hide');
     }
 
     function remove(id) {
-        dTable.row('#' + id).remove().draw();
+        materialsDataTable.row('#' + id).remove().draw();
         materialsModified = true;
-        if (dTable.data().count() < 5 && materialBtn.is(":disabled")) {
+        if (materialsDataTable.data().count() < 5 && materialBtn.is(":disabled")) {
             materialBtn.prop("disabled", false);
         }
     }
@@ -134,7 +134,7 @@
     }
 
     function setFormData(id) {
-        let data = dTable.row('#' + id).data();
+        let data = materialsDataTable.row('#' + id).data();
 
         Object.keys(data).forEach(function(key) {
             let value = data[key];

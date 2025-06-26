@@ -80,6 +80,7 @@
     let share;
     let inspection;
     const isShareFinished = ${ inspection.endDate != null };
+    let materialsDataTable;
 
     async function getInspection() {
         await axios.get('/v1' + window.location.pathname, { params: { _expand: 'files,firstTechnical,secondTechnical' }}).then((response) => {
