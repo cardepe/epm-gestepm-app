@@ -17,7 +17,7 @@ public class Project implements Serializable {
     private String name;
 
     @NotNull
-    private Boolean isStation;
+    private ProjectType type;
 
     @NotNull
     private Double objectiveCost;
@@ -32,9 +32,6 @@ public class Project implements Serializable {
     private Integer activityCenterId;
 
     private Integer forumId;
-
-    @NotNull
-    private Boolean isTeleworking;
 
     @NotNull
     private Integer state;

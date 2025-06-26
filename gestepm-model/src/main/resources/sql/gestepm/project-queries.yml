@@ -5,14 +5,13 @@ sql:
     SELECT
       pr.project_id,
       pr.name,
-      pr.station,
+      pr.type,
       pr.objective_cost,
       pr.start_date,
       pr.end_date,
       pr.activity_center_id,
       ac.name AS activity_center_name,
       pr.forum_id,
-      pr.teleworking,
       pr.state,
       GROUP_CONCAT(prr.user_id) AS responsible_ids
     FROM ${sch-gestepm}.project pr
@@ -47,24 +46,22 @@ sql:
 
     INSERT INTO ${sch-gestepm}.project (
       name,
-      station,
+      type,
       objective_cost,
       start_date,
       end_date,
       activity_center_id,
       forum_id,
-      teleworking,
       state
     )
     VALUES (
       :attr_pr_name,
-      :attr_pr_is_station,
+      :attr_pr_type,
       :attr_pr_objective_cost,
       :attr_pr_start_date,
       :attr_pr_end_date,
       :attr_pr_activity_center_id,
       :attr_pr_forum_id,
-      :attr_pr_is_teleworking,
       1
     )
 
@@ -74,13 +71,12 @@ sql:
       ${sch-gestepm}.project
     SET
       name = :attr_pr_name,
-      station = :attr_pr_is_station,
+      type = :attr_pr_type,
       objective_cost = :attr_pr_objective_cost,
       start_date = :attr_pr_start_date,
       end_date = :attr_pr_end_date,
       activity_center_id = :attr_pr_activity_center_id,
       forum_id = :attr_pr_forum_id,
-      teleworking = :attr_pr_is_teleworking,
       state = :attr_pr_state
     WHERE
       project_id = :attr_pr_id
@@ -94,9 +90,8 @@ sql:
     -- [AND
       -- ${sql.predicate-for-pr-ids}
       -- ${sql.predicate-for-pr-name-contains}
-      -- ${sql.predicate-for-pr-is-station}
+      -- ${sql.predicate-for-pr-types}
       -- ${sql.predicate-for-pr-activity-center-ids}
-      -- ${sql.predicate-for-pr-is-teleworking}
       -- ${sql.predicate-for-pr-state}
       -- ${sql.predicate-for-pr-responsible-ids}
       -- ${sql.predicate-for-pr-member-ids}
@@ -121,17 +116,13 @@ sql:
 
     LOWER(pr.name) LIKE LOWER(:attr_pr_name_contains)
 
-  predicate-for-pr-is-station: |
+  predicate-for-pr-types: |
 
-    pr.station = :attr_pr_is_station
+    pr.type IN (:attr_pr_types)
 
   predicate-for-pr-activity-center-ids: |
 
     pr.activity_center_id IN (:attr_pr_activity_center_ids)
-
-  predicate-for-pr-is-teleworking: |
-
-    pr.teleworking = :attr_pr_is_teleworking
 
   predicate-for-pr-state: |
 

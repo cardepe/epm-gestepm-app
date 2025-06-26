@@ -61,6 +61,7 @@ public class TimeControlWoffuExportServiceImpl implements TimeControlWoffuExport
             TimeControlTypeEnumDto.DISPLACEMENT_SHARES,
             TimeControlTypeEnumDto.PROGRAMMED_SHARES,
             TimeControlTypeEnumDto.INSPECTIONS,
+            TimeControlTypeEnumDto.OFFICE_SIGNING,
             TimeControlTypeEnumDto.PERSONAL_SIGNINGS,
             TimeControlTypeEnumDto.TELEWORKING_SIGNING,
             TimeControlTypeEnumDto.WORK_SHARES

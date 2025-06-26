@@ -6,8 +6,7 @@ import com.epm.gestepm.lib.types.Page;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.common.utils.datatables.SortOrder;
-import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectListDTO;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.project.dto.ProjectDto;
 import com.epm.gestepm.modelapi.project.dto.filter.ProjectFilterDto;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
@@ -24,8 +23,6 @@ import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareService
 import com.epm.gestepm.modelapi.user.dto.UserDto;
 import com.epm.gestepm.modelapi.user.dto.filter.UserFilterDto;
 import com.epm.gestepm.modelapi.user.service.UserService;
-import com.epm.gestepm.modelapi.deprecated.user.dto.User;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +40,8 @@ import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
+import static com.epm.gestepm.modelapi.project.dto.ProjectTypeDto.NORMAL;
+import static com.epm.gestepm.modelapi.project.dto.ProjectTypeDto.STATION;
 
 @Controller
 @RequiredArgsConstructor
@@ -72,7 +71,7 @@ public class ProgrammedShareViewController {
         this.loadCommonModelView(locale, model);
 
         final ProjectFilterDto projectFilterDto = new ProjectFilterDto();
-        projectFilterDto.setIsTeleworking(false);
+        projectFilterDto.setTypes(List.of(NORMAL, STATION));
 
         final List<ProjectDto> projects = this.projectService.list(projectFilterDto);
         model.addAttribute("projects", projects);
@@ -97,7 +96,7 @@ public class ProgrammedShareViewController {
         model.addAttribute("programmedShare", programmedShare);
 
         final ProjectFilterDto projectFilterDto = new ProjectFilterDto();
-        projectFilterDto.setIsTeleworking(false);
+        projectFilterDto.setTypes(List.of(NORMAL, STATION));
 
         final List<ProjectDto> projects = this.projectService.list(projectFilterDto);
         model.addAttribute("projects", projects);

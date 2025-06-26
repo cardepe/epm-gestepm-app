@@ -2,16 +2,14 @@ package com.epm.gestepm.model.project.dao.entity.updater;
 
 import com.epm.gestepm.lib.entity.AttributeMap;
 import com.epm.gestepm.lib.entity.CollectableAttributes;
+import com.epm.gestepm.model.project.dao.entity.ProjectType;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
-
 import java.time.LocalDate;
 import java.util.Set;
 
 import static com.epm.gestepm.model.project.dao.constants.ProjectAttributes.*;
-import static com.epm.gestepm.model.project.dao.constants.ProjectAttributes.ATTR_PR_IS_TELEWORKING;
-import static com.epm.gestepm.model.user.dao.constants.UserAttributes.*;
 
 @Data
 public class ProjectUpdate implements CollectableAttributes {
@@ -23,7 +21,7 @@ public class ProjectUpdate implements CollectableAttributes {
     private String name;
 
     @NotNull
-    private Boolean isStation;
+    private ProjectType type;
 
     @NotNull
     private Double objectiveCost;
@@ -40,9 +38,6 @@ public class ProjectUpdate implements CollectableAttributes {
     private Integer forumId;
 
     @NotNull
-    private Boolean isTeleworking;
-
-    @NotNull
     private Integer state;
 
     @NotNull
@@ -55,13 +50,12 @@ public class ProjectUpdate implements CollectableAttributes {
 
         map.put(ATTR_PR_ID, this.id);
         map.put(ATTR_PR_NAME, this.name);
-        map.putBooleanAsInt(ATTR_PR_IS_STATION, this.isStation);
+        map.putEnum(ATTR_PR_TYPE, this.type);
         map.put(ATTR_PR_OBJECTIVE_COST, this.objectiveCost);
         map.put(ATTR_PR_START_DATE, this.startDate);
         map.put(ATTR_PR_END_DATE, this.endDate);
         map.put(ATTR_PR_ACTIVITY_CENTER_ID, this.activityCenterId);
         map.put(ATTR_PR_FORUM_ID, this.forumId);
-        map.putBooleanAsInt(ATTR_PR_IS_TELEWORKING, this.isTeleworking);
         map.put(ATTR_PR_STATE, this.state);
 
         return map;

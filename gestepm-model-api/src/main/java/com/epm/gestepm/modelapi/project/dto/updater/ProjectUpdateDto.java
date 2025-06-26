@@ -1,5 +1,6 @@
 package com.epm.gestepm.modelapi.project.dto.updater;
 
+import com.epm.gestepm.modelapi.project.dto.ProjectTypeDto;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -16,7 +17,7 @@ public class ProjectUpdateDto {
     private String name;
 
     @NotNull
-    private Boolean isStation;
+    private ProjectTypeDto type;
 
     @NotNull
     private Double objectiveCost;
@@ -31,9 +32,6 @@ public class ProjectUpdateDto {
     private Integer activityCenterId;
 
     private Integer forumId;
-
-    @NotNull
-    private Boolean isTeleworking;
 
     @NotNull
     private Integer state;

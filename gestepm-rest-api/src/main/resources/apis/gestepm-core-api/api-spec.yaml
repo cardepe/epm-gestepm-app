@@ -1236,10 +1236,17 @@ paths:
           name: nameContains
           description: Filter by name contains.
         - schema:
-            type: boolean
+            type: array
+            items:
+              type: string
+              enum:
+                - NORMAL
+                - STATION
+                - OFFICE
+                - TELEWORKING
           in: query
-          name: isStation
-          description: Filter by is station.
+          name: types
+          description: Filter by project types.
         - schema:
             type: array
             items:
@@ -1247,11 +1254,6 @@ paths:
           in: query
           name: activityCenterIds
           description: Filter by activity center ids.
-        - schema:
-            type: boolean
-          in: query
-          name: isTeleworking
-          description: Filter by is teleworking.
         - schema:
             type: integer
           in: query
@@ -1271,6 +1273,11 @@ paths:
           in: query
           name: memberIds
           description: Filter by member ids.
+        - schema:
+            type: boolean
+          in: query
+          name: role
+          description: Filter by user role id.
       tags:
         - project-v1
     post:
@@ -2346,6 +2353,7 @@ paths:
                 - DISPLACEMENT_SHARES
                 - INSPECTIONS
                 - MANUAL_SIGNINGS
+                - OFFICE_SIGNING
                 - PERSONAL_SIGNINGS
                 - PROGRAMMED_SHARES
                 - TELEWORKING_SIGNING
@@ -2891,8 +2899,13 @@ components:
           type: string
           x-stoplight:
             id: ll4sov9aexq0v
-        isStation:
-          type: boolean
+        type:
+          type: string
+          enum:
+            - NORMAL
+            - STATION
+            - OFFICE
+            - TELEWORKING
           x-stoplight:
             id: 0p30i71dxed4x
         objectiveCost:
@@ -2915,10 +2928,6 @@ components:
           type: integer
           x-stoplight:
             id: dvu6fkl5xwqpw
-        isTeleworking:
-          type: boolean
-          x-stoplight:
-            id: cozr2yj31g5c0
         state:
           type: integer
           x-stoplight:
@@ -2932,12 +2941,11 @@ components:
       required:
         - id
         - name
-        - isStation
+        - type
         - objectiveCost
         - startDate
         - endDate
         - activityCenter
-        - isTeleworking
         - state
         - responsible
     ShareFile:
@@ -3247,6 +3255,7 @@ components:
             - DISPLACEMENT_SHARES
             - INSPECTIONS
             - MANUAL_SIGNINGS
+            - OFFICE_SIGNING
             - PERSONAL_SIGNINGS
             - PROGRAMMED_SHARES
             - TELEWORKING_SIGNING
@@ -4653,8 +4662,13 @@ components:
                 type: string
                 x-stoplight:
                   id: lrh64vywrmh5a
-              isStation:
-                type: boolean
+              type:
+                type: string
+                enum:
+                  - NORMAL
+                  - STATION
+                  - OFFICE
+                  - TELEWORKING
                 x-stoplight:
                   id: 7qxwkrwkxhkpq
               objectiveCost:
@@ -4679,10 +4693,6 @@ components:
                 type: integer
                 x-stoplight:
                   id: ssf3q76pxj0bb
-              isTeleworking:
-                type: boolean
-                x-stoplight:
-                  id: vqip0f994os7e
               responsibleIds:
                 type: array
                 x-stoplight:
@@ -4693,12 +4703,10 @@ components:
                   type: integer
             required:
               - name
-              - isStation
               - objectiveCost
               - startDate
               - endDate
               - activityCenterId
-              - isTeleworking
               - responsibleIds
     UpdateProject:
       content:
@@ -4710,8 +4718,13 @@ components:
                 type: string
                 x-stoplight:
                   id: lzx6r53rkdv5d
-              isStation:
-                type: boolean
+              type:
+                type: string
+                enum:
+                  - NORMAL
+                  - STATION
+                  - OFFICE
+                  - TELEWORKING
                 x-stoplight:
                   id: iik38j966ouj7
               objectiveCost:
@@ -4736,10 +4749,6 @@ components:
                 type: integer
                 x-stoplight:
                   id: 2eci6oizbft3u
-              isTeleworking:
-                type: boolean
-                x-stoplight:
-                  id: dzzcze9vuzppl
               state:
                 type: integer
                 x-stoplight:
@@ -4754,12 +4763,11 @@ components:
                   type: integer
             required:
               - name
-              - isStation
+              - type
               - objectiveCost
               - startDate
               - endDate
               - activityCenterId
-              - isTeleworking
               - state
               - responsibleIds
     CreateProjectMember:

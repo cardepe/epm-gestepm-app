@@ -89,11 +89,26 @@ sql:
         ts.closed_at AS end_date,
         null AS description,
         CONCAT('/signings/teleworking/', ts.teleworking_signing_id) AS detail_url,
+        'OFFICE_SIGNING' AS type,
+        ts.project_id,
+        pr.name AS project_name
+      FROM ${sch-gestepm}.teleworking_signing ts
+      LEFT JOIN ${sch-gestepm}.project pr ON pr.project_id = ts.project_id
+      WHERE pr.type = 'OFFICE'
+      UNION
+      SELECT
+        ts.teleworking_signing_id AS id,
+        ts.user_id,
+        ts.started_at AS start_date,
+        ts.closed_at AS end_date,
+        null AS description,
+        CONCAT('/signings/teleworking/', ts.teleworking_signing_id) AS detail_url,
         'TELEWORKING_SIGNING' AS type,
         ts.project_id,
         pr.name AS project_name
       FROM ${sch-gestepm}.teleworking_signing ts
       LEFT JOIN ${sch-gestepm}.project pr ON pr.project_id = ts.project_id
+      WHERE pr.type = 'TELEWORKING'
       UNION
       SELECT
         ws.work_share_id AS id,

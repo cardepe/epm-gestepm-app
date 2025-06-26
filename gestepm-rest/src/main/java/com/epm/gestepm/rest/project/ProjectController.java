@@ -66,10 +66,10 @@ public class ProjectController extends BaseController implements ProjectV1Api,
     @RequirePermits(value = PRMT_READ_PR, action = "Get project list")
     @LogExecution(operation = OP_READ)
     public ResponseEntity<ListProjectsV1200Response> listProjectsV1(final List<String> meta, final Boolean links, final Set<String> expand, final Long offset, final Long limit, final String order, final String orderBy,
-                                                              final List<Integer> ids, final String nameContains, final Boolean isStation, final List<Integer> activityCenterIds, final Boolean isTeleworking,
-                                                                    final Integer state, final List<Integer> responsibleIds, final List<Integer> memberIds) {
+                                                                    final List<Integer> ids, final String nameContains, final List<String> types, final List<Integer> activityCenterIds,
+                                                                    final Integer state, final List<Integer> responsibleIds, final List<Integer> memberIds, final Boolean role) {
 
-        final ProjectListRestRequest req = new ProjectListRestRequest(ids, nameContains, isStation, activityCenterIds, isTeleworking, state, responsibleIds, memberIds);
+        final ProjectListRestRequest req = new ProjectListRestRequest(ids, nameContains, types, activityCenterIds, state, responsibleIds, memberIds, role);
 
         this.setCommon(req, meta, links, expand);
         this.setDefaults(req);

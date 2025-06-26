@@ -3,14 +3,13 @@ package com.epm.gestepm.model.project.dao.entity.filter;
 import com.epm.gestepm.lib.entity.AttributeMap;
 import com.epm.gestepm.lib.entity.CollectableAttributes;
 import com.epm.gestepm.lib.entity.Orderable;
+import com.epm.gestepm.model.project.dao.entity.ProjectType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.List;
 
 import static com.epm.gestepm.model.project.dao.constants.ProjectAttributes.*;
-import static com.epm.gestepm.model.project.dao.constants.ProjectAttributes.ATTR_PR_IS_TELEWORKING;
-import static com.epm.gestepm.model.user.dao.constants.UserAttributes.*;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -20,11 +19,9 @@ public class ProjectFilter extends Orderable implements CollectableAttributes {
 
     private String nameContains;
 
-    private Boolean isStation;
+    private List<ProjectType> types;
 
     private List<Integer> activityCenterIds;
-
-    private Boolean isTeleworking;
 
     private Integer state;
 
@@ -34,6 +31,8 @@ public class ProjectFilter extends Orderable implements CollectableAttributes {
 
     private List<Integer> projectLeaderIds;
 
+    private Boolean role;
+
     @Override
     public AttributeMap collectAttributes() {
 
@@ -41,9 +40,8 @@ public class ProjectFilter extends Orderable implements CollectableAttributes {
 
         map.putList(ATTR_PR_IDS, this.ids);
         map.putLike(ATTR_PR_NAME_CONTAINS, this.nameContains);
-        map.putBooleanAsInt(ATTR_PR_IS_STATION, this.isStation);
+        map.putEnumList(ATTR_PR_TYPES, this.types);
         map.put(ATTR_PR_ACTIVITY_CENTER_IDS, this.activityCenterIds);
-        map.putBooleanAsInt(ATTR_PR_IS_TELEWORKING, this.isTeleworking);
         map.put(ATTR_PR_STATE, this.getState());
         map.putList(ATTR_PR_RESPONSIBLE_IDS, this.responsibleIds);
         map.putList(ATTR_PR_MEMBER_IDS, this.memberIds);

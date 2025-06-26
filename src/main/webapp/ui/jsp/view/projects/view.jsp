@@ -54,11 +54,13 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="w-100 bootstrap-select">
-                                        <spring:message code="station" />
-                                        <select name="isStation" class="form-control select2">
+                                        <spring:message code="type" />
+                                        <select name="type" class="form-control select2">
                                             <option value=""><spring:message code="select.placeholder" /></option>
-                                            <option value="1"><spring:message code="yes" /></option>
-                                            <option value="0"><spring:message code="no" /></option>
+                                            <option value="NORMAL"><spring:message code="normal" /></option>
+                                            <option value="STATION"><spring:message code="station" /></option>
+                                            <option value="OFFICE"><spring:message code="office" /></option>
+                                            <option value="TELEWORKING"><spring:message code="teleworking" /></option>
                                         </select>
                                     </label>
                                 </div>
@@ -70,16 +72,6 @@
                                             <c:forEach items="${activityCenters}" var="activityCenter">
                                                 <option value="${activityCenter.id}"><spring:message code="${activityCenter.name}" /></option>
                                             </c:forEach>
-                                        </select>
-                                    </label>
-                                </div>
-                                <div class="form-group">
-                                    <label class="w-100 bootstrap-select">
-                                        <spring:message code="signing.teleworking" />
-                                        <select name="isTeleworking" class="form-control select2">
-                                            <option value=""><spring:message code="select.placeholder" /></option>
-                                            <option value="1"><spring:message code="yes" /></option>
-                                            <option value="0"><spring:message code="no" /></option>
                                         </select>
                                     </label>
                                 </div>
@@ -150,11 +142,13 @@
 
                         <div class="col-sm-12 col-md-6">
                             <div class="form-group">
-                                <label class="col-form-label w-100 bootstrap-select"><spring:message code="station" />
-                                    <select name="isStation" class="form-control select2 stationSelect" required>
+                                <label class="col-form-label w-100 bootstrap-select"><spring:message code="type" />
+                                    <select name="type" class="form-control select2">
                                         <option value=""><spring:message code="select.placeholder" /></option>
-                                        <option value="true"><spring:message code="yes" /></option>
-                                        <option value="false"><spring:message code="no" /></option>
+                                        <option value="NORMAL"><spring:message code="normal" /></option>
+                                        <option value="STATION"><spring:message code="station" /></option>
+                                        <option value="OFFICE"><spring:message code="office" /></option>
+                                        <option value="TELEWORKING"><spring:message code="teleworking" /></option>
                                     </select>
                                 </label>
                             </div>
@@ -211,20 +205,6 @@
                             </div>
                         </div>
 
-                        <div class="col-sm-12 col-md-6">
-                            <div class="form-group">
-                                <label class="col-form-label w-100 bootstrap-select"><spring:message code="signing.teleworking" />
-                                    <select name="isTeleworking" class="form-control select2" required>
-                                        <option value=""><spring:message code="select.placeholder" /></option>
-                                        <option value="true"><spring:message code="yes" /></option>
-                                        <option value="false"><spring:message code="no" /></option>
-                                    </select>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
                         <div class="col-sm-12 col-md-6">
                             <div class="form-group">
                                 <label class="col-form-label w-100 bootstrap-select"><spring:message code="responsible"/>

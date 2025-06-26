@@ -40,6 +40,8 @@ import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
+import static com.epm.gestepm.modelapi.project.dto.ProjectTypeDto.NORMAL;
+import static com.epm.gestepm.modelapi.project.dto.ProjectTypeDto.STATION;
 
 @Controller
 @RequiredArgsConstructor
@@ -69,7 +71,7 @@ public class WorkShareViewController {
         this.loadCommonModelView(locale, model);
 
         final ProjectFilterDto projectFilterDto = new ProjectFilterDto();
-        projectFilterDto.setIsTeleworking(false);
+        projectFilterDto.setTypes(List.of(NORMAL, STATION));
 
         final List<ProjectDto> projects = this.projectService.list(projectFilterDto);
         model.addAttribute("projects", projects);
@@ -94,7 +96,7 @@ public class WorkShareViewController {
         model.addAttribute("workShare", workShare);
 
         final ProjectFilterDto projectFilterDto = new ProjectFilterDto();
-        projectFilterDto.setIsTeleworking(false);
+        projectFilterDto.setTypes(List.of(NORMAL, STATION));
 
         final List<ProjectDto> projects = this.projectService.list(projectFilterDto);
         model.addAttribute("projects", projects);
