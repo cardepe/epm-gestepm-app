@@ -5,14 +5,10 @@ import com.epm.gestepm.forum.model.api.service.UserForumService;
 import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
-import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.customer.dto.CustomerDto;
 import com.epm.gestepm.modelapi.customer.dto.finder.CustomerByProjectIdFinderDto;
 import com.epm.gestepm.modelapi.customer.service.CustomerService;
-import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectListDTO;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
-import com.epm.gestepm.modelapi.deprecated.user.dto.UserDTO;
-import com.epm.gestepm.modelapi.deprecated.user.exception.InvalidUserSessionException;
 import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
 import com.epm.gestepm.modelapi.project.dto.ProjectDto;
@@ -21,7 +17,6 @@ import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.user.dto.UserDto;
 import com.epm.gestepm.modelapi.user.dto.finder.UserByIdFinderDto;
 import com.epm.gestepm.modelapi.user.service.UserService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -34,7 +29,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.Year;
-import java.util.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
@@ -95,8 +92,8 @@ public class ProjectViewController {
         final List<ForumDTO> forums = this.userForumService.getAllForumsToDTO();
         model.addAttribute("forums", forums);
 
-        final CustomerDto customer = this.customerService.findOrNotFound(new CustomerByProjectIdFinderDto(id));
-        model.addAttribute("customer", customer);
+        final Optional<CustomerDto> customer = this.customerService.find(new CustomerByProjectIdFinderDto(id));
+        model.addAttribute("customer", customer.isPresent() ? customer : new CustomerDto());
 
         final int actualYear = Year.now().getValue();
         final int[] years = IntStream.rangeClosed(firstYear, actualYear)
