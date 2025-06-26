@@ -11,7 +11,7 @@ public class ListProjectV1Operation extends APIOperation<ProjectV1Api, ProjectLi
 
         this.generateLinksWith(
                 (apiClass, req) -> apiClass.listProjectsV1(req.getMeta(), req.getLinks(), req.getExpand(), req.getOffset(), req.getLimit(),
-                        req.getOrder(), req.getOrderBy(), req.getIds(), req.getNameContains(), req.getIsStation(), req.getActivityCenterIds(), req.getIsTeleworking(), req.getState(), req.getResponsibleIds(), req.getMemberIds(), req.getRole()));
+                        req.getOrder(), req.getOrderBy(), req.getIds(), req.getNameContains(), req.getTypes(), req.getActivityCenterIds(), req.getState(), req.getResponsibleIds(), req.getMemberIds(), req.getRole()));
     }
 
 }

@@ -1,5 +1,6 @@
 package com.epm.gestepm.modelapi.project.dto.creator;
 
+import com.epm.gestepm.modelapi.project.dto.ProjectTypeDto;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
@@ -13,7 +14,7 @@ public class ProjectCreateDto {
     private String name;
 
     @NotNull
-    private Boolean isStation;
+    private ProjectTypeDto type;
 
     @NotNull
     private Double objectiveCost;
@@ -28,9 +29,6 @@ public class ProjectCreateDto {
     private Integer activityCenterId;
 
     private Integer forumId;
-
-    @NotNull
-    private Boolean isTeleworking;
 
     @NotNull
     private Set<Integer> responsibleIds;

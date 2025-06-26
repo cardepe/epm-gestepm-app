@@ -18,11 +18,9 @@ public class ProjectListRestRequest extends RestRequest {
 
     private String nameContains;
 
-    private Boolean isStation;
+    private List<String> types;
 
     private List<Integer> activityCenterIds;
-
-    private Boolean isTeleworking;
 
     private Integer state;
 

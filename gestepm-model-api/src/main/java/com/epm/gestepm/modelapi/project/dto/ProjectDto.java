@@ -1,7 +1,6 @@
 package com.epm.gestepm.modelapi.project.dto;
 
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -18,7 +17,7 @@ public class ProjectDto implements Serializable {
     private String name;
 
     @NotNull
-    private Boolean isStation;
+    private ProjectTypeDto type;
 
     @NotNull
     private Double objectiveCost;
@@ -33,9 +32,6 @@ public class ProjectDto implements Serializable {
     private Integer activityCenterId;
 
     private Integer forumId;
-
-    @NotNull
-    private Boolean isTeleworking;
 
     @NotNull
     private Integer state;

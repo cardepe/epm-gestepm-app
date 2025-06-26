@@ -1,5 +1,6 @@
 package com.epm.gestepm.model.shares.noprogrammed.checker;
 
+import com.epm.gestepm.modelapi.project.dto.ProjectTypeDto;
 import com.epm.gestepm.modelapi.project.exception.ProjectIsNotStationException;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.user.exception.UserNotFoundException;
@@ -60,7 +61,7 @@ public class NoProgrammedShareChecker {
     private void validateProject(final Integer projectId) {
         final ProjectDto project = this.projectService.findOrNotFound(new ProjectByIdFinderDto(projectId));
 
-        if (!project.getIsStation()) {
+        if (!ProjectTypeDto.STATION.equals(project.getType())) {
             throw new ProjectIsNotStationException(projectId);
         }
     }

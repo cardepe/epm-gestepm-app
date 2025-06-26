@@ -13,11 +13,13 @@
 
         <div class="col-sm-12 col-md-4">
             <div class="form-group">
-                <label class="col-form-label w-100 bootstrap-select"><spring:message code="station" />
-                    <select name="isStation" class="form-control select2 stationSelect" required>
+                <label class="col-form-label w-100 bootstrap-select"><spring:message code="type" />
+                    <select name="type" class="form-control select2">
                         <option value=""><spring:message code="select.placeholder" /></option>
-                        <option value="true" ${currentProject.isStation == true ? 'selected': ''}><spring:message code="yes" /></option>
-                        <option value="false" ${currentProject.isStation == false ? 'selected': ''}><spring:message code="no" /></option>
+                        <option value="NORMAL" ${currentProject.type == 'NORMAL' ? 'selected': ''}><spring:message code="normal" /></option>
+                        <option value="STATION" ${currentProject.type == 'STATION' ? 'selected': ''}><spring:message code="station" /></option>
+                        <option value="OFFICE" ${currentProject.type == 'OFFICE' ? 'selected': ''}><spring:message code="office" /></option>
+                        <option value="TELEWORKING" ${currentProject.type == 'TELEWORKING' ? 'selected': ''}><spring:message code="teleworking" /></option>
                     </select>
                 </label>
             </div>
@@ -74,26 +76,12 @@
 
         <div class="col-sm-12 col-md-4">
             <div class="form-group">
-                <label class="col-form-label w-100 bootstrap-select"><spring:message code="signing.teleworking" />
-                    <select name="isTeleworking" class="form-control select2" required>
-                        <option value=""><spring:message code="select.placeholder" /></option>
-                        <option value="true" ${currentProject.isTeleworking == true ? 'selected': ''}><spring:message code="yes" /></option>
-                        <option value="false" ${currentProject.isTeleworking == false ? 'selected': ''}><spring:message code="no" /></option>
-                    </select>
-                </label>
-            </div>
-        </div>
-
-        <div class="col-sm-12 col-md-4">
-            <div class="form-group">
                 <label class="col-form-label w-100 bootstrap-select"><spring:message code="responsible"/>
                     <select class="form-control select2" data-control="select2" name="responsibleIds" multiple required></select>
                 </label>
             </div>
         </div>
-    </div>
 
-    <div class="row">
         <div class="col-sm-12 col-md-4">
             <div class="form-group">
                 <label class="col-form-label w-100 bootstrap-select"><spring:message code="status" />

@@ -142,8 +142,15 @@
         "manual": {
             "name": "Absence"
         },
+        "office": {
+            "name": "Bureau",
+            "startDate": "Date de début : {0}",
+            "update": {
+                "success": "La fiche de bureau a été mise à jour avec succès."
+            }
+        },
         "teleworking": {
-            "name": "Bureau / Télétravail",
+            "name": "Télétravail",
             "startDate": "Date de début : {0}",
             "update": {
                 "success": "La fiche de bureau / télétravail a été mise à jour avec succès."

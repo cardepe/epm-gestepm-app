@@ -142,11 +142,18 @@
         "manual": {
             "name": "Ausencia"
         },
-        "teleworking": {
-            "name": "Oficina / Teletrabajo",
+        "office": {
+            "name": "Oficina",
             "startDate": "Fecha de inicio: {0}",
             "update": {
-                "success": "Se ha actualizado el fichaje de oficina / teletrabajo con éxito."
+                "success": "Se ha actualizado el fichaje de oficina con éxito."
+            }
+        },
+        "teleworking": {
+            "name": "Teletrabajo",
+            "startDate": "Fecha de inicio: {0}",
+            "update": {
+                "success": "Se ha actualizado el fichaje de teletrabajo con éxito."
             }
         },
         "personal": {
