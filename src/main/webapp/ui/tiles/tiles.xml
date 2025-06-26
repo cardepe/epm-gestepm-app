@@ -152,7 +152,7 @@
         <put-attribute name="body" value="/ui/jsp/view/users/view.jsp" />
     </definition>
     
-    <definition name="user-detail" extends="fullFrameLayout">
+    <definition name="user-detail" extends="mainFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/users/detail.jsp" />
     </definition>
     

@@ -6,9 +6,9 @@ import com.epm.gestepm.masterdata.api.activitycenter.dto.ActivityCenterDto;
 import com.epm.gestepm.masterdata.api.activitycenter.dto.filter.ActivityCenterFilterDto;
 import com.epm.gestepm.masterdata.api.activitycenter.service.ActivityCenterService;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
 import com.epm.gestepm.modelapi.manualsigningtype.service.ManualSigningTypeService;
-import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.role.service.RoleService;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
@@ -16,7 +16,6 @@ import com.epm.gestepm.modelapi.subrole.service.SubRoleService;
 import com.epm.gestepm.modelapi.user.dto.UserDto;
 import com.epm.gestepm.modelapi.user.dto.finder.UserByIdFinderDto;
 import com.epm.gestepm.modelapi.user.service.UserService;
-import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -46,8 +45,6 @@ public class UserViewController {
     private final ManualSigningTypeService manualSigningTypeService;
 
     private final MessageSource messageSource;
-
-    private final ProjectService projectService;
 
     private final RoleService roleService;
 
@@ -95,6 +92,9 @@ public class UserViewController {
         final UserDto currentUser = this.userService.findOrNotFound(new UserByIdFinderDto(id));
         model.addAttribute("currentUser", currentUser);
 
+        model.addAttribute("importPath", "user-detail");
+        model.addAttribute("loadingPath", "users");
+        model.addAttribute("type", "detail");
         model.addAttribute("tab", "info");
 
         return "user-detail";
@@ -124,6 +124,9 @@ public class UserViewController {
         model.addAttribute("months", months);
         model.addAttribute("years", yearsDropdown);
 
+        model.addAttribute("importPath", "user-signings");
+        model.addAttribute("loadingPath", "users");
+        model.addAttribute("type", "signings");
         model.addAttribute("tab", "signings");
 
         return "user-detail";
@@ -138,6 +141,9 @@ public class UserViewController {
         final UserDto currentUser = this.userService.findOrNotFound(new UserByIdFinderDto(id));
         model.addAttribute("currentUser", currentUser);
 
+        model.addAttribute("importPath", "user-expenses");
+        model.addAttribute("loadingPath", "users");
+        model.addAttribute("type", "expenses");
         model.addAttribute("tab", "expenses");
 
         return "user-detail";
@@ -152,6 +158,9 @@ public class UserViewController {
         final UserDto currentUser = this.userService.findOrNotFound(new UserByIdFinderDto(id));
         model.addAttribute("currentUser", currentUser);
 
+        model.addAttribute("importPath", "user-projects");
+        model.addAttribute("loadingPath", "users");
+        model.addAttribute("type", "projects");
         model.addAttribute("tab", "projects");
 
         return "user-detail";
@@ -166,6 +175,9 @@ public class UserViewController {
         final UserDto currentUser = this.userService.findOrNotFound(new UserByIdFinderDto(id));
         model.addAttribute("currentUser", currentUser);
 
+        model.addAttribute("importPath", "user-holidays");
+        model.addAttribute("loadingPath", "users");
+        model.addAttribute("type", "holidays");
         model.addAttribute("tab", "holidays");
 
         return "user-detail";

@@ -1,9 +1,18 @@
+<%@ page import="com.fasterxml.jackson.datatype.jsr310.JavaTimeModule" %>
+<%@ page import="com.fasterxml.jackson.databind.ObjectMapper" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 
 <c:set var="userTabs" value="${fn:split('signings,expenses,projects,holidays', ',')}" />
+
+<%
+    final ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+
+    final String currentUser = mapper.writeValueAsString(request.getAttribute("currentUser"));
+%>
 
 <div class="breadcrumbs">
     <div class="breadcrumbs-inner">
@@ -64,10 +73,10 @@
 
 <script>
 
-    let locale = '${locale}';
     let returnBtn = $('#returnBtn');
 
     const endpoint = '/v1/users/${currentUser.id}';
+    const currentUser = <%= currentUser %>;
 
     $(document).ready(function() {
         setReturnButtonUrl();

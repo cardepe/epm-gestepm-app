@@ -49,6 +49,12 @@
             "success": "La famille {0} a été retirée du projet avec succès."
         }
     },
+    "holidays": {
+        "delete" : {
+            "alert" : "Êtes-vous sûr de vouloir supprimer le jour férié {0}?",
+            "success" : "Le congé {0} a été supprimé avec succès du projet."
+        }
+    },
     "inspections": {
         "name": "Révision",
         "title": "Révision numéro {0}",
