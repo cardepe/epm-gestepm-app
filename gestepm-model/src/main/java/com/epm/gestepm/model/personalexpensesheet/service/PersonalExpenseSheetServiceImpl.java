@@ -18,6 +18,7 @@ import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
 import com.epm.gestepm.modelapi.common.utils.smtp.dto.OpenPersonalExpenseSheetMailTemplateDto;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetStatusEnumDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.creator.PersonalExpenseSheetCreateDto;
@@ -28,9 +29,12 @@ import com.epm.gestepm.modelapi.personalexpensesheet.dto.updater.PersonalExpense
 import com.epm.gestepm.modelapi.personalexpensesheet.exception.PersonalExpenseSheetForbiddenException;
 import com.epm.gestepm.modelapi.personalexpensesheet.exception.PersonalExpenseSheetNotFoundException;
 import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetService;
-import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
-import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
+import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.user.dto.UserDto;
+import com.epm.gestepm.modelapi.user.dto.filter.UserFilterDto;
+import com.epm.gestepm.modelapi.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -60,9 +64,11 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
 
     private final PersonalExpenseSheetDao personalExpenseSheetDao;
 
-    private final ProjectOldService projectOldService;
+    private final ProjectService projectService;
 
     private final SMTPService smtpService;
+
+    private final UserService userService;
 
     @Override
     @RequirePermits(value = PRMT_READ_PES, action = "List personal expense sheets")
@@ -200,8 +206,8 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
     }
 
     private void sendMail(final PersonalExpenseSheetDto personalExpenseSheet) {
-        final Project project = this.projectOldService.getProjectById(personalExpenseSheet.getProjectId().longValue());
-        final List<User> usersToNotify = this.determineUsersToNotify(personalExpenseSheet, project);
+        final ProjectDto project = this.projectService.findOrNotFound(new ProjectByIdFinderDto(personalExpenseSheet.getProjectId()));
+        final List<UserDto> usersToNotify = this.determineUsersToNotify(personalExpenseSheet, project);
 
         final OpenPersonalExpenseSheetMailTemplateDto template = this.buildMailTemplate(personalExpenseSheet, project);
 
@@ -210,20 +216,22 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
                 .forEach(userToNotify -> this.sendMailToUser(template, userToNotify));
     }
 
-    private List<User> determineUsersToNotify(final PersonalExpenseSheetDto personalExpenseSheet, final Project project) {
-        final List<User> usersToNotify = new ArrayList<>();
+    private List<UserDto> determineUsersToNotify(final PersonalExpenseSheetDto personalExpenseSheet, final ProjectDto project) {
+        final UserFilterDto filterDto = new UserFilterDto();
 
         if (PersonalExpenseSheetStatusEnumDto.PENDING.equals(personalExpenseSheet.getStatus()) || PersonalExpenseSheetStatusEnumDto.APPROVED.equals(personalExpenseSheet.getStatus())) {
-            usersToNotify.addAll(project.getBossUsers());
+            filterDto.setLeadingProjectId(project.getId());
         } else if (PersonalExpenseSheetStatusEnumDto.PAID.equals(personalExpenseSheet.getStatus()) || PersonalExpenseSheetStatusEnumDto.REJECTED.equals(personalExpenseSheet.getStatus())) {
-            usersToNotify.add(Utiles.getCurrentUser());
+            filterDto.setIds(List.of(Utiles.getCurrentUser().getId().intValue()));
+        } else {
+            return new ArrayList<>();
         }
 
-        return usersToNotify;
+        return this.userService.list(filterDto);
     }
 
     private OpenPersonalExpenseSheetMailTemplateDto buildMailTemplate(final PersonalExpenseSheetDto personalExpenseSheet,
-                                                                      final Project project) {
+                                                                      final ProjectDto project) {
         final OpenPersonalExpenseSheetMailTemplateDto template = new OpenPersonalExpenseSheetMailTemplateDto();
         template.setLocale(request.getLocale());
         template.setPersonalExpenseSheetDto(personalExpenseSheet);
@@ -253,7 +261,7 @@ public class PersonalExpenseSheetServiceImpl implements PersonalExpenseSheetServ
         }
     }
 
-    private void sendMailToUser(final OpenPersonalExpenseSheetMailTemplateDto template, final User user) {
+    private void sendMailToUser(final OpenPersonalExpenseSheetMailTemplateDto template, final UserDto user) {
         template.setEmail(user.getEmail());
         smtpService.sendPersonalExpenseSheetSendMail(template);
     }

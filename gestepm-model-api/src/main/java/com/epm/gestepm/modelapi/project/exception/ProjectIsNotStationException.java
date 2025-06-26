@@ -1,4 +1,4 @@
-package com.epm.gestepm.modelapi.deprecated.project.exception;
+package com.epm.gestepm.modelapi.project.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

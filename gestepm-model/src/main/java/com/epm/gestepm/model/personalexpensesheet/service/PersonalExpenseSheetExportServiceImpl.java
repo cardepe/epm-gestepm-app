@@ -13,13 +13,16 @@ import com.epm.gestepm.modelapi.personalexpense.service.PersonalExpenseService;
 import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetDto;
 import com.epm.gestepm.modelapi.personalexpensesheet.exception.PersonalExpenseSheetExportException;
 import com.epm.gestepm.modelapi.personalexpensesheet.service.PersonalExpenseSheetExportService;
-import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
-import com.epm.gestepm.modelapi.deprecated.user.dto.User;
-import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
+import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.user.dto.UserDto;
+import com.epm.gestepm.modelapi.user.dto.finder.UserByIdFinderDto;
+import com.epm.gestepm.modelapi.user.service.UserService;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -38,6 +41,7 @@ import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
 
 @Service
 @Validated
+@RequiredArgsConstructor
 @EnableExecutionLog(layerMarker = SERVICE)
 public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseSheetExportService {
 
@@ -55,24 +59,15 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
 
     private final PersonalExpenseFileService personalExpenseFileService;
 
-    private final ProjectOldService projectOldService;
+    private final ProjectService projectService;
 
-    private final UserServiceOld userServiceOld;
-
-    public PersonalExpenseSheetExportServiceImpl(LocaleProvider localeProvider, MessageSource messageSource, PersonalExpenseService personalExpenseService, PersonalExpenseFileService personalExpenseFileService, ProjectOldService projectOldService, UserServiceOld userServiceOld) {
-        this.localeProvider = localeProvider;
-        this.messageSource = messageSource;
-        this.personalExpenseService = personalExpenseService;
-        this.personalExpenseFileService = personalExpenseFileService;
-        this.projectOldService = projectOldService;
-        this.userServiceOld = userServiceOld;
-    }
+    private final UserService userService;
 
     @Override
     public byte[] generate(PersonalExpenseSheetDto personalExpenseSheet) {
         try {
-            final User user = this.userServiceOld.getUserById(personalExpenseSheet.getCreatedBy().longValue());
-            final Project project = this.projectOldService.getProjectById(personalExpenseSheet.getProjectId().longValue());
+            final UserDto user = this.userService.findOrNotFound(new UserByIdFinderDto(personalExpenseSheet.getCreatedBy()));
+            final ProjectDto project = this.projectService.findOrNotFound(new ProjectByIdFinderDto(personalExpenseSheet.getProjectId()));
 
             final String language = localeProvider.getLocale().orElse("es");
             final Locale locale = new Locale(language);

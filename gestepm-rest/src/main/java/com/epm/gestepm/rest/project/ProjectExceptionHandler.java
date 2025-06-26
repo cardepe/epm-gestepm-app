@@ -4,8 +4,8 @@ import com.epm.gestepm.lib.controller.error.APIError;
 import com.epm.gestepm.lib.controller.error.I18nErrorMessageSource;
 import com.epm.gestepm.lib.controller.exception.BaseRestExceptionHandler;
 import com.epm.gestepm.lib.executiontrace.ExecutionRequestProvider;
-import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectIsNotStationException;
-import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectByIdNotFoundException;
+import com.epm.gestepm.modelapi.project.exception.ProjectIsNotStationException;
+import com.epm.gestepm.modelapi.project.exception.ProjectNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -26,9 +26,9 @@ public class ProjectExceptionHandler extends BaseRestExceptionHandler {
         super(executionRequestProvider, i18nErrorMessageSource);
     }
 
-    @ExceptionHandler(ProjectByIdNotFoundException.class)
+    @ExceptionHandler(ProjectNotFoundException.class)
     @ResponseStatus(value = NOT_FOUND)
-    public APIError handle(ProjectByIdNotFoundException ex) {
+    public APIError handle(ProjectNotFoundException ex) {
 
         final Integer id = ex.getId();
 

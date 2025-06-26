@@ -1,20 +1,16 @@
 package com.epm.gestepm.forum.model.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.net.URLConnection;
-import java.time.Instant;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-
-import com.epm.gestepm.forum.model.dao.AttachmentRepository;
-import com.epm.gestepm.forum.model.dao.PostRepository;
-import com.epm.gestepm.forum.model.dao.TopicRepository;
-import com.epm.gestepm.forum.model.dao.UserForumRepository;
 import com.epm.gestepm.forum.model.api.dto.Attachment;
 import com.epm.gestepm.forum.model.api.dto.Post;
 import com.epm.gestepm.forum.model.api.dto.Topic;
 import com.epm.gestepm.forum.model.api.service.TopicService;
+import com.epm.gestepm.forum.model.dao.AttachmentRepository;
+import com.epm.gestepm.forum.model.dao.PostRepository;
+import com.epm.gestepm.forum.model.dao.TopicRepository;
+import com.epm.gestepm.forum.model.dao.UserForumRepository;
+import com.epm.gestepm.lib.file.FileUtils;
+import com.epm.gestepm.lib.ftp.SFTPClient;
+import com.mysql.jdbc.StringUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.logging.Log;
@@ -26,10 +22,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.mysql.jdbc.StringUtils;
-
-import com.epm.gestepm.lib.file.FileUtils;
-import com.epm.gestepm.lib.ftp.SFTPClient;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
+import java.time.Instant;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Transactional("forumTransactionManager")
@@ -63,7 +61,7 @@ public class TopicServiceImpl implements TopicService {
 
 	@Async
 	@Override
-	public CompletableFuture<Topic> create(String topicTitle, String topicContent, Long forumId, String userIp, String username, List<MultipartFile> files) {
+	public CompletableFuture<Topic> create(String topicTitle, String topicContent, Integer forumId, String userIp, String username, List<MultipartFile> files) {
 
 		long topicTimer = Instant.now().getEpochSecond();
 		int hasAttachments = CollectionUtils.isNotEmpty(files) ? 1 : 0;
@@ -78,7 +76,7 @@ public class TopicServiceImpl implements TopicService {
 		Topic topic = null;
 		
 		if (topicTitle.startsWith("Re:")) {
-			topic = topicRepository.findById(forumId).orElse(null);
+			topic = topicRepository.findById(forumId.longValue()).orElse(null);
 			
 			if (topic == null) {
 				return CompletableFuture.completedFuture(null);

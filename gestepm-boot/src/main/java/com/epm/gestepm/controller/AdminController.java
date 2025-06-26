@@ -2,34 +2,32 @@ package com.epm.gestepm.controller;
 
 import com.epm.gestepm.model.deprecated.activitycenter.service.ActivityCenterServiceImpl;
 import com.epm.gestepm.model.deprecated.country.service.CountryServiceOldImpl;
-import com.epm.gestepm.model.family.service.FamilyServiceImpl;
-import com.epm.gestepm.modelapi.family.FamilyMapper;
 import com.epm.gestepm.model.deprecated.holiday.service.HolidayServiceImpl;
 import com.epm.gestepm.model.deprecated.holiday.service.mapper.HolidayMapper;
-import com.epm.gestepm.model.deprecated.project.service.ProjectOldServiceImpl;
+import com.epm.gestepm.model.family.service.FamilyServiceImpl;
 import com.epm.gestepm.model.subfamily.service.SubFamilyServiceImpl;
 import com.epm.gestepm.model.subfamily.service.mapper.MapSFToSubFamilyDto;
 import com.epm.gestepm.model.subrole.service.SubRoleServiceImpl;
-import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.deprecated.country.dto.Country;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.exception.InvalidUserSessionException;
+import com.epm.gestepm.modelapi.family.FamilyMapper;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
 import com.epm.gestepm.modelapi.family.dto.FamilyTableDTO;
 import com.epm.gestepm.modelapi.holiday.dto.Holiday;
 import com.epm.gestepm.modelapi.holiday.dto.HolidayDTO;
 import com.epm.gestepm.modelapi.holiday.dto.HolidayTableDTO;
-import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyDto;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyOldDTO;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
-import com.epm.gestepm.modelapi.deprecated.user.dto.User;
-import com.epm.gestepm.modelapi.deprecated.user.exception.InvalidUserSessionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
@@ -67,9 +65,6 @@ public class AdminController {
 	
 	@Autowired
 	private MessageSource messageSource;
-	
-	@Autowired
-	private ProjectOldServiceImpl projectService;
 	
 	@Autowired
 	private SubFamilyServiceImpl subFamilyService;

@@ -1,22 +1,17 @@
 package com.epm.gestepm.model.deprecated.user.dao;
 
 import com.epm.gestepm.model.personalexpensesheet.dao.entity.PersonalExpenseSheetStatusEnum;
-import com.epm.gestepm.modelapi.common.utils.classes.Constants;
-import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
-import com.epm.gestepm.modelapi.common.utils.datatables.util.DataTableUtil;
 import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseUserValidateDTO;
 import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseValidateDTO;
 import com.epm.gestepm.modelapi.deprecated.expensesheet.dto.ExpenseSheet;
-import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetStatusEnumDto;
 import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
-import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectMemberDTO;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.deprecated.user.dto.UserDTO;
+import com.epm.gestepm.modelapi.personalexpensesheet.dto.PersonalExpenseSheetStatusEnumDto;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,190 +82,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			
 			cQuery.orderBy(cb.asc(cb.concat(root.get("name"), root.get("surnames"))));
 
-			return entityManager.createQuery(cQuery).getResultList();
-
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
-	}
-	
-	public List<UserDTO> findNotBossDTOsByProjectId(Long projectId) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<UserDTO> cQuery = cb.createQuery(UserDTO.class);
-
-			Root<User> root = cQuery.from(User.class);
-
-			Subquery<Long> subQuery = cQuery.subquery(Long.class);
-			Root<User> subRoot = subQuery.from(User.class);
-			Join<User, Project> subProjects = subRoot.join("bossProjects", JoinType.LEFT);
-			subQuery.select(subRoot.get("id")).where(cb.equal(subProjects.get("id"), projectId));
-
-			cQuery.multiselect(root.get("id"), root.get("name"), root.get("surnames"))
-					.where(cb.and(cb.and(cb.not(cb.in(root.get("id")).value(subQuery)), cb.equal(root.get("role"), Constants.ROLE_PL_ID)), cb.equal(root.get("state"), 1)));
-
-			cQuery.orderBy(cb.asc(cb.concat(cb.concat(root.get("name"), " "), root.get("surnames"))));
-			
-			return entityManager.createQuery(cQuery).getResultList();
-
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
-	}
-	
-	public List<UserDTO> findAllProjectResponsables() {
-		
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<UserDTO> cQuery = cb.createQuery(UserDTO.class);
-
-			Root<Project> prRoot = cQuery.from(Project.class);
-			Join<User, Project> usRoot = prRoot.join("responsables", JoinType.INNER);
-
-			cQuery.multiselect(usRoot.get("id"), usRoot.get("name"), usRoot.get("surnames")).where(cb.equal(usRoot.get("state"), 1));
-			cQuery.distinct(true);
-			cQuery.orderBy(cb.asc(cb.concat(usRoot.get("name"), usRoot.get("surnames"))));
-
-			return entityManager.createQuery(cQuery).getResultList();
-
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
-	}
-	
-	public List<ProjectMemberDTO> findAllMembersDTOByProjectId(Long projectId) {
-		
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<ProjectMemberDTO> cq = cb.createQuery(ProjectMemberDTO.class);
-			
-			Root<Project> prRoot = cq.from(Project.class);
-			Join<User, Project> usRoot = prRoot.join("users", JoinType.INNER);
-
-			cq.multiselect(usRoot.get("id"), cb.concat(cb.concat(usRoot.get("name"), " "), usRoot.get("surnames")))
-					.where(cb.and(cb.equal(prRoot.get("id"), projectId), cb.equal(usRoot.get("state"), 1)));
-
-			return entityManager.createQuery(cq).getResultList();
-
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
-	}
-
-	public List<ProjectMemberDTO> findProjectMemberDTOsByProjectId(Long projectId, PaginationCriteria pagination) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<ProjectMemberDTO> cq = cb.createQuery(ProjectMemberDTO.class);
-
-			/* #BASE_QUERY */
-
-			Root<Project> prRoot = cq.from(Project.class);
-			Join<User, Project> usRoot = prRoot.join("users", JoinType.INNER);
-
-			List<Predicate> predicates = new ArrayList<>();
-
-			cq.multiselect(usRoot.get("id"), cb.concat(cb.concat(usRoot.get("name"), " "), usRoot.get("surnames")),
-					usRoot.get("subRole").get("rol"));
-
-			/* END #BASE_QUERY */
-
-			/* #WHERE_CLAUSE */
-			Predicate whereFilter = DataTableUtil.generateWhereCondition(pagination, cb, usRoot, prRoot);
-
-			if (whereFilter != null) {
-				predicates.add(whereFilter);
-			}
-			/* END #WHERE_CLAUSE */
-
-			/* #ORDER_CLAUSE */
-			List<Order> orderList = DataTableUtil.generateOrderByCondition(pagination, cb, usRoot, prRoot);
-
-			if (!orderList.isEmpty()) {
-				cq.orderBy(orderList);
-			}
-			/* END #ORDER_CLAUSE */
-
-			Predicate predicateUser = cb.and(cb.equal(prRoot.get("id"), projectId), cb.equal(usRoot.get("state"), 1));
-			predicates.add(predicateUser);
-
-			// Appending all Predicates
-			cq.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
-
-			TypedQuery<ProjectMemberDTO> criteriaQuery = entityManager.createQuery(cq);
-
-			/* #PAGE_NUMBER */
-			criteriaQuery.setFirstResult(pagination.getPageNumber());
-			/* END #PAGE_NUMBER */
-
-			/* #PAGE_SIZE */
-			criteriaQuery.setMaxResults(pagination.getPageSize());
-			/* END #PAGE_SIZE */
-
-			return criteriaQuery.getResultList();
-
-		} catch (Exception e) {
-			return Collections.emptyList();
-		}
-	}
-
-	public Long findProjectMembersCountByProjectId(Long projectId) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-
-			Root<Project> root = cq.from(Project.class);
-			Join<User, Project> usRoot = root.join("users");
-
-			cq.select(cb.count(usRoot)).where(cb.and(cb.equal(root.get("id"), projectId), cb.equal(usRoot.get("state"), 1)));
-
-			return entityManager.createQuery(cq).getSingleResult();
-
-		} catch (Exception e) {
-			return 0L;
-		}
-	}
-	
-	public Long findProjectBossesCountByProjectId(Long projectId) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-
-			Root<Project> root = cq.from(Project.class);
-			Join<User, Project> usRoot = root.join("bossUsers");
-
-			cq.select(cb.count(usRoot)).where(cb.and(cb.equal(root.get("id"), projectId), cb.equal(usRoot.get("state"), 1)));
-
-			return entityManager.createQuery(cq).getSingleResult();
-
-		} catch (Exception e) {
-			return 0L;
-		}
-	}
-
-	public List<UserDTO> findUserDTOsByRank(Long rankId) {
-
-		try {
-
-			CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-			CriteriaQuery<UserDTO> cQuery = cb.createQuery(UserDTO.class);
-
-			Root<User> root = cQuery.from(User.class);
-
-			cQuery.multiselect(root.get("id"), root.get("name"), root.get("surnames"), root.get("email"), root.get("role").get("id"),root.get("subRole").get("id"))
-				.where(cb.and(cb.equal(root.get("role"), rankId), cb.equal(root.get("state"), 1)));
-
-			cQuery.orderBy(cb.asc(cb.concat(cb.concat(root.get("name"), " "), root.get("surnames"))));
-			
 			return entityManager.createQuery(cQuery).getResultList();
 
 		} catch (Exception e) {

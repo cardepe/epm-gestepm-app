@@ -8,10 +8,6 @@ import com.epm.gestepm.masterdata.api.activitycenter.service.ActivityCenterServi
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.manualsigningtype.dto.ManualSigningType;
 import com.epm.gestepm.modelapi.manualsigningtype.service.ManualSigningTypeService;
-import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectDTO;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
-import com.epm.gestepm.modelapi.project.dto.ProjectDto;
-import com.epm.gestepm.modelapi.project.dto.filter.ProjectFilterDto;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.role.dto.Role;
 import com.epm.gestepm.modelapi.role.service.RoleService;
@@ -21,7 +17,6 @@ import com.epm.gestepm.modelapi.user.dto.UserDto;
 import com.epm.gestepm.modelapi.user.dto.finder.UserByIdFinderDto;
 import com.epm.gestepm.modelapi.user.service.UserService;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;

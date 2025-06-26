@@ -10,18 +10,21 @@ import com.epm.gestepm.model.shares.noprogrammed.dao.entity.creator.NoProgrammed
 import com.epm.gestepm.model.shares.noprogrammed.dao.entity.updater.NoProgrammedShareUpdate;
 import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSToNoProgrammedShareDto;
 import com.epm.gestepm.model.shares.noprogrammed.service.mapper.MapNPSToNoProgrammedShareUpdate;
+import com.epm.gestepm.model.user.utils.UserUtils;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.smtp.SMTPService;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.service.FamilyService;
-import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
-import com.epm.gestepm.modelapi.deprecated.project.exception.ProjectByIdNotFoundException;
-import com.epm.gestepm.modelapi.deprecated.project.service.ProjectOldService;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
+import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
-import com.epm.gestepm.modelapi.deprecated.user.dto.User;
-import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
+import com.epm.gestepm.modelapi.user.dto.UserDto;
+import com.epm.gestepm.modelapi.user.dto.finder.UserByIdFinderDto;
+import com.epm.gestepm.modelapi.user.service.UserService;
 import com.itextpdf.xmp.impl.Base64;
 import lombok.Data;
 import org.apache.commons.collections4.CollectionUtils;
@@ -35,7 +38,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static org.mapstruct.factory.Mappers.getMapper;
@@ -53,7 +55,7 @@ public class NoProgrammedSharePostCreationDecorator {
 
     private final NoProgrammedShareDao noProgrammedShareDao;
 
-    private final ProjectOldService projectOldService;
+    private final ProjectService projectService;
 
     private final SMTPService smtpService;
 
@@ -61,15 +63,17 @@ public class NoProgrammedSharePostCreationDecorator {
 
     private final TopicService topicService;
 
-    private final UserServiceOld userServiceOld;
+    private final UserService userService;
+
+    private final UserUtils userUtils;
 
     private final MessageSource messageSource;
 
     private final LocaleProvider localeProvider;
 
     public void createForumEntryAndUpdate(final NoProgrammedShareDto noProgrammedShare, final Set<NoProgrammedShareFileCreate> files) {
-        final Project project = this.projectOldService.getProjectById(Long.valueOf(noProgrammedShare.getProjectId()));
-        final Long forumId = project.getForumId();
+        final ProjectDto project = this.projectService.findOrNotFound(new ProjectByIdFinderDto(noProgrammedShare.getProjectId()));
+        final Integer forumId = project.getForumId();
         final String forumTitle = this.getForumTitle(noProgrammedShare);
         final String ip = request.getLocalAddr();
         final List<MultipartFile> multipartFiles = CollectionUtils.isNotEmpty(files)
@@ -79,9 +83,9 @@ public class NoProgrammedSharePostCreationDecorator {
                 : new ArrayList<>();
 
         final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));
-        final User user = this.userServiceOld.getUserById(Long.valueOf(noProgrammedShare.getUserId()));
+        final UserDto user = this.userService.findOrNotFound(new UserByIdFinderDto(noProgrammedShare.getUserId()));
 
-        topicService.create(forumTitle, noProgrammedShare.getDescription(), forumId, ip, user.getUsername(), multipartFiles)
+        topicService.create(forumTitle, noProgrammedShare.getDescription(), forumId, ip, user.getForumUsername(), multipartFiles)
                 .whenComplete((topic, throwable) -> {
                     final NoProgrammedShareDto dto = throwable == null
                             ? this.updateWithForumInfo(noProgrammedShare, topic.getId().intValue(), forumTitle)
@@ -117,7 +121,7 @@ public class NoProgrammedSharePostCreationDecorator {
                 familyName, "es".equals(language) ? subFamily.getNameES() : subFamily.getNameFR());
     }
 
-    private void sendOpenEmail(final NoProgrammedShareDto noProgrammedShare, final User createdBy, final Project project, final Locale locale) {
+    private void sendOpenEmail(final NoProgrammedShareDto noProgrammedShare, final UserDto createdBy, final ProjectDto project, final Locale locale) {
         final String subject = this.messageSource.getMessage("email.noprogrammedshare.open.subject", new Object[] {
                 noProgrammedShare.getForumTitle(),
                 project.getName()
@@ -125,7 +129,9 @@ public class NoProgrammedSharePostCreationDecorator {
 
         final Set<String> emails = new HashSet<>();
         emails.add(createdBy.getEmail());
-        emails.addAll(project.getResponsables().stream().map(User::getEmail).collect(Collectors.toSet()));
+
+        final Set<String> responsibleEmails = this.userUtils.getResponsibleEmails(project);
+        emails.addAll(responsibleEmails);
 
         final OpenNoProgrammedShareGroup emailGroup = new OpenNoProgrammedShareGroup();
         emailGroup.setEmails(new ArrayList<>(emails));
@@ -147,10 +153,7 @@ public class NoProgrammedSharePostCreationDecorator {
     public void sendCloseEmail(final NoProgrammedShareDto noProgrammedShare) {
         final User user = Utiles.getCurrentUser();
 
-        final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(noProgrammedShare.getProjectId());
-        final Project project = Optional.ofNullable(this.projectOldService.getProjectById(noProgrammedShare.getProjectId().longValue()))
-                .orElseThrow(projectNotFound);
-
+        final ProjectDto project = this.projectService.findOrNotFound(new ProjectByIdFinderDto(noProgrammedShare.getProjectId()));
         final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));
         final String subject = this.messageSource.getMessage("email.noprogrammedshare.close.subject", new Object[] {
                 noProgrammedShare.getForumTitle(),
@@ -159,7 +162,9 @@ public class NoProgrammedSharePostCreationDecorator {
 
         final Set<String> emails = new HashSet<>();
         emails.add(user.getEmail());
-        emails.addAll(project.getResponsables().stream().map(User::getEmail).collect(Collectors.toSet()));
+
+        final Set<String> responsibleEmails = this.userUtils.getResponsibleEmails(project);
+        emails.addAll(responsibleEmails);
 
         final CloseNoProgrammedShareGroup emailGroup = new CloseNoProgrammedShareGroup();
         emailGroup.setEmails(new ArrayList<>(emails));

@@ -1,10 +1,8 @@
 package com.epm.gestepm.model.deprecated.user.service;
 
 import com.epm.gestepm.model.deprecated.user.dao.UserRepository;
-import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
 import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseUserValidateDTO;
 import com.epm.gestepm.modelapi.deprecated.expense.dto.ExpenseValidateDTO;
-import com.epm.gestepm.modelapi.deprecated.project.dto.ProjectMemberDTO;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.deprecated.user.dto.UserDTO;
 import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
@@ -38,32 +36,8 @@ public class UserServiceOldImpl implements UserServiceOld {
 		return userRepository.findAllUserDTOs();
 	}
 
-	public List<UserDTO> getNotBossDTOsByProjectId(Long projectId) {
-		return userRepository.findNotBossDTOsByProjectId(projectId);
-	}
-
-	public List<UserDTO> getAllProjectResponsables() {
-		return userRepository.findAllProjectResponsables();
-	}
-
 	public List<UserDTO> getUserDTOsByProjectId(Long projectId) {
 		return userRepository.findUserDTOsByProjectId(projectId);
-	}
-
-	public List<UserDTO> getNotUserDTOsByProjectId(Long projectId) {
-		return userRepository.findNotUserDTOsByProjectId(projectId);
-	}
-
-	public List<ProjectMemberDTO> getProjectMemberDTOsByProjectId(Long projectId, PaginationCriteria pagination) {
-		return userRepository.findProjectMemberDTOsByProjectId(projectId, pagination);
-	}
-
-	public Long getProjectMembersCountByProjectId(Long projectId) {
-		return userRepository.findProjectMembersCountByProjectId(projectId);
-	}
-
-	public List<UserDTO> getUserDTOsByRank(Long rankId) {
-		return userRepository.findUserDTOsByRank(rankId);
 	}
 
 	public List<ExpenseValidateDTO> getExpensesToValidateByUserId(Long userId) {
