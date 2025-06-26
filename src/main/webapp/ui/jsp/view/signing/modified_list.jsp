@@ -154,11 +154,11 @@
 				{ "className": "text-center", "targets": "_all" },
 				{ "targets": [0], "visible": false },
 				{ "render": function (data) { return parseShareType(data); }, "targets": 2 },
-				{ "render": function (data) { return moment(data).format('DD/MM/YYYY hh:mm'); }, "targets": [5, 6] },
+				{ "render": function (data) { return moment(data).format('DD/MM/YYYY HH:mm'); }, "targets": [5, 6] },
 				{ "defaultContent": "${tableActionButtons}", "orderable": false, "targets": -1 }
 			],
 			"dom": "<'top'i>rt<'bottom'<'row no-gutters'<'col'l><'col'p>>><'clear'>",
-			"drawCallback": function(settings, json) {
+			"drawCallback": function() {
 				parseActionButtons();
 			}
 		});
