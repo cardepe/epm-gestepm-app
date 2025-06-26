@@ -93,7 +93,7 @@ public class ProjectViewController {
         model.addAttribute("forums", forums);
 
         final Optional<CustomerDto> customer = this.customerService.find(new CustomerByProjectIdFinderDto(id));
-        model.addAttribute("customer", customer.isPresent() ? customer : new CustomerDto());
+        model.addAttribute("customer", customer.orElseGet(CustomerDto::new));
 
         final int actualYear = Year.now().getValue();
         final int[] years = IntStream.rangeClosed(firstYear, actualYear)
