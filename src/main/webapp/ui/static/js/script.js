@@ -104,6 +104,8 @@ function getSigningText(type) {
 		return messages.inspections.name;
 	} else if (type === 'MANUAL_SIGNINGS') {
 		return messages.signings.manual.name;
+	} else if (type === 'OFFICE_SIGNING') {
+		return messages.signings.office.name;
 	} else if (type === 'PERSONAL_SIGNINGS') {
 		return messages.signings.personal.name;
 	} else if (type === 'PROGRAMMED_SHARES') {

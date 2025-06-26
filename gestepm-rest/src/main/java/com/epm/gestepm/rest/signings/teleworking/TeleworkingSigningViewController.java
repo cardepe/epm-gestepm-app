@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
+import static com.epm.gestepm.modelapi.project.dto.ProjectTypeDto.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -76,7 +77,7 @@ public class TeleworkingSigningViewController {
 
     private void loadProjects(final Model model) {
         final ProjectFilterDto projectFilterDto = new ProjectFilterDto();
-        projectFilterDto.setIsTeleworking(true);
+        projectFilterDto.setTypes(List.of(TELEWORKING));
 
         final List<ProjectDto> projects = this.projectService.list(projectFilterDto);
         model.addAttribute("projects", projects);

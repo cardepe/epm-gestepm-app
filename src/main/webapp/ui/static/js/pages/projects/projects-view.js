@@ -30,9 +30,8 @@ function initializeSelects() {
     // # FilterForm
     const filterForm = document.querySelector('#filterForm');
 
-    createBasicSelect2($( filterForm.querySelector('[name="isStation"]')), 'filterForm');
+    createBasicSelect2($( filterForm.querySelector('[name="type"]')), 'filterForm');
     createSelect2($(filterForm.querySelector('[name="activityCenterId"]')), activityCenterEndpoint, null, null, null, 'filterForm');
-    createBasicSelect2($(filterForm.querySelector('[name="isTeleworking"]')), 'filterForm');
     createSelect2($(filterForm.querySelector('[name="responsibleId"]')), usersEndpoint, params, null, getCustomName, 'filterForm');
 }
 
@@ -44,9 +43,8 @@ function filterByParams() {
 
     let ids = queryParams.get('ids');
     let nameContains = queryParams.get('nameContains');
-    let isStation = queryParams.get('isStation');
+    let types = queryParams.get('types');
     let activityCenterIds = queryParams.get('activityCenterIds');
-    let isTeleworking = queryParams.get('isTeleworking');
     let responsibleIds = queryParams.get('responsibleIds');
     let pageNumber = queryParams.get('pageNumber');
 
@@ -54,16 +52,14 @@ function filterByParams() {
 
     filterForm.querySelector('[name="id"]').value = ids;
     filterForm.querySelector('[name="nameContains"]').value = nameContains;
-    filterForm.querySelector('[name="isStation"]').value = isStation;
+    filterForm.querySelector('[name="type"]').value = types;
     filterForm.querySelector('[name="activityCenterId"]').value = activityCenterIds;
-    filterForm.querySelector('[name="isTeleworking"]').value = isTeleworking;
     filterForm.querySelector('[name="responsibleId"]').value = responsibleIds;
 
     if (ids) { filters.push({ 'ids': ids }); }
     if (nameContains) { filters.push({ 'nameContains': nameContains }); }
-    if (isStation) { filters.push({ 'isStation': isStation }); }
+    if (types) { filters.push({ 'types': type }); }
     if (activityCenterIds) { filters.push({ 'activityCenterIds': activityCenterIds }); }
-    if (isTeleworking) { filters.push({ 'isTeleworking': isTeleworking }); }
     if (responsibleIds) { filters.push({ 'responsibleIds': responsibleIds }); }
     if (pageNumber) { filters.push({ 'pageNumber': pageNumber }); }
 
@@ -80,16 +76,14 @@ function filter(isReset) {
 
         let id = form.querySelector('[name="id"]');
         let nameContains = form.querySelector('[name="nameContains"]');
-        let isStation = form.querySelector('[name="isStation"]');
+        let type = form.querySelector('[name="type"]');
         let activityCenterId = form.querySelector('[name="activityCenterId"]');
-        let isTeleworking = form.querySelector('[name="isTeleworking"]');
         let responsibleId = form.querySelector('[name="responsibleId"]');
 
         id.value && filters.push({'ids': id.value});
         nameContains.value && filters.push({'nameContains': nameContains.value});
-        isStation.value && filters.push({'isStation': isStation.value});
+        type.value && filters.push({'types': type.value});
         activityCenterId.value && filters.push({'activityCenterIds': activityCenterId.value});
-        isTeleworking.value && filters.push({'isTeleworking': isTeleworking.value});
         responsibleId.value && filters.push({'responsibleIds': responsibleId.value});
     } else {
         resetForm('#filterForm');

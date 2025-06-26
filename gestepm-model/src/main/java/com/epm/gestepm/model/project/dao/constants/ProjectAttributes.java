@@ -10,7 +10,9 @@ public class ProjectAttributes {
 
     public static final String ATTR_PR_NAME_CONTAINS = "attr_pr_name_contains";
 
-    public static final String ATTR_PR_IS_STATION = "attr_pr_is_station";
+    public static final String ATTR_PR_TYPE = "attr_pr_type";
+
+    public static final String ATTR_PR_TYPES = "attr_pr_types";
 
     public static final String ATTR_PR_OBJECTIVE_COST = "attr_pr_objective_cost";
 
@@ -23,8 +25,6 @@ public class ProjectAttributes {
     public static final String ATTR_PR_ACTIVITY_CENTER_IDS = "attr_pr_activity_center_ids";
 
     public static final String ATTR_PR_FORUM_ID = "attr_pr_forum_id";
-
-    public static final String ATTR_PR_IS_TELEWORKING = "attr_pr_is_teleworking";
 
     public static final String ATTR_PR_STATE = "attr_pr_state";
 

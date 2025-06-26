@@ -22,9 +22,8 @@ function initializeSelects() {
     // # EditForm
     const editForm = document.querySelector('#editForm');
 
-    createBasicSelect2($(editForm.querySelector('[name="isStation"]')), 'editForm');
+    createBasicSelect2($(editForm.querySelector('[name="type"]')), 'editForm');
     const activityCenterSelect = createSelect2($(editForm.querySelector('[name="activityCenterId"]')), activityCenterEndpoint, null, null, null, 'editForm');
-    createBasicSelect2($(editForm.querySelector('[name="isTeleworking"]')), 'editForm');
     createBasicSelect2($(editForm.querySelector('[name="forumId"]')), 'editForm');
     const responsibleSelect = createSelect2($(editForm.querySelector('[name="responsibleIds"]')), usersEndpoint, params, null, getCustomName, 'editForm');
     createBasicSelect2($(editForm.querySelector('[name="state"]')), 'editForm');
@@ -62,26 +61,24 @@ function edit() {
         const form = document.querySelector('#editForm');
 
         const name = form.querySelector('[name="name"]').value;
-        const isStation = form.querySelector('[name="isStation"]').value;
+        const type = form.querySelector('[name="type"]').value;
         const activityCenterId = form.querySelector('[name="activityCenterId"]').value;
         const objectiveCost = form.querySelector('[name="objectiveCost"]').value;
         const startDate = form.querySelector('[name="startDate"]').value;
         const endDate = form.querySelector('[name="endDate"]').value;
         const forumId = form.querySelector('[name="forumId"]').value;
-        const isTeleworking = form.querySelector('[name="isTeleworking"]').value;
         const selectResponsible = form.querySelector('[name="responsibleIds"]');
         const responsibleIds = Array.from(selectResponsible.selectedOptions).map(option => option.value);
         const state = form.querySelector('[name="state"]').value;
 
         axios.put(endpoint, {
             name: name,
-            isStation: isStation,
+            type: type,
             activityCenterId: activityCenterId,
             objectiveCost: objectiveCost,
             startDate: startDate,
             endDate: endDate,
             forumId: forumId ? forumId : null,
-            isTeleworking: isTeleworking,
             responsibleIds: responsibleIds,
             state: state
         }).then(() => {
