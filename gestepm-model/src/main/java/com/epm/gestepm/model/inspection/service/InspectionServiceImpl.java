@@ -18,7 +18,12 @@ import com.epm.gestepm.model.inspection.dao.entity.filter.InspectionFilter;
 import com.epm.gestepm.model.inspection.dao.entity.finder.InspectionByIdFinder;
 import com.epm.gestepm.model.inspection.dao.entity.updater.InspectionUpdate;
 import com.epm.gestepm.model.inspection.service.mapper.*;
+import com.epm.gestepm.model.user.utils.UserUtils;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
+import com.epm.gestepm.modelapi.customer.dto.CustomerDto;
+import com.epm.gestepm.modelapi.customer.dto.finder.CustomerByProjectIdFinderDto;
+import com.epm.gestepm.modelapi.customer.service.CustomerService;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import com.epm.gestepm.modelapi.inspection.dto.InspectionDto;
 import com.epm.gestepm.modelapi.inspection.dto.creator.InspectionCreateDto;
 import com.epm.gestepm.modelapi.inspection.dto.deleter.InspectionDeleteDto;
@@ -28,16 +33,17 @@ import com.epm.gestepm.modelapi.inspection.dto.updater.InspectionUpdateDto;
 import com.epm.gestepm.modelapi.inspection.exception.InspectionNotFoundException;
 import com.epm.gestepm.modelapi.inspection.service.InspectionExportService;
 import com.epm.gestepm.modelapi.inspection.service.InspectionService;
-import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareStateEnumDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.updater.NoProgrammedShareUpdateDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
-import com.epm.gestepm.modelapi.deprecated.user.dto.User;
-import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
+import com.epm.gestepm.modelapi.user.dto.UserDto;
+import com.epm.gestepm.modelapi.user.dto.finder.UserByIdFinderDto;
+import com.epm.gestepm.modelapi.user.service.UserService;
 import lombok.AllArgsConstructor;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.BooleanUtils;
@@ -52,7 +58,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
@@ -65,6 +70,8 @@ import static org.mapstruct.factory.Mappers.getMapper;
 @AllArgsConstructor
 @EnableExecutionLog(layerMarker = SERVICE)
 public class InspectionServiceImpl implements InspectionService {
+
+    private final CustomerService customerService;
 
     private final EmailService emailService;
 
@@ -86,7 +93,9 @@ public class InspectionServiceImpl implements InspectionService {
 
     private final TopicService topicService;
 
-    private final UserServiceOld userServiceOld;
+    private final UserService userService;
+
+    private final UserUtils userUtils;
 
     @Override
     @RequirePermits(value = PRMT_READ_I, action = "List inspections")
@@ -246,11 +255,11 @@ public class InspectionServiceImpl implements InspectionService {
             final String content = stringBuilder.toString();
             final String ip = request.getLocalAddr();
 
-            final User user = this.userServiceOld.getUserById(Long.valueOf(inspection.getFirstTechnicalId()));
+            final UserDto user = this.userService.findOrNotFound(new UserByIdFinderDto(inspection.getFirstTechnicalId()));
 
             // TODO: same with files, now null.
 
-            this.topicService.create(title, content, noProgrammedShare.getTopicId().longValue(), ip, user.getUsername(), null)
+            this.topicService.create(title, content, noProgrammedShare.getTopicId(), ip, user.getForumUsername(), null)
                     .thenApply(topic -> {
                         final InspectionUpdate inspectionUpdate = getMapper(MapIToInspectionUpdate.class).from(inspection);
                         inspectionUpdate.setId(inspection.getId());
@@ -278,9 +287,7 @@ public class InspectionServiceImpl implements InspectionService {
         final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService
                 .findOrNotFound(new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
 
-        final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(noProgrammedShare.getProjectId());
-        final Project project = Optional.ofNullable(this.projectService.getProjectById(noProgrammedShare.getProjectId().longValue()))
-                .orElseThrow(projectNotFound);
+        final ProjectDto project = this.projectService.findOrNotFound(new ProjectByIdFinderDto(noProgrammedShare.getProjectId()));
 
         final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));
         final String fileName = this.messageSource.getMessage("shares.no.programmed.pdf.name", new Object[] {
@@ -302,11 +309,15 @@ public class InspectionServiceImpl implements InspectionService {
 
         final Set<String> emails = new HashSet<>();
         emails.add(user.getEmail());
-        emails.addAll(project.getResponsables().stream().map(User::getEmail).collect(Collectors.toSet()));
 
-        if (BooleanUtils.isTrue(notify) && project.getCustomer() != null) {
-            final String mainEmail = project.getCustomer().getMainEmail();
-            final String secondaryEmail = project.getCustomer().getSecondaryEmail();
+        final Set<String> responsibleEmails = this.userUtils.getResponsibleEmails(project);
+        emails.addAll(responsibleEmails);
+
+        final Optional<CustomerDto> customer = this.customerService.find(new CustomerByProjectIdFinderDto(project.getId()));
+
+        if (BooleanUtils.isTrue(notify) && customer.isPresent()) {
+            final String mainEmail = customer.get().getMainEmail();
+            final String secondaryEmail = customer.get().getSecondaryEmail();
 
             if (StringUtils.isNoneBlank(mainEmail)) {
                 emails.add(mainEmail);

@@ -19,7 +19,7 @@ sql:
 
   qry-count-of-c: |
 
-    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    SELECT COUNT(DISTINCT country_id) AS "count"
     FROM (
       SELECT c.country_id
       FROM ${sch-gestepm}.country c

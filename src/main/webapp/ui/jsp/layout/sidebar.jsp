@@ -79,7 +79,7 @@
 						<sec:authorize access="hasAuthority('ROLE_JEFE_PROYECTO')">
 							<li><i class="fa fa-users-cog"></i><a href="/projects"><spring:message code="sidebar.projects.admin" /></a></li>
 						</sec:authorize>
-						<li><i class="fa fa-eye"></i><a href="/projects/view"><spring:message code="sidebar.projects.view" /></a></li>
+						<li><i class="fa fa-eye"></i><a href="/projects-view"><spring:message code="sidebar.projects.view" /></a></li>
 					</ul>
 				</li>
 			</sec:authorize>

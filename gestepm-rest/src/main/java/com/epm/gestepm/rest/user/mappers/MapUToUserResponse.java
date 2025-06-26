@@ -21,6 +21,8 @@ public interface MapUToUserResponse {
 
   List<User> from(Page<UserDto> list);
 
+  List<User> from(List<UserDto> list);
+
   @Named("mapFullName")
   static String mapFullName(UserDto user) {
     final StringBuilder builder = new StringBuilder();

@@ -17,7 +17,7 @@ sql:
       ds.modified_at,
       ds.modified_by
     FROM ${sch-gestepm}.displacement_share ds
-    LEFT JOIN ${sch-gestepm}.projects pr ON ds.project_id = pr.ID
+    LEFT JOIN ${sch-gestepm}.project pr ON ds.project_id = pr.project_id
     LEFT JOIN ${sch-gestepm}.user us ON ds.user_id = us.user_id
 
     #whereToken #filter

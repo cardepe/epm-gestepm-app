@@ -1,35 +1,33 @@
 package com.epm.gestepm.controller;
 
-import com.epm.gestepm.model.activitycenter.service.ActivityCenterServiceImpl;
-import com.epm.gestepm.model.country.service.CountryServiceOldImpl;
+import com.epm.gestepm.model.deprecated.activitycenter.service.ActivityCenterServiceImpl;
+import com.epm.gestepm.model.deprecated.country.service.CountryServiceOldImpl;
+import com.epm.gestepm.model.deprecated.holiday.service.HolidayServiceImpl;
+import com.epm.gestepm.model.deprecated.holiday.service.mapper.HolidayMapper;
 import com.epm.gestepm.model.family.service.FamilyServiceImpl;
-import com.epm.gestepm.model.family.service.mapper.FamilyMapper;
-import com.epm.gestepm.model.holiday.service.HolidayServiceImpl;
-import com.epm.gestepm.model.holiday.service.mapper.HolidayMapper;
-import com.epm.gestepm.model.project.service.ProjectServiceImpl;
 import com.epm.gestepm.model.subfamily.service.SubFamilyServiceImpl;
 import com.epm.gestepm.model.subfamily.service.mapper.MapSFToSubFamilyDto;
 import com.epm.gestepm.model.subrole.service.SubRoleServiceImpl;
-import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableRequest;
 import com.epm.gestepm.modelapi.common.utils.datatables.DataTableResults;
 import com.epm.gestepm.modelapi.common.utils.datatables.PaginationCriteria;
+import com.epm.gestepm.modelapi.deprecated.activitycenter.dto.ActivityCenter;
 import com.epm.gestepm.modelapi.deprecated.country.dto.Country;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.deprecated.user.exception.InvalidUserSessionException;
+import com.epm.gestepm.modelapi.family.FamilyMapper;
 import com.epm.gestepm.modelapi.family.dto.Family;
 import com.epm.gestepm.modelapi.family.dto.FamilyDTO;
 import com.epm.gestepm.modelapi.family.dto.FamilyTableDTO;
 import com.epm.gestepm.modelapi.holiday.dto.Holiday;
 import com.epm.gestepm.modelapi.holiday.dto.HolidayDTO;
 import com.epm.gestepm.modelapi.holiday.dto.HolidayTableDTO;
-import com.epm.gestepm.modelapi.project.dto.Project;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyDto;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamilyOldDTO;
 import com.epm.gestepm.modelapi.subrole.dto.SubRole;
-import com.epm.gestepm.modelapi.deprecated.user.dto.User;
-import com.epm.gestepm.modelapi.deprecated.user.exception.InvalidUserSessionException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.logging.Log;
@@ -67,9 +65,6 @@ public class AdminController {
 	
 	@Autowired
 	private MessageSource messageSource;
-	
-	@Autowired
-	private ProjectServiceImpl projectService;
 	
 	@Autowired
 	private SubFamilyServiceImpl subFamilyService;
@@ -449,39 +444,5 @@ public class AdminController {
 		final List<SubFamilyDto> response = getMapper(MapSFToSubFamilyDto.class).from(subFamilies, locale);
 
 		return new ResponseEntity<>(response, HttpStatus.OK);
-	}
-	
-	@ResponseBody
-	@GetMapping("/families/project/{id}")
-	public ResponseEntity<String> loadFamiliesFromProject(@PathVariable Long id, Locale locale) {
-	
-		Project project = projectService.getProjectById(id);
-		
-		if (project == null || project.getActivityCenter() == null) {
-			return null;
-		}
-		
-		List<Family> families = project.getFamilies();
-		String callbackText = "";
-		
-		for (Family f : families) {
-			callbackText += "<option value=\"" + f.getId() + "\">" + ("es".equals(locale.getLanguage()) ? f.getNameES() : f.getNameFR()) + "</option>";
-		}
-
-		// Return data
-		return new ResponseEntity<>(callbackText, HttpStatus.OK);
-	}
-	
-	@ResponseBody
-	@GetMapping("/families/{id}/info")
-	public ResponseEntity<?> loadFamilyInfo(@PathVariable Long id, Locale locale) {
-	
-		Family family = familyService.getById(id);
-		
-		if (family == null) {
-			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-		}
-
-		return new ResponseEntity<>(FamilyMapper.mapToDTO(family), HttpStatus.OK);
 	}
 }

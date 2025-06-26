@@ -1,3 +1,5 @@
+<%@ page import="com.fasterxml.jackson.datatype.jsr310.JavaTimeModule" %>
+<%@ page import="com.fasterxml.jackson.databind.ObjectMapper" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -5,8 +7,12 @@
 
 <c:set var="userTabs" value="${fn:split('signings,expenses,projects,holidays', ',')}" />
 
-<link rel="stylesheet"
-      href="${pageContext.request.contextPath}/webjars/bootstrap-select/1.13.17/css/bootstrap-select.min.css">
+<%
+    final ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+
+    final String currentUser = mapper.writeValueAsString(request.getAttribute("currentUser"));
+%>
 
 <div class="breadcrumbs">
     <div class="breadcrumbs-inner">
@@ -67,10 +73,10 @@
 
 <script>
 
-    let locale = '${locale}';
     let returnBtn = $('#returnBtn');
 
     const endpoint = '/v1/users/${currentUser.id}';
+    const currentUser = <%= currentUser %>;
 
     $(document).ready(function() {
         setReturnButtonUrl();
@@ -95,6 +101,3 @@
     }
 
 </script>
-
-<script type="text/javascript" src="${pageContext.request.contextPath}/webjars/bootstrap-select/1.13.17/js/bootstrap-select.min.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/ui/static/js/select2/select2-utils.js?v=<%= System.currentTimeMillis() %>"></script>

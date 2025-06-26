@@ -19,7 +19,7 @@ sql:
 
   qry-count-of-ac: |
 
-    SELECT COUNT(DISTINCT id_pagination) AS "count"
+    SELECT COUNT(DISTINCT activity_center_id) AS "count"
     FROM (
       SELECT ac.activity_center_id
       FROM ${sch-gestepm}.activity_center ac

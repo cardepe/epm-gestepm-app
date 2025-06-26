@@ -133,26 +133,26 @@
     <definition name="work-share-detail" extends="fullFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/shares/work/detail.jsp" />
     </definition>
-    
+
     <!-- Projects -->
-    <definition name="projects" extends="fullFrameLayout">
-        <put-attribute name="body" value="/ui/jsp/view/projects/projects.jsp" />
-    </definition>
-    
-    <definition name="project-detail" extends="fullFrameLayout">
-        <put-attribute name="body" value="/ui/jsp/view/projects/crud/detail.jsp" />
-    </definition>
-    
-    <definition name="project-view" extends="fullFrameLayout">
+    <definition name="projects" extends="mainFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/projects/view.jsp" />
     </definition>
     
+    <definition name="project-detail" extends="mainFrameLayout">
+        <put-attribute name="body" value="/ui/jsp/view/projects/detail.jsp" />
+    </definition>
+    
+    <definition name="projects-view" extends="mainFrameLayout">
+        <put-attribute name="body" value="/ui/jsp/view/projects/projects-view.jsp" />
+    </definition>
+
     <!-- Users -->
     <definition name="users" extends="mainFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/users/view.jsp" />
     </definition>
     
-    <definition name="user-detail" extends="fullFrameLayout">
+    <definition name="user-detail" extends="mainFrameLayout">
         <put-attribute name="body" value="/ui/jsp/view/users/detail.jsp" />
     </definition>
     

@@ -5,7 +5,7 @@ import com.epm.gestepm.lib.controller.error.I18nErrorMessageSource;
 import com.epm.gestepm.lib.controller.exception.BaseRestExceptionHandler;
 import com.epm.gestepm.lib.executiontrace.ExecutionRequestProvider;
 import com.epm.gestepm.modelapi.user.exception.UserForumAlreadyException;
-import com.epm.gestepm.modelapi.deprecated.user.exception.UserByIdNotFoundException;
+import com.epm.gestepm.modelapi.user.exception.UserNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -26,9 +26,9 @@ public class UserExceptionHandler extends BaseRestExceptionHandler {
         super(executionRequestProvider, i18nErrorMessageSource);
     }
 
-    @ExceptionHandler(UserByIdNotFoundException.class)
+    @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(value = NOT_FOUND)
-    public APIError handle(UserByIdNotFoundException ex) {
+    public APIError handle(UserNotFoundException ex) {
 
         final Integer id = ex.getId();
 

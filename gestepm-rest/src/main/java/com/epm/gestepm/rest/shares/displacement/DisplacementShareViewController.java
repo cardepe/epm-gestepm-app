@@ -4,13 +4,15 @@ import com.epm.gestepm.lib.logging.annotation.EnableExecutionLog;
 import com.epm.gestepm.lib.logging.annotation.LogExecution;
 import com.epm.gestepm.modelapi.common.utils.ModelUtil;
 import com.epm.gestepm.modelapi.common.utils.classes.Constants;
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.filter.ProjectFilterDto;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.displacement.dto.DisplacementShareDto;
 import com.epm.gestepm.modelapi.shares.displacement.dto.finder.DisplacementShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.displacement.service.DisplacementShareService;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +29,12 @@ import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.VIEW;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.OP_VIEW;
 
 @Controller
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EnableExecutionLog(layerMarker = VIEW)
 public class DisplacementShareViewController {
+
+    @Value("${gestepm.displacements.project-ids}")
+    private List<Integer> displacementProjectIds;
 
     private final DisplacementShareService displacementShareService;
 
@@ -47,7 +52,7 @@ public class DisplacementShareViewController {
 
         this.loadCommonModelView(locale, model);
 
-        final List<Project> projects = this.projectService.findDisplacementProjects();
+        final List<ProjectDto> projects = this.filterProjects();
         model.addAttribute("projects", projects);
 
         return "displacement-share";
@@ -62,12 +67,19 @@ public class DisplacementShareViewController {
         final DisplacementShareDto displacementShare = this.displacementShareService.findOrNotFound(new DisplacementShareByIdFinderDto(id));
         model.addAttribute("displacementShare", displacementShare);
 
-        final List<Project> projects = this.projectService.findDisplacementProjects();
+        final List<ProjectDto> projects = this.filterProjects();
         model.addAttribute("projects", projects);
 
         boolean canUpdate = Constants.ROLE_ADMIN.equals(user.getRole().getRoleName());
         model.addAttribute("canUpdate", canUpdate);
 
         return "displacement-share-detail";
+    }
+
+    private List<ProjectDto> filterProjects() {
+        final ProjectFilterDto filterDto = new ProjectFilterDto();
+        filterDto.setIds(displacementProjectIds);
+
+        return this.projectService.list(filterDto);
     }
 }

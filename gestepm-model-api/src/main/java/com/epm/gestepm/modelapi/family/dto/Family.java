@@ -1,6 +1,6 @@
 package com.epm.gestepm.modelapi.family.dto;
 
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.deprecated.project.dto.Project;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
 
 import java.util.List;

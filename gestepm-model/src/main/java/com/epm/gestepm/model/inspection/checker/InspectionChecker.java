@@ -9,7 +9,7 @@ import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.exception.NoProgrammedShareForbiddenException;
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
 import com.epm.gestepm.modelapi.deprecated.user.dto.User;
-import com.epm.gestepm.modelapi.deprecated.user.exception.UserByIdNotFoundException;
+import com.epm.gestepm.modelapi.user.exception.UserNotFoundException;
 import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -40,7 +40,7 @@ public class InspectionChecker {
     }
 
     private void checker(final Integer userId, final Integer subFamilyId, final ActionEnumDto action, final InspectionCreateDto createDto) {
-        final Supplier<RuntimeException> userNotFound = () -> new UserByIdNotFoundException(userId);
+        final Supplier<RuntimeException> userNotFound = () -> new UserNotFoundException(userId);
         final User user = Optional.ofNullable(this.userServiceOld.getUserById(userId.longValue()))
                 .orElseThrow(userNotFound);
 

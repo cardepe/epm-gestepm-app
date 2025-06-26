@@ -4,7 +4,7 @@ sql:
     
     SELECT
       i.inspection_id,
-      pr.id AS project_id,
+      pr.project_id AS project_id,
       pr.name AS project_name,
       i.no_programmed_share_id,
       i.action,
@@ -27,7 +27,7 @@ sql:
     LEFT JOIN ${sch-gestepm}.no_programmed_share nps ON i.no_programmed_share_id = nps.no_programmed_share_id
     LEFT JOIN ${sch-gestepm}.inspection_file ifi ON i.inspection_id = ifi.inspection_id
     LEFT JOIN ${sch-gestepm}.inspection_material im ON i.inspection_id = im.inspection_id
-    LEFT JOIN ${sch-gestepm}.projects pr ON nps.project_id = pr.ID
+    LEFT JOIN ${sch-gestepm}.project pr ON nps.project_id = pr.project_id
     LEFT JOIN ${sch-gestepm}.user ft ON i.first_technical = ft.user_id
 
     #whereToken #filter

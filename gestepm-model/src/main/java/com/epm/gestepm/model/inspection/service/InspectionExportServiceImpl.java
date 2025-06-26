@@ -15,16 +15,20 @@ import com.epm.gestepm.modelapi.inspection.exception.InspectionNotEndedException
 import com.epm.gestepm.modelapi.inspection.service.InspectionExportService;
 import com.epm.gestepm.modelapi.inspection.service.InspectionFileService;
 import com.epm.gestepm.modelapi.inspection.service.InspectionMaterialsExportException;
-import com.epm.gestepm.modelapi.materialrequired.dto.MaterialRequired;
-import com.epm.gestepm.modelapi.project.dto.Project;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
+import com.epm.gestepm.modelapi.projectmaterial.dto.ProjectMaterialDto;
+import com.epm.gestepm.modelapi.projectmaterial.dto.filter.ProjectMaterialFilterDto;
+import com.epm.gestepm.modelapi.projectmaterial.service.ProjectMaterialService;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.NoProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.dto.finder.NoProgrammedShareByIdFinderDto;
 import com.epm.gestepm.modelapi.shares.noprogrammed.service.NoProgrammedShareService;
 import com.epm.gestepm.modelapi.subfamily.dto.SubFamily;
 import com.epm.gestepm.modelapi.subfamily.service.SubFamilyService;
-import com.epm.gestepm.modelapi.deprecated.user.dto.User;
-import com.epm.gestepm.modelapi.deprecated.user.service.UserServiceOld;
+import com.epm.gestepm.modelapi.user.dto.UserDto;
+import com.epm.gestepm.modelapi.user.dto.finder.UserByIdFinderDto;
+import com.epm.gestepm.modelapi.user.service.UserService;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
@@ -70,10 +74,12 @@ public class InspectionExportServiceImpl implements InspectionExportService {
     private final NoProgrammedShareService noProgrammedShareService;
 
     private final ProjectService projectService;
+
+    private final ProjectMaterialService projectMaterialService;
     
     private final SubFamilyService subFamilyService;
     
-    private final UserServiceOld userServiceOld;
+    private final UserService userService;
 
     @Override
     public byte[] generate(InspectionDto inspection) {
@@ -84,8 +90,8 @@ public class InspectionExportServiceImpl implements InspectionExportService {
 
             final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(
                     new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
-            final Project project = this.projectService.getProjectById(noProgrammedShare.getProjectId().longValue());
-            final User firstTechnical = this.userServiceOld.getUserById(inspection.getFirstTechnicalId().longValue());
+            final ProjectDto project = this.projectService.findOrNotFound(new ProjectByIdFinderDto(noProgrammedShare.getProjectId()));
+            final UserDto firstTechnical = this.userService.findOrNotFound(new UserByIdFinderDto(inspection.getFirstTechnicalId()));
 
             final String language = localeProvider.getLocale().orElse("es");
             final Locale locale = new Locale(language);
@@ -105,7 +111,7 @@ public class InspectionExportServiceImpl implements InspectionExportService {
             acroFields.setField("technic1", firstTechnical.getFullName());
             
             if (inspection.getSecondTechnicalId() != null) {
-                final User secondTechnical = this.userServiceOld.getUserById(inspection.getSecondTechnicalId().longValue());
+                final UserDto secondTechnical = this.userService.findOrNotFound(new UserByIdFinderDto(inspection.getSecondTechnicalId()));
                 acroFields.setField("technic2", secondTechnical.getFullName());
             }
 
@@ -168,7 +174,12 @@ public class InspectionExportServiceImpl implements InspectionExportService {
 
             final NoProgrammedShareDto noProgrammedShare = this.noProgrammedShareService.findOrNotFound(
                     new NoProgrammedShareByIdFinderDto(inspection.getShareId()));
-            final Project project = this.projectService.getProjectById(noProgrammedShare.getProjectId().longValue());
+
+            final ProjectMaterialFilterDto projectMaterialFilterDto = new ProjectMaterialFilterDto();
+            projectMaterialFilterDto.setProjectIds(List.of(noProgrammedShare.getProjectId()));
+
+            final List<ProjectMaterialDto> materials = this.projectMaterialService.list(projectMaterialFilterDto)
+                    .stream().limit(30).collect(Collectors.toList());
 
             final String language = localeProvider.getLocale().orElse("es");
             final PdfReader pdfTemplate = new PdfReader(String.format(MATERIALS_TEMPLATE_PATH, language));
@@ -180,10 +191,8 @@ public class InspectionExportServiceImpl implements InspectionExportService {
             acroFields.setField("inspectionId", inspection.getId().toString());
             acroFields.setField("excelNum", "EXCEL: " + (inspection.getMaterialsFile() != null ? noProgrammedShare.getId() : "S/N"));
 
-            final List<MaterialRequired> materials = project.getMaterialsRequired().stream().limit(30).collect(Collectors.toList());
-
             for (int i = 0; i < materials.size(); i++) {
-                acroFields.setField("reqMaterialDesc" + i, "es".equals(language) ? materials.get(i).getNameES() : materials.get(i).getNameFR());
+                acroFields.setField("reqMaterialDesc" + i, "es".equals(language) ? materials.get(i).getNameEs() : materials.get(i).getNameFr());
                 acroFields.setField("reqMaterialRef" + i, "x");
             }
 

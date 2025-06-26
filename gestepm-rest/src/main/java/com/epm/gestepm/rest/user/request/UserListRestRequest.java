@@ -33,4 +33,8 @@ public class UserListRestRequest extends RestRequest {
 
     private List<Integer> levelIds;
 
+    private Integer leadingProjectId;
+
+    private Integer memberProjectId;
+
 }

@@ -18,9 +18,14 @@ import com.epm.gestepm.model.shares.programmed.dao.entity.filter.ProgrammedShare
 import com.epm.gestepm.model.shares.programmed.dao.entity.finder.ProgrammedShareByIdFinder;
 import com.epm.gestepm.model.shares.programmed.dao.entity.updater.ProgrammedShareUpdate;
 import com.epm.gestepm.model.shares.programmed.service.mapper.*;
+import com.epm.gestepm.model.user.utils.UserUtils;
 import com.epm.gestepm.modelapi.common.utils.Utiles;
-import com.epm.gestepm.modelapi.project.dto.Project;
-import com.epm.gestepm.modelapi.project.exception.ProjectByIdNotFoundException;
+import com.epm.gestepm.modelapi.customer.dto.CustomerDto;
+import com.epm.gestepm.modelapi.customer.dto.finder.CustomerByProjectIdFinderDto;
+import com.epm.gestepm.modelapi.customer.service.CustomerService;
+import com.epm.gestepm.modelapi.deprecated.user.dto.User;
+import com.epm.gestepm.modelapi.project.dto.ProjectDto;
+import com.epm.gestepm.modelapi.project.dto.finder.ProjectByIdFinderDto;
 import com.epm.gestepm.modelapi.project.service.ProjectService;
 import com.epm.gestepm.modelapi.shares.programmed.dto.ProgrammedShareDto;
 import com.epm.gestepm.modelapi.shares.programmed.dto.creator.ProgrammedShareCreateDto;
@@ -31,7 +36,6 @@ import com.epm.gestepm.modelapi.shares.programmed.dto.updater.ProgrammedShareUpd
 import com.epm.gestepm.modelapi.shares.programmed.exception.ProgrammedShareNotFoundException;
 import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareExportService;
 import com.epm.gestepm.modelapi.shares.programmed.service.ProgrammedShareService;
-import com.epm.gestepm.modelapi.deprecated.user.dto.User;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -43,7 +47,6 @@ import org.springframework.validation.annotation.Validated;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static com.epm.gestepm.lib.logging.constants.LogLayerMarkers.SERVICE;
 import static com.epm.gestepm.lib.logging.constants.LogOperations.*;
@@ -59,6 +62,8 @@ public class ProgrammedShareServiceImpl implements ProgrammedShareService {
 
     private final AuditProvider auditProvider;
 
+    private final CustomerService customerService;
+
     private final ProgrammedShareDao programmedShareDao;
 
     private final ProgrammedShareExportService programmedShareExportService;
@@ -72,6 +77,9 @@ public class ProgrammedShareServiceImpl implements ProgrammedShareService {
     private final ProjectService projectService;
 
     private final ShareDateChecker shareDateChecker;
+
+    private final UserUtils userUtils;
+
 
     @Override
     @RequirePermits(value = PRMT_READ_PS, action = "List programmed shares")
@@ -209,9 +217,7 @@ public class ProgrammedShareServiceImpl implements ProgrammedShareService {
 
         final User user = Utiles.getCurrentUser();
 
-        final Supplier<RuntimeException> projectNotFound = () -> new ProjectByIdNotFoundException(programmedShare.getProjectId());
-        final Project project = Optional.ofNullable(this.projectService.getProjectById(programmedShare.getProjectId().longValue()))
-                .orElseThrow(projectNotFound);
+        final ProjectDto project = this.projectService.findOrNotFound(new ProjectByIdFinderDto(programmedShare.getProjectId()));
 
         final Locale locale = new Locale(this.localeProvider.getLocale().orElse("es"));
         final String fileName = this.messageSource.getMessage("shares.programmed.pdf.name", new Object[] {
@@ -230,11 +236,15 @@ public class ProgrammedShareServiceImpl implements ProgrammedShareService {
 
         final Set<String> emails = new HashSet<>();
         emails.add(user.getEmail());
-        emails.addAll(project.getResponsables().stream().map(User::getEmail).collect(Collectors.toSet()));
 
-        if (BooleanUtils.isTrue(notify) && project.getCustomer() != null) {
-            final String mainEmail = project.getCustomer().getMainEmail();
-            final String secondaryEmail = project.getCustomer().getSecondaryEmail();
+        final Set<String> responsibleEmails = this.userUtils.getResponsibleEmails(project);
+        emails.addAll(responsibleEmails);
+
+        final Optional<CustomerDto> customer = this.customerService.find(new CustomerByProjectIdFinderDto(project.getId()));
+
+        if (BooleanUtils.isTrue(notify) && customer.isPresent()) {
+            final String mainEmail = customer.get().getMainEmail();
+            final String secondaryEmail = customer.get().getSecondaryEmail();
 
             if (StringUtils.isNoneBlank(mainEmail)) {
                 emails.add(mainEmail);
