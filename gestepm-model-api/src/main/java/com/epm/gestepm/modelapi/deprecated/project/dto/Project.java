@@ -29,7 +29,8 @@ public class Project {
 	
 	@Column(name = "name", nullable = false, precision = 64)
 	private String name;
-	
+
+	@Enumerated(EnumType.STRING)
 	@Column(name = "type", nullable = false)
     private ProjectTypeDto type;
 	
