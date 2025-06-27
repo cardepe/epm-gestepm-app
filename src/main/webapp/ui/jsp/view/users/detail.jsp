@@ -11,6 +11,7 @@
     final ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(new JavaTimeModule());
 
+    final String sessionRoleId = mapper.writeValueAsString(request.getAttribute("sessionRoleId"));
     final String currentUser = mapper.writeValueAsString(request.getAttribute("currentUser"));
 %>
 
@@ -76,6 +77,7 @@
     let returnBtn = $('#returnBtn');
 
     const endpoint = '/v1/users/${currentUser.id}';
+    const sessionRoleId = <%= sessionRoleId %>;
     const currentUser = <%= currentUser %>;
 
     $(document).ready(function() {

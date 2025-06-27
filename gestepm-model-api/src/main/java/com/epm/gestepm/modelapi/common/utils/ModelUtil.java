@@ -43,6 +43,7 @@ public class ModelUtil {
 		if (user != null) {
 
 			model.addAttribute("user", user);
+			model.addAttribute("sessionRoleId", user.getRole().getId());
 
 			// If user is Team Leader, load expenses count to validate
 			if (user.getRole().getId() == Constants.ROLE_PL_ID) {
