@@ -9,6 +9,7 @@
     final ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(new JavaTimeModule());
 
+    final String sessionRoleId = mapper.writeValueAsString(request.getAttribute("sessionRoleId"));
     final String currentUser = mapper.writeValueAsString(request.getAttribute("currentUser"));
     final String currentProject = mapper.writeValueAsString(request.getAttribute("currentProject"));
 %>
@@ -95,6 +96,7 @@
 
 <script>
     const endpoint = '/v1/projects/${currentProject.id}';
+    const sessionRoleId = <%= sessionRoleId %>;
     const currentProject = <%= currentProject %>;
     const currentUser = <%= currentUser %>;
 

@@ -98,7 +98,6 @@ public class PersonalExpenseSheetViewController {
         final ProjectFilterDto filterDto = new ProjectFilterDto();
 
         if (user.getRole().getId() != Constants.ROLE_ADMIN_ID && user.getRole().getId() != Constants.ROLE_TECHNICAL_SUPERVISOR_ID) {
-            filterDto.setResponsibleIds(List.of(user.getId().intValue()));
             filterDto.setMemberIds(List.of(user.getId().intValue()));
         }
 
