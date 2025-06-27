@@ -18,13 +18,13 @@ function initializeDataTables() {
                 {
                     conditions: [
                         {key: 'status', value: ['PENDING'], operation: '==='},
-                        {key: 'roleId', value: ['ROLE_PL_ID'], operation: '>=', current: currentUser.roleId}
+                        {key: 'roleId', value: ['ROLE_PL_ID'], operation: '>=', current: sessionRoleId}
                     ],
                 },
                 {
                     conditions: [
                         {key: 'status', value: ['APPROVED'], operation: '==='},
-                        {key: 'roleId', value: ['ROLE_ADMINISTRATION_ID'], operation: '>=', current: currentUser.roleId}
+                        {key: 'roleId', value: ['ROLE_ADMINISTRATION_ID'], operation: '>=', current: sessionRoleId}
                     ]
                 }
             ]
@@ -36,13 +36,13 @@ function initializeDataTables() {
                 {
                     conditions: [
                         {key: 'status', value: ['PENDING'], operation: '==='},
-                        {key: 'roleId', value: ['ROLE_PL_ID'], operation: '>=', current: currentUser.roleId}
+                        {key: 'roleId', value: ['ROLE_PL_ID'], operation: '>=', current: sessionRoleId}
                     ],
                 },
                 {
                     conditions: [
                         {key: 'status', value: ['APPROVED'], operation: '==='},
-                        {key: 'roleId', value: ['ROLE_ADMINISTRATION_ID'], operation: '>=', current: currentUser.roleId}
+                        {key: 'roleId', value: ['ROLE_ADMINISTRATION_ID'], operation: '>=', current: sessionRoleId}
                     ]
                 }
             ]
