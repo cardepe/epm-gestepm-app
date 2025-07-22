@@ -18,6 +18,10 @@ public class ImageUtils {
         final ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
         final BufferedImage originalImage = ImageIO.read(bais);
 
+        if (originalImage == null) {
+            throw new UnsupportedOperationException("Invalid image format");
+        }
+
         final BufferedImage resizedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB);
         final Graphics2D g2d = resizedImage.createGraphics();
         g2d.drawImage(originalImage, 0, 0, originalImage.getWidth(), originalImage.getHeight(), null);
