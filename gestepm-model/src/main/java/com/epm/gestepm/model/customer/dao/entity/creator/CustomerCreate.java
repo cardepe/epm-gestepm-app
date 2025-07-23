@@ -14,7 +14,6 @@ public class CustomerCreate implements CollectableAttributes {
     @NotNull
     private String name;
 
-    @NotNull
     private String mainEmail;
 
     private String secondaryEmail;
