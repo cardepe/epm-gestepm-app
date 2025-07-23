@@ -235,10 +235,13 @@ public class InspectionExportServiceImpl implements InspectionExportService {
 
             if (StringUtils.isNoneBlank(file.getContent())) {
 
-                stamper.insertPage(++pageNumber, pdfTemplate.getPageSizeWithRotation(1));
-
                 final byte[] imageBytes = Base64.getDecoder().decode(file.getContent());
                 final byte[] compressedBytes = ImageUtils.compressImage(imageBytes, 0.5f);
+
+                if (compressedBytes == null) {
+                    continue;
+                }
+
                 final Image image = Image.getInstance(compressedBytes);
 
                 if (image.getWidth() > pageWidth || image.getHeight() > pageHeight) {
@@ -247,11 +250,10 @@ public class InspectionExportServiceImpl implements InspectionExportService {
 
                 float x = (pageWidth - image.getScaledWidth()) / 2;
                 float y = (pageHeight - image.getScaledHeight()) / 2;
-
                 image.setAbsolutePosition(x, y);
 
-                final PdfContentByte canvas = stamper.getOverContent(pageNumber);
-                canvas.addImage(image);
+                stamper.insertPage(++pageNumber, pdfTemplate.getPageSizeWithRotation(1));
+                stamper.getOverContent(pageNumber).addImage(image);
             }
         }
     }

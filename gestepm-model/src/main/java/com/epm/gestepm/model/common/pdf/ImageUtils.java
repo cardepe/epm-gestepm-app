@@ -19,7 +19,7 @@ public class ImageUtils {
         final BufferedImage originalImage = ImageIO.read(bais);
 
         if (originalImage == null) {
-            throw new UnsupportedOperationException("Invalid image format");
+            return null;
         }
 
         final BufferedImage resizedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_RGB);

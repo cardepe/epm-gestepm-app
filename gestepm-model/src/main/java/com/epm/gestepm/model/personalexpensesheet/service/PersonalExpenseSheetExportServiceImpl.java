@@ -164,10 +164,14 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
                     }
                 }
             } else {
-                stamper.insertPage(++pageNumber, pdfTemplate.getPageSizeWithRotation(1));
 
                 final byte[] imageBytes = Base64.getDecoder().decode(file.getContent());
                 final byte[] compressedBytes = ImageUtils.compressImage(imageBytes, 0.5f);
+
+                if (compressedBytes == null) {
+                    continue;
+                }
+
                 final Image image = Image.getInstance(compressedBytes);
 
                 final float marginLeft = 36;
@@ -184,11 +188,10 @@ public class PersonalExpenseSheetExportServiceImpl implements PersonalExpenseShe
 
                 final float x = marginLeft + (usableWidth - image.getScaledWidth()) / 2;
                 final float y = marginBottom + (usableHeight - image.getScaledHeight()) / 2;
-
                 image.setAbsolutePosition(x, y);
 
-                final PdfContentByte canvas = stamper.getOverContent(pageNumber);
-                canvas.addImage(image);
+                stamper.insertPage(++pageNumber, pdfTemplate.getPageSizeWithRotation(1));
+                stamper.getOverContent(pageNumber).addImage(image);
             }
         }
     }

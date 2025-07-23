@@ -126,10 +126,14 @@ public class WorkShareExportServiceImpl implements WorkShareExportService {
         for (Integer fileId : dto.getFileIds()) {
             final WorkShareFileDto file = workShareFileService.findOrNotFound(new WorkShareFileByIdFinderDto(fileId));
             if (StringUtils.isNotBlank(file.getContent())) {
-                stamper.insertPage(++pageNumber, pageSize);
 
                 final byte[] imageBytes = Base64.getDecoder().decode(file.getContent());
                 final byte[] compressedBytes = ImageUtils.compressImage(imageBytes, IMAGE_COMPRESSION_QUALITY);
+
+                if (compressedBytes == null) {
+                    continue;
+                }
+
                 final Image image = Image.getInstance(compressedBytes);
 
                 float margin = 36f;
@@ -144,6 +148,7 @@ public class WorkShareExportServiceImpl implements WorkShareExportService {
                 final float y = (pageHeight - image.getScaledHeight()) / 2;
                 image.setAbsolutePosition(x, y);
 
+                stamper.insertPage(++pageNumber, pageSize);
                 stamper.getOverContent(pageNumber).addImage(image);
             }
         }

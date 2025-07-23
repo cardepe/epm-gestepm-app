@@ -135,10 +135,14 @@ public class ProgrammedShareExportServiceImpl implements ProgrammedShareExportSe
         for (Integer fileId : dto.getFileIds()) {
             final ProgrammedShareFileDto file = programmedShareFileService.findOrNotFound(new ProgrammedShareFileByIdFinderDto(fileId));
             if (StringUtils.isNotBlank(file.getContent())) {
-                stamper.insertPage(++pageNumber, pageSize);
 
                 final byte[] imageBytes = Base64.getDecoder().decode(file.getContent());
                 final byte[] compressedBytes = ImageUtils.compressImage(imageBytes, IMAGE_COMPRESSION_QUALITY);
+
+                if (compressedBytes == null) {
+                    continue;
+                }
+
                 final Image image = Image.getInstance(compressedBytes);
 
                 float margin = 36f;
@@ -153,6 +157,7 @@ public class ProgrammedShareExportServiceImpl implements ProgrammedShareExportSe
                 final float y = (pageHeight - image.getScaledHeight()) / 2;
                 image.setAbsolutePosition(x, y);
 
+                stamper.insertPage(++pageNumber, pageSize);
                 stamper.getOverContent(pageNumber).addImage(image);
             }
         }
