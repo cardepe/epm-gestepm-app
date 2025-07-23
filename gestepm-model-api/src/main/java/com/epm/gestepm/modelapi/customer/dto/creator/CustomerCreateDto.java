@@ -10,7 +10,6 @@ public class CustomerCreateDto {
     @NotNull
     private String name;
 
-    @NotNull
     private String mainEmail;
 
     private String secondaryEmail;
