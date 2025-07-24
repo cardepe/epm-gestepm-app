@@ -14,7 +14,7 @@
         <div class="col-sm-12 col-md-4">
             <div class="form-group">
                 <label class="col-form-label w-100"><spring:message code="project.detail.customer.email.1"/>
-                    <input type="email" name="mainEmail" class="form-control" value="${customer.mainEmail}" required/>
+                    <input type="email" name="mainEmail" class="form-control" value="${customer.mainEmail}"/>
                 </label>
             </div>
         </div>
