@@ -55,5 +55,4 @@ public class DefaultLogInputParser implements LogInputParser {
         return params;
     }
 
-
 }
