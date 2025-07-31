@@ -356,7 +356,7 @@
             }
         ]
 
-        customDataTable = new CustomDataTable(columns, null, inspection.materials, actions, null,  null, columnDefs);
+        customDataTable = new CustomDataTable(columns, null, inspection.materials, actions, null,  null, columnDefs, null, 'Material');
         materialsDataTable = createSimpleDataTable('#materialsTable', customDataTable, locale);
     }
 

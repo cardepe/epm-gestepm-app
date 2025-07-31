@@ -3,7 +3,7 @@ let customDataTable;
 
 class CustomDataTable {
 
-    constructor(columns, endpoint, data, actions, expand, filters, columnDefs, stickyColumns) {
+    constructor(columns, endpoint, data, actions, expand, filters, columnDefs, stickyColumns, jsAction) {
         this.columns = columns
         this.endpoint = endpoint
         this.data = data;
@@ -12,6 +12,7 @@ class CustomDataTable {
         this.filters = filters
         this.columnDefs = columnDefs
         this.stickyColumns = stickyColumns
+        this.jsAction = jsAction
         this.currentTable = null;
     }
 
@@ -49,6 +50,14 @@ class CustomDataTable {
 
     stickyColumns() {
         return this.stickyColumns
+    }
+
+    jsAction() {
+        return this.jsAction
+    }
+
+    setJsAction(jsAction) {
+        this.jsAction = jsAction
     }
 
     currentTable() {
@@ -169,7 +178,7 @@ function generateColumnDefs(customDataTable) {
             targets: -1,
             orderable: false,
             render: function (data, type, row) {
-                return printActions(row, customDataTable.actions, row.id)
+                return printActions(row, customDataTable.actions, row.id, customDataTable.jsAction)
             }
         }
     )
@@ -249,7 +258,7 @@ function parseArrayToDataTableColumns(columns) {
     return dtColumns
 }
 
-function printActions(data, actions, id) {
+function printActions(data, actions, id, jsAction) {
 
     let buttonHtml = '';
 
@@ -295,7 +304,8 @@ function printActions(data, actions, id) {
 
         if (a.action === 'delete') { // FIXME: } && a.permission && authentication.permissions.includes(a.permission)) {
             if (checkConditionGroups(data, a.conditionGroups)) {
-                buttonHtml += '<em class="far fa-trash-alt" onclick="remove(' + id + ')"></em>';
+                const onclick = jsAction ? `onclick="remove${jsAction}(${id})"` : `onclick="remove(${id})"`;
+                buttonHtml += '<em class="far fa-trash-alt" ' + onclick + '></em>';
             }
         }
 

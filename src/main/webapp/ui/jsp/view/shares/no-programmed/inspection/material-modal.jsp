@@ -106,7 +106,7 @@
         materialModal.modal('hide');
     }
 
-    function remove(id) {
+    function removeMaterial(id) {
         materialsDataTable.row('#' + id).remove().draw();
         materialsModified = true;
         if (materialsDataTable.data().count() < 5 && materialBtn.is(":disabled")) {
