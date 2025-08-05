@@ -8,8 +8,6 @@ import java.io.Serializable;
 @Data
 public class MaterialCreateDto implements Serializable {
 
-    private Integer id;
-
     private Integer inspectionId;
 
     @NotNull

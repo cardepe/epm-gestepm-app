@@ -10,8 +10,6 @@ import javax.validation.constraints.NotNull;
 @Data
 public class MaterialCreate implements CollectableAttributes {
 
-    private Integer id;
-
     private Integer inspectionId;
 
     @NotNull
@@ -27,7 +25,6 @@ public class MaterialCreate implements CollectableAttributes {
     public AttributeMap collectAttributes() {
         final AttributeMap map = new AttributeMap();
 
-        map.put(MaterialAttributes.ATTR_M_ID, this.id);
         map.put(MaterialAttributes.ATTR_M_INSPECTION_ID, this.inspectionId);
         map.put(MaterialAttributes.ATTR_M_DESCRIPTION, this.description);
         map.put(MaterialAttributes.ATTR_M_UNITS, this.units);
