@@ -16,4 +16,19 @@ function initializeDataTables() {
     const expand = ['project'];
 
     const filter = [{'userIds': userId, 'current': false}];
+
+    const columnDef = [
+        {
+            targets: [2, 3]
+            , render: function(data) {
+                return data ? moment(data).format('DD-MM-YYYY HH:mm') : null;
+            }
+        }
+        , {
+            targets: 4
+            , render: function(data) {
+                return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(data);
+            }
+        }
+    ];
 }
